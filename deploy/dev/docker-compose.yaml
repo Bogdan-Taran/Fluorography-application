@@ -1,0 +1,62 @@
+services:
+  backend:
+    build:
+      context: ../../
+      dockerfile: ./deploy/dev/php/Dockerfile
+    container_name: backend
+    depends_on:
+      - db
+    volumes:
+      - ../../backend:/var/www
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ../../backend:/var/www
+    depends_on:
+      - backend
+      - frontend
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_DB=${DB_DATABASE}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    restart: always
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: ../deploy/dev/node/Dockerfile
+    container_name: frontend
+    working_dir: /app
+    volumes:
+      - ../../frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+    postgres_data:

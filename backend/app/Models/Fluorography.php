@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Fluorography extends Model
 {
-    /** @use HasFactory<\Database\Factories\FluorographyFactory> */
     use HasFactory;
 
     public function user()

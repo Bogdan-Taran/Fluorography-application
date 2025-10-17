@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+
 #  video_player: ^2.8.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -62,25 +64,46 @@ flutter:
    - assets/images/vectorBottom.svg
    - assets/images/vectorMidle.svg
    - assets/images/vectorTop.svg
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
 
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
 
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
 
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+     - family: Montserrat
+       fonts:
+         - asset: assets/font/Montserrat-Regular.ttf
+     - family: Geologica
+       fonts:
+         - asset: assets/font/Geologica/Geologica-Black.ttf
+         - asset: assets/font/Geologica/Geologica-Bold.ttf
+         - asset: assets/font/Geologica/Geologica-ExtraBold.ttf
+         - asset: assets/font/Geologica/Geologica-ExtraLight.ttf
+         - asset: assets/font/Geologica/Geologica-Light.ttf
+         - asset: assets/font/Geologica/Geologica-Medium.ttf
+         - asset: assets/font/Geologica/Geologica-Regular.ttf
+         - asset: assets/font/Geologica/Geologica-SemiBold.ttf
+         - asset: assets/font/Geologica/Geologica-Thin.ttf
+         - asset: assets/font/Geologica/Geologica_Auto-Black.ttf
+         - asset: assets/font/Geologica/Geologica_Auto-Bold.ttf
+         - asset: assets/font/Geologica/Geologica_Auto-ExtraBold.ttf
+         - asset: assets/font/Geologica/Geologica_Auto-ExtraLight.ttf
+         - asset: assets/font/Geologica/Geologica_Auto-Light.ttf
+         - asset: assets/font/Geologica/Geologica_Auto-Medium.ttf
+         - asset: assets/font/Geologica/Geologica_Auto-Regular.ttf
+         - asset:  assets/font/Geologica/Geologica_Auto-SemiBold.ttf
+         - asset: assets/font/Geologica/Geologica_Auto-Thin.ttf
+         - asset: assets/font/Geologica/Geologica_Cursive-Black.ttf
+         - asset: assets/font/Geologica/Geologica_Cursive-Bold.ttf
+         - asset: assets/font/Geologica/Geologica_Cursive-ExtraBold.ttf
+         - asset:  assets/font/Geologica/Geologica_Cursive-ExtraLight.ttf
+         - asset: assets/font/Geologica/Geologica_Cursive-Light.ttf
+         - asset: assets/font/Geologica/Geologica_Cursive-Medium.ttf
+         - asset: assets/font/Geologica/Geologica_Cursive-Regular.ttf
+         - asset: assets/font/Geologica/Geologica_Cursive-SemiBold.ttf
+         - asset: assets/font/Geologica/Geologica_Cursive-Thin.ttf
+#     - family: Schyler
+#       fonts:
+#         - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
@@ -91,3 +114,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+

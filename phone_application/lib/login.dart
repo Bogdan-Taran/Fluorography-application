@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Login extends StatefulWidget {
@@ -16,8 +17,14 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.black54,
+        // statusBarBrightness: Brightness.light,
+        // statusBarIconBrightness: Brightness.light,
+      ),
+      child:
+      Scaffold(
         backgroundColor: Color(0xFFFFFFFF),
         body: Stack(
           alignment: AlignmentDirectional.center,
@@ -88,24 +95,37 @@ class _LoginState extends State<Login> {
                         child: Text(
                           'Авторизация',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: ResponsiveSizes.getFontSizeTitle(
+                              context,
+                              baseSize: AppSizes.fontSizeTitle,
+                            ),
                             color: Color(0xff26292B),
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Geologica',
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.001,
-                      ),
+                      // SizedBox(
+                      //   height: MediaQuery.of(context).size.height * 0.0001,
+                      // ),
                       Padding(
-                        padding: EdgeInsets.all(20),
+                        padding: EdgeInsets.only(
+                          top: 15,
+                          left: 0,
+                          right: 0,
+                          bottom: 20,
+                        ),
                         child: Center(
                           child: Text(
                             'Вход происходит через сетевой город',
                             style: TextStyle(
-                              fontSize: 10,
+                              fontSize: ResponsiveSizes.getfontSizeExtraSmall(
+                                context,
+                                baseSize: AppSizes.fontSizeExtraSmall,
+                              ),
                               color: Color(0xff999A9B),
-                              fontWeight: FontWeight.w400,
+                              fontWeight: FontWeight.w300,
+                              fontFamily: 'Geologica',
                             ),
                           ),
                         ),
@@ -116,6 +136,7 @@ class _LoginState extends State<Login> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35),
                         child: TextField(
+
                           cursorColor: Color(0xff72A7EB),
                           cursorHeight: 17,
                           cursorWidth: 1.2,
@@ -135,22 +156,26 @@ class _LoginState extends State<Login> {
                                 width: 2,
                               ),
                             ),
-                            labelText: 'Логин',
+                            // labelText: 'Логин',
 
-                            // hintText: 'Логин от Сетевого Города',
-                            // hintStyle: TextStyle(
-                            //   color: Color(0xff999A9B),
-                            //   fontSize: 12,
-                            // ),
-                            labelStyle: TextStyle(
-                              fontSize: 12,
+                            hintText: 'Логин',
+                            hintStyle: TextStyle(
+                              fontSize: ResponsiveSizes.getfontSizeSmall(
+                                context,
+                                baseSize: AppSizes.fontSizeSmall,
+                              ),
                               color: Color(0xff999A9B),
                               fontWeight: FontWeight.w500,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 16,
-                            ),
+                            // labelStyle: TextStyle(
+                            //   fontSize: ResponsiveSizes.getfontSizeSmall(
+                            //     context,
+                            //     baseSize: AppSizes.fontSizeSmall,
+                            //   ),
+                            //   color: Color(0xff999A9B),
+                            //   fontWeight: FontWeight.w500,
+                            // ),
+                            contentPadding: AppSizes.loginAndPasswordFieldPadding,
                           ),
                           keyboardType: TextInputType.text,
                           // maxLength: 25,
@@ -185,22 +210,17 @@ class _LoginState extends State<Login> {
                                 width: 2,
                               ),
                             ),
-                            labelText: 'Пароль',
-
-                            // hintText: 'Ваш пароль от Сетевого Города',
-                            // hintStyle: TextStyle(
-                            //   color: Color(0xff999A9B),
-                            //   fontSize: 12,
-                            // ),
-                            labelStyle: TextStyle(
-                              fontSize: 12,
+                            hintText: 'Пароль',
+                            hintStyle: TextStyle(
+                              fontSize: ResponsiveSizes.getfontSizeSmall(
+                                context,
+                                baseSize: AppSizes.fontSizeSmall,
+                              ),
                               color: Color(0xff999A9B),
                               fontWeight: FontWeight.w500,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 16,
-                            ),
+
+                            contentPadding: AppSizes.loginAndPasswordFieldPadding,
                           ),
                           keyboardType: TextInputType.text,
                           // maxLength: 25,
@@ -221,34 +241,38 @@ class _LoginState extends State<Login> {
                         child: ElevatedButton(
                           onPressed: () {},
                           style: ButtonStyle(
-                            elevation: WidgetStateProperty.resolveWith<double>(
-                              (Set<WidgetState> states){
-                                return 0;
-                              }
+                            elevation: WidgetStateProperty.resolveWith<double>((
+                              Set<WidgetState> states,
+                            ) {
+                              return 0;
+                            }),
+                            backgroundColor:
+                                WidgetStateProperty.resolveWith<Color>((
+                                  Set<WidgetState> states,
+                                ) {
+                                  if (states.contains(WidgetState.disabled)) {
+                                    return Color(0xffD5D6D7);
+                                  }
+                                  if (states.contains(WidgetState.pressed)) {
+                                    return Color(0xFF72A7EB);
+                                  }
+                                  if (states.contains(WidgetState.hovered)) {
+                                    return Color(0xFFBADEFF);
+                                  }
+                                  return Color(0xff98BFF3);
+                                }),
+                            foregroundColor:
+                                WidgetStateProperty.resolveWith<Color>((
+                                  Set<WidgetState> states,
+                                ) {
+                                  if (states.contains(WidgetState.disabled)) {
+                                    return Color(0xFF888888);
+                                  }
+                                  return Color(0xffffffff);
+                                }),
+                            minimumSize: WidgetStateProperty.all(
+                              Size(MediaQuery.of(context).size.width * 1, 40),
                             ),
-                            backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                                  (Set<WidgetState> states) {
-                                if (states.contains(WidgetState.disabled)) {
-                                  return Color(0xffD5D6D7);
-                                }
-                                if (states.contains(WidgetState.pressed)) {
-                                  return Color(0xFF72A7EB);
-                                }
-                                if (states.contains(WidgetState.hovered)) {
-                                  return Color(0xFFBADEFF);
-                                }
-                                return Color(0xff98BFF3);
-                              },
-                            ),
-                            foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                                  (Set<WidgetState> states) {
-                                if (states.contains(WidgetState.disabled)) {
-                                  return Color(0xFF888888);
-                                }
-                                return Color(0xffffffff);
-                              },
-                            ),
-                            minimumSize: WidgetStateProperty.all(Size(MediaQuery.of(context).size.width * 1, 40)),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -259,8 +283,13 @@ class _LoginState extends State<Login> {
                           child: Text(
                             'Войти',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: ResponsiveSizes.getFontSizeMedium(
+                                context,
+                                baseSize: AppSizes.fontSizeMedium,
+                              ),
                               color: Color(0xffffffff),
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Geologica',
                             ),
                           ),
                         ),
@@ -277,21 +306,67 @@ class _LoginState extends State<Login> {
   }
 }
 
+class AppSizes {
+  //Размеры шрифтов
+  static const double fontSizeTitle = 24;
+  static const double fontSizeLarge = 18;
+  static const double fontSizeMedium = 16;
+  static const double fontSizeSmall = 12;
+  static const double fontSizeExtraSmall = 10;
+
+  //Paddings
+  static const double contentPaddingTextFieldVertical = 40;
+  static const double contentPaddingTextFieldHorizontal = 40;
+
+  static const EdgeInsets loginAndPasswordFieldPadding = EdgeInsets.only(
+    top: 8,
+    right: 20,
+    bottom: 8,
+    left: 16,
+  );
 
 
+}
 
+class ResponsiveSizes {
+  static const designScreenWidth = 360;
 
+  //Fonts
+  static double getFontSizeTitle(
+    BuildContext context, {
+    double baseSize = 24.0,
+  }) {
+    return baseSize * (MediaQuery.of(context).size.width / designScreenWidth);
+  }
 
+  static double getFontSizeLarge(
+    BuildContext context, {
+    double baseSize = 16.0,
+  }) {
+    return baseSize * (MediaQuery.of(context).size.width / designScreenWidth);
+  }
 
+  static double getFontSizeMedium(
+    BuildContext context, {
+    double baseSize = 16.0,
+  }) {
+    return baseSize * (MediaQuery.of(context).size.width / designScreenWidth);
+  }
 
+  static double getfontSizeSmall(
+    BuildContext context, {
+    double baseSize = 12.0,
+  }) {
+    return baseSize * (MediaQuery.of(context).size.width / designScreenWidth);
+  }
 
-
-
-
-
-
-
-
+  static double getfontSizeExtraSmall(
+    BuildContext context, {
+    double baseSize = 10.0,
+  }) {
+    return baseSize * (MediaQuery.of(context).size.width / designScreenWidth);
+  }
+}
 
 InputDecoration customTextFieldStyle({
   String? labelText,
@@ -346,15 +421,3 @@ InputDecoration customTextFieldStyle({
     errorText: errorText,
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

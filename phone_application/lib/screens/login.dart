@@ -12,6 +12,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  TextEditingController loginController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   Map userData = {};
   final _formkey = GlobalKey<FormState>();
 
@@ -136,7 +139,7 @@ class _LoginState extends State<Login> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35),
                         child: TextField(
-
+                          controller: loginController,
                           cursorColor: Color(0xff72A7EB),
                           cursorHeight: 17,
                           cursorWidth: 1.2,
@@ -191,6 +194,7 @@ class _LoginState extends State<Login> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35),
                         child: TextField(
+                          controller: passwordController,
                           cursorColor: Color(0xff72A7EB),
                           cursorHeight: 17,
                           cursorWidth: 1.2,

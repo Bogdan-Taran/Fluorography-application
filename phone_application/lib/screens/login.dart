@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -14,6 +18,70 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController loginController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  Future<void> _login() async{
+    final login = loginController.text.trim();
+    final password = passwordController.text.trim();
+    
+    if (login.isEmpty || password.isEmpty){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Заполните все поля')),
+      );
+      return;
+    }
+    
+    setState(() {
+      _isLoading = true;
+    });
+    
+    try{
+      final url = Uri.parse('http://192.168.13.19/api/login');
+      final response = await http.post(
+        url,
+        body: {
+          'login': login,
+          'password': password,
+        },
+      );
+
+      if(response.statusCode == 200){
+        final data = jsonDecode(response.body);
+        final token = data['token'] as String?;
+
+        if (token != null) {
+          //сохранение токена
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('auth_token', token);
+
+          print('Авторизация успешна!, Токен $token');
+        }
+        else{
+          throw Exception('Токен не получен');
+        }
+      }
+      else {
+        print('Ошибка авторизации. Код ${response.statusCode}');
+        print('Ответ сервра: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Неверный логин или пароль')),
+        );
+      }
+    }
+    catch (e){
+      print('Исключение авторизации: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ошибка подключения'))
+      );
+    }
+    finally{
+      setState(() {
+        _isLoading = false;
+      });
+    }
+    
+    
+  }
 
   Map userData = {};
   final _formkey = GlobalKey<FormState>();
@@ -425,3 +493,6 @@ InputDecoration customTextFieldStyle({
     errorText: errorText,
   );
 }
+
+
+

@@ -20,6 +20,7 @@ class _LoginState extends State<Login> {
   TextEditingController passwordController = TextEditingController();
   bool _isLoading = false;
 
+
   Future<void> _login() async{
     final login = loginController.text.trim();
     final password = passwordController.text.trim();
@@ -311,7 +312,6 @@ class _LoginState extends State<Login> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35),
                         child: ElevatedButton(
-                          onPressed: () {},
                           style: ButtonStyle(
                             elevation: WidgetStateProperty.resolveWith<double>((
                               Set<WidgetState> states,
@@ -351,8 +351,11 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-
-                          child: Text(
+                          onPressed: _isLoading ? null : _login,
+                          child:
+                              _isLoading
+                            ? const CircularProgressIndicator(color: Colors.white,)
+                            : Text(
                             'Войти',
                             style: TextStyle(
                               fontSize: ResponsiveSizes.getFontSizeMedium(

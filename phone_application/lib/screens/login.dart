@@ -47,14 +47,13 @@ class _LoginState extends State<Login> {
       );
 
       if(response.statusCode == 200){
-        final data = jsonDecode(response.body);
-        final token = data['token'] as String?;
+        final data = jsonDecode(response.body); // декодируем json
+        final token = data['token'] as String?;   // записываем выданный нам токен
 
-        if (token != null) {
+        if (token != null) {  // если токен не пустой
           //сохранение токена
-          final prefs = await SharedPreferences.getInstance();
+          final prefs = await SharedPreferences.getInstance();  // записываем в память
           await prefs.setString('auth_token', token);
-
           print('Авторизация успешна!, Токен $token');
         }
         else{
@@ -62,6 +61,7 @@ class _LoginState extends State<Login> {
         }
       }
       else {
+        //вывод всевозмоных ошибок
         print('Ошибка авторизации. Код ${response.statusCode}');
         print('Ответ сервра: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -84,8 +84,6 @@ class _LoginState extends State<Login> {
     
   }
 
-  Map userData = {};
-  final _formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {

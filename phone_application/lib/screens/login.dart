@@ -8,6 +8,27 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+final url = Uri.parse('http://192.168.13.19/api/login');
+final urlProfile = Uri.parse('http://192.168.13.19/api/profile');
+
+class User {
+  final int id;
+  final String firstname;
+  final String lastname;
+  final String patronymic;
+  final int network_city_id;
+  final List<int> roles;
+
+  User({
+    required this.id,
+    required this.firstname,
+    required this.lastname,
+    required this.patronymic,
+    required this.network_city_id,
+    required this.roles,
+  });
+}
+
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
@@ -19,48 +40,97 @@ class _LoginState extends State<Login> {
   TextEditingController loginController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool _isLoading = false;
+  String result = '';
 
+  // Future<List<User>> loginProfileGetRequest() async
+  Future<void> loginProfileGetRequest() async {
+    print('toket yes yes');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final auth_token = await prefs.getString('auth_token');
 
-  Future<void> _login() async{
+      if (auth_token == null) {
+        print('Токен отсутствует');
+      }
+
+      print("Токен есть, запрашиваю профиль");
+      final response = await http.get(
+        urlProfile,
+        headers: {'Authorization': 'Bearer $auth_token'},
+      );
+
+      print("Ответ от api /api/profile: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        print("Доступ получен. Получаю тело");
+
+        final responseData = jsonDecode(response.body) as Map<String, dynamic>;
+
+        final user = User(
+          id: responseData['id'],
+          firstname: responseData['firstname'],
+          lastname: responseData['lastname'],
+          patronymic: responseData['patronymic'],
+          network_city_id: responseData['network_city_id'],
+          roles: List<int>.from(responseData['roles'] ?? []),
+        );
+
+        setState(() {
+          result =
+              '''
+          ID: ${user.id}
+          Firstname: ${user.firstname}
+          Lastname: ${user.lastname}
+          Patronymic: ${user.patronymic}
+          Network_city_id: ${user.network_city_id}
+          Roles: ${user.roles}
+          ''';
+        });
+        print("Данные успешно получены: $result");
+      } else {
+        print('Ошибка профиля: ${response.statusCode} - ${response.body}');
+        throw Exception('Не удалось загрузить профиль');
+      }
+    } catch (e) {
+      print('Ошибка в loginProflieGetRequest $e');
+      setState(() {
+        result = 'Error: $e';
+      });
+    }
+  }
+
+  Future<void> _login() async {
     final login = loginController.text.trim();
     final password = passwordController.text.trim();
-    
-    if (login.isEmpty || password.isEmpty){
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Заполните все поля')),
-      );
+    if (login.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Заполните все поля')));
       return;
     }
-    
     setState(() {
       _isLoading = true;
     });
-    
-    try{
-      final url = Uri.parse('http://192.168.13.19/api/login');
+    try {
       final response = await http.post(
         url,
-        body: {
-          'login': login,
-          'password': password,
-        },
+        body: {'login': login, 'password': password},
       );
-
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         final data = jsonDecode(response.body); // декодируем json
-        final token = data['token'] as String?;   // записываем выданный нам токен
+        final token = data['token'] as String?; // записываем выданный нам токен
 
-        if (token != null) {  // если токен не пустой
+        if (token != null) {
+          // если токен не пустой
           //сохранение токена
-          final prefs = await SharedPreferences.getInstance();  // записываем в память
-          await prefs.setString('auth_token', token);
+          final prefs =
+              await SharedPreferences.getInstance(); // активируем shared preferences
+          await prefs.setString('auth_token', token); // записываем в память
           print('Авторизация успешна!, Токен $token');
-        }
-        else{
+          await loginProfileGetRequest();  // вызываем функцию авторизацию по роли
+        } else {
           throw Exception('Токен не получен');
         }
-      }
-      else {
+      } else {
         //вывод всевозмоных ошибок
         print('Ошибка авторизации. Код ${response.statusCode}');
         print('Ответ сервра: ${response.body}');
@@ -68,22 +138,17 @@ class _LoginState extends State<Login> {
           const SnackBar(content: Text('Неверный логин или пароль')),
         );
       }
-    }
-    catch (e){
+    } catch (e) {
       print('Исключение авторизации: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ошибка подключения'))
-      );
-    }
-    finally{
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Ошибка подключения')));
+    } finally {
       setState(() {
         _isLoading = false;
       });
     }
-    
-    
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +158,7 @@ class _LoginState extends State<Login> {
         // statusBarBrightness: Brightness.light,
         // statusBarIconBrightness: Brightness.light,
       ),
-      child:
-      Scaffold(
+      child: Scaffold(
         backgroundColor: Color(0xFFFFFFFF),
         body: Stack(
           alignment: AlignmentDirectional.center,
@@ -226,8 +290,8 @@ class _LoginState extends State<Login> {
                                 width: 2,
                               ),
                             ),
-                            // labelText: 'Логин',
 
+                            // labelText: 'Логин',
                             hintText: 'Логин',
                             hintStyle: TextStyle(
                               fontSize: ResponsiveSizes.getfontSizeSmall(
@@ -245,7 +309,8 @@ class _LoginState extends State<Login> {
                             //   color: Color(0xff999A9B),
                             //   fontWeight: FontWeight.w500,
                             // ),
-                            contentPadding: AppSizes.loginAndPasswordFieldPadding,
+                            contentPadding:
+                                AppSizes.loginAndPasswordFieldPadding,
                           ),
                           keyboardType: TextInputType.text,
                           // maxLength: 25,
@@ -291,7 +356,8 @@ class _LoginState extends State<Login> {
                               fontWeight: FontWeight.w500,
                             ),
 
-                            contentPadding: AppSizes.loginAndPasswordFieldPadding,
+                            contentPadding:
+                                AppSizes.loginAndPasswordFieldPadding,
                           ),
                           keyboardType: TextInputType.text,
                           // maxLength: 25,
@@ -350,21 +416,22 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           onPressed: _isLoading ? null : _login,
-                          child:
-                              _isLoading
-                            ? const CircularProgressIndicator(color: Colors.white,)
-                            : Text(
-                            'Войти',
-                            style: TextStyle(
-                              fontSize: ResponsiveSizes.getFontSizeMedium(
-                                context,
-                                baseSize: AppSizes.fontSizeMedium,
-                              ),
-                              color: Color(0xffffffff),
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Geologica',
-                            ),
-                          ),
+                          child: _isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  'Войти',
+                                  style: TextStyle(
+                                    fontSize: ResponsiveSizes.getFontSizeMedium(
+                                      context,
+                                      baseSize: AppSizes.fontSizeMedium,
+                                    ),
+                                    color: Color(0xffffffff),
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'Geologica',
+                                  ),
+                                ),
                         ),
                       ),
                     ],
@@ -397,8 +464,6 @@ class AppSizes {
     bottom: 8,
     left: 16,
   );
-
-
 }
 
 class ResponsiveSizes {
@@ -494,6 +559,3 @@ InputDecoration customTextFieldStyle({
     errorText: errorText,
   );
 }
-
-
-

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -126,7 +127,7 @@ class _LoginState extends State<Login> {
               await SharedPreferences.getInstance(); // активируем shared preferences
           await prefs.setString('auth_token', token); // записываем в память
           print('Авторизация успешна!, Токен $token');
-          await loginProfileGetRequest();  // вызываем функцию авторизацию по роли
+          await loginProfileGetRequest(); // вызываем функцию авторизацию по роли
         } else {
           throw Exception('Токен не получен');
         }
@@ -417,8 +418,9 @@ class _LoginState extends State<Login> {
                           ),
                           onPressed: _isLoading ? null : _login,
                           child: _isLoading
-                              ? const CircularProgressIndicator(
+                              ? LoadingAnimationWidget.halfTriangleDot(
                                   color: Colors.white,
+                                  size: 24,
                                 )
                               : Text(
                                   'Войти',

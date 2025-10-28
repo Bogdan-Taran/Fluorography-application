@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project_fluorography/serices/auth_service.dart';
 
 final url = Uri.parse('http://192.168.13.19/api/login');
 final urlProfile = Uri.parse('http://192.168.13.19/api/profile');
@@ -40,116 +41,116 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController loginController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  bool _isLoading = false;
+  // bool _isLoading = false;
   String result = '';
 
-  // Future<List<User>> loginProfileGetRequest() async
-  Future<void> loginProfileGetRequest() async {
-    print('toket yes yes');
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final auth_token = await prefs.getString('auth_token');
-
-      if (auth_token == null) {
-        print('Токен отсутствует');
-      }
-
-      print("Токен есть, запрашиваю профиль");
-      final response = await http.get(
-        urlProfile,
-        headers: {'Authorization': 'Bearer $auth_token'},
-      );
-
-      print("Ответ от api /api/profile: ${response.statusCode}");
-      if (response.statusCode == 200) {
-        print("Доступ получен. Получаю тело");
-
-        final responseData = jsonDecode(response.body) as Map<String, dynamic>;
-
-        final user = User(
-          id: responseData['id'],
-          firstname: responseData['firstname'],
-          lastname: responseData['lastname'],
-          patronymic: responseData['patronymic'],
-          network_city_id: responseData['network_city_id'],
-          roles: List<int>.from(responseData['roles'] ?? []),
-        );
-
-        setState(() {
-          result =
-              '''
-          ID: ${user.id}
-          Firstname: ${user.firstname}
-          Lastname: ${user.lastname}
-          Patronymic: ${user.patronymic}
-          Network_city_id: ${user.network_city_id}
-          Roles: ${user.roles}
-          ''';
-        });
-        print("Данные успешно получены: $result");
-      } else {
-        print('Ошибка профиля: ${response.statusCode} - ${response.body}');
-        throw Exception('Не удалось загрузить профиль');
-      }
-    } catch (e) {
-      print('Ошибка в loginProflieGetRequest $e');
-      setState(() {
-        result = 'Error: $e';
-      });
-    }
-  }
-
-  Future<void> _login() async {
-    final login = loginController.text.trim();
-    final password = passwordController.text.trim();
-    if (login.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Заполните все поля')));
-      return;
-    }
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      final response = await http.post(
-        url,
-        body: {'login': login, 'password': password},
-      );
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body); // декодируем json
-        final token = data['token'] as String?; // записываем выданный нам токен
-
-        if (token != null) {
-          // если токен не пустой
-          //сохранение токена
-          final prefs =
-              await SharedPreferences.getInstance(); // активируем shared preferences
-          await prefs.setString('auth_token', token); // записываем в память
-          print('Авторизация успешна!, Токен $token');
-          await loginProfileGetRequest(); // вызываем функцию авторизацию по роли
-        } else {
-          throw Exception('Токен не получен');
-        }
-      } else {
-        //вывод всевозмоных ошибок
-        print('Ошибка авторизации. Код ${response.statusCode}');
-        print('Ответ сервра: ${response.body}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Неверный логин или пароль')),
-        );
-      }
-    } catch (e) {
-      print('Исключение авторизации: $e');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Ошибка подключения')));
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
+  // // Future<List<User>> loginProfileGetRequest() async
+  // Future<void> loginProfileGetRequest() async {
+  //   print('toket yes yes');
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final auth_token = await prefs.getString('auth_token');
+  //
+  //     if (auth_token == null) {
+  //       print('Токен отсутствует');
+  //     }
+  //
+  //     print("Токен есть, запрашиваю профиль");
+  //     final response = await http.get(
+  //       urlProfile,
+  //       headers: {'Authorization': 'Bearer $auth_token'},
+  //     );
+  //
+  //     print("Ответ от api /api/profile: ${response.statusCode}");
+  //     if (response.statusCode == 200) {
+  //       print("Доступ получен. Получаю тело");
+  //
+  //       final responseData = jsonDecode(response.body) as Map<String, dynamic>;
+  //
+  //       final user = User(
+  //         id: responseData['id'],
+  //         firstname: responseData['firstname'],
+  //         lastname: responseData['lastname'],
+  //         patronymic: responseData['patronymic'],
+  //         network_city_id: responseData['network_city_id'],
+  //         roles: List<int>.from(responseData['roles'] ?? []),
+  //       );
+  //
+  //       setState(() {
+  //         result =
+  //             '''
+  //         ID: ${user.id}
+  //         Firstname: ${user.firstname}
+  //         Lastname: ${user.lastname}
+  //         Patronymic: ${user.patronymic}
+  //         Network_city_id: ${user.network_city_id}
+  //         Roles: ${user.roles}
+  //         ''';
+  //       });
+  //       print("Данные успешно получены: $result");
+  //     } else {
+  //       print('Ошибка профиля: ${response.statusCode} - ${response.body}');
+  //       throw Exception('Не удалось загрузить профиль');
+  //     }
+  //   } catch (e) {
+  //     print('Ошибка в loginProflieGetRequest $e');
+  //     setState(() {
+  //       result = 'Error: $e';
+  //     });
+  //   }
+  // }
+  //
+  // Future<void> _login() async {
+  //   final login = loginController.text.trim();
+  //   final password = passwordController.text.trim();
+  //   if (login.isEmpty || password.isEmpty) {
+  //     ScaffoldMessenger.of(
+  //       context,
+  //     ).showSnackBar(const SnackBar(content: Text('Заполните все поля')));
+  //     return;
+  //   }
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       body: {'login': login, 'password': password},
+  //     );
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body); // декодируем json
+  //       final token = data['token'] as String?; // записываем выданный нам токен
+  //
+  //       if (token != null) {
+  //         // если токен не пустой
+  //         //сохранение токена
+  //         final prefs =
+  //             await SharedPreferences.getInstance(); // активируем shared preferences
+  //         await prefs.setString('auth_token', token); // записываем в память
+  //         print('Авторизация успешна!, Токен $token');
+  //         await loginProfileGetRequest(); // вызываем функцию авторизацию по роли
+  //       } else {
+  //         throw Exception('Токен не получен');
+  //       }
+  //     } else {
+  //       //вывод всевозмоных ошибок
+  //       print('Ошибка авторизации. Код ${response.statusCode}');
+  //       print('Ответ сервра: ${response.body}');
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Неверный логин или пароль')),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print('Исключение авторизации: $e');
+  //     ScaffoldMessenger.of(
+  //       context,
+  //     ).showSnackBar(const SnackBar(content: Text('Ошибка подключения')));
+  //   } finally {
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -416,7 +417,7 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                          onPressed: _isLoading ? null : _login,
+                          onPressed: _isLoading ? null : ,
                           child: _isLoading
                               ? LoadingAnimationWidget.halfTriangleDot(
                                   color: Colors.white,

@@ -1,14 +1,15 @@
 import 'dart:convert';
-
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_fluorography/serices/auth_service.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+
 
 final url = Uri.parse('http://192.168.13.19/api/login');
 final urlProfile = Uri.parse('http://192.168.13.19/api/profile');

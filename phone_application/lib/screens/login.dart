@@ -10,28 +10,6 @@ import 'package:project_fluorography/serices/auth_service.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 
-
-final url = Uri.parse('http://192.168.13.19/api/login');
-final urlProfile = Uri.parse('http://192.168.13.19/api/profile');
-
-class User {
-  final int id;
-  final String firstname;
-  final String lastname;
-  final String patronymic;
-  final int network_city_id;
-  final List<int> roles;
-
-  User({
-    required this.id,
-    required this.firstname,
-    required this.lastname,
-    required this.patronymic,
-    required this.network_city_id,
-    required this.roles,
-  });
-}
-
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
@@ -42,116 +20,50 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController loginController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  // bool _isLoading = false;
-  String result = '';
+  bool _isLoading = false;
+  String? _error;
 
-  // // Future<List<User>> loginProfileGetRequest() async
-  // Future<void> loginProfileGetRequest() async {
-  //   print('toket yes yes');
-  //   try {
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final auth_token = await prefs.getString('auth_token');
-  //
-  //     if (auth_token == null) {
-  //       print('Токен отсутствует');
-  //     }
-  //
-  //     print("Токен есть, запрашиваю профиль");
-  //     final response = await http.get(
-  //       urlProfile,
-  //       headers: {'Authorization': 'Bearer $auth_token'},
-  //     );
-  //
-  //     print("Ответ от api /api/profile: ${response.statusCode}");
-  //     if (response.statusCode == 200) {
-  //       print("Доступ получен. Получаю тело");
-  //
-  //       final responseData = jsonDecode(response.body) as Map<String, dynamic>;
-  //
-  //       final user = User(
-  //         id: responseData['id'],
-  //         firstname: responseData['firstname'],
-  //         lastname: responseData['lastname'],
-  //         patronymic: responseData['patronymic'],
-  //         network_city_id: responseData['network_city_id'],
-  //         roles: List<int>.from(responseData['roles'] ?? []),
-  //       );
-  //
-  //       setState(() {
-  //         result =
-  //             '''
-  //         ID: ${user.id}
-  //         Firstname: ${user.firstname}
-  //         Lastname: ${user.lastname}
-  //         Patronymic: ${user.patronymic}
-  //         Network_city_id: ${user.network_city_id}
-  //         Roles: ${user.roles}
-  //         ''';
-  //       });
-  //       print("Данные успешно получены: $result");
-  //     } else {
-  //       print('Ошибка профиля: ${response.statusCode} - ${response.body}');
-  //       throw Exception('Не удалось загрузить профиль');
-  //     }
-  //   } catch (e) {
-  //     print('Ошибка в loginProflieGetRequest $e');
-  //     setState(() {
-  //       result = 'Error: $e';
-  //     });
-  //   }
-  // }
-  //
-  // Future<void> _login() async {
-  //   final login = loginController.text.trim();
-  //   final password = passwordController.text.trim();
-  //   if (login.isEmpty || password.isEmpty) {
-  //     ScaffoldMessenger.of(
-  //       context,
-  //     ).showSnackBar(const SnackBar(content: Text('Заполните все поля')));
-  //     return;
-  //   }
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-  //   try {
-  //     final response = await http.post(
-  //       url,
-  //       body: {'login': login, 'password': password},
-  //     );
-  //     if (response.statusCode == 200) {
-  //       final data = jsonDecode(response.body); // декодируем json
-  //       final token = data['token'] as String?; // записываем выданный нам токен
-  //
-  //       if (token != null) {
-  //         // если токен не пустой
-  //         //сохранение токена
-  //         final prefs =
-  //             await SharedPreferences.getInstance(); // активируем shared preferences
-  //         await prefs.setString('auth_token', token); // записываем в память
-  //         print('Авторизация успешна!, Токен $token');
-  //         await loginProfileGetRequest(); // вызываем функцию авторизацию по роли
-  //       } else {
-  //         throw Exception('Токен не получен');
-  //       }
-  //     } else {
-  //       //вывод всевозмоных ошибок
-  //       print('Ошибка авторизации. Код ${response.statusCode}');
-  //       print('Ответ сервра: ${response.body}');
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(content: Text('Неверный логин или пароль')),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     print('Исключение авторизации: $e');
-  //     ScaffoldMessenger.of(
-  //       context,
-  //     ).showSnackBar(const SnackBar(content: Text('Ошибка подключения')));
-  //   } finally {
-  //     setState(() {
-  //       _isLoading = false;
-  //     });
-  //   }
-  // }
+  Future<void> _login() async {
+    //get text from textFields from UI
+    final login = loginController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (login.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Заполните все поля')));
+      return;
+    }
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      // create an object of authService
+      final authService = AuthService();
+      final user = await authService.login(login, password);
+
+      // successful login
+      print('Успешный вход. Роли ${user.roles}');
+
+      //TODO:
+      //realize navigate to next page
+      //Navigator.pushReplacement(context, MaterialPageRoute(...));
+    }
+    catch (e){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ошибка: $e')),
+      );
+    }
+    finally {
+      if(mounted){
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +101,10 @@ class _LoginState extends State<Login> {
                   child: SvgPicture.asset(
                     'assets/images/vectorBottom.svg',
                     fit: BoxFit.fitWidth,
-                    width: MediaQuery.of(context).size.width * 1,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 1,
                   ),
                 ),
               ],
@@ -197,8 +112,14 @@ class _LoginState extends State<Login> {
             Stack(
               children: [
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.75,
-                  height: MediaQuery.of(context).size.height * 0.43,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.75,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * 0.43,
                   decoration: BoxDecoration(
                     color: Color(0xFFFFFFFF),
                     borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -226,7 +147,10 @@ class _LoginState extends State<Login> {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.04,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.04,
                       ),
                       Center(
                         child: Text(
@@ -268,7 +192,10 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.02,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35),
@@ -313,7 +240,7 @@ class _LoginState extends State<Login> {
                             //   fontWeight: FontWeight.w500,
                             // ),
                             contentPadding:
-                                AppSizes.loginAndPasswordFieldPadding,
+                            AppSizes.loginAndPasswordFieldPadding,
                           ),
                           keyboardType: TextInputType.text,
                           // maxLength: 25,
@@ -324,7 +251,10 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.01,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.01,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35),
@@ -360,7 +290,7 @@ class _LoginState extends State<Login> {
                             ),
 
                             contentPadding:
-                                AppSizes.loginAndPasswordFieldPadding,
+                            AppSizes.loginAndPasswordFieldPadding,
                           ),
                           keyboardType: TextInputType.text,
                           // maxLength: 25,
@@ -374,43 +304,46 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.05,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.05,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35),
                         child: ElevatedButton(
                           style: ButtonStyle(
                             elevation: WidgetStateProperty.resolveWith<double>((
-                              Set<WidgetState> states,
-                            ) {
+                                Set<WidgetState> states,) {
                               return 0;
                             }),
                             backgroundColor:
-                                WidgetStateProperty.resolveWith<Color>((
-                                  Set<WidgetState> states,
-                                ) {
-                                  if (states.contains(WidgetState.disabled)) {
-                                    return Color(0xffD5D6D7);
-                                  }
-                                  if (states.contains(WidgetState.pressed)) {
-                                    return Color(0xFF72A7EB);
-                                  }
-                                  if (states.contains(WidgetState.hovered)) {
-                                    return Color(0xFFBADEFF);
-                                  }
-                                  return Color(0xff98BFF3);
-                                }),
+                            WidgetStateProperty.resolveWith<Color>((
+                                Set<WidgetState> states,) {
+                              if (states.contains(WidgetState.disabled)) {
+                                return Color(0xffD5D6D7);
+                              }
+                              if (states.contains(WidgetState.pressed)) {
+                                return Color(0xFF72A7EB);
+                              }
+                              if (states.contains(WidgetState.hovered)) {
+                                return Color(0xFFBADEFF);
+                              }
+                              return Color(0xff98BFF3);
+                            }),
                             foregroundColor:
-                                WidgetStateProperty.resolveWith<Color>((
-                                  Set<WidgetState> states,
-                                ) {
-                                  if (states.contains(WidgetState.disabled)) {
-                                    return Color(0xFF888888);
-                                  }
-                                  return Color(0xffffffff);
-                                }),
+                            WidgetStateProperty.resolveWith<Color>((
+                                Set<WidgetState> states,) {
+                              if (states.contains(WidgetState.disabled)) {
+                                return Color(0xFF888888);
+                              }
+                              return Color(0xffffffff);
+                            }),
                             minimumSize: WidgetStateProperty.all(
-                              Size(MediaQuery.of(context).size.width * 1, 40),
+                              Size(MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 1, 40),
                             ),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
@@ -418,24 +351,24 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                          onPressed: _isLoading ? null : ,
+                          onPressed: _isLoading ? null : _login,
                           child: _isLoading
                               ? LoadingAnimationWidget.halfTriangleDot(
-                                  color: Colors.white,
-                                  size: 24,
-                                )
+                            color: Colors.white,
+                            size: 24,
+                          )
                               : Text(
-                                  'Войти',
-                                  style: TextStyle(
-                                    fontSize: ResponsiveSizes.getFontSizeMedium(
-                                      context,
-                                      baseSize: AppSizes.fontSizeMedium,
-                                    ),
-                                    color: Color(0xffffffff),
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'Geologica',
-                                  ),
-                                ),
+                            'Войти',
+                            style: TextStyle(
+                              fontSize: ResponsiveSizes.getFontSizeMedium(
+                                context,
+                                baseSize: AppSizes.fontSizeMedium,
+                              ),
+                              color: Color(0xffffffff),
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Geologica',
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -474,39 +407,49 @@ class ResponsiveSizes {
   static const designScreenWidth = 360;
 
   //Fonts
-  static double getFontSizeTitle(
-    BuildContext context, {
+  static double getFontSizeTitle(BuildContext context, {
     double baseSize = 24.0,
   }) {
-    return baseSize * (MediaQuery.of(context).size.width / designScreenWidth);
+    return baseSize * (MediaQuery
+        .of(context)
+        .size
+        .width / designScreenWidth);
   }
 
-  static double getFontSizeLarge(
-    BuildContext context, {
+  static double getFontSizeLarge(BuildContext context, {
     double baseSize = 16.0,
   }) {
-    return baseSize * (MediaQuery.of(context).size.width / designScreenWidth);
+    return baseSize * (MediaQuery
+        .of(context)
+        .size
+        .width / designScreenWidth);
   }
 
-  static double getFontSizeMedium(
-    BuildContext context, {
+  static double getFontSizeMedium(BuildContext context, {
     double baseSize = 16.0,
   }) {
-    return baseSize * (MediaQuery.of(context).size.width / designScreenWidth);
+    return baseSize * (MediaQuery
+        .of(context)
+        .size
+        .width / designScreenWidth);
   }
 
-  static double getfontSizeSmall(
-    BuildContext context, {
+  static double getfontSizeSmall(BuildContext context, {
     double baseSize = 12.0,
   }) {
-    return baseSize * (MediaQuery.of(context).size.width / designScreenWidth);
+    return baseSize * (MediaQuery
+        .of(context)
+        .size
+        .width / designScreenWidth);
   }
 
-  static double getfontSizeExtraSmall(
-    BuildContext context, {
+  static double getfontSizeExtraSmall(BuildContext context, {
     double baseSize = 10.0,
   }) {
-    return baseSize * (MediaQuery.of(context).size.width / designScreenWidth);
+    return baseSize * (MediaQuery
+        .of(context)
+        .size
+        .width / designScreenWidth);
   }
 }
 

@@ -9,6 +9,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_fluorography/serices/auth_service.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+var _roles = {
+  1: 'medic',
+  2: 'student',
+  3: 'employee',
+  4: 'admin',
+  5: 'curator',
+};
+
+
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);

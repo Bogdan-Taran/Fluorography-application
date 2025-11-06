@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_fluorography/screens/roles_depend_screen/medic/screens/medic_screen.dart';
 import '/screens/login.dart';
 import 'package:flutter/services.dart';
 
@@ -23,7 +24,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Login(),
+      // home: Login(),
+      home: MedicScreen(),
     );
   }
 }

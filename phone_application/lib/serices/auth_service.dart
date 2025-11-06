@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 class User {
   final int id;
   final String firstname;
@@ -65,8 +66,6 @@ class AuthService {
       network_city_id: profileData['network_city_id'],
       roles: List<int>.from(profileData['roles'] ?? []),
     );
-
-
   }
 
   // func to get token from Shared Preferences

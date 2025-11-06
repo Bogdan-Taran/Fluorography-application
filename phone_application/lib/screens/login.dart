@@ -5,9 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:project_fluorography/screens/roles_depend_screen/medic/medic_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_fluorography/serices/auth_service.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+
 
 var _roles = {
   1: 'medic',
@@ -31,6 +33,14 @@ class _LoginState extends State<Login> {
   TextEditingController passwordController = TextEditingController();
   bool _isLoading = false;
   String? _error;
+
+  final _medic_bloc = MedicBloc();
+  @override
+  void initState(){
+    _medic_bloc.add(LoadMedic());
+    super.initState();
+  }
+
 
   Future<void> _login() async {
     //get text from textFields from UI

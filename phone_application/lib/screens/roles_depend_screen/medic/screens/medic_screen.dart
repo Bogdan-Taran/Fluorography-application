@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import '';
 
 import '../../../login.dart';
 
@@ -13,6 +14,8 @@ class MedicScreen extends StatefulWidget {
 
 class _MedicScreenState extends State<MedicScreen> {
   TextEditingController searchController = TextEditingController();
+  bool active = false;
+  String exTitle = "Группа 321";
 
   @override
   Widget build(BuildContext context) {
@@ -36,50 +39,70 @@ class _MedicScreenState extends State<MedicScreen> {
           child: Stack(
             alignment: AlignmentDirectional.center,
             children: <Widget>[
-              Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: SvgPicture.asset(
-                      'assets/images/vectorRight.svg',
-                      semanticsLabel: 'Top SVG Image',
-                      fit: BoxFit.fitWidth,
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment(0, 0.6),
-                    widthFactor: 1,
-                    child: SvgPicture.asset(
-                      'assets/images/vectorLine.svg',
-                      fit: BoxFit.fitWidth,
-                      width: MediaQuery.of(context).size.width * 1,
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: SvgPicture.asset(
-                      'assets/images/vectorBottom.svg',
-                      fit: BoxFit.fitWidth,
-                      width: MediaQuery.of(context).size.width * 1,
-                    ),
-                  ),
+              // Stack(
+              //   children: [
+              //     Align(
+              //       alignment: Alignment.centerRight,
+              //       child: SvgPicture.asset(
+              //         'assets/images/vectorRight.svg',
+              //         semanticsLabel: 'Top SVG Image',
+              //         fit: BoxFit.fitWidth,
+              //       ),
+              //     ),
+              //     Align(
+              //       alignment: Alignment(0, 0.6),
+              //       widthFactor: 1,
+              //       child: SvgPicture.asset(
+              //         'assets/images/vectorLine.svg',
+              //         fit: BoxFit.fitWidth,
+              //         width: MediaQuery.of(context).size.width * 1,
+              //       ),
+              //     ),
+              //     Align(
+              //       alignment: Alignment.bottomCenter,
+              //       child: SvgPicture.asset(
+              //         'assets/images/vectorBottom.svg',
+              //         fit: BoxFit.fitWidth,
+              //         width: MediaQuery.of(context).size.width * 1,
+              //       ),
+              //     ),
+              //   ],
+              // ),
+
+
+
+              ExpansionPanelList(
+                expansionCallback: (panelIndex, isExpanded) {
+                  active = !active;
+                  exTitle = active ? "Группа 321" : "Сотрудники";
+                  setState(() {});
+                },
+                children: <ExpansionPanel> [
+                  ExpansionPanel(
+                      headerBuilder: (context, isEx),
+                      body: body
+                  )
                 ],
-              ),
+              )
 
-              Container(
-                alignment: Alignment.topCenter,
-                child: Column(
-                  children: [
-                    SizedBox(height: 20),
 
-                    Container(
-                      color: Colors.transparent,
-                      height: 800,
-                      child: Row(),
-                    ),
-                  ],
-                ),
-              ),
+
+
+
+              // Container(
+              //   alignment: Alignment.topCenter,
+              //   child: Column(
+              //     children: [
+              //       SizedBox(height: 20),
+              //
+              //       Container(
+              //         color: Colors.lightBlueAccent,
+              //         height: 800,
+              //         child: Row(),
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -237,11 +260,22 @@ class AppBarContent extends StatelessWidget {
 //
 // }
 
-class OneCardToExpand extends StatelessWidget {
-  OneCardToExpand({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Column();
-  }
-}
+
+// class OneCardToExpand extends StatelessWidget {
+//   OneCardToExpand(
+//   {@
+//   required
+//   this.title,
+//     this.
+//   })
+//
+//
+//
+//   OneCardToExpand({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column();
+//   }
+// }

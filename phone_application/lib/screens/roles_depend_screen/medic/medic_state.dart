@@ -1,9 +1,23 @@
 // используется для передачи состояния в ..._bloc.dart, а также для получения состояния,
 // его категоризации и отображения пользовательского интерфейса в соответствии с ним.
 
-part of 'medic_bloc.dart';
+abstract class MedicState
+{
+  int counter = 0;
+  MedicState({required this.counter});
+}
 
-@immutable
-sealed class MedicState {}
+class MedicInitialState extends MedicState
+{
+  MedicInitialState():super(counter: 0);
+}
 
-final class MedicInitial extends MedicState {}
+class MedicIncrementState extends MedicState
+{
+  MedicIncrementState(int increasedMedic):super(counter: increasedMedic);
+}
+
+class MedicDecrementState extends MedicState
+{
+  MedicDecrementState(int decreasedMedic):super(counter: decreasedMedic);
+}

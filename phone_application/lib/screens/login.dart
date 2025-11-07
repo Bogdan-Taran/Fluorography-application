@@ -36,10 +36,10 @@ class _LoginState extends State<Login> {
 
   final _medic_bloc = MedicBloc();
   @override
-  void initState(){
-    _medic_bloc.add(LoadMedic());
-    super.initState();
-  }
+  // void initState(){
+  //   _medic_bloc.add(LoadMedic());
+  //   super.initState();
+  // }
 
 
   Future<void> _login() async {

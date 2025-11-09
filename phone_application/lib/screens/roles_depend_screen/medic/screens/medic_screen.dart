@@ -1,6 +1,10 @@
+import 'package:accordion/accordion.dart';
+import 'package:accordion/accordion_section.dart';
+import 'package:accordion/controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import '';
 
 import '../../../login.dart';
@@ -16,6 +20,26 @@ class _MedicScreenState extends State<MedicScreen> {
   TextEditingController searchController = TextEditingController();
   bool active = false;
   String exTitle = "Группа 321";
+
+  static const headerStyle = TextStyle(
+    color: Color(0xff4482D2),
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+  );
+  static const contentStyleHeader = TextStyle(
+    color: Color(0xff999999),
+    fontSize: 14,
+    fontWeight: FontWeight.w700,
+  );
+  static const contentStyle = TextStyle(
+    color: Color(0xff999999),
+    fontSize: 14,
+    fontWeight: FontWeight.normal,
+  );
+  static const loremIpsum =
+      '''Lorem ipsum is typically a corrupted version of 'De finibus bonorum et malorum', a 1st century BC text by the Roman statesman and philosopher Cicero, with words altered, added, and removed to make it nonsensical and improper Latin.''';
+  static const slogan =
+      'Do not forget to play around with all sorts of colors, backgrounds, borders, etc.';
 
   @override
   Widget build(BuildContext context) {
@@ -68,26 +92,63 @@ class _MedicScreenState extends State<MedicScreen> {
               //     ),
               //   ],
               // ),
-
-
-
-              ExpansionPanelList(
-                expansionCallback: (panelIndex, isExpanded) {
-                  active = !active;
-                  exTitle = active ? "Группа 321" : "Сотрудники";
-                  setState(() {});
-                },
-                children: <ExpansionPanel> [
-                  ExpansionPanel(
-                      headerBuilder: (context, isEx),
-                      body: body
-                  )
+              Accordion(
+                headerBorderColor: Color(0xffD4EAFF),
+                headerBorderColorOpened: Color(0xffD4EAFF),
+                headerBorderWidth: 1,
+                headerBackgroundColorOpened: Colors.transparent,
+                headerBackgroundColor: Colors.white,
+                rightIcon: Icon(
+                  Icons.arrow_drop_down,
+                  size: 50,
+                  color: Color(0xffD4EAFF),
+                ),
+                contentBackgroundColor: Colors.white,
+                contentBorderColor: Color(0xffD4EAFF),
+                contentBorderWidth: 1,
+                contentHorizontalPadding: 5,
+                scaleWhenAnimating: true,
+                openAndCloseAnimation: true,
+                headerPadding: const EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 35,
+                ),
+                sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
+                sectionClosingHapticFeedback: SectionHapticFeedback.light,
+                headerBorderRadius: 30,
+                children: [
+                  AccordionSection(
+                    isOpen: false,
+                    paddingBetweenClosedSections: 30,
+                    paddingBetweenOpenSections: 30,
+                    header: Row(
+                      children: [
+                        const Text('Группа 312', style: headerStyle),
+                        SizedBox(width: 30),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Color(0xffF29393),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              Text('14', style: headerStyle),
+                              Icon(Icons.man_outlined),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    contentHorizontalPadding: 40,
+                    contentVerticalPadding: 20,
+                    content: const StudentsFIODate(),
+                  ),
                 ],
-              )
-
-
-
-
+              ),
 
               // Container(
               //   alignment: Alignment.topCenter,
@@ -107,6 +168,45 @@ class _MedicScreenState extends State<MedicScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class StudentsFIODate
+    extends
+        StatelessWidget //__
+        {
+  const StudentsFIODate({super.key});
+
+  @override
+  Widget build(context) //__
+  {
+    return Column(
+      children: [
+
+        ElevatedButton(onPressed: () {}, child: const Text('Submit')),
+      ],
+    );
+  }
+}
+
+class RowStudentFIODate
+    extends
+    StatelessWidget //__
+    {
+  const RowStudentFIODate({super.key});
+
+  @override
+  Widget build(context) //__
+  {
+    return Row(
+      children: [
+        Text(
+          'Усольцев Никита Сергеевич'
+        ),
+        
+      ],
+    )
     );
   }
 }
@@ -206,10 +306,7 @@ class AppBarContent extends StatelessWidget {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(
-                      color: Color(0xff72A7EB),
-                      width: 2,
-                    ),
+                    borderSide: BorderSide(color: Color(0xff72A7EB), width: 2),
                   ),
                   hintText: 'Поиск',
                   hintStyle: TextStyle(
@@ -233,9 +330,9 @@ class AppBarContent extends StatelessWidget {
                 autocorrect: false,
               ),
               ElevatedButton(
-                  onPressed: (){},
-                  child: Icon(Icons.search_rounded)
-              )
+                onPressed: () {},
+                child: Icon(Icons.search_rounded),
+              ),
             ],
           ),
         ),
@@ -259,8 +356,6 @@ class AppBarContent extends StatelessWidget {
 //
 //
 // }
-
-
 
 // class OneCardToExpand extends StatelessWidget {
 //   OneCardToExpand(

@@ -149,21 +149,6 @@ class _MedicScreenState extends State<MedicScreen> {
                   ),
                 ],
               ),
-
-              // Container(
-              //   alignment: Alignment.topCenter,
-              //   child: Column(
-              //     children: [
-              //       SizedBox(height: 20),
-              //
-              //       Container(
-              //         color: Colors.lightBlueAccent,
-              //         height: 800,
-              //         child: Row(),
-              //       ),
-              //     ],
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -172,41 +157,73 @@ class _MedicScreenState extends State<MedicScreen> {
   }
 }
 
-class StudentsFIODate
-    extends
-        StatelessWidget //__
-        {
-  const StudentsFIODate({super.key});
 
+
+
+
+//конструтор для построения содержимого аккордиона
+class StudentsFIODate extends StatelessWidget {
+  const StudentsFIODate({super.key});
   @override
-  Widget build(context) //__
+  Widget build(context)
   {
     return Column(
       children: [
-
-        ElevatedButton(onPressed: () {}, child: const Text('Submit')),
+        ColumnStudentFIODate(),
+        ElevatedButton(onPressed: () {}, child: const Text('Редактировать')),
       ],
     );
   }
 }
 
-class RowStudentFIODate
-    extends
-    StatelessWidget //__
-    {
-  const RowStudentFIODate({super.key});
+//конструктор для построения столбца студентов из таблиц
+class ColumnStudentFIODate extends StatelessWidget  {
+  final List<Widget> rows = [
+    RowStudentBuilder.buildRowFromStrings('Фамилия', 'Имя', 'Отчество', '01.01.2003', true),
+    RowStudentBuilder.buildRowFromStrings('Фамилия', 'Имя', 'Отчество', '01.01.2003', false),
+  ];
 
   @override
-  Widget build(context) //__
-  {
+  Widget build(BuildContext context) {
+    return Column(
+      children: rows,
+    );
+  }
+}
+
+// конструктор для построения строки для одного студента
+class RowStudentBuilder {
+  static Row buildRowFromStrings(
+      String surname,
+      String name,
+      String patronumic,
+      String dateFluorography,
+      bool isOverdue,{
+        CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
+        MainAxisAlignment mainAxisAlignment = MainAxisAlignment.spaceBetween,
+        double spacing = 8,
+      }){
     return Row(
+      crossAxisAlignment: crossAxisAlignment,
+      mainAxisAlignment: mainAxisAlignment,
       children: [
-        Text(
-          'Усольцев Никита Сергеевич'
+        Text(surname),
+        SizedBox(width: spacing,),
+        Text(name),
+        SizedBox(width: spacing,),
+        Text(patronumic),
+        SizedBox(width: spacing,),
+        Container(
+          decoration: BoxDecoration(
+            color: isOverdue ? Colors.red : Colors.lightBlueAccent,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+            child: Text(dateFluorography),
+          ),
         ),
-        
       ],
-    )
     );
   }
 }

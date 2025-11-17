@@ -92,63 +92,7 @@ class _MedicScreenState extends State<MedicScreen> {
               //     ),
               //   ],
               // ),
-              Accordion(
-                headerBorderColor: Color(0xffD4EAFF),
-                headerBorderColorOpened: Color(0xffD4EAFF),
-                headerBorderWidth: 1,
-                headerBackgroundColorOpened: Colors.transparent,
-                headerBackgroundColor: Colors.white,
-                rightIcon: Icon(
-                  Icons.arrow_drop_down,
-                  size: 50,
-                  color: Color(0xffD4EAFF),
-                ),
-                contentBackgroundColor: Colors.white,
-                contentBorderColor: Color(0xffD4EAFF),
-                contentBorderWidth: 1,
-                contentHorizontalPadding: 5,
-                scaleWhenAnimating: true,
-                openAndCloseAnimation: true,
-                headerPadding: const EdgeInsets.symmetric(
-                  vertical: 15,
-                  horizontal: 35,
-                ),
-                sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
-                sectionClosingHapticFeedback: SectionHapticFeedback.light,
-                headerBorderRadius: 30,
-                children: [
-                  AccordionSection(
-                    isOpen: false,
-                    paddingBetweenClosedSections: 30,
-                    paddingBetweenOpenSections: 30,
-                    header: Row(
-                      children: [
-                        const Text('Группа 312', style: headerStyle),
-                        SizedBox(width: 30),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Color(0xffF29393),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            children: [
-                              Text('14', style: headerStyle),
-                              Icon(Icons.man_outlined),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    contentHorizontalPadding: 40,
-                    contentVerticalPadding: 20,
-                    content: const StudentsFIODate(),
-                  ),
-                ],
-              ),
+              AccordionListBuild(),
             ],
           ),
         ),
@@ -157,8 +101,83 @@ class _MedicScreenState extends State<MedicScreen> {
   }
 }
 
+//конструктор для построения Аккордионов
+class AccordionListBuild extends StatelessWidget  {
+  final List<AccordionSection> accordions = [
+    createOneAccordionSection.buildAccordionSection('321', '12'),
+    createOneAccordionSection.buildAccordionSection('321', '12'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Accordion(
+        headerBorderColor: Color(0xffD4EAFF),
+        headerBorderColorOpened: Color(0xffD4EAFF),
+        headerBorderWidth: 1,
+        headerBackgroundColorOpened: Colors.transparent,
+        headerBackgroundColor: Colors.white,
+        rightIcon: Icon(
+          Icons.arrow_drop_down,
+          size: 50,
+          color: Color(0xffD4EAFF),
+        ),
+        contentBackgroundColor: Colors.white,
+        contentBorderColor: Color(0xffD4EAFF),
+        contentBorderWidth: 1,
+        contentHorizontalPadding: 5,
+        scaleWhenAnimating: true,
+        openAndCloseAnimation: true,
+        headerPadding: const EdgeInsets.symmetric(
+          vertical: 15,
+          horizontal: 35,
+        ),
+        sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
+        sectionClosingHapticFeedback: SectionHapticFeedback.light,
+        headerBorderRadius: 30,
+        children: accordions,
+    );
+  }
+}
 
 
+// конструктор для создания одной accordion section
+class createOneAccordionSection {
+  static AccordionSection buildAccordionSection(
+  String groupNumber,
+  String numberOfStudents,)
+  {
+    return AccordionSection(
+      isOpen: false,
+      paddingBetweenClosedSections: 30,
+      paddingBetweenOpenSections: 30,
+      header: Row(
+        children: [
+          Text('Группа ${groupNumber}'),
+          SizedBox(width: 30),
+          Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 5,
+            ),
+            decoration: BoxDecoration(
+              color: Color(0xffF29393),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              children: [
+                Text(numberOfStudents),
+                Icon(Icons.man_outlined),
+              ],
+            ),
+          ),
+        ],
+      ),
+      contentHorizontalPadding: 40,
+      contentVerticalPadding: 20,
+      content: const StudentsFIODate(),
+    );
+  }
+}
 
 
 //конструтор для построения содержимого аккордиона

@@ -16,7 +16,6 @@ import '../../../login.dart';
 class MedicScreen extends StatefulWidget {
   const MedicScreen({Key? key}) : super(key: key);
 
-
   @override
   State<MedicScreen> createState() => _MedicScreenState();
 }
@@ -25,10 +24,7 @@ class _MedicScreenState extends State<MedicScreen> {
   TextEditingController searchController = TextEditingController();
   bool active = false;
 
-  final Future<List<Group>> products = fetchGroups();
-
-
-
+  //final Future<List<Group>> products = fetchGroups();
 
   static const headerStyle = TextStyle(
     color: Color(0xff4482D2),
@@ -52,7 +48,6 @@ class _MedicScreenState extends State<MedicScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.black54,
@@ -72,16 +67,13 @@ class _MedicScreenState extends State<MedicScreen> {
         body: SingleChildScrollView(
           child: Stack(
             alignment: AlignmentDirectional.center,
-            children: <Widget>[
-              AccordionListBuild()],
+            children: <Widget>[AccordionListBuild()],
           ),
         ),
       ),
     );
   }
 }
-
-
 
 //класс для построения 1 единицы студента
 class Student {
@@ -107,7 +99,9 @@ class Student {
       lastname: json['lastname'] as String,
       firstname: json['name'] as String,
       patronymic: json['patronymic'] as String,
-      dateFluorography: json['fluorography'] != null ? DateTime.tryParse(json['fluorography'] as String) : null,
+      dateFluorography: json['fluorography'] != null
+          ? DateTime.tryParse(json['fluorography'] as String)
+          : null,
       group: json['group'] as String,
     );
   }
@@ -122,32 +116,30 @@ class Student {
   };
 }
 
-
-
+List groupAndStudents = [];
 
 // получение всех групп по API
 Future<List<Group>> fetchGroups() async {
-
   const String _baseurl = 'http://192.168.13.19';
+  //const String _baseurl = 'https://176.65.60.218:40003';  //external url
   const String _loginUrl = '$_baseurl/api/login';
   final loginResponse = await http.post(
-      Uri.parse(_loginUrl),
-      body: {'login': 'hom', 'password': '57020594'}
+    Uri.parse(_loginUrl),
+    body: {'login': 'hom', 'password': '57020594'},
   );
 
-  if(loginResponse.statusCode != 200){
+  if (loginResponse.statusCode != 200) {
     throw Exception('Неверный логин или пароль');
   }
 
   final loginData = jsonDecode(loginResponse.body);
   final token = loginData['token'] as String?;
-  if(token == null) throw Exception('Токен не получен');
+  if (token == null) throw Exception('Токен не получен');
 
   // save token
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString('auth_token', token);
   print(token);
-
 
   //get groups
   final response = await http.get(
@@ -159,54 +151,88 @@ Future<List<Group>> fetchGroups() async {
     final List<dynamic> jsonList = jsonDecode(response.body) as List<dynamic>;
     //final jsonData = json.decode(response.body);
 
-
-    final List<Group> groups = jsonList
-        .whereType<Map<String, dynamic>>()
-        .map((map) => Group.fromJson(map))
-        .toList();
+    final List<Group> groups =
+        jsonList //типизированный список с объектом Group (из класса ниже который мы определили)
+            .whereType<Map<String, dynamic>>()
+            .map((map) => Group.fromJson(map))
+            .toList();
 
     print('Всего групп: ${groups.length}');
 
-    for (var group in groups){
+    for (var group in groups) {
       print('ID: ${group.id},\nNumber: ${group.number}');
     }
+    print('Печатаю группу с индексом 1: ${groups[1].number}'); // для отладки
     return groups;
-
   } else {
     print('Error - not 200');
     throw Exception('HTTP ${response.statusCode}: ${response.body}');
   }
 }
 
+// структурная модель для 1 экземпляра "группа, студенты"
+class GroupWithStudents {
+  final String groupNumber;
+  final List<Student> students;
 
+  GroupWithStudents({required this.groupNumber, required this.students});
 
+  // конструктор для пустой группы, до загрузки
+  factory GroupWithStudents.initial(String groupNumber){
+    return GroupWithStudents(groupNumber: groupNumber, students: []);
+  }
 
-// экземпляр для одной группы (модель данных)
+  //конструктор-копия с обновлёнными студентами
+  GroupWithStudents copyWith({List<Student>? students}){
+    return GroupWithStudents(groupNumber: groupNumber, students: students ?? this.students);
+  }
+}
+
+//собираем
+
+// моя старая рукописная функция
+Future<List<Student>> getStudentsForGroup() async {
+  final prefs = await SharedPreferences.getInstance();
+  var token = await prefs.getString('auth_token');
+
+  final Future<List<Group>> groupsList = fetchGroups();
+
+  for (var group in groupsList) {
+    final response = await http.get(
+      Uri.parse('http://192.168.13.19/api/students?group=${group.number}'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonRaw = jsonDecode(response.body) as List<dynamic>;
+      final List<Student> students =
+          jsonRaw //типизированный список с объектом Group (из класса ниже который мы определили)
+              .whereType<Map<String, dynamic>>()
+              .map((map) => Student.fromJson(map))
+              .toList();
+    }
+  }
+
+  final response = await http.get(
+    Uri.parse('http://192.168.13.19/api/students'),
+    headers: {'Authorization': 'Bearer $token'},
+  );
+}
+
+// экземпляр для одной группы (модель данных). Она записылвается в список.
 class Group {
   final int id; // определяем свойста которые соответствуют полям в нашем json
   final String number;
 
   Group({required this.id, required this.number});
 
-  factory Group.fromJson(Map<String, dynamic> json){
-    return Group(
-      id: json['id'],
-      number: json['number'],
-    );
+  factory Group.fromJson(Map<String, dynamic> json) {
+    return Group(id: json['id'], number: json['number']);
   }
 
-  Map<String, dynamic> toJson(){
-    return{
-      'id': id,
-      'number': number,
-    };
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'number': number};
   }
 }
-
-
-
-
-
 
 //конструктор для построения Аккордионов
 class AccordionListBuild extends StatelessWidget {

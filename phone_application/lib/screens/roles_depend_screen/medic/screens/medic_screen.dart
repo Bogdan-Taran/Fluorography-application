@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:accordion/accordion.dart';
 import 'package:accordion/accordion_section.dart';
 import 'package:accordion/controllers.dart';
@@ -5,12 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '';
 
 import '../../../login.dart';
 
 class MedicScreen extends StatefulWidget {
   const MedicScreen({Key? key}) : super(key: key);
+
 
   @override
   State<MedicScreen> createState() => _MedicScreenState();
@@ -19,7 +24,11 @@ class MedicScreen extends StatefulWidget {
 class _MedicScreenState extends State<MedicScreen> {
   TextEditingController searchController = TextEditingController();
   bool active = false;
-  String exTitle = "Группа 321";
+
+  final Future<List<Group>> products = fetchGroups();
+
+
+
 
   static const headerStyle = TextStyle(
     color: Color(0xff4482D2),
@@ -43,6 +52,7 @@ class _MedicScreenState extends State<MedicScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.black54,
@@ -63,37 +73,15 @@ class _MedicScreenState extends State<MedicScreen> {
           child: Stack(
             alignment: AlignmentDirectional.center,
             children: <Widget>[
-              // Stack(
-              //   children: [
-              //     Align(
-              //       alignment: Alignment.centerRight,
-              //       child: SvgPicture.asset(
-              //         'assets/images/vectorRight.svg',
-              //         semanticsLabel: 'Top SVG Image',
-              //         fit: BoxFit.fitWidth,
-              //       ),
-              //     ),
-              //     Align(
-              //       alignment: Alignment(0, 0.6),
-              //       widthFactor: 1,
-              //       child: SvgPicture.asset(
-              //         'assets/images/vectorLine.svg',
-              //         fit: BoxFit.fitWidth,
-              //         width: MediaQuery.of(context).size.width * 1,
-              //       ),
-              //     ),
-              //     Align(
-              //       alignment: Alignment.bottomCenter,
-              //       child: SvgPicture.asset(
-              //         'assets/images/vectorBottom.svg',
-              //         fit: BoxFit.fitWidth,
-              //         width: MediaQuery.of(context).size.width * 1,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              AccordionListBuild(),
-            ],
+              Center(
+                child: FutureBuilder<List<Group>>(
+                  future: products,
+                  builder: (context, snapshot){
+                    if(snapshot.hasError) print(snapshot.error);
+                    return snapshot.hasData ? GroupList(items: snapshot.data!) : Center(child: CircularProgressIndicator(),);
+                  },
+                ),),
+              AccordionListBuild()],
           ),
         ),
       ),
@@ -101,8 +89,148 @@ class _MedicScreenState extends State<MedicScreen> {
   }
 }
 
+
+
+//класс для построения 1 единицы студента
+class Student {
+  final int id;
+  final String lastname;
+  final String firstname;
+  final String patronymic;
+  final DateTime? dateFluorography;
+  final String group;
+
+  Student({
+    required this.id,
+    required this.lastname,
+    required this.firstname,
+    required this.patronymic,
+    this.dateFluorography,
+    required this.group,
+  });
+
+  factory Student.fromJson(Map<String, dynamic> json) {
+    return Student(
+      id: json['id'] as int,
+      lastname: json['lastname'] as String,
+      firstname: json['name'] as String,
+      patronymic: json['patronymic'] as String,
+      dateFluorography: json['fluorography'] != null ? DateTime.tryParse(json['fluorography'] as String) : null,
+      group: json['group'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'lastname': lastname,
+    'firstname': firstname,
+    'patronymic': patronymic,
+    'dateFluorography': dateFluorography?.toIso8601String(),
+    'group': group,
+  };
+}
+
+
+//класс GroupItem
+class GroupItem extends StatelessWidget{
+  GroupItem({required this.item});
+
+  final Group item;
+
+  @override
+  Widget build(BuildContext context){
+    return Column(
+      children: [
+        Text('id: ${item.id}'),
+        Text('number: ${item.number}'),
+      ],
+    );
+  }
+}
+
+//список групп
+class GroupList extends StatelessWidget{
+  final List<Group> items;
+
+  GroupList({super.key, required this.items});
+
+  @override
+  Widget build(BuildContext context){
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (context, index){
+        return GroupItem(item: items[index]);
+      },
+    );
+  }
+}
+
+
+// получение всех групп по API
+Future<List<Group>> fetchGroups() async {
+
+  const String _baseurl = 'http://192.168.13.19';
+  const String _loginUrl = '$_baseurl/api/login';
+  final loginResponse = await http.post(
+      Uri.parse(_loginUrl),
+      body: {'login': 'hom', 'password': '57020594'}
+  );
+
+  if(loginResponse.statusCode != 200){
+    throw Exception('Неверный логин или пароль');
+  }
+
+  final loginData = jsonDecode(loginResponse.body);
+  final token = loginData['token'] as String?;
+  if(token == null) throw Exception('Токен не получен');
+
+  // save token
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('auth_token', token);
+  print(token);
+
+
+  //get groups
+  final response = await http.get(
+    Uri.parse('http://192.168.13.19/api/groups'),
+    headers: {'Authorization': 'Bearer $token'},
+  );
+
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.body);
+    print(jsonData);
+    return jsonData;
+  } else {
+    print('Error - not 200');
+    throw Exception('HTTP ${response.statusCode}: ${response.body}');
+  }
+}
+
+// экземпляр для одной группы
+class Group {
+  final int id;
+  final String number;
+
+  Group(this.id, this.number);
+
+  factory Group.fromMap(Map<String, dynamic> json) {
+    return Group(json['id'], json['number']);
+  }
+  factory Group.fromJson(Map<String, dynamic> json) {
+    return Group(json['id'], json['number']);
+  }
+}
+
+
+
+
+
+
+
+
+
 //конструктор для построения Аккордионов
-class AccordionListBuild extends StatelessWidget  {
+class AccordionListBuild extends StatelessWidget {
   final List<AccordionSection> accordions = [
     createOneAccordionSection.buildAccordionSection('321', '12'),
     createOneAccordionSection.buildAccordionSection('321', '12'),
@@ -111,41 +239,37 @@ class AccordionListBuild extends StatelessWidget  {
   @override
   Widget build(BuildContext context) {
     return Accordion(
-        headerBorderColor: Color(0xffD4EAFF),
-        headerBorderColorOpened: Color(0xffD4EAFF),
-        headerBorderWidth: 1,
-        headerBackgroundColorOpened: Colors.transparent,
-        headerBackgroundColor: Colors.white,
-        rightIcon: Icon(
-          Icons.arrow_drop_down,
-          size: 50,
-          color: Color(0xffD4EAFF),
-        ),
-        contentBackgroundColor: Colors.white,
-        contentBorderColor: Color(0xffD4EAFF),
-        contentBorderWidth: 1,
-        contentHorizontalPadding: 5,
-        scaleWhenAnimating: true,
-        openAndCloseAnimation: true,
-        headerPadding: const EdgeInsets.symmetric(
-          vertical: 15,
-          horizontal: 35,
-        ),
-        sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
-        sectionClosingHapticFeedback: SectionHapticFeedback.light,
-        headerBorderRadius: 30,
-        children: accordions,
+      headerBorderColor: Color(0xffD4EAFF),
+      headerBorderColorOpened: Color(0xffD4EAFF),
+      headerBorderWidth: 1,
+      headerBackgroundColorOpened: Colors.transparent,
+      headerBackgroundColor: Colors.white,
+      rightIcon: Icon(
+        Icons.arrow_drop_down,
+        size: 50,
+        color: Color(0xffD4EAFF),
+      ),
+      contentBackgroundColor: Colors.white,
+      contentBorderColor: Color(0xffD4EAFF),
+      contentBorderWidth: 1,
+      contentHorizontalPadding: 5,
+      scaleWhenAnimating: true,
+      openAndCloseAnimation: true,
+      headerPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 35),
+      sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
+      sectionClosingHapticFeedback: SectionHapticFeedback.light,
+      headerBorderRadius: 30,
+      children: accordions,
     );
   }
 }
 
-
 // конструктор для создания одной accordion section
 class createOneAccordionSection {
   static AccordionSection buildAccordionSection(
-  String groupNumber,
-  String numberOfStudents,)
-  {
+    String groupNumber,
+    String numberOfStudents,
+  ) {
     return AccordionSection(
       isOpen: false,
       paddingBetweenClosedSections: 30,
@@ -155,19 +279,13 @@ class createOneAccordionSection {
           Text('Группа ${groupNumber}'),
           SizedBox(width: 30),
           Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 5,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
             decoration: BoxDecoration(
               color: Color(0xffF29393),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
-              children: [
-                Text(numberOfStudents),
-                Icon(Icons.man_outlined),
-              ],
+              children: [Text(numberOfStudents), Icon(Icons.man_outlined)],
             ),
           ),
         ],
@@ -179,13 +297,12 @@ class createOneAccordionSection {
   }
 }
 
-
 //конструтор для построения содержимого аккордиона
 class StudentsFIODate extends StatelessWidget {
   const StudentsFIODate({super.key});
+
   @override
-  Widget build(context)
-  {
+  Widget build(context) {
     return Column(
       children: [
         ColumnStudentFIODate(),
@@ -196,42 +313,52 @@ class StudentsFIODate extends StatelessWidget {
 }
 
 //конструктор для построения столбца студентов из таблиц
-class ColumnStudentFIODate extends StatelessWidget  {
+class ColumnStudentFIODate extends StatelessWidget {
   final List<Widget> rows = [
-    RowStudentBuilder.buildRowFromStrings('Фамилия', 'Имя', 'Отчество', '01.01.2003', true),
-    RowStudentBuilder.buildRowFromStrings('Фамилия', 'Имя', 'Отчество', '01.01.2003', false),
+    RowStudentBuilder.buildRowFromStrings(
+      'Фамилия',
+      'Имя',
+      'Отчество',
+      '01.01.2003',
+      true,
+    ),
+    RowStudentBuilder.buildRowFromStrings(
+      'Фамилия',
+      'Имя',
+      'Отчество',
+      '01.01.2003',
+      false,
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: rows,
-    );
+    return Column(children: rows);
   }
 }
 
 // конструктор для построения строки для одного студента
 class RowStudentBuilder {
   static Row buildRowFromStrings(
-      String surname,
-      String name,
-      String patronumic,
-      String dateFluorography,
-      bool isOverdue,{
-        CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
-        MainAxisAlignment mainAxisAlignment = MainAxisAlignment.spaceBetween,
-        double spacing = 8,
-      }){
+    String lastname,
+    String name,
+    String patronumic,
+    String dateFluorography,
+    bool isOverdue, {
+    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
+    MainAxisAlignment mainAxisAlignment = MainAxisAlignment.spaceBetween,
+    double spacing = 8,
+  }) {
     return Row(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
       children: [
-        Text(surname),
-        SizedBox(width: spacing,),
+        Text(lastname),
+        SizedBox(width: spacing),
         Text(name),
-        SizedBox(width: spacing,),
+        SizedBox(width: spacing),
         Text(patronumic),
-        SizedBox(width: spacing,),
+        SizedBox(width: spacing),
         Container(
           decoration: BoxDecoration(
             color: isOverdue ? Colors.red : Colors.lightBlueAccent,
@@ -382,7 +509,7 @@ class AppBarContent extends StatelessWidget {
 //
 // class GetDataToExpansionCardFromApi {
 //   int group_number;
-//   String surname_student;
+//   String lastname_student;
 //   String name_student;
 //   String patroymic;
 //   String date_fluorography;

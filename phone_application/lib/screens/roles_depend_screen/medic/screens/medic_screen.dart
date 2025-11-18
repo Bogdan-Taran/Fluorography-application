@@ -73,14 +73,6 @@ class _MedicScreenState extends State<MedicScreen> {
           child: Stack(
             alignment: AlignmentDirectional.center,
             children: <Widget>[
-              Center(
-                child: FutureBuilder<List<Group>>(
-                  future: products,
-                  builder: (context, snapshot){
-                    if(snapshot.hasError) print(snapshot.error);
-                    return snapshot.hasData ? GroupList(items: snapshot.data!) : Center(child: CircularProgressIndicator(),);
-                  },
-                ),),
               AccordionListBuild()],
           ),
         ),
@@ -131,39 +123,6 @@ class Student {
 }
 
 
-//класс GroupItem
-class GroupItem extends StatelessWidget{
-  GroupItem({required this.item});
-
-  final Group item;
-
-  @override
-  Widget build(BuildContext context){
-    return Column(
-      children: [
-        Text('id: ${item.id}'),
-        Text('number: ${item.number}'),
-      ],
-    );
-  }
-}
-
-//список групп
-class GroupList extends StatelessWidget{
-  final List<Group> items;
-
-  GroupList({super.key, required this.items});
-
-  @override
-  Widget build(BuildContext context){
-    return ListView.builder(
-      itemCount: items.length,
-      itemBuilder: (context, index){
-        return GroupItem(item: items[index]);
-      },
-    );
-  }
-}
 
 
 // получение всех групп по API
@@ -197,32 +156,52 @@ Future<List<Group>> fetchGroups() async {
   );
 
   if (response.statusCode == 200) {
-    final jsonData = json.decode(response.body);
-    print(jsonData);
-    return jsonData;
+    final List<dynamic> jsonList = jsonDecode(response.body) as List<dynamic>;
+    //final jsonData = json.decode(response.body);
+
+
+    final List<Group> groups = jsonList
+        .whereType<Map<String, dynamic>>()
+        .map((map) => Group.fromJson(map))
+        .toList();
+
+    print('Всего групп: ${groups.length}');
+
+    for (var group in groups){
+      print('ID: ${group.id},\nNumber: ${group.number}');
+    }
+    return groups;
+
   } else {
     print('Error - not 200');
     throw Exception('HTTP ${response.statusCode}: ${response.body}');
   }
 }
 
-// экземпляр для одной группы
+
+
+
+// экземпляр для одной группы (модель данных)
 class Group {
-  final int id;
+  final int id; // определяем свойста которые соответствуют полям в нашем json
   final String number;
 
-  Group(this.id, this.number);
+  Group({required this.id, required this.number});
 
-  factory Group.fromMap(Map<String, dynamic> json) {
-    return Group(json['id'], json['number']);
+  factory Group.fromJson(Map<String, dynamic> json){
+    return Group(
+      id: json['id'],
+      number: json['number'],
+    );
   }
-  factory Group.fromJson(Map<String, dynamic> json) {
-    return Group(json['id'], json['number']);
+
+  Map<String, dynamic> toJson(){
+    return{
+      'id': id,
+      'number': number,
+    };
   }
 }
-
-
-
 
 
 

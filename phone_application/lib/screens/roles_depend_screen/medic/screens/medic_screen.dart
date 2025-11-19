@@ -38,15 +38,30 @@ class _MedicScreenState extends State<MedicScreen> {
     super.dispose();
   }
 
-  // TextStyle example
-  static const headerStyle = TextStyle(
-    color: Color(0xff4482D2),
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
+
+
+  static const countTextStyle = TextStyle(
+    fontWeight: FontWeight.w300,
+    color: Color(0xff26292B),
+    fontFamily: 'Geologica',
+    fontSize: AppSizes.fontSizeSmall,
   );
+
+
 
   @override
   Widget build(BuildContext context) {
+    // TextStyle layout example
+    final TextStyle headerStyle = TextStyle(
+      color: Color(0xff4482D2),
+      fontSize: ResponsiveSizes.getFontSizeMedium(
+          context,
+          baseSize: AppSizes.fontSizeMedium
+      ),
+      fontWeight: FontWeight.w300,
+      fontFamily: 'Geologica',
+    );
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.black54,
@@ -63,15 +78,15 @@ class _MedicScreenState extends State<MedicScreen> {
         ),
 
         backgroundColor: Color(0xFFFFFFFF),
-        body: FutureBuilder(
+        body: FutureBuilder<List<GroupWithStudents>>(
           future: _futureGroups,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: LoadingAnimationWidget.halfTriangleDot(
-                  color: Colors.white,
-                  size: 24,
-                ),
+                  child: LoadingAnimationWidget.halfTriangleDot(
+                      color: const Color(0xff98BFF3),
+                      size: 60
+                  ),
               );
             } else if (snapshot.hasError) {
               return Center(
@@ -221,7 +236,7 @@ Future<List<Group>> fetchGroups() async {
   }
 }
 
-// структурная модель для 1 экземпляра "группа, студенты"
+// структурная модель для 1 экземпляра "группа и студенты"
 class GroupWithStudents {
   final String groupNumber;
   final List<Student> students;
@@ -315,16 +330,12 @@ class Group {
   }
 }
 
-//конструктор для построения Аккордионов
+//конструктор для построения Виджета аккордион
 class AccordionListBuild extends StatelessWidget {
   final List<GroupWithStudents> groups;
 
   const AccordionListBuild({super.key, required this.groups});
 
-  // final List<AccordionSection> accordions = [
-  //   createOneAccordionSection.buildAccordionSection('321', '12'),
-  //   createOneAccordionSection.buildAccordionSection('321', '12'),
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -366,6 +377,7 @@ class AccordionListBuild extends StatelessWidget {
 
 // конструктор для создания одной accordion section
 class createOneAccordionSection {
+  bool _isOpen = false;
   static AccordionSection buildAccordionSection({
     required String groupNumber,
     required String numberOfStudents,
@@ -387,7 +399,7 @@ class createOneAccordionSection {
       children: [
         Text(
           'Группа $groupNumber',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: headerStyle,
         ),
         SizedBox(width: 30),
         Container(
@@ -399,7 +411,7 @@ class createOneAccordionSection {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(count, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(count, style: _MedicScreenState.countTextStyle),
               const SizedBox(width: 4),
               Icon(Icons.people, size: 16),
             ],
@@ -553,10 +565,16 @@ class AppBarContent extends StatelessWidget {
                 children: <Widget>[
                   // кнопка уведомления
                   IconButton(
-                    color: Color(0xff98BFF3),
-                    iconSize: 45,
+                    //iconSize: 35,
                     onPressed: () {},
-                    icon: Icon(Icons.notifications_none_outlined),
+                    splashRadius: 24,
+                    padding: EdgeInsets.zero,
+                    icon: SvgPicture.asset(
+                      'assets/images/notification_icon.svg',
+                      color: const Color(0xff98BFF3),
+                      width: 35,
+                      height: 35,
+                    )
                   ),
 
                   // кнопка выхода
@@ -614,12 +632,25 @@ class AppBarContent extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(
+                height: 10,
+              ),
               TextField(
                 // controller: searchController,
                 cursorColor: Color(0xff72A7EB),
                 cursorHeight: 17,
                 cursorWidth: 1.2,
+
                 decoration: InputDecoration(
+                  prefixIcon: Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 8),
+                    child: SvgPicture.asset(
+                      'assets/images/serch_icon.svg',
+                      width: 20,
+                      height: 20,
+                      color: const Color(0xff98BFF3),
+                    ),
+                  ),
                   enabled: true,
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
@@ -634,9 +665,9 @@ class AppBarContent extends StatelessWidget {
                   ),
                   hintText: 'Поиск',
                   hintStyle: TextStyle(
-                    fontSize: ResponsiveSizes.getfontSizeSmall(
+                    fontSize: ResponsiveSizes.getFontSizeMedium(
                       context,
-                      baseSize: AppSizes.fontSizeSmall,
+                      baseSize: AppSizes.fontSizeMedium,
                     ),
                     color: Color(0xff999A9B),
                     fontWeight: FontWeight.w500,

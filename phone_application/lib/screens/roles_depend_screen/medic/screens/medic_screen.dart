@@ -26,7 +26,7 @@ class _MedicScreenState extends State<MedicScreen> {
 
   //final Future<List<Group>> products = fetchGroups();
 
-  final Future<List<GroupWithStudents>> fullDataStudents =  fetchAllGroupsWithStudents();
+  final List<GroupWithStudents>> fullDataGroup = await fetchAllGroupsWithStudents();
 
   static const headerStyle = TextStyle(
     color: Color(0xff4482D2),
@@ -69,7 +69,7 @@ class _MedicScreenState extends State<MedicScreen> {
         body: SingleChildScrollView(
           child: Stack(
             alignment: AlignmentDirectional.center,
-            children: <Widget>[AccordionListBuild()],
+            children: <Widget>[AccordionListBuild(groups: fullDataGroup,)],
           ),
         ),
       ),
@@ -229,6 +229,8 @@ Future<List<GroupWithStudents>> fetchAllGroupsWithStudents() async {
   return result;
 }
 
+
+// API запрос на получение списка студентов по группе
 Future<List<Student>> fetchStudentByGroupNumber(String groupNumber) async {
   // получаем токен из памяти
   final prefs = await SharedPreferences.getInstance();
@@ -272,10 +274,13 @@ class Group {
 
 //конструктор для построения Аккордионов
 class AccordionListBuild extends StatelessWidget {
-  final List<AccordionSection> accordions = [
-    createOneAccordionSection.buildAccordionSection('321', '12'),
-    createOneAccordionSection.buildAccordionSection('321', '12'),
-  ];
+  final List<GroupWithStudents> groups;
+  const AccordionListBuild({super.key, required this.groups});
+  
+  // final List<AccordionSection> accordions = [
+  //   createOneAccordionSection.buildAccordionSection('321', '12'),
+  //   createOneAccordionSection.buildAccordionSection('321', '12'),
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -300,54 +305,83 @@ class AccordionListBuild extends StatelessWidget {
       sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
       sectionClosingHapticFeedback: SectionHapticFeedback.light,
       headerBorderRadius: 30,
-      children: accordions,
+      children: _buildAccordionSections(),
     );
+  }
+  
+  List<AccordionSection> _buildAccordionSections(){
+    return groups.map((groupData) {
+      return createOneAccordionSection.buildAccordionSection(
+          groupNumber: groupData.groupNumber,
+          numberOfStudents: groupData.students.length.toString(),
+          students: groupData.students,
+      );
+    }).toList();
   }
 }
 
 // конструктор для создания одной accordion section
 class createOneAccordionSection {
-  static AccordionSection buildAccordionSection(
-    String groupNumber,
-    String numberOfStudents,
-  ) {
+  static AccordionSection buildAccordionSection({
+    required String groupNumber,
+    required String numberOfStudents,
+    required List<Student> students,
+  }) {
     return AccordionSection(
       isOpen: false,
       paddingBetweenClosedSections: 30,
       paddingBetweenOpenSections: 30,
-      header: Row(
-        children: [
-          Text('Группа ${groupNumber}'),
-          SizedBox(width: 30),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-            decoration: BoxDecoration(
-              color: Color(0xffF29393),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              children: [Text(numberOfStudents), Icon(Icons.man_outlined)],
-            ),
-          ),
-        ],
-      ),
+      header: _buildHeader(groupNumber, numberOfStudents),
       contentHorizontalPadding: 40,
       contentVerticalPadding: 20,
-      content: const StudentsFIODate(),
+      content: StudentsFIODate(students: students),
+    );
+  }
+
+  static Widget _buildHeader(String groupNumber, String count){
+    return Row(
+      children: [
+        Text('Группа $groupNumber',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(width: 30),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          decoration: BoxDecoration(
+            color: Color(0xffF29393),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(count, style: const TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(width: 4),
+              Icon(Icons.people, size: 16,),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
 
 //конструтор для построения содержимого аккордиона
 class StudentsFIODate extends StatelessWidget {
-  const StudentsFIODate({super.key});
+  final List<Student> students;
+  const StudentsFIODate({super.key, required this.students});
 
   @override
-  Widget build(context) {
+  Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ColumnStudentFIODate(),
-        ElevatedButton(onPressed: () {}, child: const Text('Редактировать')),
+        ColumnStudentFIODate(students: students),
+        const SizedBox(height: 15,),
+        ElevatedButton.icon(
+          onPressed: () {},
+          icon: const Icon(Icons.edit),
+          label: const Text('Редактировать группу'),
+        ),
       ],
     );
   }
@@ -355,61 +389,94 @@ class StudentsFIODate extends StatelessWidget {
 
 //конструктор для построения столбца студентов из таблиц
 class ColumnStudentFIODate extends StatelessWidget {
-  final List<Widget> rows = [
-    RowStudentBuilder.buildRowFromStrings(
-      'Фамилия',
-      'Имя',
-      'Отчество',
-      '01.01.2003',
-      true,
-    ),
-    RowStudentBuilder.buildRowFromStrings(
-      'Фамилия',
-      'Имя',
-      'Отчество',
-      '01.01.2003',
-      false,
-    ),
-  ];
+  final List<Student> students;
+  const ColumnStudentFIODate({super.key, required this.students});
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: rows);
+    if(students.isEmpty){
+      return const Padding(
+          padding: EdgeInsets.all(16),
+        child: Text('Студенты не найдены', style: TextStyle(color: Colors.grey)),
+      );
+    }
+    return Column(
+        children: students.map((student) {
+          final dateStr = _formatDate(student.dateFluorography);
+          final isOverdue = _isFluoroOverdue(student.dateFluorography);
+
+          return RowStudentBuilder.buildRowFromStudent(
+            student: student,
+            formattedDate: dateStr,
+            isOverdue: isOverdue,
+          );
+        }).toList(),
+    );
+  }
+
+  String _formatDate(DateTime? date){
+    if(date == null) return '-';
+    return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+  }
+
+  bool _isFluoroOverdue(DateTime? date){
+    if (date == null) return true;
+    final validUntil = date.add(const Duration(days: 365));
+    return DateTime.now().isAfter(validUntil);
   }
 }
 
 // конструктор для построения строки для одного студента
 class RowStudentBuilder {
-  static Row buildRowFromStrings(
-    String lastname,
-    String name,
-    String patronumic,
-    String dateFluorography,
-    bool isOverdue, {
-    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
-    MainAxisAlignment mainAxisAlignment = MainAxisAlignment.spaceBetween,
-    double spacing = 8,
+  static Row buildRowFromStudent({
+    required Student student,
+    required String formattedDate,
+    required bool isOverdue,
+  }) {
+    return buildRowFromStrings(
+      lastname: student.lastname,
+      name: student.firstname,
+      patronymic: student.patronymic,
+      dateFluorography: formattedDate,
+      isOverdue: isOverdue,
+    );
+  }
+
+
+  static Row buildRowFromStrings({
+      required String lastname,
+      required String name,
+      required String patronymic,
+      required String dateFluorography,
+      required bool isOverdue,
+      CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
+      MainAxisAlignment mainAxisAlignment = MainAxisAlignment.spaceBetween,
+      double spacing = 8,
   }) {
     return Row(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
       children: [
-        Text(lastname),
-        SizedBox(width: spacing),
-        Text(name),
-        SizedBox(width: spacing),
-        Text(patronumic),
-        SizedBox(width: spacing),
+        Expanded(child: Text(lastname, overflow: TextOverflow.ellipsis,)),
+        SizedBox(width: spacing,),
+        Expanded(child: Text(name, overflow: TextOverflow.ellipsis,)),
+        SizedBox(width: spacing,),
+        Expanded(child: Text(patronymic, overflow: TextOverflow.ellipsis,)),
+        SizedBox(width: spacing,),
         Container(
           decoration: BoxDecoration(
-            color: isOverdue ? Colors.red : Colors.lightBlueAccent,
-            borderRadius: BorderRadius.circular(15),
+            color: isOverdue ? Colors.red.shade300 : Colors.lightBlueAccent.shade100,
+            borderRadius: BorderRadius.circular(15)
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-            child: Text(dateFluorography),
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+            child: Text(
+              dateFluorography,
+              style: TextStyle(fontWeight: FontWeight.bold,
+              color: isOverdue ? Colors.white : Colors.black87),
+            ),
           ),
-        ),
+        )
       ],
     );
   }

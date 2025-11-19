@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:core';
 
 import 'package:accordion/accordion.dart';
 import 'package:accordion/accordion_section.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '';
 
@@ -21,32 +23,27 @@ class MedicScreen extends StatefulWidget {
 }
 
 class _MedicScreenState extends State<MedicScreen> {
+  late final Future<List<GroupWithStudents>> _futureGroups;
   TextEditingController searchController = TextEditingController();
-  bool active = false;
 
-  //final Future<List<Group>> products = fetchGroups();
+  @override
+  void initState() {
+    super.initState();
+    _futureGroups = fetchAllGroupsWithStudents();
+  }
 
-  final List<GroupWithStudents>> fullDataGroup = await fetchAllGroupsWithStudents();
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
+  // TextStyle example
   static const headerStyle = TextStyle(
     color: Color(0xff4482D2),
     fontSize: 18,
     fontWeight: FontWeight.bold,
   );
-  static const contentStyleHeader = TextStyle(
-    color: Color(0xff999999),
-    fontSize: 14,
-    fontWeight: FontWeight.w700,
-  );
-  static const contentStyle = TextStyle(
-    color: Color(0xff999999),
-    fontSize: 14,
-    fontWeight: FontWeight.normal,
-  );
-  static const loremIpsum =
-      '''Lorem ipsum is typically a corrupted version of 'De finibus bonorum et malorum', a 1st century BC text by the Roman statesman and philosopher Cicero, with words altered, added, and removed to make it nonsensical and improper Latin.''';
-  static const slogan =
-      'Do not forget to play around with all sorts of colors, backgrounds, borders, etc.';
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +63,58 @@ class _MedicScreenState extends State<MedicScreen> {
         ),
 
         backgroundColor: Color(0xFFFFFFFF),
-        body: SingleChildScrollView(
-          child: Stack(
-            alignment: AlignmentDirectional.center,
-            children: <Widget>[AccordionListBuild(groups: fullDataGroup,)],
-          ),
+        body: FutureBuilder(
+          future: _futureGroups,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: LoadingAnimationWidget.halfTriangleDot(
+                  color: Colors.white,
+                  size: 24,
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error, size: 64, color: Colors.red),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Ошибка загрузки: ${snapshot.error}',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.red, fontSize: 16),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _futureGroups = fetchAllGroupsWithStudents();
+                        });
+                      },
+                      child: const Text('Повторить'),
+                    ),
+                  ],
+                ),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text('Нет данных', style: TextStyle(color: Colors.grey)),
+              );
+            } else {
+              final groups = snapshot.data!;
+              return SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: AccordionListBuild(groups: groups),
+                ),
+              );
+            }
+          },
         ),
       ),
     );
@@ -106,15 +150,14 @@ class Student {
     );
   }
 
-  static DateTime? _parseDateTime(dynamic value){
-    if(value == null) return null;
-    if(value is String) return DateTime.tryParse(value);
-    if(value is int){
+  static DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+    if (value is String) return DateTime.tryParse(value);
+    if (value is int) {
       return DateTime.fromMillisecondsSinceEpoch(value * 1000);
     }
     return null;
   }
-
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -125,7 +168,6 @@ class Student {
     'group': group,
   };
 }
-
 
 // получение всех групп по API
 Future<List<Group>> fetchGroups() async {
@@ -187,13 +229,16 @@ class GroupWithStudents {
   GroupWithStudents({required this.groupNumber, required this.students});
 
   // конструктор для пустой группы, до загрузки
-  factory GroupWithStudents.initial(String groupNumber){
+  factory GroupWithStudents.initial(String groupNumber) {
     return GroupWithStudents(groupNumber: groupNumber, students: []);
   }
 
   //конструктор-копия с обновлёнными студентами
-  GroupWithStudents copyWith({List<Student>? students}){
-    return GroupWithStudents(groupNumber: groupNumber, students: students ?? this.students);
+  GroupWithStudents copyWith({List<Student>? students}) {
+    return GroupWithStudents(
+      groupNumber: groupNumber,
+      students: students ?? this.students,
+    );
   }
 }
 
@@ -205,10 +250,12 @@ Future<List<GroupWithStudents>> fetchAllGroupsWithStudents() async {
   // здесь хранится данные в формате "группа, студенты"
   final List<GroupWithStudents> result = [];
 
-  for(final group in groups){
-    try{
+  for (final group in groups) {
+    try {
       // делаем запрос студентов по API
-      final List<Student> students = await fetchStudentByGroupNumber(group.number);
+      final List<Student> students = await fetchStudentByGroupNumber(
+        group.number,
+      );
 
       // и добавляем в главный список
       result.add(
@@ -220,15 +267,14 @@ Future<List<GroupWithStudents>> fetchAllGroupsWithStudents() async {
     }
   }
 
-  for (var group in result){
+  for (var group in result) {
     print('Group: ${group.groupNumber}');
-    for(final student in group.students){
+    for (final student in group.students) {
       print('Lastname: ${student.lastname}');
     }
   }
   return result;
 }
-
 
 // API запрос на получение списка студентов по группе
 Future<List<Student>> fetchStudentByGroupNumber(String groupNumber) async {
@@ -236,13 +282,12 @@ Future<List<Student>> fetchStudentByGroupNumber(String groupNumber) async {
   final prefs = await SharedPreferences.getInstance();
   var token = await prefs.getString('auth_token');
 
-
   final response = await http.get(
     Uri.parse('http://192.168.13.19/api/students?group=$groupNumber'),
     headers: {'Authorization': 'Bearer $token'},
   );
 
-  if(response.statusCode == 200){
+  if (response.statusCode == 200) {
     print('Запрос успешен - 200');
     final List<dynamic> rawList = jsonDecode(response.body);
     return rawList
@@ -253,8 +298,6 @@ Future<List<Student>> fetchStudentByGroupNumber(String groupNumber) async {
     throw Exception('HTTP ${response.statusCode}');
   }
 }
-
-
 
 // экземпляр для одной группы (модель данных). Она записылвается в список.
 class Group {
@@ -275,8 +318,9 @@ class Group {
 //конструктор для построения Аккордионов
 class AccordionListBuild extends StatelessWidget {
   final List<GroupWithStudents> groups;
+
   const AccordionListBuild({super.key, required this.groups});
-  
+
   // final List<AccordionSection> accordions = [
   //   createOneAccordionSection.buildAccordionSection('321', '12'),
   //   createOneAccordionSection.buildAccordionSection('321', '12'),
@@ -308,13 +352,13 @@ class AccordionListBuild extends StatelessWidget {
       children: _buildAccordionSections(),
     );
   }
-  
-  List<AccordionSection> _buildAccordionSections(){
+
+  List<AccordionSection> _buildAccordionSections() {
     return groups.map((groupData) {
       return createOneAccordionSection.buildAccordionSection(
-          groupNumber: groupData.groupNumber,
-          numberOfStudents: groupData.students.length.toString(),
-          students: groupData.students,
+        groupNumber: groupData.groupNumber,
+        numberOfStudents: groupData.students.length.toString(),
+        students: groupData.students,
       );
     }).toList();
   }
@@ -338,10 +382,11 @@ class createOneAccordionSection {
     );
   }
 
-  static Widget _buildHeader(String groupNumber, String count){
+  static Widget _buildHeader(String groupNumber, String count) {
     return Row(
       children: [
-        Text('Группа $groupNumber',
+        Text(
+          'Группа $groupNumber',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         SizedBox(width: 30),
@@ -356,7 +401,7 @@ class createOneAccordionSection {
             children: [
               Text(count, style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(width: 4),
-              Icon(Icons.people, size: 16,),
+              Icon(Icons.people, size: 16),
             ],
           ),
         ),
@@ -368,6 +413,7 @@ class createOneAccordionSection {
 //конструтор для построения содержимого аккордиона
 class StudentsFIODate extends StatelessWidget {
   final List<Student> students;
+
   const StudentsFIODate({super.key, required this.students});
 
   @override
@@ -376,7 +422,7 @@ class StudentsFIODate extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ColumnStudentFIODate(students: students),
-        const SizedBox(height: 15,),
+        const SizedBox(height: 15),
         ElevatedButton.icon(
           onPressed: () {},
           icon: const Icon(Icons.edit),
@@ -390,36 +436,40 @@ class StudentsFIODate extends StatelessWidget {
 //конструктор для построения столбца студентов из таблиц
 class ColumnStudentFIODate extends StatelessWidget {
   final List<Student> students;
+
   const ColumnStudentFIODate({super.key, required this.students});
 
   @override
   Widget build(BuildContext context) {
-    if(students.isEmpty){
+    if (students.isEmpty) {
       return const Padding(
-          padding: EdgeInsets.all(16),
-        child: Text('Студенты не найдены', style: TextStyle(color: Colors.grey)),
+        padding: EdgeInsets.all(16),
+        child: Text(
+          'Студенты не найдены',
+          style: TextStyle(color: Colors.grey),
+        ),
       );
     }
     return Column(
-        children: students.map((student) {
-          final dateStr = _formatDate(student.dateFluorography);
-          final isOverdue = _isFluoroOverdue(student.dateFluorography);
+      children: students.map((student) {
+        final dateStr = _formatDate(student.dateFluorography);
+        final isOverdue = _isFluoroOverdue(student.dateFluorography);
 
-          return RowStudentBuilder.buildRowFromStudent(
-            student: student,
-            formattedDate: dateStr,
-            isOverdue: isOverdue,
-          );
-        }).toList(),
+        return RowStudentBuilder.buildRowFromStudent(
+          student: student,
+          formattedDate: dateStr,
+          isOverdue: isOverdue,
+        );
+      }).toList(),
     );
   }
 
-  String _formatDate(DateTime? date){
-    if(date == null) return '-';
+  String _formatDate(DateTime? date) {
+    if (date == null) return '-';
     return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
   }
 
-  bool _isFluoroOverdue(DateTime? date){
+  bool _isFluoroOverdue(DateTime? date) {
     if (date == null) return true;
     final validUntil = date.add(const Duration(days: 365));
     return DateTime.now().isAfter(validUntil);
@@ -442,41 +492,44 @@ class RowStudentBuilder {
     );
   }
 
-
   static Row buildRowFromStrings({
-      required String lastname,
-      required String name,
-      required String patronymic,
-      required String dateFluorography,
-      required bool isOverdue,
-      CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
-      MainAxisAlignment mainAxisAlignment = MainAxisAlignment.spaceBetween,
-      double spacing = 8,
+    required String lastname,
+    required String name,
+    required String patronymic,
+    required String dateFluorography,
+    required bool isOverdue,
+    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
+    MainAxisAlignment mainAxisAlignment = MainAxisAlignment.spaceBetween,
+    double spacing = 8,
   }) {
     return Row(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
       children: [
-        Expanded(child: Text(lastname, overflow: TextOverflow.ellipsis,)),
-        SizedBox(width: spacing,),
-        Expanded(child: Text(name, overflow: TextOverflow.ellipsis,)),
-        SizedBox(width: spacing,),
-        Expanded(child: Text(patronymic, overflow: TextOverflow.ellipsis,)),
-        SizedBox(width: spacing,),
+        Expanded(child: Text(lastname, overflow: TextOverflow.ellipsis)),
+        SizedBox(width: spacing),
+        Expanded(child: Text(name, overflow: TextOverflow.ellipsis)),
+        SizedBox(width: spacing),
+        Expanded(child: Text(patronymic, overflow: TextOverflow.ellipsis)),
+        SizedBox(width: spacing),
         Container(
           decoration: BoxDecoration(
-            color: isOverdue ? Colors.red.shade300 : Colors.lightBlueAccent.shade100,
-            borderRadius: BorderRadius.circular(15)
+            color: isOverdue
+                ? Colors.red.shade300
+                : Colors.lightBlueAccent.shade100,
+            borderRadius: BorderRadius.circular(15),
           ),
           child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
             child: Text(
               dateFluorography,
-              style: TextStyle(fontWeight: FontWeight.bold,
-              color: isOverdue ? Colors.white : Colors.black87),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: isOverdue ? Colors.white : Colors.black87,
+              ),
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -611,4 +664,3 @@ class AppBarContent extends StatelessWidget {
     );
   }
 }
-

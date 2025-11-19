@@ -26,6 +26,8 @@ class _MedicScreenState extends State<MedicScreen> {
 
   //final Future<List<Group>> products = fetchGroups();
 
+  final Future<List<GroupWithStudents>> fullDataStudents =  fetchAllGroupsWithStudents();
+
   static const headerStyle = TextStyle(
     color: Color(0xff4482D2),
     fontSize: 18,
@@ -95,28 +97,35 @@ class Student {
 
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
-      id: json['id'] as int,
-      lastname: json['lastname'] as String,
-      firstname: json['name'] as String,
-      patronymic: json['patronymic'] as String,
-      dateFluorography: json['fluorography'] != null
-          ? DateTime.tryParse(json['fluorography'] as String)
-          : null,
-      group: json['group'] as String,
+      id: json['id'] as int? ?? 0,
+      lastname: json['lastname'] as String? ?? '',
+      firstname: json['name'] as String? ?? '',
+      patronymic: json['patronymic'] as String? ?? '',
+      dateFluorography: _parseDateTime(json['fluorography']),
+      group: json['group'] as String? ?? '',
     );
   }
+
+  static DateTime? _parseDateTime(dynamic value){
+    if(value == null) return null;
+    if(value is String) return DateTime.tryParse(value);
+    if(value is int){
+      return DateTime.fromMillisecondsSinceEpoch(value * 1000);
+    }
+    return null;
+  }
+
 
   Map<String, dynamic> toJson() => {
     'id': id,
     'lastname': lastname,
     'firstname': firstname,
     'patronymic': patronymic,
-    'dateFluorography': dateFluorography?.toIso8601String(),
+    'dateFluorography': dateFluorography?.toIso8601String().split('T').first,
     'group': group,
   };
 }
 
-List groupAndStudents = [];
 
 // получение всех групп по API
 Future<List<Group>> fetchGroups() async {
@@ -188,35 +197,62 @@ class GroupWithStudents {
   }
 }
 
-//собираем
+// сбор всех данных
+Future<List<GroupWithStudents>> fetchAllGroupsWithStudents() async {
+  //получаем список групп
+  final List<Group> groups = await fetchGroups();
 
-// моя старая рукописная функция
-Future<List<Student>> getStudentsForGroup() async {
-  final prefs = await SharedPreferences.getInstance();
-  var token = await prefs.getString('auth_token');
+  // здесь хранится данные в формате "группа, студенты"
+  final List<GroupWithStudents> result = [];
 
-  final Future<List<Group>> groupsList = fetchGroups();
+  for(final group in groups){
+    try{
+      // делаем запрос студентов по API
+      final List<Student> students = await fetchStudentByGroupNumber(group.number);
 
-  for (var group in groupsList) {
-    final response = await http.get(
-      Uri.parse('http://192.168.13.19/api/students?group=${group.number}'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonRaw = jsonDecode(response.body) as List<dynamic>;
-      final List<Student> students =
-          jsonRaw //типизированный список с объектом Group (из класса ниже который мы определили)
-              .whereType<Map<String, dynamic>>()
-              .map((map) => Student.fromJson(map))
-              .toList();
+      // и добавляем в главный список
+      result.add(
+        GroupWithStudents(groupNumber: group.number, students: students),
+      );
+    } catch (e) {
+      print('Ошибка загрузки студентов для группы ${group.number}: $e');
+      result.add(GroupWithStudents.initial(group.number));
     }
   }
 
+  for (var group in result){
+    print('Group: ${group.groupNumber}');
+    for(final student in group.students){
+      print('Lastname: ${student.lastname}');
+    }
+  }
+  return result;
+}
+
+Future<List<Student>> fetchStudentByGroupNumber(String groupNumber) async {
+  // получаем токен из памяти
+  final prefs = await SharedPreferences.getInstance();
+  var token = await prefs.getString('auth_token');
+
+
   final response = await http.get(
-    Uri.parse('http://192.168.13.19/api/students'),
+    Uri.parse('http://192.168.13.19/api/students?group=$groupNumber'),
     headers: {'Authorization': 'Bearer $token'},
   );
+
+  if(response.statusCode == 200){
+    print('Запрос успешен - 200');
+    final List<dynamic> rawList = jsonDecode(response.body);
+    return rawList
+        .whereType<Map<String, dynamic>>()
+        .map((json) => Student.fromJson(json))
+        .toList();
+  } else {
+    throw Exception('HTTP ${response.statusCode}');
+  }
 }
+
+
 
 // экземпляр для одной группы (модель данных). Она записылвается в список.
 class Group {
@@ -509,36 +545,3 @@ class AppBarContent extends StatelessWidget {
   }
 }
 
-// classo
-//
-//
-// class GetDataToExpansionCardFromApi {
-//   int group_number;
-//   String lastname_student;
-//   String name_student;
-//   String patroymic;
-//   String date_fluorography;
-//   int number_of_students_in_group;
-//
-//
-//
-//
-// }
-
-// class OneCardToExpand extends StatelessWidget {
-//   OneCardToExpand(
-//   {@
-//   required
-//   this.title,
-//     this.
-//   })
-//
-//
-//
-//   OneCardToExpand({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column();
-//   }
-// }

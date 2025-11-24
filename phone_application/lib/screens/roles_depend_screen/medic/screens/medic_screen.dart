@@ -38,8 +38,6 @@ class _MedicScreenState extends State<MedicScreen> {
     super.dispose();
   }
 
-
-
   static const countTextStyle = TextStyle(
     fontWeight: FontWeight.w300,
     color: Color(0xff26292B),
@@ -47,20 +45,22 @@ class _MedicScreenState extends State<MedicScreen> {
     fontSize: AppSizes.fontSizeSmall,
   );
 
-
+  static const headerStyle = TextStyle(
+    color: Color(0xff4482D2),
+    fontSize: AppSizes.fontSizeMedium,
+    fontWeight: FontWeight.w300,
+    fontFamily: 'Geologica',
+  );
+  static const rowStudentStyle = TextStyle(
+    color: Color(0xff26292B),
+    fontSize: AppSizes.fontSizeMediumMini,
+    fontWeight: FontWeight.w300,
+    fontFamily: 'Geologica',
+  );
 
   @override
   Widget build(BuildContext context) {
     // TextStyle layout example
-    final TextStyle headerStyle = TextStyle(
-      color: Color(0xff4482D2),
-      fontSize: ResponsiveSizes.getFontSizeMedium(
-          context,
-          baseSize: AppSizes.fontSizeMedium
-      ),
-      fontWeight: FontWeight.w300,
-      fontFamily: 'Geologica',
-    );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -70,7 +70,7 @@ class _MedicScreenState extends State<MedicScreen> {
       ),
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(150.0),
+          preferredSize: const Size.fromHeight(120.0),
           child: Container(
             decoration: const BoxDecoration(color: Colors.transparent),
             child: AppBarContent(),
@@ -83,10 +83,10 @@ class _MedicScreenState extends State<MedicScreen> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                  child: LoadingAnimationWidget.halfTriangleDot(
-                      color: const Color(0xff98BFF3),
-                      size: 60
-                  ),
+                child: LoadingAnimationWidget.halfTriangleDot(
+                  color: const Color(0xff98BFF3),
+                  size: 60,
+                ),
               );
             } else if (snapshot.hasError) {
               return Center(
@@ -119,7 +119,6 @@ class _MedicScreenState extends State<MedicScreen> {
             } else {
               final groups = snapshot.data!;
               return SingleChildScrollView(
-                scrollDirection: Axis.vertical,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -158,7 +157,7 @@ class Student {
     return Student(
       id: json['id'] as int? ?? 0,
       lastname: json['lastname'] as String? ?? '',
-      firstname: json['name'] as String? ?? '',
+      firstname: json['firstname'] as String? ?? '',
       patronymic: json['patronymic'] as String? ?? '',
       dateFluorography: _parseDateTime(json['fluorography']),
       group: json['group'] as String? ?? '',
@@ -285,7 +284,7 @@ Future<List<GroupWithStudents>> fetchAllGroupsWithStudents() async {
   for (var group in result) {
     print('Group: ${group.groupNumber}');
     for (final student in group.students) {
-      print('Lastname: ${student.lastname}');
+      print('Lastname: ${student.firstname}');
     }
   }
   return result;
@@ -336,7 +335,6 @@ class AccordionListBuild extends StatelessWidget {
 
   const AccordionListBuild({super.key, required this.groups});
 
-
   @override
   Widget build(BuildContext context) {
     return Accordion(
@@ -345,17 +343,18 @@ class AccordionListBuild extends StatelessWidget {
       headerBorderWidth: 1,
       headerBackgroundColorOpened: Colors.transparent,
       headerBackgroundColor: Colors.white,
-      rightIcon: Icon(
-        Icons.arrow_drop_down,
-        size: 50,
-        color: Color(0xffD4EAFF),
+      rightIcon: SvgPicture.asset(
+        'assets/images/icon_expand_down.svg',
+        height: 14,
+        width: 6,
       ),
       contentBackgroundColor: Colors.white,
       contentBorderColor: Color(0xffD4EAFF),
       contentBorderWidth: 1,
-      contentHorizontalPadding: 5,
+      //contentHorizontalPadding: 5,
       scaleWhenAnimating: true,
       openAndCloseAnimation: true,
+      disableScrolling: true,
       headerPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 35),
       sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
       sectionClosingHapticFeedback: SectionHapticFeedback.light,
@@ -378,6 +377,7 @@ class AccordionListBuild extends StatelessWidget {
 // конструктор для создания одной accordion section
 class createOneAccordionSection {
   bool _isOpen = false;
+
   static AccordionSection buildAccordionSection({
     required String groupNumber,
     required String numberOfStudents,
@@ -388,8 +388,8 @@ class createOneAccordionSection {
       paddingBetweenClosedSections: 30,
       paddingBetweenOpenSections: 30,
       header: _buildHeader(groupNumber, numberOfStudents),
-      contentHorizontalPadding: 40,
-      contentVerticalPadding: 20,
+      contentHorizontalPadding: 12,
+      contentVerticalPadding: 12,
       content: StudentsFIODate(students: students),
     );
   }
@@ -397,10 +397,7 @@ class createOneAccordionSection {
   static Widget _buildHeader(String groupNumber, String count) {
     return Row(
       children: [
-        Text(
-          'Группа $groupNumber',
-          style: headerStyle,
-        ),
+        Text('Группа $groupNumber', style: _MedicScreenState.headerStyle),
         SizedBox(width: 30),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -412,8 +409,12 @@ class createOneAccordionSection {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(count, style: _MedicScreenState.countTextStyle),
-              const SizedBox(width: 4),
-              Icon(Icons.people, size: 16),
+              const SizedBox(width: 6),
+              SvgPicture.asset(
+                'assets/images/people_icon.svg',
+                height: 12,
+                width: 12,
+              ),
             ],
           ),
         ),
@@ -435,10 +436,17 @@ class StudentsFIODate extends StatelessWidget {
       children: [
         ColumnStudentFIODate(students: students),
         const SizedBox(height: 15),
-        ElevatedButton.icon(
+        ElevatedButton(
           onPressed: () {},
-          icon: const Icon(Icons.edit),
-          label: const Text('Редактировать группу'),
+          style: ElevatedButton.styleFrom(backgroundColor: Color(0xff98BFF3)),
+          child: Text(
+            'Редактировать',
+            style: TextStyle(
+              fontSize: AppSizes.fontSizeSmall,
+              color: Color(0xffffffff),
+              fontFamily: 'Geologica',
+            ),
+          ),
         ),
       ],
     );
@@ -488,61 +496,89 @@ class ColumnStudentFIODate extends StatelessWidget {
   }
 }
 
-// конструктор для построения строки для одного студента
+// конструктор для построения строки для одного студента (
 class RowStudentBuilder {
-  static Row buildRowFromStudent({
+  static SizedBox buildRowFromStudent({
     required Student student,
     required String formattedDate,
     required bool isOverdue,
   }) {
     return buildRowFromStrings(
       lastname: student.lastname,
-      name: student.firstname,
+      firstname: student.firstname,
       patronymic: student.patronymic,
       dateFluorography: formattedDate,
       isOverdue: isOverdue,
     );
   }
 
-  static Row buildRowFromStrings({
+  static SizedBox buildRowFromStrings({
     required String lastname,
-    required String name,
+    required String firstname,
     required String patronymic,
     required String dateFluorography,
     required bool isOverdue,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.spaceBetween,
-    double spacing = 8,
+    double spacing = 4,
   }) {
-    return Row(
-      crossAxisAlignment: crossAxisAlignment,
-      mainAxisAlignment: mainAxisAlignment,
-      children: [
-        Expanded(child: Text(lastname, overflow: TextOverflow.ellipsis)),
-        SizedBox(width: spacing),
-        Expanded(child: Text(name, overflow: TextOverflow.ellipsis)),
-        SizedBox(width: spacing),
-        Expanded(child: Text(patronymic, overflow: TextOverflow.ellipsis)),
-        SizedBox(width: spacing),
-        Container(
-          decoration: BoxDecoration(
-            color: isOverdue
-                ? Colors.red.shade300
-                : Colors.lightBlueAccent.shade100,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-            child: Text(
-              dateFluorography,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: isOverdue ? Colors.white : Colors.black87,
-              ),
+    return SizedBox(
+      width: double.infinity,
+      child: Row(
+        //crossAxisAlignment: crossAxisAlignment,
+        mainAxisAlignment: mainAxisAlignment,
+        children: [
+          Flexible(
+            child: Row(
+              children: [
+                Text(lastname, style: _MedicScreenState.rowStudentStyle),
+                SizedBox(width: spacing),
+                Text(firstname, style: _MedicScreenState.rowStudentStyle),
+                SizedBox(width: spacing),
+                Flexible(
+                  child: Text(
+                    patronymic,
+                    overflow: TextOverflow.ellipsis,
+                    style: _MedicScreenState.rowStudentStyle,
+                    softWrap: false,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-      ],
+
+          Row(
+            children: [
+              SizedBox(
+                width: 90,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isOverdue
+                        ? Colors.red.shade300
+                        : Colors.lightBlueAccent.shade100,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 1,
+                      horizontal: 1,
+                    ),
+                    child: Text(
+                      dateFluorography,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: isOverdue ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -574,7 +610,7 @@ class AppBarContent extends StatelessWidget {
                       color: const Color(0xff98BFF3),
                       width: 35,
                       height: 35,
-                    )
+                    ),
                   ),
 
                   // кнопка выхода
@@ -632,18 +668,15 @@ class AppBarContent extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
               TextField(
-                // controller: searchController,
+                //controller: searchController,
                 cursorColor: Color(0xff72A7EB),
-                cursorHeight: 17,
-                cursorWidth: 1.2,
-
+                cursorHeight: 25,
+                cursorWidth: 1.5,
                 decoration: InputDecoration(
                   prefixIcon: Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 8),
+                    padding: const EdgeInsets.only(left: 16, right: 8),
                     child: SvgPicture.asset(
                       'assets/images/serch_icon.svg',
                       width: 20,
@@ -653,14 +686,14 @@ class AppBarContent extends StatelessWidget {
                   ),
                   enabled: true,
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(16.0),
                     borderSide: BorderSide(
                       color: Color(0xff98BFF3),
                       width: 1.0,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(16.0),
                     borderSide: BorderSide(color: Color(0xff72A7EB), width: 2),
                   ),
                   hintText: 'Поиск',
@@ -669,7 +702,7 @@ class AppBarContent extends StatelessWidget {
                       context,
                       baseSize: AppSizes.fontSizeMedium,
                     ),
-                    color: Color(0xff999A9B),
+                    color: Color(0xff98BFF3),
                     fontWeight: FontWeight.w500,
                   ),
                   contentPadding: EdgeInsets.symmetric(horizontal: 30),
@@ -683,10 +716,6 @@ class AppBarContent extends StatelessWidget {
                 // obscureText: true,
                 enableSuggestions: false,
                 autocorrect: false,
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                child: Icon(Icons.search_rounded),
               ),
             ],
           ),

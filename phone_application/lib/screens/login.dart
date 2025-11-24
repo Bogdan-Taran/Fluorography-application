@@ -407,6 +407,7 @@ class AppSizes {
   static const double fontSizeTitle = 24;
   static const double fontSizeLarge = 18;
   static const double fontSizeMedium = 16;
+  static const double fontSizeMediumMini = 14;
   static const double fontSizeSmall = 12;
   static const double fontSizeExtraSmall = 10;
 

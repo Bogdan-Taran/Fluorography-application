@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 
@@ -26,14 +27,50 @@ class _MedicScreenState extends State<MedicScreen> {
   late final Future<List<GroupWithStudents>> _futureGroups;
   TextEditingController searchController = TextEditingController();
 
+  // массивы для посика
+  List<GroupWithStudents> _allGroups = [];
+  List<GroupWithStudents> _filteredGroups = [];
+
+  Timer? _debounceTimer;
+
   @override
   void initState() {
     super.initState();
-    _futureGroups = fetchAllGroupsWithStudents();
+    _futureGroups = fetchAllGroupsWithStudents().then((data) {
+      _allGroups = data;
+      _filteredGroups = data;
+      return data;
+    });
+
+    searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(Duration(milliseconds: 400), (){
+      final query = searchController.text.trim().toLowerCase();
+
+      if (query.isEmpty) {
+        _updateFilteredGroups(_allGroups);
+      } else if(query.length >= 3){
+        final filtred = _filterGroups(_allGroups, query);
+        _updateFilteredGroups(filtred);
+      }
+    });
+  }
+
+  void _updateFilteredGroups(List<GroupWithStudents> groups){
+    if(mounted){
+      setState(() {
+        _filteredGroups = groups;
+      });
+    }
   }
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
+    searchController.removeListener(_onSearchChanged);
     searchController.dispose();
     super.dispose();
   }
@@ -73,66 +110,101 @@ class _MedicScreenState extends State<MedicScreen> {
           preferredSize: const Size.fromHeight(120.0),
           child: Container(
             decoration: const BoxDecoration(color: Colors.transparent),
-            child: AppBarContent(),
+            child: AppBarContent(searchController: searchController),
           ),
         ),
 
         backgroundColor: Color(0xFFFFFFFF),
-        body: FutureBuilder<List<GroupWithStudents>>(
-          future: _futureGroups,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: LoadingAnimationWidget.halfTriangleDot(
-                  color: const Color(0xff98BFF3),
-                  size: 60,
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.error, size: 64, color: Colors.red),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Ошибка загрузки: ${snapshot.error}',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.red, fontSize: 16),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _futureGroups = fetchAllGroupsWithStudents();
-                        });
-                      },
-                      child: const Text('Повторить'),
-                    ),
-                  ],
-                ),
-              );
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(
-                child: Text('Нет данных', style: TextStyle(color: Colors.grey)),
-              );
-            } else {
-              final groups = snapshot.data!;
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: AccordionListBuild(groups: groups),
-                ),
-              );
-            }
-          },
+        body: Column(
+          children: [
+            Expanded(
+              child: FutureBuilder<List<GroupWithStudents>>(
+                future: _futureGroups,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: LoadingAnimationWidget.halfTriangleDot(
+                        color: const Color(0xff98BFF3),
+                        size: 60,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.error, size: 64, color: Colors.red),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Ошибка загрузки: ${snapshot.error}',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                _futureGroups = fetchAllGroupsWithStudents();
+                              });
+                            },
+                            child: const Text('Повторить'),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'Нет данных',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    );
+                  } else {
+                    if (_filteredGroups.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'Ничего не найдено',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      );
+                    }
+
+                    // final groups = snapshot.data!;
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 8,
+                        ),
+                        child: AccordionListBuild(groups: _filteredGroups),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+//функция для фильтрации
+List<GroupWithStudents> _filterGroups(
+  List<GroupWithStudents> groups,
+  String query,
+) {
+  return groups
+      .map((group) {
+        final matchingStudents = group.students.where((s) => s.searchKey.contains(query)).toList();
+        return matchingStudents.isEmpty ? null : group.copyWith(students: matchingStudents);
+      })
+      .whereType<GroupWithStudents>()
+      .toList();
 }
 
 //класс для построения 1 единицы студента
@@ -181,6 +253,8 @@ class Student {
     'dateFluorography': dateFluorography?.toIso8601String().split('T').first,
     'group': group,
   };
+
+  String get searchKey => '$lastname $firstname $patronymic $group'.toLowerCase();
 }
 
 // получение всех групп по API
@@ -524,59 +598,67 @@ class RowStudentBuilder {
   }) {
     return SizedBox(
       width: double.infinity,
-      child: Row(
-        //crossAxisAlignment: crossAxisAlignment,
-        mainAxisAlignment: mainAxisAlignment,
+      child: Column(
         children: [
-          Flexible(
-            child: Row(
-              children: [
-                Text(lastname, style: _MedicScreenState.rowStudentStyle),
-                SizedBox(width: spacing),
-                Text(firstname, style: _MedicScreenState.rowStudentStyle),
-                SizedBox(width: spacing),
-                Flexible(
-                  child: Text(
-                    patronymic,
-                    overflow: TextOverflow.ellipsis,
-                    style: _MedicScreenState.rowStudentStyle,
-                    softWrap: false,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
           Row(
+            //crossAxisAlignment: crossAxisAlignment,
+            mainAxisAlignment: mainAxisAlignment,
             children: [
-              SizedBox(
-                width: 90,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isOverdue
-                        ? Colors.red.shade300
-                        : Colors.lightBlueAccent.shade100,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 1,
-                      horizontal: 1,
+              Flexible(
+                child: Row(
+                  children: [
+                    Text(lastname, style: _MedicScreenState.rowStudentStyle),
+                    SizedBox(width: spacing),
+                    Text(firstname, style: _MedicScreenState.rowStudentStyle),
+                    SizedBox(width: spacing),
+                    Flexible(
+                      child: Text(
+                        patronymic,
+                        overflow: TextOverflow.ellipsis,
+                        style: _MedicScreenState.rowStudentStyle,
+                        softWrap: false,
+                        maxLines: 1,
+                      ),
                     ),
-                    child: Text(
-                      dateFluorography,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: isOverdue ? Colors.white : Colors.black87,
+                  ],
+                ),
+              ),
+
+              Row(
+                children: [
+                  SizedBox(
+                    width: 85,
+                    height: 24,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isOverdue
+                            ? Color(0xffF29393)
+                            : Colors.lightBlueAccent.shade100,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 1,
+                          horizontal: 1,
+                        ),
+                        child: Text(
+                          dateFluorography,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: isOverdue
+                                ? Color(0xff26292B)
+                                : Color(0xff26292B),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
+          SizedBox(height: 10),
         ],
       ),
     );
@@ -585,7 +667,9 @@ class RowStudentBuilder {
 
 //содержимое AppBar (кнопка уведомления и кнопка)
 class AppBarContent extends StatelessWidget {
-  AppBarContent({super.key});
+  final TextEditingController searchController;
+
+  const AppBarContent({super.key, required this.searchController});
 
   @override
   Widget build(BuildContext context) {
@@ -670,7 +754,7 @@ class AppBarContent extends StatelessWidget {
               ),
               SizedBox(height: 10),
               TextField(
-                //controller: searchController,
+                controller: searchController,
                 cursorColor: Color(0xff72A7EB),
                 cursorHeight: 25,
                 cursorWidth: 1.5,

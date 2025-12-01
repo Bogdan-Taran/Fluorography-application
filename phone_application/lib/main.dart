@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_fluorography/screens/roles_depend_screen/medic/screens/medic_screen.dart';
+import 'package:project_fluorography/services/auth_service.dart';
 import '/screens/login.dart';
 import 'package:flutter/services.dart';
 
-
-void handleBackPress() {
-  print("Назад!");
-}
+import 'bloc/auth_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +21,20 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => AuthBloc(authService: AuthService()))
+        ],
+        child: MaterialApp(
+          title: 'Флюорография',
+          theme: ThemeData(
+            primarySwatch: Colors.blue
+          ),
+          home: const LoginScreen(),
+          debugShowCheckedModeBanner: false,
+        )
+    );
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       // home: Login(),

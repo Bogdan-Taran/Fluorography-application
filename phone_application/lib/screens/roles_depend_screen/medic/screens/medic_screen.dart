@@ -207,55 +207,55 @@ List<GroupWithStudents> _filterGroups(
       .toList();
 }
 
-//класс для построения 1 единицы студента
-class Student {
-  final int id;
-  final String lastname;
-  final String firstname;
-  final String patronymic;
-  final DateTime? dateFluorography;
-  final String group;
-
-  Student({
-    required this.id,
-    required this.lastname,
-    required this.firstname,
-    required this.patronymic,
-    this.dateFluorography,
-    required this.group,
-  });
-
-  factory Student.fromJson(Map<String, dynamic> json) {
-    return Student(
-      id: json['id'] as int? ?? 0,
-      lastname: json['lastname'] as String? ?? '',
-      firstname: json['firstname'] as String? ?? '',
-      patronymic: json['patronymic'] as String? ?? '',
-      dateFluorography: _parseDateTime(json['fluorography']),
-      group: json['group'] as String? ?? '',
-    );
-  }
-
-  static DateTime? _parseDateTime(dynamic value) {
-    if (value == null) return null;
-    if (value is String) return DateTime.tryParse(value);
-    if (value is int) {
-      return DateTime.fromMillisecondsSinceEpoch(value * 1000);
-    }
-    return null;
-  }
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'lastname': lastname,
-    'firstname': firstname,
-    'patronymic': patronymic,
-    'dateFluorography': dateFluorography?.toIso8601String().split('T').first,
-    'group': group,
-  };
-
-  String get searchKey => '$lastname $firstname $patronymic $group'.toLowerCase();
-}
+// //класс для построения 1 единицы студента
+// class Student {
+//   final int id;
+//   final String lastname;
+//   final String firstname;
+//   final String patronymic;
+//   final DateTime? dateFluorography;
+//   final String group;
+//
+//   Student({
+//     required this.id,
+//     required this.lastname,
+//     required this.firstname,
+//     required this.patronymic,
+//     this.dateFluorography,
+//     required this.group,
+//   });
+//
+//   factory Student.fromJson(Map<String, dynamic> json) {
+//     return Student(
+//       id: json['id'] as int? ?? 0,
+//       lastname: json['lastname'] as String? ?? '',
+//       firstname: json['firstname'] as String? ?? '',
+//       patronymic: json['patronymic'] as String? ?? '',
+//       dateFluorography: _parseDateTime(json['fluorography']),
+//       group: json['group'] as String? ?? '',
+//     );
+//   }
+//
+//   static DateTime? _parseDateTime(dynamic value) {
+//     if (value == null) return null;
+//     if (value is String) return DateTime.tryParse(value);
+//     if (value is int) {
+//       return DateTime.fromMillisecondsSinceEpoch(value * 1000);
+//     }
+//     return null;
+//   }
+//
+//   Map<String, dynamic> toJson() => {
+//     'id': id,
+//     'lastname': lastname,
+//     'firstname': firstname,
+//     'patronymic': patronymic,
+//     'dateFluorography': dateFluorography?.toIso8601String().split('T').first,
+//     'group': group,
+//   };
+//
+//   String get searchKey => '$lastname $firstname $patronymic $group'.toLowerCase();
+// }
 
 // получение всех групп по API
 Future<List<Group>> fetchGroups() async {
@@ -309,26 +309,26 @@ Future<List<Group>> fetchGroups() async {
   }
 }
 
-// структурная модель для 1 экземпляра "группа и студенты"
-class GroupWithStudents {
-  final String groupNumber;
-  final List<Student> students;
-
-  GroupWithStudents({required this.groupNumber, required this.students});
-
-  // конструктор для пустой группы, до загрузки
-  factory GroupWithStudents.initial(String groupNumber) {
-    return GroupWithStudents(groupNumber: groupNumber, students: []);
-  }
-
-  //конструктор-копия с обновлёнными студентами
-  GroupWithStudents copyWith({List<Student>? students}) {
-    return GroupWithStudents(
-      groupNumber: groupNumber,
-      students: students ?? this.students,
-    );
-  }
-}
+// // структурная модель для 1 экземпляра "группа и студенты"
+// class GroupWithStudents {
+//   final String groupNumber;
+//   final List<Student> students;
+//
+//   GroupWithStudents({required this.groupNumber, required this.students});
+//
+//   // конструктор для пустой группы, до загрузки
+//   factory GroupWithStudents.initial(String groupNumber) {
+//     return GroupWithStudents(groupNumber: groupNumber, students: []);
+//   }
+//
+//   //конструктор-копия с обновлёнными студентами
+//   GroupWithStudents copyWith({List<Student>? students}) {
+//     return GroupWithStudents(
+//       groupNumber: groupNumber,
+//       students: students ?? this.students,
+//     );
+//   }
+// }
 
 // сбор всех данных
 Future<List<GroupWithStudents>> fetchAllGroupsWithStudents() async {
@@ -387,21 +387,21 @@ Future<List<Student>> fetchStudentByGroupNumber(String groupNumber) async {
   }
 }
 
-// экземпляр для одной группы (модель данных). Она записылвается в список.
-class Group {
-  final int id; // определяем свойста которые соответствуют полям в нашем json
-  final String number;
-
-  Group({required this.id, required this.number});
-
-  factory Group.fromJson(Map<String, dynamic> json) {
-    return Group(id: json['id'], number: json['number']);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'id': id, 'number': number};
-  }
-}
+// // экземпляр для одной группы (модель данных). Она записылвается в список.
+// class Group {
+//   final int id; // определяем свойста которые соответствуют полям в нашем json
+//   final String number;
+//
+//   Group({required this.id, required this.number});
+//
+//   factory Group.fromJson(Map<String, dynamic> json) {
+//     return Group(id: json['id'], number: json['number']);
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     return {'id': id, 'number': number};
+//   }
+// }
 
 //конструктор для построения Виджета аккордион
 class AccordionListBuild extends StatelessWidget {

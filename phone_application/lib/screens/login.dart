@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:project_fluorography/screens/role_screens.dart';
 import '../bloc/auth_bloc.dart';
 import '../models/user_models.dart';
 
@@ -436,9 +437,6 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 
-
-
-}
 
 class AppSizes {
   //Размеры шрифтов

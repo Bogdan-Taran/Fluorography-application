@@ -11,20 +11,20 @@ class AuthService {
   static const String _profileUrl = '$_baseurl/api/profile';
   static const String _logoutUrl = '$_baseurl/api/logout';
 
-  Future<User> login(String login, String password) async{
+  Future<User> login(String login, String password) async {
     //authorization
     final loginResponse = await http.post(
       Uri.parse(_loginUrl),
-      body: {'login': login, 'password': password}
+      body: {'login': login, 'password': password},
     );
-    
-    if(loginResponse.statusCode != 200){
+
+    if (loginResponse.statusCode != 200) {
       throw Exception('Неверный логин или пароль');
     }
 
     final loginData = jsonDecode(loginResponse.body);
     final token = loginData['token'] as String?;
-    if(token == null) throw Exception('Токен не получен');
+    if (token == null) throw Exception('Токен не получен');
 
     // save token
     final prefs = await SharedPreferences.getInstance();
@@ -36,12 +36,12 @@ class AuthService {
       headers: {'Authorization': 'Bearer $token'},
     );
 
-    if (profileResponse.statusCode != 200){
+    if (profileResponse.statusCode != 200) {
       throw Exception('Не удалось загрузить профиль');
     }
 
-    final profileData =jsonDecode(profileResponse.body) as Map<String, dynamic>;
-
+    final profileData =
+        jsonDecode(profileResponse.body) as Map<String, dynamic>;
 
     return User(
       id: profileData['id'] as int? ?? 0,
@@ -61,12 +61,22 @@ class AuthService {
   }
 
   // logout from app and remove auth token
-
   Future<void> logout() async {
+    final token = await getAuthToken();
+    if (token != null) {
+      // send logout request to the server
+      try {
+        await http.post(
+          Uri.parse(_logoutUrl),
+          headers: {'Authorization': 'Bearer $token'},
+        );
+      } catch (e) {
+        // if server did not answer, we delete a local token anyway
+        print('Logout API error: $e');
+      }
+    }
+    // delete the token
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
-    // TODO:
-    // realize exit the page
   }
-
 }

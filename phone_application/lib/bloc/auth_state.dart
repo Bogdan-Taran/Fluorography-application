@@ -19,3 +19,7 @@ class AuthError extends AuthState {
 
   AuthError(this.message);
 }
+
+class AuthLogoutLoading extends AuthState {}
+
+

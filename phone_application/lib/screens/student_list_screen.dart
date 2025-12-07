@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../bloc/auth_bloc.dart';
 import '../bloc/student_bloc.dart';
 import '../bloc/events.dart';
 import '../bloc/states.dart';
@@ -17,11 +18,8 @@ class StudentListScreen extends StatefulWidget {
   final UserRole role;
   final String? curatorGroup; // для куратора
 
-  const StudentListScreen({
-    Key? key,
-    required this.role,
-    this.curatorGroup,
-  }) : super(key: key);
+  const StudentListScreen({Key? key, required this.role, this.curatorGroup})
+    : super(key: key);
 
   @override
   State<StudentListScreen> createState() => _StudentListScreenState();
@@ -47,7 +45,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
         break;
       case UserRole.curator:
         if (widget.curatorGroup != null) {
-          context.read<StudentBloc>().add(LoadCuratorStudents(widget.curatorGroup!));
+          context.read<StudentBloc>().add(
+            LoadCuratorStudents(widget.curatorGroup!),
+          );
         }
         break;
       case UserRole.administrator:
@@ -81,9 +81,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.black54,
-      ),
+      value: SystemUiOverlayStyle(statusBarColor: Colors.black54),
       child: Scaffold(
         appBar: _buildAppBar(),
         backgroundColor: const Color(0xFFFFFFFF),
@@ -94,7 +92,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
             } else if (state is StudentError) {
               return _buildError(state.message);
             } else if (state is StudentLoaded || state is StudentFiltered) {
-              final groups = state is StudentLoaded ? state.groups : (state as StudentFiltered).filteredGroups;
+              final groups = state is StudentLoaded
+                  ? state.groups
+                  : (state as StudentFiltered).filteredGroups;
               return _buildContent(groups);
             } else {
               return const SizedBox();
@@ -110,10 +110,18 @@ class _StudentListScreenState extends State<StudentListScreen> {
       preferredSize: const Size.fromHeight(120.0),
       child: Container(
         decoration: const BoxDecoration(color: Colors.transparent),
-        child: AppBarContent(
-          searchController: searchController,
-          onLogout: () {
-            // Логика выхода
+        child: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, authState) {
+            bool isLogoutLoading = authState is AuthLogoutLoading;
+            return AppBarContent(
+              searchController: searchController,
+              onLogout: () {
+                if (!isLogoutLoading) {
+                  context.read<AuthBloc>().add(LogoutRequested());
+                }
+              },
+              isLogoutLoading: isLogoutLoading,
+            );
           },
         ),
       ),
@@ -154,10 +162,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
   Widget _buildContent(List<GroupWithStudents> groups) {
     if (groups.isEmpty) {
       return const Center(
-        child: Text(
-          'Нет данных',
-          style: TextStyle(color: Colors.grey),
-        ),
+        child: Text('Нет данных', style: TextStyle(color: Colors.grey)),
       );
     }
 
@@ -222,12 +227,16 @@ class _StudentListScreenState extends State<StudentListScreen> {
           )
         else
           Column(
-            children: students.map((student) => StudentRowWidget(student: student)).toList(),
+            children: students
+                .map((student) => StudentRowWidget(student: student))
+                .toList(),
           ),
         const SizedBox(height: 15),
         ElevatedButton(
           onPressed: () {},
-          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xff98BFF3)),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xff98BFF3),
+          ),
           child: const Text(
             'Редактировать',
             style: TextStyle(
@@ -245,11 +254,13 @@ class _StudentListScreenState extends State<StudentListScreen> {
 class AppBarContent extends StatelessWidget {
   final TextEditingController searchController;
   final VoidCallback? onLogout;
+  final bool isLogoutLoading;
 
   const AppBarContent({
     Key? key,
     required this.searchController,
     this.onLogout,
+    this.isLogoutLoading = false,
   }) : super(key: key);
 
   @override
@@ -277,21 +288,23 @@ class AppBarContent extends StatelessWidget {
                   ),
                   ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                            (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.disabled)) {
-                            return const Color(0xffD5D6D7);
-                          }
-                          if (states.contains(WidgetState.pressed)) {
-                            return const Color(0xFF72A7EB);
-                          }
-                          if (states.contains(WidgetState.hovered)) {
-                            return const Color(0xFFBADEFF);
-                          }
-                          return const Color(0xff98BFF3);
-                        },
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>((
+                        Set<WidgetState> states,
+                      ) {
+                        if (states.contains(WidgetState.disabled)) {
+                          return const Color(0xffD5D6D7);
+                        }
+                        if (states.contains(WidgetState.pressed)) {
+                          return const Color(0xFF72A7EB);
+                        }
+                        if (states.contains(WidgetState.hovered)) {
+                          return const Color(0xFFBADEFF);
+                        }
+                        return const Color(0xff98BFF3);
+                      }),
+                      foregroundColor: WidgetStateProperty.all(
+                        const Color(0xffffffff),
                       ),
-                      foregroundColor: WidgetStateProperty.all(const Color(0xffffffff)),
                       minimumSize: WidgetStateProperty.all(
                         Size(MediaQuery.of(context).size.width * 0.1, 35),
                       ),
@@ -301,16 +314,23 @@ class AppBarContent extends StatelessWidget {
                         ),
                       ),
                     ),
-                    onPressed: onLogout,
-                    child: const Text(
-                      'Выход',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xffffffff),
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Geologica',
-                      ),
-                    ),
+                    onPressed: isLogoutLoading ? null : onLogout,
+                    child: isLogoutLoading
+                        ? Center(
+                            child: LoadingAnimationWidget.halfTriangleDot(
+                              color: const Color(0xff98BFF3),
+                              size: 60,
+                            ),
+                          )
+                        : const Text(
+                            'Выход',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0xffffffff),
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Geologica',
+                            ),
+                          ),
                   ),
                 ],
               ),
@@ -330,11 +350,17 @@ class AppBarContent extends StatelessWidget {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0),
-                    borderSide: const BorderSide(color: Color(0xff98BFF3), width: 1.0),
+                    borderSide: const BorderSide(
+                      color: Color(0xff98BFF3),
+                      width: 1.0,
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0),
-                    borderSide: const BorderSide(color: Color(0xff72A7EB), width: 2),
+                    borderSide: const BorderSide(
+                      color: Color(0xff72A7EB),
+                      width: 2,
+                    ),
                   ),
                   hintText: 'Поиск',
                   hintStyle: const TextStyle(

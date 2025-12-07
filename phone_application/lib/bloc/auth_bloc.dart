@@ -35,8 +35,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LogoutRequested event,
       Emitter<AuthState> emit,
       ) async {
+    emit(AuthLogoutLoading()); // загрузка
     await _authService.logout();
-    emit(AuthInitial());
+    emit(AuthInitial()); // возвращаемся к начальному состоянию
   }
 
   Future<void> _onCheckAuthStatus(

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:project_fluorography/models/student_models.dart';
 
 class ApiService {
-  static const String _baseUrl = 'http://192.168.13.19';
+  static const String _baseurl = 'http://flura.tomtit-tomsk.ru';
 
   Future<String> _getAuthToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -24,7 +24,7 @@ class ApiService {
 
   Future<void> _login() async {
     final loginResponse = await http.post(
-        Uri.parse('$_baseUrl/api/login'),
+        Uri.parse('$_baseurl/api/login'),
       body: {'login': 'hom', 'password': '57020594'},
     );
     if (loginResponse.statusCode != 200){
@@ -44,7 +44,7 @@ class ApiService {
     final token = await _getAuthToken();
 
     final response = await http.get(
-      Uri.parse('$_baseUrl/api/groups'),
+      Uri.parse('$_baseurl/api/groups'),
       headers: {'Authorization': 'Bearer $token'},
     );
 
@@ -65,7 +65,7 @@ class ApiService {
   Future<List<Student>> fetchStudentsByGroupNumber(String groupNumber) async{
     final token = await _getAuthToken();
     final response = await http.get(
-      Uri.parse('$_baseUrl/api/students?group=$groupNumber'),
+      Uri.parse('$_baseurl/api/students?group=$groupNumber'),
       headers: {'Authorization': 'Bearer $token'},
     );
     if(response.statusCode == 200){

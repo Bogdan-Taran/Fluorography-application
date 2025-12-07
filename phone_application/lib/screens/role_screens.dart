@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/student_bloc.dart';
-import '../services/api_service.dart';
-import 'student_list_screen.dart';
 import '../models/student_models.dart';
+import '../services/api_service.dart';
+// import '../models/user_models.dart';
+import 'student_list_screen.dart';
 
 class MedicScreen extends StatelessWidget {
   const MedicScreen({Key? key}) : super(key: key);

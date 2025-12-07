@@ -20,7 +20,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
 
   Future<void> _onLoadAllStudents(
       LoadAllStudents event,
-      Emitter<StudentState> emitm
+      Emitter<StudentState> emit
       ) async {
     emit(StudentLoading());
     try {

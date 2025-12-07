@@ -53,6 +53,12 @@ class _StudentListScreenState extends State<StudentListScreen> {
       case UserRole.administrator:
         context.read<StudentBloc>().add(LoadAdminStudents());
         break;
+      case UserRole.student:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+      case UserRole.employee:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 

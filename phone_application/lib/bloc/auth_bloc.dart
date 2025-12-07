@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import '../services/auth_service.dart' hide User;
+import '../services/auth_service.dart';
 import '../models/user_models.dart';
 
 part 'auth_event.dart';

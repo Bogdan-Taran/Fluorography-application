@@ -111,7 +111,7 @@ class GroupWithStudents {
 }
 
 //Модель для роли пользователя
-enum UserRole { medic, curator, administrator }
+enum UserRole { medic, curator, administrator, student, employee }
 
 class User {
   final String login;

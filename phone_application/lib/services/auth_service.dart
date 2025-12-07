@@ -3,30 +3,13 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
-class User {
-  final int id;
-  final String firstname;
-  final String lastname;
-  final String? patronymic;
-  final int network_city_id;
-  final List<int> roles;
-
-  User({
-    required this.id,
-    required this.firstname,
-    required this.lastname,
-    this.patronymic,    // отчества может и не быть, поэтому не required
-    required this.network_city_id,
-    required this.roles,
-  });
-}
+import 'package:project_fluorography/models/user_models.dart';
 
 class AuthService {
-  static const String _baseurl = 'http://192.168.13.19';
+  static const String _baseurl = 'http://flura.tomtit-tomsk.ru';
   static const String _loginUrl = '$_baseurl/api/login';
   static const String _profileUrl = '$_baseurl/api/profile';
+  static const String _logoutUrl = '$_baseurl/api/logout';
 
   Future<User> login(String login, String password) async{
     //authorization
@@ -58,18 +41,20 @@ class AuthService {
     }
 
     final profileData =jsonDecode(profileResponse.body) as Map<String, dynamic>;
+
+
     return User(
-      id: profileData['id'],
-      firstname: profileData['firstname'],
-      lastname: profileData['lastname'],
-      patronymic: profileData['patronymic'],
-      network_city_id: profileData['network_city_id'],
+      id: profileData['id'] as int? ?? 0,
+      firstname: profileData['firstname'] as String? ?? '',
+      lastname: profileData['lastname'] as String? ?? '',
+      patronymic: profileData['patronymic'] as String?,
+      networkCityId: profileData['network_city_id'] as int? ?? 0,
       roles: List<int>.from(profileData['roles'] ?? []),
+      groups: List<String>.from(profileData['groups'] ?? []),
     );
   }
 
   // func to get token from Shared Preferences
-
   Future<String?> getAuthToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token');

@@ -1,5 +1,7 @@
 import 'student_models.dart';
 
+enum UserRole {medic, curator, administrator, student, employee}
+
 class User {
   final int id;
   final String firstname;
@@ -7,7 +9,7 @@ class User {
   final String? patronymic;
   final int networkCityId;
   final List<int> roles;
-  final String? groupNumber;
+  final List<String>? groups;
 
   User({
     required this.id,
@@ -16,7 +18,7 @@ class User {
     this.patronymic,
     required this.networkCityId,
     required this.roles,
-    this.groupNumber,
+    required this.groups,
 });
 
   factory User.fromJson(Map<String, dynamic> json){
@@ -27,17 +29,27 @@ class User {
       patronymic: json['patronymic'] as String?,
       networkCityId: json['network_city_id'] as int? ?? 0,
       roles: List<int>.from(json['roles'] ?? []),
-      groupNumber: json['group_number'] as String?
+      groups: List<String>.from(json['groups'] ?? []),
     );
   }
 
   UserRole get userRole {
-    if (roles.contains(1)) return UserRole.medic;
-    if (roles.contains(4)) return UserRole.administrator;
-    if (roles.contains(5)) return UserRole.curator;
+    if (roles.contains(1)) return UserRole.medic;         // medic
+    if (roles.contains(4)) return UserRole.administrator; // admin
+    if (roles.contains(5)) return UserRole.curator;       // curator
+    if (roles.contains(2)) return UserRole.student;       // student
+    if (roles.contains(3)) return UserRole.employee;      // employee
 
-    return UserRole.medic;
+    return UserRole.medic;                                // по умолчанию
   }
+
+  List<String>? get curatorGroups {
+    return roles.contains(5) ? groups : [];
+  }
+  bool get isCurator => roles.contains(5);
+  bool get isAdmin => roles.contains(4);
+  bool get isMedic => roles.contains(1);
+
 }
 
-enum UserRole {medic, curator, administrator}
+

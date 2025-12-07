@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/screens/role_screens.dart';
 import '../bloc/auth_bloc.dart';
+// import '../models/student_models.dart' as StudentModels;
+// import '../services/auth_service.dart' as Auth;
 import '../models/user_models.dart';
 
 
@@ -20,51 +22,6 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController loginController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-
-  //
-  //
-  //
-  // Future<void> _login() async {
-  //   //get text from textFields from UI
-  //   final login = loginController.text.trim();
-  //   final password = passwordController.text.trim();
-  //
-  //   if (login.isEmpty || password.isEmpty) {
-  //     ScaffoldMessenger.of(
-  //       context,
-  //     ).showSnackBar(const SnackBar(content: Text('Заполните все поля')));
-  //     return;
-  //   }
-  //   setState(() {
-  //     _isLoading = true;
-  //     _error = null;
-  //   });
-  //
-  //   try {
-  //     // create an object of authService
-  //     final authService = AuthService();
-  //     final user = await authService.login(login, password);
-  //
-  //     // successful login
-  //     print('Успешный вход. Роли ${user.roles}');
-  //
-  //     //TODO:
-  //     //realize navigate to next page
-  //     //Navigator.pushReplacement(context, MaterialPageRoute(...));
-  //   }
-  //   catch (e){
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Ошибка: $e')),
-  //     );
-  //   }
-  //   finally {
-  //     if(mounted){
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-  //     }
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -423,10 +380,19 @@ class _LoginScreenState extends State<LoginScreen> {
         screen = const MedicScreen();
         break;
       case UserRole.curator:
-        screen = CuratorScreen(groupNumber: user.groupNumber ?? '');
+        if (user.curatorGroups!.isNotEmpty) {
+          screen = CuratorScreen(groupNumber: user.curatorGroups!.first);
+        } else {
+          screen = const MedicScreen();
+        }
         break;
       case UserRole.administrator:
         screen = const AdminScreen();
+        break;
+
+      case UserRole.student:
+      case UserRole.employee:
+        screen = const MedicScreen();
         break;
     }
 

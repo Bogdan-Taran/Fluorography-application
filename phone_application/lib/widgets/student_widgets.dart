@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/models/student_models.dart';
+import '../bloc/events.dart';
+import '../bloc/student_bloc.dart';
+import '../widgets/animated_date_container.dart';
+import 'date_edit_dialog.dart';
 
 class StudentRowWidget extends StatelessWidget{
   final Student student;
-  final VoidCallback? onTap;
+  final bool isEditing;
+  //final VoidCallback? onTap;
+  final Function(Student, DateTime) onDateUpdate;
 
   const StudentRowWidget({
     Key? key,
     required this.student,
-    this.onTap,
+    required this.isEditing,
+    required this.onDateUpdate,
   }) : super(key: key);
 
   @override
@@ -35,29 +43,20 @@ class StudentRowWidget extends StatelessWidget{
                 ],
               )
           ),
-          Container(
-            width: 85,
-            height: 24,
-            decoration: BoxDecoration(
-              color: isOverdue ? const Color(0xffF29393) : Colors.lightBlueAccent.shade100,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Text(
-              dateStr,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color(0xff26292B),
-              ),
-            ),
-          )
+          AnimatedDateContainer(
+            dateStr: dateStr,
+            isOverdue: isOverdue,
+            isShaking: isEditing,
+            onTap: isEditing ? () => _showDateEditDialog(context) : null,
+          ),
         ],
       )
     );
   }
 
 
-  String _formatDate(DateTime? date){
-    if(date == null) return '-';
+  String _formatDate(DateTime? date) {
+    if (date == null) return '-';
     return '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
   }
 
@@ -66,6 +65,28 @@ class StudentRowWidget extends StatelessWidget{
     final validUntil = date.add(const Duration(days: 365));
     return DateTime.now().isAfter(validUntil);
   }
+
+  void _showDateEditDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => DateEditDialog(
+        currentDate: student.dateFluorography,
+        onDateSelected: (newDate) {
+          // Закрываем диалог
+          Navigator.of(dialogContext).pop();
+          // Вызываем callback для обновления даты
+          onDateUpdate(student, newDate);
+        },
+        onCancel: () {
+          Navigator.of(dialogContext).pop();
+        },
+      ),
+    );
+  }
+
+
+
+
 
   static const _studentStyle = TextStyle(
     color: Color(0xff26292B),

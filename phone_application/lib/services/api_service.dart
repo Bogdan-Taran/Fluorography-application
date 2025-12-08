@@ -110,5 +110,26 @@ class ApiService {
     );
   }
 
+
+
+  Future<void> updateFluorographyDate(int userId, DateTime newDate) async {
+    final token = await _getAuthToken();
+
+    final response = await http.patch(
+      Uri.parse('$_baseurl/api/fluorography/$userId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'date': '${newDate.year}-${newDate.month.toString().padLeft(2, '0')}-${newDate.day.toString().padLeft(2, '0')}',
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('HTTP ${response.statusCode}: ${response.body}');
+    }
+  }
+
 }
 

@@ -81,7 +81,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(statusBarColor: Colors.black54),
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.black54,
+      ),
       child: Scaffold(
         appBar: _buildAppBar(),
         backgroundColor: const Color(0xFFFFFFFF),
@@ -91,11 +93,13 @@ class _StudentListScreenState extends State<StudentListScreen> {
               return _buildLoading();
             } else if (state is StudentError) {
               return _buildError(state.message);
-            } else if (state is StudentLoaded || state is StudentFiltered) {
-              final groups = state is StudentLoaded
-                  ? state.groups
-                  : (state as StudentFiltered).filteredGroups;
-              return _buildContent(groups);
+            } else if (state is StudentLoaded) {
+              return _buildContent(state.groups);
+            } else if (state is StudentFiltered) {
+              return _buildContent(state.filteredGroups);
+            } else if (state is StudentEditState) {
+              // Обрабатываем состояние редактирования
+              return _buildContent(state.groups);
             } else {
               return const SizedBox();
             }
@@ -160,21 +164,31 @@ class _StudentListScreenState extends State<StudentListScreen> {
   }
 
   Widget _buildContent(List<GroupWithStudents> groups) {
+    // Проверяем, в каком состоянии находится блок
+    bool isEditing = false;
+    if (context.read<StudentBloc>().state is StudentEditState) {
+      final state = context.read<StudentBloc>().state as StudentEditState;
+      isEditing = state.isEditing;
+    }
+
     if (groups.isEmpty) {
       return const Center(
-        child: Text('Нет данных', style: TextStyle(color: Colors.grey)),
+        child: Text(
+          'Нет данных',
+          style: TextStyle(color: Colors.grey),
+        ),
       );
     }
 
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        child: _buildAccordionList(groups),
+        child: _buildAccordionList(groups, isEditing), // передаем isEditing
       ),
     );
   }
 
-  Widget _buildAccordionList(List<GroupWithStudents> groups) {
+  Widget _buildAccordionList(List<GroupWithStudents> groups, bool isEditing) {
     return Accordion(
       headerBorderColor: const Color(0xffD4EAFF),
       headerBorderColorOpened: const Color(0xffD4EAFF),
@@ -207,13 +221,13 @@ class _StudentListScreenState extends State<StudentListScreen> {
           ),
           contentHorizontalPadding: 12,
           contentVerticalPadding: 12,
-          content: _buildGroupContent(groupData.students),
+          content: _buildGroupContent(groupData.students, isEditing),
         );
       }).toList(),
     );
   }
 
-  Widget _buildGroupContent(List<Student> students) {
+  Widget _buildGroupContent(List<Student> students, bool isEditing) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -227,19 +241,37 @@ class _StudentListScreenState extends State<StudentListScreen> {
           )
         else
           Column(
-            children: students
-                .map((student) => StudentRowWidget(student: student))
-                .toList(),
+            children: students.map((student) =>
+                StudentRowWidget(
+                  student: student,
+                  isEditing: isEditing,
+                  onDateUpdate: (student, newDate) {
+                    // Обновляем дату через Bloc
+                    context.read<StudentBloc>().add(
+                      UpdateFluorographyDate(student.id, newDate),
+                    );
+                  },
+                )
+            ).toList(),
           ),
         const SizedBox(height: 15),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            // Переключаем режим редактирования
+            if (isEditing) {
+              // Если выходим из режима редактирования
+              context.read<StudentBloc>().add(CancelEditMode());
+            } else {
+              // Если входим в режим редактирования
+              context.read<StudentBloc>().add(ToggleEditMode(true));
+            }
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xff98BFF3),
           ),
-          child: const Text(
-            'Редактировать',
-            style: TextStyle(
+          child: Text(
+            isEditing ? 'Готово' : 'Редактировать',
+            style: const TextStyle(
               fontSize: 14,
               color: Color(0xffffffff),
               fontFamily: 'Geologica',

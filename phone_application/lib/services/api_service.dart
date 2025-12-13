@@ -10,33 +10,46 @@ class ApiService {
     final prefs = await SharedPreferences.getInstance();
     final token = await prefs.getString('auth_token');
 
-    if(token == null) {
-      await _login();
-      final newToken = await prefs.getString('auth_token');
-      if(newToken == null){
-        throw Exception('Не удалось получить токен после логина');
-      }
-      return newToken;
+    if (token == null) {
+      throw Exception('Токен не найден. Пожалуйста, авторизуйтесь.');
     }
-
     return token;
   }
 
-  Future<void> _login() async {
-    final loginResponse = await http.post(
-        Uri.parse('$_baseurl/api/login'),
-      body: {'login': 'hom', 'password': '57020594'},
-    );
-    if (loginResponse.statusCode != 200){
-      throw Exception('Неверный логин или пароль');
-    }
-    final loginData = jsonDecode(loginResponse.body);
-    final token = loginData['token'] as String?;
-    if(token == null) throw Exception('Токен не получен');
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('auth_token', token);
+  // Метод для проверки валидности токена
+  Future<bool> isTokenValid() async {
+    try {
+      final token = await _getAuthToken();
+      final response = await http.get(
+        Uri.parse('$_baseurl/api/profile'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
   }
+
+
+
+
+
+  // Future<void> _login() async {
+  //   final loginResponse = await http.post(
+  //       Uri.parse('$_baseurl/api/login'),
+  //     body: {'login': 'hom', 'password': '57020594'},
+  //   );
+  //   if (loginResponse.statusCode != 200){
+  //     throw Exception('Неверный логин или пароль');
+  //   }
+  //   final loginData = jsonDecode(loginResponse.body);
+  //   final token = loginData['token'] as String?;
+  //   if(token == null) throw Exception('Токен не получен');
+  //
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString('auth_token', token);
+  // }
 
 
 
@@ -50,28 +63,43 @@ class ApiService {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body) as List<dynamic>;
-      final List<Group> groups = jsonList.whereType<Map<String, dynamic>>().map((map) => Group.fromJson(map)).toList();
+      final List<Group> groups = jsonList
+          .whereType<Map<String, dynamic>>() // Убедимся, что элементы - Map
+          .map((map) => Group.fromJson(map))
+          .toList();
 
       print('Всего групп: ${groups.length}');
       for (var group in groups) {
         print('ID: ${group.id}, Number: ${group.number}');
       }
       return groups;
-    } else{
+    }
+    else if (response.statusCode == 401) {
+      throw Exception('Сессия истекла. Пожалуйста, авторизуйтесь снова.');
+    }
+    else{
       throw Exception('HTTP ${response.statusCode}: ${response.body}');
     }
   }
 
   Future<List<Student>> fetchStudentsByGroupNumber(String groupNumber) async{
     final token = await _getAuthToken();
+
     final response = await http.get(
       Uri.parse('$_baseurl/api/students?group=$groupNumber'),
       headers: {'Authorization': 'Bearer $token'},
     );
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final List<dynamic> rawList = jsonDecode(response.body);
-      return rawList.whereType<Map<String, dynamic>>().map((json) => Student.fromJson(json)).toList();
-    } else{
+      return rawList
+          .whereType<Map<String, dynamic>>() // Убедимся, что элементы - Map
+          .map((json) => Student.fromJson(json))
+          .toList();
+    }
+    else if (response.statusCode == 401) {
+      throw Exception('Сессия истекла. Пожалуйста, авторизуйтесь снова.');
+    }
+    else {
       throw Exception('HTTP ${response.statusCode}');
     }
   }

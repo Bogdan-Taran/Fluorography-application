@@ -15,6 +15,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginRequested>(_onLoginRequested);
     on<LogoutRequested>(_onLogoutRequested);
     on<CheckAuthStatus>(_onCheckAuthStatus);
+    on<LoadProfileFromToken>(_onLoadProfileFromToken);
+  }
+
+  Future<void> _onLoadProfileFromToken(
+      LoadProfileFromToken event,
+      Emitter<AuthState> emit,
+      ) async {
+    try {
+      final user = await _authService.loadProfileFromToken();
+      emit(Authenticated(user: user));
+    } catch (e) {
+      emit(AuthInitial());
+    }
   }
 
   Future<void> _onLoginRequested(

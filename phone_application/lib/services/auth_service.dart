@@ -25,6 +25,7 @@ class AuthService {
     final loginData = jsonDecode(loginResponse.body);
     final token = loginData['token'] as String?;
     if (token == null) throw Exception('Токен не получен');
+    print('Токен получен: $token');
 
     // save token
     final prefs = await SharedPreferences.getInstance();
@@ -43,22 +44,119 @@ class AuthService {
     final profileData =
         jsonDecode(profileResponse.body) as Map<String, dynamic>;
 
+    // Проверяем типы данных
+    final roles = profileData['roles'];
+    for(var role in roles){
+      print(role);
+    }
+    final groups = profileData['groups'];
+
+    // Убедимся, что roles - это список
+    List<int> rolesList = [];
+    if (roles is List) {
+      rolesList = roles.cast<int>();
+    } else if (roles is List<dynamic>) {
+      rolesList = roles.map((e) => e as int).toList();
+    }
+
+    // Убедимся, что groups - это список
+    List<String> groupsList = [];
+    if (groups is List) {
+      groupsList = groups.cast<String>();
+    } else if (groups is List<dynamic>) {
+      groupsList = groups.map((e) => e.toString()).toList();
+    }
+
     return User(
       id: profileData['id'] as int? ?? 0,
       firstname: profileData['firstname'] as String? ?? '',
       lastname: profileData['lastname'] as String? ?? '',
       patronymic: profileData['patronymic'] as String?,
       networkCityId: profileData['network_city_id'] as int? ?? 0,
-      roles: List<int>.from(profileData['roles'] ?? []),
-      groups: List<String>.from(profileData['groups'] ?? []),
+      roles: rolesList,
+      groups: groupsList,
     );
   }
+
+
+  // Добавим метод для загрузки профиля по существующему токену
+  Future<User> loadProfileFromToken() async {
+    final token = await getAuthToken();
+    if (token == null) {
+      throw Exception('Токен не найден');
+    }
+
+    final profileResponse = await http.get(
+      Uri.parse(_profileUrl),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (profileResponse.statusCode != 200) {
+      throw Exception('Не удалось загрузить профиль');
+    }
+
+    final profileData = jsonDecode(profileResponse.body) as Map<String, dynamic>;
+
+    // Проверяем типы данных
+    final roles = profileData['roles'];
+    final groups = profileData['groups'];
+
+    List<int> rolesList = [];
+    if (roles is List) {
+      rolesList = roles.cast<int>();
+    } else if (roles is List<dynamic>) {
+      rolesList = roles.map((e) => e as int).toList();
+    }
+
+    List<String> groupsList = [];
+    if (groups is List) {
+      groupsList = groups.cast<String>();
+    } else if (groups is List<dynamic>) {
+      groupsList = groups.map((e) => e.toString()).toList();
+    }
+
+    return User(
+      id: profileData['id'] as int? ?? 0,
+      firstname: profileData['firstname'] as String? ?? '',
+      lastname: profileData['lastname'] as String? ?? '',
+      patronymic: profileData['patronymic'] as String?,
+      networkCityId: profileData['network_city_id'] as int? ?? 0,
+      roles: rolesList,
+      groups: groupsList,
+    );
+  }
+
 
   // func to get token from Shared Preferences
   Future<String?> getAuthToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token');
   }
+
+
+  // Метод для проверки, есть ли сохраненный токен
+  Future<bool> hasSavedCredentials() async {
+    final token = await getAuthToken();
+    return token != null;
+  }
+
+  // Метод для проверки валидности сохраненного токена
+  Future<bool> isTokenValid() async {
+    final token = await getAuthToken();
+    if (token == null) return false;
+
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseurl/api/profile'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
+
 
   // logout from app and remove auth token
   Future<void> logout() async {

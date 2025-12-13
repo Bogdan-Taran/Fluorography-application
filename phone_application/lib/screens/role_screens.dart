@@ -21,7 +21,7 @@ class MedicScreen extends StatelessWidget {
 }
 
 class CuratorScreen extends StatelessWidget {
-  final String groupNumber;
+  final List<String> groupNumber;
 
   const CuratorScreen({Key? key, required this.groupNumber}) : super(key: key);
 

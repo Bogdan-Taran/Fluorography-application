@@ -5,7 +5,7 @@ abstract class StudentEvent {}
 class LoadAllStudents extends StudentEvent {}
 
 class LoadCuratorStudents extends StudentEvent {
-  final String groupNumber;
+  final List<String> groupNumber;
 
   LoadCuratorStudents(this.groupNumber);
 }

@@ -16,9 +16,9 @@ import '../widgets/student_widgets.dart';
 
 class StudentListScreen extends StatefulWidget {
   final UserRole role;
-  final String? curatorGroup; // для куратора
+  final List<String> curatorGroup; // для куратора
 
-  const StudentListScreen({Key? key, required this.role, this.curatorGroup})
+  const StudentListScreen({Key? key, required this.role, required this.curatorGroup})
     : super(key: key);
 
   @override
@@ -46,7 +46,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
       case UserRole.curator:
         if (widget.curatorGroup != null) {
           context.read<StudentBloc>().add(
-            LoadCuratorStudents(widget.curatorGroup!),
+            LoadCuratorStudents(widget.curatorGroup),
           );
         }
         break;

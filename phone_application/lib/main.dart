@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_fluorography/screens/roles_depend_screen/medic/screens/medic_screen.dart';
 import 'package:project_fluorography/services/auth_service.dart';
+import 'package:project_fluorography/widgets/auth_wrapper.dart';
 import '/screens/login.dart';
 import 'package:flutter/services.dart';
 
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue
           ),
-          home: const LoginScreen(),
+          home: const StartupScreen(),
           debugShowCheckedModeBanner: false,
         )
     );

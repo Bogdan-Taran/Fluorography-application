@@ -14,3 +14,4 @@ class LogoutRequested extends AuthEvent {}
 
 class CheckAuthStatus extends AuthEvent {}
 
+class LoadProfileFromToken extends AuthEvent {}

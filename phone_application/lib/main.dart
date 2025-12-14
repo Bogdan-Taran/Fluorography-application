@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:project_fluorography/screens/roles_depend_screen/medic/screens/medic_screen.dart';
-import 'package:project_fluorography/services/auth_service.dart';
-import 'package:project_fluorography/widgets/auth_wrapper.dart';
-import '/screens/login.dart';
 import 'package:flutter/services.dart';
 
-import 'bloc/auth_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,27 +14,39 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => AuthBloc(authService: AuthService()))
-        ],
-        child: MaterialApp(
-          title: 'Флюорография',
-          theme: ThemeData(
-            primarySwatch: Colors.blue
-          ),
-          home: const StartupScreen(),
-          debugShowCheckedModeBanner: false,
-        )
-    );
+    return MaterialApp(
+      title: 'CLEAN Flura',
 
-    // return MaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   // home: Login(),
-    //   home: MedicScreen(),
-    // );
+      theme: ThemeData(
+        primarySwatch: Colors.lightGreen,
+      ),
+
+      home: const MyHomePage(title: 'Home page'),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
+      ),
+
+      body: const Center(
+          child: Text(
+            'Welcome to the clean FLura Project',
+          )),
+    );
   }
 }
 

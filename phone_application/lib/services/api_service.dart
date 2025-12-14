@@ -32,27 +32,6 @@ class ApiService {
   }
 
 
-
-
-
-  // Future<void> _login() async {
-  //   final loginResponse = await http.post(
-  //       Uri.parse('$_baseurl/api/login'),
-  //     body: {'login': 'hom', 'password': '57020594'},
-  //   );
-  //   if (loginResponse.statusCode != 200){
-  //     throw Exception('Неверный логин или пароль');
-  //   }
-  //   final loginData = jsonDecode(loginResponse.body);
-  //   final token = loginData['token'] as String?;
-  //   if(token == null) throw Exception('Токен не получен');
-  //
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.setString('auth_token', token);
-  // }
-
-
-
   Future<List<Group>> fetchGroups() async {
     final token = await _getAuthToken();
 
@@ -82,6 +61,7 @@ class ApiService {
     }
   }
 
+  //приём всех струдентов определённой группы
   Future<List<Student>> fetchStudentsByGroupNumber(String groupNumber) async{
     final token = await _getAuthToken();
 
@@ -122,8 +102,16 @@ class ApiService {
     return result;
   }
 
-  Future<GroupWithStudents> fetchGroupWithStudents(String groupNumber) async{
+  Future<GroupWithStudents> fetchGroupWithStudents(List<String> groupNumber) async{
+    List<String> ListStudents  = [];
+    for(var group in groupNumber){
+      final students = await fetchStudentsByGroupNumber(group);
+      students.toList();
+    }
+
+
     final students = await fetchStudentsByGroupNumber(groupNumber);
+
     return GroupWithStudents(
       groupNumber: groupNumber,
       students: students

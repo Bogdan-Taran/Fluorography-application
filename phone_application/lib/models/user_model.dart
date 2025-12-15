@@ -22,13 +22,13 @@ class UserData {
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(
-      id: json["id"],
-      firstname: json["firstname"],
-      lastname: json["lastname"],
-      patronymic: json["patronymic"],
-      network_city_id: json["network_city_id"],
-      roles: json["roles"],
-      groups: json["groups"],
+      id: json['id'],
+      firstname: json['firstname'],
+      lastname: json['lastname'],
+      patronymic: json['patronymic'],
+      network_city_id: json['network_city_id'],
+      roles: json['roles'],
+      groups: json['groups'],
     );
   }
 }

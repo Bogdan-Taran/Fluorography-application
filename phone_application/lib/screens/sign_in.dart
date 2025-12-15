@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:project_fluorography/styles.dart';
 import 'package:sizer/sizer.dart';
 
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
+
+import 'home_screen.dart';
 
 class SignInScreen extends StatefulWidget{
   static String id = 'login_screen';
@@ -29,7 +32,8 @@ class _SignInScreenState extends State<SignInScreen>{
   @override
   Widget build(BuildContext context){
     var screenSize = MediaQuery.of(context).size;
-
+    TextStyles _textStyles = TextStyles();
+      
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.black54,
@@ -110,12 +114,7 @@ class _SignInScreenState extends State<SignInScreen>{
                       Center(
                         child: Text(
                           'Авторизация',
-                          style: TextStyle(
-                            fontSize: AppSizes.fontSizeTitle.sp,
-                            color: Color(0xff26292B),
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Geologica',
-                          ),
+                          style: _textStyles.textStyleTitle(context),
                         ),
                       ),
                       Padding(
@@ -148,7 +147,7 @@ class _SignInScreenState extends State<SignInScreen>{
                           cursorHeight: 17,
                           cursorWidth: 1.2,
                           decoration: InputDecoration(
-                            enabled: !isLoading,
+                            enabled: true,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0),
                               borderSide: BorderSide(
@@ -164,19 +163,18 @@ class _SignInScreenState extends State<SignInScreen>{
                               ),
                             ),
 
-                            // labelText: 'Логин',
                             hintText: 'Логин',
                             hintStyle: TextStyle(
                               fontSize: AppSizes.fontSizeSmall.sp,
                               color: Color(0xff999A9B),
                               fontWeight: FontWeight.w500,
                             ),
-
                             contentPadding:
                             AppSizes.loginAndPasswordFieldPadding,
                           ),
+
                           keyboardType: TextInputType.text,
-                          enabled: !isLoading,
+                          enabled: true,
                           // maxLength: 25,
                           maxLines: 1,
                           onTapOutside: (event) {
@@ -185,20 +183,17 @@ class _SignInScreenState extends State<SignInScreen>{
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.01,
+                        height: 0.01.h,
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 35),
+                        padding: EdgeInsets.symmetric(horizontal: 35.0.w),
                         child: TextField(
                           controller: passwordController,
                           cursorColor: Color(0xff72A7EB),
                           cursorHeight: 17,
                           cursorWidth: 1.2,
                           decoration: InputDecoration(
-                            enabled: !isLoading,
+                            enabled: true,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0),
                               borderSide: BorderSide(
@@ -225,7 +220,7 @@ class _SignInScreenState extends State<SignInScreen>{
                           ),
                           keyboardType: TextInputType.text,
                           // maxLength: 25,
-                          enabled: !isLoading,
+                          enabled: true,
                           maxLines: 1,
                           onTapOutside: (event) {
                             FocusManager.instance.primaryFocus?.unfocus();
@@ -236,69 +231,99 @@ class _SignInScreenState extends State<SignInScreen>{
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.05,
+                        height: 0.05.h,
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 35),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            elevation: WidgetStateProperty.resolveWith<double>(
-                                  (Set<WidgetState> states) => 0,
-                            ),
-                            backgroundColor:
-                            WidgetStateProperty.resolveWith<Color>((
-                                Set<WidgetState> states,) {
-                              if (states.contains(WidgetState.disabled)) {
-                                return Color(0xffD5D6D7);
-                              }
-                              if (states.contains(WidgetState.pressed)) {
-                                return Color(0xFF72A7EB);
-                              }
-                              if (states.contains(WidgetState.hovered)) {
-                                return Color(0xFFBADEFF);
-                              }
-                              return Color(0xff98BFF3);
-                            }),
-                            foregroundColor:
-                            WidgetStateProperty.resolveWith<Color>((
-                                Set<WidgetState> states,) {
-                              if (states.contains(WidgetState.disabled)) {
-                                return Color(0xFF888888);
-                              }
-                              return Color(0xffffffff);
-                            }),
-                            minimumSize: WidgetStateProperty.all(
-                              Size(MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 1, 40),
-                            ),
-                            shape: WidgetStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+
+
+
+                      BlocConsumer<AuthenticationBloc, AuthenticationState>(
+                          listener: (context, state){
+                            if (state is AuthenticationSuccessState){
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  HomeScreen.id,
+                                  (route) => false,
+                              );
+                            }
+                            else if (state is AuthenticationFailureState) {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const AlertDialog(
+                                    content: Text('error'),
+                                  );
+                                }
+                              );
+                            }
+                          },
+                          builder: (context, state) {
+                            return SizedBox(
+                              height: 15.0.h,
+                              width: 30.0.h,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  BlocProvider.of<AuthenticationBloc>(context).add(
+                                    SignInUser(
+                                      loginController.text.trim(),
+                                      passwordController.text.trim(),
+                                    )
+                                  );
+                                },
+                                style: ButtonStyle(
+                                  elevation: WidgetStateProperty.resolveWith<double>(
+                                        (Set<WidgetState> states) => 0,
+                                  ),
+                                  backgroundColor:
+                                  WidgetStateProperty.resolveWith<Color>((
+                                      Set<WidgetState> states,) {
+                                    if (states.contains(WidgetState.disabled)) {
+                                      return Color(0xffD5D6D7);
+                                    }
+                                    if (states.contains(WidgetState.pressed)) {
+                                      return Color(0xFF72A7EB);
+                                    }
+                                    if (states.contains(WidgetState.hovered)) {
+                                      return Color(0xFFBADEFF);
+                                    }
+                                    return Color(0xff98BFF3);
+                                  }),
+                                  foregroundColor:
+                                  WidgetStateProperty.resolveWith<Color>((
+                                      Set<WidgetState> states,) {
+                                    if (states.contains(WidgetState.disabled)) {
+                                      return Color(0xFF888888);
+                                    }
+                                    return Color(0xffffffff);
+                                  }),
+                                  minimumSize: WidgetStateProperty.all(
+                                    Size(MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 1, 40),
+                                  ),
+                                  shape: WidgetStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Войти',
+                                  style: TextStyle(
+                                    fontSize: AppSizes.fontSizeMedium.sp,
+                                    color: Color(0xffffffff),
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'Geologica',
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          onPressed: isLoading ? null : _performLogin,
-                          child: isLoading
-                              ? LoadingAnimationWidget.halfTriangleDot(
-                            color: Colors.white,
-                            size: 24,
-                          )
-                              : Text(
-                            'Войти',
-                            style: TextStyle(
-                              fontSize: AppSizes.fontSizeMedium.sp,
-                              color: Color(0xffffffff),
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Geologica',
-                            ),
-                          ),
-                        ),
-                      ),
+
+
+
+                            );
+                          },
+                      )
+
                     ],
                   ),
                 ),

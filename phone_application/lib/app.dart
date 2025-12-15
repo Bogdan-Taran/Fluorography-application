@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget{
         builder: (context, constraints) {
           return OrientationBuilder(
               builder: (context, orientation){
-                SizerUtil().init(constraints, orientation);
+                //SizerUtil().init(constraints, orientation);
                 return MaterialApp(
                   debugShowCheckedModeBanner: false,
                   title: 'Clean Flura',

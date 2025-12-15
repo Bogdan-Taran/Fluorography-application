@@ -1,0 +1,62 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
+import 'package:sizer/sizer.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+import '../styles.dart';
+
+class HomeScreen extends StatelessWidget{
+  static String id = 'home_screen';
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context){
+    TextStyles _textStyles = TextStyles();
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Hello unknown user',
+              style: _textStyles.textStyleTitle(context),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+
+            BlocConsumer<AuthenticationBloc, AuthenticationState>(
+              listener: (context, state) {
+                if(state is AuthenticationLoadingState){
+                  const CircularProgressIndicator();
+                }
+                else if(state is AuthenticationFailureState){
+                  showDialog(
+                    context: context,
+                    builder: (context){
+                      return const AlertDialog(
+                        content: Text('Error'),
+                      );
+                    }
+                  );
+                }
+              },
+              builder: (context, state) {
+                return ElevatedButton(
+                    onPressed: () {
+                      BlocProvider.of<AuthenticationBloc>(context).add(SignOut());
+                    },
+                    child: Text(
+                      'Выйти'
+                    ),
+                );
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

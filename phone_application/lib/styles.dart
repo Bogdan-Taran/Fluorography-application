@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:sizer/sizer.dart';
+// import 'package:sizer/sizer.dart';
 
 
 class AppSizes {
@@ -29,7 +29,7 @@ class AppSizes {
 class TextStyles{
   TextStyle textStyleTitle(BuildContext context){
     return TextStyle(
-      fontSize: AppSizes.fontSizeTitle.sp,
+      fontSize: AppSizes.fontSizeTitle,
       color: Color(0xff26292B),
       fontWeight: FontWeight.w400,
       fontFamily: 'Geologica',

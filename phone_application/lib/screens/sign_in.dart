@@ -68,267 +68,265 @@ class _SignInScreenState extends State<SignInScreen>{
                   child: SvgPicture.asset(
                     'assets/images/vectorBottom.svg',
                     fit: BoxFit.fitWidth,
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 1,
+                    width: 10,
                   ),
                 ),
               ],
             ),
 
-            Stack(
-              children: [
-                Container(
-                  width: 75.0.w,
-                  height: 0.43.h,
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0x26D4EAFF),
-                        offset: Offset(-4, -4),
-                        blurRadius: 3,
-                        spreadRadius: 0,
-                      ),
-                      BoxShadow(
-                        color: Color(0x26D4EAFF),
-                        offset: Offset(6, -7),
-                        blurRadius: 3,
-                        spreadRadius: 0,
-                      ),
-                      BoxShadow(
-                        color: Color(0x26D4EAFF),
-                        offset: Offset(0, 7),
-                        blurRadius: 3,
-                        spreadRadius: 0,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 0.04.h,
-                      ),
-                      Center(
-                        child: Text(
-                          'Авторизация',
-                          style: _textStyles.textStyleTitle(context),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 15.0.h,
-                          left: 0,
-                          right: 0,
-                          bottom: 20.0.h,
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Вход происходит через сетевой город',
-                            style: TextStyle(
-                              fontSize: AppSizes.fontSizeExtraSmall.sp,
-                              color: Color(0xff999A9B),
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'Geologica',
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 0.02.h,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5.0.w),
-                        child: TextField(
-                          controller: loginController,
-                          cursorColor: Color(0xff72A7EB),
-                          cursorHeight: 17,
-                          cursorWidth: 1.2,
-                          decoration: InputDecoration(
-                            enabled: true,
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(
-                                color: Color(0xff98BFF3),
-                                width: 1.0,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(
-                                color: Color(0xff72A7EB),
-                                width: 2,
-                              ),
-                            ),
-
-                            hintText: 'Логин',
-                            hintStyle: TextStyle(
-                              fontSize: AppSizes.fontSizeSmall.sp,
-                              color: Color(0xff999A9B),
-                              fontWeight: FontWeight.w500,
-                            ),
-                            contentPadding:
-                            AppSizes.loginAndPasswordFieldPadding,
-                          ),
-
-                          keyboardType: TextInputType.text,
-                          enabled: true,
-                          // maxLength: 25,
-                          maxLines: 1,
-                          onTapOutside: (event) {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 0.01.h,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 35.0.w),
-                        child: TextField(
-                          controller: passwordController,
-                          cursorColor: Color(0xff72A7EB),
-                          cursorHeight: 17,
-                          cursorWidth: 1.2,
-                          decoration: InputDecoration(
-                            enabled: true,
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(
-                                color: Color(0xff98BFF3),
-                                width: 1.0,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(
-                                color: Color(0xff72A7EB),
-                                width: 2,
-                              ),
-                            ),
-                            hintText: 'Пароль',
-                            hintStyle: TextStyle(
-                              fontSize: AppSizes.fontSizeSmall.sp,
-                              color: Color(0xff999A9B),
-                              fontWeight: FontWeight.w500,
-                            ),
-
-                            contentPadding:
-                            AppSizes.loginAndPasswordFieldPadding,
-                          ),
-                          keyboardType: TextInputType.text,
-                          // maxLength: 25,
-                          enabled: true,
-                          maxLines: 1,
-                          onTapOutside: (event) {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                          },
-                          obscureText: true,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 0.05.h,
-                      ),
-
-
-
-                      BlocConsumer<AuthenticationBloc, AuthenticationState>(
-                          listener: (context, state){
-                            if (state is AuthenticationSuccessState){
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context,
-                                  HomeScreen.id,
-                                  (route) => false,
-                              );
-                            }
-                            else if (state is AuthenticationFailureState) {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return const AlertDialog(
-                                    content: Text('error'),
-                                  );
-                                }
-                              );
-                            }
-                          },
-                          builder: (context, state) {
-                            return SizedBox(
-                              height: 15.0.h,
-                              width: 30.0.h,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  BlocProvider.of<AuthenticationBloc>(context).add(
-                                    SignInUser(
-                                      loginController.text.trim(),
-                                      passwordController.text.trim(),
-                                    )
-                                  );
-                                },
-                                style: ButtonStyle(
-                                  elevation: WidgetStateProperty.resolveWith<double>(
-                                        (Set<WidgetState> states) => 0,
-                                  ),
-                                  backgroundColor:
-                                  WidgetStateProperty.resolveWith<Color>((
-                                      Set<WidgetState> states,) {
-                                    if (states.contains(WidgetState.disabled)) {
-                                      return Color(0xffD5D6D7);
-                                    }
-                                    if (states.contains(WidgetState.pressed)) {
-                                      return Color(0xFF72A7EB);
-                                    }
-                                    if (states.contains(WidgetState.hovered)) {
-                                      return Color(0xFFBADEFF);
-                                    }
-                                    return Color(0xff98BFF3);
-                                  }),
-                                  foregroundColor:
-                                  WidgetStateProperty.resolveWith<Color>((
-                                      Set<WidgetState> states,) {
-                                    if (states.contains(WidgetState.disabled)) {
-                                      return Color(0xFF888888);
-                                    }
-                                    return Color(0xffffffff);
-                                  }),
-                                  minimumSize: WidgetStateProperty.all(
-                                    Size(MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width * 1, 40),
-                                  ),
-                                  shape: WidgetStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Войти',
-                                  style: TextStyle(
-                                    fontSize: AppSizes.fontSizeMedium.sp,
-                                    color: Color(0xffffffff),
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'Geologica',
-                                  ),
-                                ),
-                              ),
-
-
-
-                            );
-                          },
-                      )
-
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            // Stack(
+            //   children: [
+            //     Container(
+            //       // width: 75.0.w,
+            //       width: 75,
+            //       height: 43,
+            //       decoration: BoxDecoration(
+            //         color: Color(0xFFFFFFFF),
+            //         borderRadius: BorderRadius.all(Radius.circular(20)),
+            //         boxShadow: [
+            //           BoxShadow(
+            //             color: Color(0x26D4EAFF),
+            //             offset: Offset(-4, -4),
+            //             blurRadius: 3,
+            //             spreadRadius: 0,
+            //           ),
+            //           BoxShadow(
+            //             color: Color(0x26D4EAFF),
+            //             offset: Offset(6, -7),
+            //             blurRadius: 3,
+            //             spreadRadius: 0,
+            //           ),
+            //           BoxShadow(
+            //             color: Color(0x26D4EAFF),
+            //             offset: Offset(0, 7),
+            //             blurRadius: 3,
+            //             spreadRadius: 0,
+            //           ),
+            //         ],
+            //       ),
+            //       child: Column(
+            //         children: [
+            //           SizedBox(
+            //             height: 0.04,
+            //           ),
+            //           Center(
+            //             child: Text(
+            //               'Авторизация',
+            //               style: _textStyles.textStyleTitle(context),
+            //             ),
+            //           ),
+            //           Padding(
+            //             padding: EdgeInsets.only(
+            //               top: 15,
+            //               left: 0,
+            //               right: 0,
+            //               bottom: 20,
+            //             ),
+            //             child: Center(
+            //               child: Text(
+            //                 'Вход происходит через сетевой город',
+            //                 style: TextStyle(
+            //                   fontSize: AppSizes.fontSizeExtraSmall,
+            //                   color: Color(0xff999A9B),
+            //                   fontWeight: FontWeight.w300,
+            //                   fontFamily: 'Geologica',
+            //                 ),
+            //               ),
+            //             ),
+            //           ),
+            //           SizedBox(
+            //             height: 12,
+            //           ),
+            //           Padding(
+            //             padding: EdgeInsets.symmetric(horizontal: 15),
+            //             child: TextField(
+            //               controller: loginController,
+            //               cursorColor: Color(0xff72A7EB),
+            //               cursorHeight: 17,
+            //               cursorWidth: 1.2,
+            //               decoration: InputDecoration(
+            //                 enabled: true,
+            //                 enabledBorder: OutlineInputBorder(
+            //                   borderRadius: BorderRadius.circular(10.0),
+            //                   borderSide: BorderSide(
+            //                     color: Color(0xff98BFF3),
+            //                     width: 1.0,
+            //                   ),
+            //                 ),
+            //                 focusedBorder: OutlineInputBorder(
+            //                   borderRadius: BorderRadius.circular(10.0),
+            //                   borderSide: BorderSide(
+            //                     color: Color(0xff72A7EB),
+            //                     width: 2,
+            //                   ),
+            //                 ),
+            //
+            //                 hintText: 'Логин',
+            //                 hintStyle: TextStyle(
+            //                   fontSize: AppSizes.fontSizeSmall,
+            //                   color: Color(0xff999A9B),
+            //                   fontWeight: FontWeight.w500,
+            //                 ),
+            //                 contentPadding:
+            //                 AppSizes.loginAndPasswordFieldPadding,
+            //               ),
+            //
+            //               keyboardType: TextInputType.text,
+            //               enabled: true,
+            //               // maxLength: 25,
+            //               maxLines: 1,
+            //               onTapOutside: (event) {
+            //                 FocusManager.instance.primaryFocus?.unfocus();
+            //               },
+            //             ),
+            //           ),
+            //           SizedBox(
+            //             height: 10,
+            //           ),
+            //           Padding(
+            //             padding: EdgeInsets.symmetric(horizontal: 35),
+            //             child: TextField(
+            //               controller: passwordController,
+            //               cursorColor: Color(0xff72A7EB),
+            //               cursorHeight: 17,
+            //               cursorWidth: 1.2,
+            //               decoration: InputDecoration(
+            //                 enabled: true,
+            //                 enabledBorder: OutlineInputBorder(
+            //                   borderRadius: BorderRadius.circular(10.0),
+            //                   borderSide: BorderSide(
+            //                     color: Color(0xff98BFF3),
+            //                     width: 1.0,
+            //                   ),
+            //                 ),
+            //                 focusedBorder: OutlineInputBorder(
+            //                   borderRadius: BorderRadius.circular(10.0),
+            //                   borderSide: BorderSide(
+            //                     color: Color(0xff72A7EB),
+            //                     width: 2,
+            //                   ),
+            //                 ),
+            //                 hintText: 'Пароль',
+            //                 hintStyle: TextStyle(
+            //                   fontSize: AppSizes.fontSizeSmall,
+            //                   color: Color(0xff999A9B),
+            //                   fontWeight: FontWeight.w500,
+            //                 ),
+            //
+            //                 contentPadding:
+            //                 AppSizes.loginAndPasswordFieldPadding,
+            //               ),
+            //               keyboardType: TextInputType.text,
+            //               // maxLength: 25,
+            //               enabled: true,
+            //               maxLines: 1,
+            //               onTapOutside: (event) {
+            //                 FocusManager.instance.primaryFocus?.unfocus();
+            //               },
+            //               obscureText: true,
+            //               enableSuggestions: false,
+            //               autocorrect: false,
+            //             ),
+            //           ),
+            //           SizedBox(
+            //             height: 10,
+            //           ),
+            //
+            //
+            //
+            //           BlocConsumer<AuthenticationBloc, AuthenticationState>(
+            //               listener: (context, state){
+            //                 if (state is AuthenticationSuccessState){
+            //                   Navigator.pushNamedAndRemoveUntil(
+            //                       context,
+            //                       HomeScreen.id,
+            //                       (route) => false,
+            //                   );
+            //                 }
+            //                 else if (state is AuthenticationFailureState) {
+            //                   showDialog(
+            //                     context: context,
+            //                     builder: (context) {
+            //                       return const AlertDialog(
+            //                         content: Text('error'),
+            //                       );
+            //                     }
+            //                   );
+            //                 }
+            //               },
+            //               builder: (context, state) {
+            //                 return SizedBox(
+            //                   height: 15,
+            //                   width: 30,
+            //                   child: ElevatedButton(
+            //                     onPressed: () {
+            //                       BlocProvider.of<AuthenticationBloc>(context).add(
+            //                         SignInUser(
+            //                           loginController.text.trim(),
+            //                           passwordController.text.trim(),
+            //                         )
+            //                       );
+            //                     },
+            //                     style: ButtonStyle(
+            //                       elevation: WidgetStateProperty.resolveWith<double>(
+            //                             (Set<WidgetState> states) => 0,
+            //                       ),
+            //                       backgroundColor:
+            //                       WidgetStateProperty.resolveWith<Color>((
+            //                           Set<WidgetState> states,) {
+            //                         if (states.contains(WidgetState.disabled)) {
+            //                           return Color(0xffD5D6D7);
+            //                         }
+            //                         if (states.contains(WidgetState.pressed)) {
+            //                           return Color(0xFF72A7EB);
+            //                         }
+            //                         if (states.contains(WidgetState.hovered)) {
+            //                           return Color(0xFFBADEFF);
+            //                         }
+            //                         return Color(0xff98BFF3);
+            //                       }),
+            //                       foregroundColor:
+            //                       WidgetStateProperty.resolveWith<Color>((
+            //                           Set<WidgetState> states,) {
+            //                         if (states.contains(WidgetState.disabled)) {
+            //                           return Color(0xFF888888);
+            //                         }
+            //                         return Color(0xffffffff);
+            //                       }),
+            //                       minimumSize: WidgetStateProperty.all(
+            //                         Size(MediaQuery
+            //                             .of(context)
+            //                             .size
+            //                             .width * 1, 40),
+            //                       ),
+            //                       shape: WidgetStateProperty.all(
+            //                         RoundedRectangleBorder(
+            //                           borderRadius: BorderRadius.circular(10),
+            //                         ),
+            //                       ),
+            //                     ),
+            //                     child: Text(
+            //                       'Войти',
+            //                       style: TextStyle(
+            //                         fontSize: AppSizes.fontSizeMedium,
+            //                         color: Color(0xffffffff),
+            //                         fontWeight: FontWeight.w600,
+            //                         fontFamily: 'Geologica',
+            //                       ),
+            //                     ),
+            //                   ),
+            //
+            //
+            //
+            //                 );
+            //               },
+            //           )
+            //
+            //         ],
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/screens/home_screen.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/auth_service.dart';
@@ -27,11 +29,15 @@ class MyApp extends StatelessWidget{
         builder: (context, constraints) {
           return OrientationBuilder(
               builder: (context, orientation){
-                //SizerUtil().init(constraints, orientation);
-                return MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  title: 'Clean Flura',
-                  home: AuthChecker(),
+                return MultiBlocProvider(
+                  providers: [
+                    BlocProvider(create: (context) => AuthenticationBloc())
+                  ],
+                  child: MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    title: 'Clean Flura',
+                    home: AuthChecker(),
+                  )
                 );
               }
           );
@@ -39,6 +45,7 @@ class MyApp extends StatelessWidget{
     );
   }
 }
+
 
 class AuthChecker extends StatefulWidget{
   const AuthChecker({super.key});

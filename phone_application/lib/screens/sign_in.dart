@@ -231,6 +231,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.02),
+
+
                       BlocConsumer<AuthenticationBloc, AuthenticationState>(
                         listener: (context, state) {
                           if (state is AuthenticationSuccessState) {
@@ -253,9 +255,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           }
                         },
                         builder: (context, state) {
-                          return SizedBox(
-                            height: screenHeight * 0.02,
-                            width: screenWidth * 0.03,
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 35),
                             child: ElevatedButton(
                               onPressed: () {
                                 BlocProvider.of<AuthenticationBloc>(

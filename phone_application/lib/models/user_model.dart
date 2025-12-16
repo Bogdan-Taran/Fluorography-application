@@ -1,34 +1,46 @@
 import 'package:flutter/foundation.dart';
 
-@immutable
 class UserData {
   final int id;
   final String firstname;
   final String lastname;
-  final String patronymic;
+  String? patronymic;
   final int network_city_id;
   final List<int> roles;
   final List<String> groups;
 
-  const UserData({
+  UserData({
     required this.id,
     required this.firstname,
     required this.lastname,
-    required this.patronymic,
+    this.patronymic,
     required this.network_city_id,
     required this.roles,
-    required this.groups,
+    this.groups = const [],
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) {
+    final roles = json['roles'];
+    final groups = json['groups'];
+
+    List<int> rolesList = [];
+    if(roles is List){
+      rolesList = roles.map((e) => e as int).toList();
+    }
+
+    List<String> groupsList = [];
+    if(groups is List){
+      groupsList = groups.map((e) => e as String).toList();
+    }
+
     return UserData(
-      id: json['id'] as int,
-      firstname: json['firstname'] as String,
-      lastname: json['lastname'] as String,
-      patronymic: json['patronymic'] as String,
-      network_city_id: json['network_city_id'] as int,
-      roles: json['roles'],
-      groups: json['groups'],
+      id: json['id'] as int? ?? 0,
+      firstname: json['firstname'] as String? ?? '',
+      lastname: json['lastname'] as String? ?? '',
+      patronymic: json['patronymic'] as String? ?? '',
+      network_city_id: json['network_city_id'] as int? ?? 0,
+      roles: rolesList,
+      groups: groupsList,
     );
   }
 }

@@ -10,7 +10,7 @@ class UserData {
   final List<int> roles;
   final List<String> groups;
 
-  const UserData({
+  UserData({
     required this.id,
     required this.firstname,
     required this.lastname,
@@ -22,13 +22,13 @@ class UserData {
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(
-      id: json['id'],
-      firstname: json['firstname'],
-      lastname: json['lastname'],
-      patronymic: json['patronymic'],
-      network_city_id: json['network_city_id'],
-      roles: json['roles'],
-      groups: json['groups'],
+      id: json['id'] as int,
+      firstname: json['firstname'] as String,
+      lastname: json['lastname'] as String,
+      patronymic: json['patronymic'] as String,
+      network_city_id: json['network_city_id'] as int,
+      roles: json['roles'] as List<int>,
+      groups: json['groups'] as List<String>,
     );
   }
 }

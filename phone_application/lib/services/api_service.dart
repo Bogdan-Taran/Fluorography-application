@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/user_model.dart';
+
 class ApiService {
   final String _baseUrl = 'http://flura.tomtit-tomsk.ru';
 
@@ -14,9 +16,9 @@ class ApiService {
     );
 
     if (response.statusCode == 200){
-      final data = jsonDecode(response.body);
-      await _saveToken(data['token']);
-      return {'success': true, 'data': data};
+      final parsedJson = jsonDecode(response.body);
+      await _saveToken(parsedJson['token']);
+      return {'success': true, 'data': parsedJson};
     }
     else {
       final errorData = jsonDecode(response.body);

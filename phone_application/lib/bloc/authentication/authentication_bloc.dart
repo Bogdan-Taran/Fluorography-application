@@ -17,7 +17,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<SignInUser>((event, emit) async {
       emit(AuthenticationLoadingState(isLoading: true));
       try{
-        final UserData? user = await authService.SignInUser(event.login, event.password);
+        final UserData? user = await authService.signInUser(event.login, event.password);
         if (user != null){
           emit(AuthenticationSuccessState(user));
         }

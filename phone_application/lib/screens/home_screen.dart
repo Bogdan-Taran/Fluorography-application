@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
-import 'package:sizer/sizer.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../styles.dart';
 
@@ -13,7 +11,7 @@ class HomeScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    TextStyles _textStyles = TextStyles();
+    TextStyles textStyles = TextStyles();
     return Scaffold(
       body: Center(
         child: Column(
@@ -21,7 +19,7 @@ class HomeScreen extends StatelessWidget{
           children: [
             Text(
               'Hello unknown user',
-              style: _textStyles.textStyleTitle(context),
+              style: textStyles.textStyleTitle(context),
             ),
             const SizedBox(
               height: 20,

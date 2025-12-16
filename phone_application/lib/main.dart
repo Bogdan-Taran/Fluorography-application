@@ -19,7 +19,7 @@ void main() {
 
 
 class MyApp extends StatelessWidget{
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context){
@@ -41,6 +41,8 @@ class MyApp extends StatelessWidget{
 }
 
 class AuthChecker extends StatefulWidget{
+  const AuthChecker({super.key});
+
   @override
   _AuthCheckerState createState() => _AuthCheckerState();
 }
@@ -48,7 +50,7 @@ class AuthChecker extends StatefulWidget{
 class _AuthCheckerState extends State<AuthChecker>{
   bool _isAuthenticated = false;
   bool _isLoading = true;
-  AuthService _authService = AuthService();
+  final AuthService _authService = AuthService();
 
   @override
   void initState() {

@@ -3,22 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:project_fluorography/styles.dart';
-import 'package:sizer/sizer.dart';
+import 'home_screen.dart';
 
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 
-import 'home_screen.dart';
-
-class SignInScreen extends StatefulWidget{
+class SignInScreen extends StatefulWidget {
   static String id = 'login_screen';
 
-  const SignInScreen({Key? key,}) : super(key: key);
+  const SignInScreen({super.key});
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen>{
+class _SignInScreenState extends State<SignInScreen> {
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -30,23 +28,20 @@ class _SignInScreenState extends State<SignInScreen>{
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    TextStyles _textStyles = TextStyles();
+    TextStyles textStyles = TextStyles();
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.black54,
-      ),
+      value: SystemUiOverlayStyle(statusBarColor: Colors.black54),
       child: Scaffold(
         backgroundColor: Color(0xFFFFFFFF),
         body: Stack(
           alignment: AlignmentDirectional.center,
           children: <Widget>[
-
             // Декорации
             Stack(
               children: [
@@ -71,7 +66,7 @@ class _SignInScreenState extends State<SignInScreen>{
                   child: SvgPicture.asset(
                     'assets/images/vectorBottom.svg',
                     fit: BoxFit.fitWidth,
-                    width: 10,
+                    width: screenWidth * 1,
                   ),
                 ),
               ],
@@ -80,8 +75,8 @@ class _SignInScreenState extends State<SignInScreen>{
             Stack(
               children: [
                 Container(
-                  width: screenWidth * 0.8,
-                  height: screenHeight * 0.5,
+                  width: screenWidth * 0.75,
+                  height: screenHeight * 0.43,
                   decoration: BoxDecoration(
                     color: Color(0xFFFFFFFF),
                     borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -109,13 +104,15 @@ class _SignInScreenState extends State<SignInScreen>{
                   child: Column(
                     children: [
                       SizedBox(
-                        height: screenHeight * 0.02,
+                        height: screenHeight * 0.04,
+                        // height: screenHeight * 0.02,
                       ),
                       Center(
                         child: Text(
                           'Авторизация',
                           style: TextStyle(
-                            fontSize: screenWidth * AppSizes.fontSizeTitle,
+                            fontSize: AppSizes.fontSizeTitle,
+                            // fontSize: screenWidth * AppSizes.fontSizeTitle,
                             color: Color(0xff26292B),
                             fontWeight: FontWeight.w400,
                             fontFamily: 'Geologica',
@@ -133,7 +130,7 @@ class _SignInScreenState extends State<SignInScreen>{
                           child: Text(
                             'Вход происходит через сетевой город',
                             style: TextStyle(
-                              fontSize: screenWidth * AppSizes.fontSizeExtraSmall,
+                              fontSize: AppSizes.fontSizeExtraSmall,
                               color: Color(0xff999A9B),
                               fontWeight: FontWeight.w300,
                               fontFamily: 'Geologica',
@@ -141,11 +138,9 @@ class _SignInScreenState extends State<SignInScreen>{
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: screenHeight * 0.12,
-                      ),
+                      SizedBox(height: screenHeight * 0.02),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        padding: EdgeInsets.symmetric(horizontal: 35),
                         child: TextField(
                           controller: loginController,
                           cursorColor: Color(0xff72A7EB),
@@ -170,12 +165,12 @@ class _SignInScreenState extends State<SignInScreen>{
 
                             hintText: 'Логин',
                             hintStyle: TextStyle(
-                              fontSize: screenWidth * AppSizes.fontSizeSmall,
+                              fontSize: AppSizes.fontSizeSmall,
                               color: Color(0xff999A9B),
                               fontWeight: FontWeight.w500,
                             ),
                             contentPadding:
-                            AppSizes.loginAndPasswordFieldPadding,
+                                AppSizes.loginAndPasswordFieldPadding,
                           ),
 
                           keyboardType: TextInputType.text,
@@ -187,10 +182,11 @@ class _SignInScreenState extends State<SignInScreen>{
                         ),
                       ),
                       SizedBox(
-                        height: screenHeight * 0.1,
+                        height: screenHeight * 0.01,
+                        // height: screenHeight * 0.1,
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        padding: EdgeInsets.symmetric(horizontal: 35),
                         child: TextField(
                           controller: passwordController,
                           cursorColor: Color(0xff72A7EB),
@@ -214,13 +210,13 @@ class _SignInScreenState extends State<SignInScreen>{
                             ),
                             hintText: 'Пароль',
                             hintStyle: TextStyle(
-                              fontSize: screenWidth * AppSizes.fontSizeSmall,
+                              fontSize: AppSizes.fontSizeSmall,
                               color: Color(0xff999A9B),
                               fontWeight: FontWeight.w500,
                             ),
 
                             contentPadding:
-                            AppSizes.loginAndPasswordFieldPadding,
+                                AppSizes.loginAndPasswordFieldPadding,
                           ),
                           keyboardType: TextInputType.text,
                           // maxLength: 25,
@@ -234,97 +230,103 @@ class _SignInScreenState extends State<SignInScreen>{
                           autocorrect: false,
                         ),
                       ),
-                      SizedBox(
-                        height: screenHeight * 0.01,
-                      ),
-
-
-
+                      SizedBox(height: screenHeight * 0.02),
                       BlocConsumer<AuthenticationBloc, AuthenticationState>(
-                          listener: (context, state){
-                            if (state is AuthenticationSuccessState){
-                              Navigator.pushNamedAndRemoveUntil(
+                        listener: (context, state) {
+                          if (state is AuthenticationSuccessState) {
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              HomeScreen.id,
+                              (route) => false,
+                            );
+                          } else if (state is AuthenticationFailureState) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const AlertDialog(
+                                  content: Text(
+                                    'error: AuthenticationFailureState',
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                        },
+                        builder: (context, state) {
+                          return SizedBox(
+                            height: screenHeight * 0.02,
+                            width: screenWidth * 0.03,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                BlocProvider.of<AuthenticationBloc>(
                                   context,
-                                  HomeScreen.id,
-                                  (route) => false,
-                              );
-                            }
-                            else if (state is AuthenticationFailureState) {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return const AlertDialog(
-                                    content: Text('error: AuthenticationFailureState'),
-                                  );
-                                }
-                              );
-                            }
-                          },
-                          builder: (context, state) {
-                            return SizedBox(
-                              height: screenHeight * 0.15,
-                              width: screenWidth * 0.30,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  BlocProvider.of<AuthenticationBloc>(context).add(
-                                    SignInUser(
-                                      loginController.text.trim(),
-                                      passwordController.text.trim(),
-                                    )
-                                  );
-                                },
-                                style: ButtonStyle(
-                                  elevation: WidgetStateProperty.resolveWith<double>(
-                                        (Set<WidgetState> states) => 0,
+                                ).add(
+                                  SignInUser(
+                                    loginController.text.trim(),
+                                    passwordController.text.trim(),
                                   ),
-                                  backgroundColor:
-                                  WidgetStateProperty.resolveWith<Color>((
-                                      Set<WidgetState> states,) {
-                                    if (states.contains(WidgetState.disabled)) {
-                                      return Color(0xffD5D6D7);
-                                    }
-                                    if (states.contains(WidgetState.pressed)) {
-                                      return Color(0xFF72A7EB);
-                                    }
-                                    if (states.contains(WidgetState.hovered)) {
-                                      return Color(0xFFBADEFF);
-                                    }
-                                    return Color(0xff98BFF3);
-                                  }),
-                                  foregroundColor:
-                                  WidgetStateProperty.resolveWith<Color>((
-                                      Set<WidgetState> states,) {
-                                    if (states.contains(WidgetState.disabled)) {
-                                      return Color(0xFF888888);
-                                    }
-                                    return Color(0xffffffff);
-                                  }),
-                                  minimumSize: WidgetStateProperty.all(
-                                    Size(screenWidth * 1, 40),
-                                  ),
-                                  shape: WidgetStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                                );
+                              },
+                              style: ButtonStyle(
+                                elevation:
+                                    WidgetStateProperty.resolveWith<double>(
+                                      (Set<WidgetState> states) => 0,
                                     ),
-                                  ),
+                                backgroundColor:
+                                    WidgetStateProperty.resolveWith<Color>((
+                                      Set<WidgetState> states,
+                                    ) {
+                                      if (states.contains(
+                                        WidgetState.disabled,
+                                      )) {
+                                        return Color(0xffD5D6D7);
+                                      }
+                                      if (states.contains(
+                                        WidgetState.pressed,
+                                      )) {
+                                        return Color(0xFF72A7EB);
+                                      }
+                                      if (states.contains(
+                                        WidgetState.hovered,
+                                      )) {
+                                        return Color(0xFFBADEFF);
+                                      }
+                                      return Color(0xff98BFF3);
+                                    }),
+                                foregroundColor:
+                                    WidgetStateProperty.resolveWith<Color>((
+                                      Set<WidgetState> states,
+                                    ) {
+                                      if (states.contains(
+                                        WidgetState.disabled,
+                                      )) {
+                                        return Color(0xFF888888);
+                                      }
+                                      return Color(0xffffffff);
+                                    }),
+                                minimumSize: WidgetStateProperty.all(
+                                  Size(screenWidth * 1, 40),
                                 ),
-                                child: Text(
-                                  'Войти',
-                                  style: TextStyle(
-                                    fontSize: screenWidth * AppSizes.fontSizeMedium,
-                                    color: Color(0xffffffff),
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'Geologica',
+                                shape: WidgetStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                 ),
                               ),
-
-
-
-                            );
-                          },
-                      )
-
+                              child: Text(
+                                'Войти',
+                                style: TextStyle(
+                                  fontSize: AppSizes.fontSizeMedium,
+                                  // fontSize: screenWidth * AppSizes.fontSizeMedium,
+                                  color: Color(0xffffffff),
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Geologica',
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -336,8 +338,6 @@ class _SignInScreenState extends State<SignInScreen>{
     );
   }
 }
-
-
 
 class AppSizes {
   //Размеры шрифтов

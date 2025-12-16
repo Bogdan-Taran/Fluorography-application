@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class MessageButton extends StatefulWidget {
-  const MessageButton({Key? key}) : super(key: key);
+  const MessageButton({super.key});
 
   @override
   State<MessageButton> createState() => _MessageButtonState();

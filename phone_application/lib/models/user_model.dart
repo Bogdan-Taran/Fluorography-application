@@ -10,7 +10,7 @@ class UserData {
   final List<int> roles;
   final List<String> groups;
 
-  UserData({
+  const UserData({
     required this.id,
     required this.firstname,
     required this.lastname,

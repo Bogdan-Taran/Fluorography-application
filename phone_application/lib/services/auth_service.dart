@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:project_fluorography/models/user_model.dart';
@@ -51,14 +50,14 @@ class AuthService {
   }
 
   Future<void> authContorller() async {
-    final _controller = StreamController<bool>();
+    final controller = StreamController<bool>();
   }
 }
 
 class AuthState extends ChangeNotifier {
   bool isAuthenticated = false;
   String userId = '';
-  ApiService _apiService = ApiService();
+  final ApiService _apiService = ApiService();
 
   void login(String login, String password) {
     // _apiService.loginUser(login, password);

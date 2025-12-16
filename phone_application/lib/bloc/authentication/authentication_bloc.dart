@@ -1,9 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:project_fluorography/services/auth_service.dart';
 
 import '../../models/user_model.dart';
-import 'package:project_fluorography/services/api_service.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';

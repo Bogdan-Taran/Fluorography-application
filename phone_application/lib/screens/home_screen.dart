@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
+import 'package:project_fluorography/screens/sign_in.dart';
 
 import '../styles.dart';
 
@@ -30,6 +31,9 @@ class HomeScreen extends StatelessWidget{
                 if(state is AuthenticationLoadingState){
                   const CircularProgressIndicator();
                 }
+                else if(state is AuthenticationLogOutState){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {return SignInScreen();}));
+                }
                 else if(state is AuthenticationFailureState){
                   showDialog(
                     context: context,
@@ -44,7 +48,8 @@ class HomeScreen extends StatelessWidget{
               builder: (context, state) {
                 return ElevatedButton(
                     onPressed: () {
-                      BlocProvider.of<AuthenticationBloc>(context).add(SignOut());
+                      // context.read<AuthenticationBloc>().add(const SignOutEvent());
+                      BlocProvider.of<AuthenticationBloc>(context).add(SignOutEvent());
                     },
                     child: Text(
                       'Выйти'

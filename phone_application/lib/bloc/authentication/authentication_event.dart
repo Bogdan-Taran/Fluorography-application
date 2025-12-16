@@ -5,16 +5,22 @@ abstract class AuthenticationEvent {
   List<Object> get props => [];
 }
 
-class SignInUser extends AuthenticationEvent{
+class SignInUserEvent extends AuthenticationEvent{
   final String login;
   final String password;
 
-  const SignInUser(this.login, this.password);
+  const SignInUserEvent(this.login, this.password);
 
   @override
   List<Object> get props => [login, password];
 }
 
-class SignOut extends AuthenticationEvent{}
+class SignOutEvent extends AuthenticationEvent{
+  const SignOutEvent();
+
+  @override
+  List<Object> get props => throw UnimplementedError();
+
+}
 
 

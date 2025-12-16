@@ -17,6 +17,8 @@ class ApiService {
     if (response.statusCode == 200){
       final parsedJson = jsonDecode(response.body);
       await _saveToken(parsedJson['token']);
+      final String token = parsedJson['token'];
+      print('Токен получен: $token');
       return {'success': true, 'data': parsedJson};
     }
     else {
@@ -41,32 +43,42 @@ class ApiService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('authToken');
   }
-  
+
+
+
+
   Future<Map<String, dynamic>> getProtectedData() async {
     final token = await getToken();
     if (token == null) {
       return {'success': false, 'error': 'User not authenticated'};
     }
-    
-    final url = Uri.parse('$_baseUrl/api/profile/');
+    print('Token recieved');
+    final url = Uri.parse('$_baseUrl/api/profile');
+    print('Sending a request');
     final response = await http.get(
       url,
       headers: {
         'Content-Type':'application/json',
-        'Authorization': 'Token $token'
+        'Authorization': 'Bearer $token'
       },
     );
-
+    print('response recieved');
     if(response.statusCode == 200){
+      print('statuscode is 200');
+      print('Typing response.body');
+      print(response.body);
       final data = jsonDecode(response.body);
+      print(data);
       return {'success': true, 'data': data};
     }
     else if (response.statusCode == 401){
       await removeToken();
+      print('User unauthorized');
       return {'success': false, 'error': 'Authentication failed'};
       // TODO: сделать обработчик на view
     }
     else{
+      print('THERE HAPPEND an unexpected - not 200');
       final errorData = jsonDecode(response.body);
       return {'success': false, 'error': errorData};
     }

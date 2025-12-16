@@ -36,4 +36,12 @@ class AuthenticationFailureState extends AuthenticationState{
   List<Object> get props => [errorMessage];
 }
 
+//выход
+class AuthenticationLogOutState extends AuthenticationState{
+  final bool isLoading;
+  final bool successful;
+
+  AuthenticationLogOutState({required this.isLoading, required this.successful});
+  List<Object> get props => [];
+}
 

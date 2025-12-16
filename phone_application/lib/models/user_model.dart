@@ -27,8 +27,8 @@ class UserData {
       lastname: json['lastname'] as String,
       patronymic: json['patronymic'] as String,
       network_city_id: json['network_city_id'] as int,
-      roles: json['roles'] as List<int>,
-      groups: json['groups'] as List<String>,
+      roles: json['roles'],
+      groups: json['groups'],
     );
   }
 }

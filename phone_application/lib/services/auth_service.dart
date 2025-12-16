@@ -11,14 +11,21 @@ class AuthService {
 
   Future<UserData?> signInUser(String login, String password) async {
     try{
-      _apiService.loginUser(login, password);
+      print('Try to login user through api');
+      await _apiService.loginUser(login, password);
+      print('Try to get boolean hasToken');
       final bool hasToken = await hasAuthToken();
+      print('Start to check if there any token');
       if(hasToken){
+        print('Send request to get Pretected Data through api');
         final jsonData = _apiService.getProtectedData();
+        print('Try to convert data from json');
         final userData = UserData.fromJson(await jsonData);
+        print('Try to return userData');
         return userData;
       }
       else{
+        print('Неверный логин или пароль');
         throw ('Unexpected error - do not have token');
       }
     }

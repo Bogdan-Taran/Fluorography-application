@@ -236,12 +236,17 @@ class _SignInScreenState extends State<SignInScreen> {
                       BlocConsumer<AuthenticationBloc, AuthenticationState>(
                         listener: (context, state) {
                           if (state is AuthenticationSuccessState) {
-                            Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              HomeScreen.id,
-                              (route) => false,
-                            );
-                          } else if (state is AuthenticationFailureState) {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {return HomeScreen();}));
+                            // Navigator.pushNamedAndRemoveUntil(
+                            //   context,
+                            //   HomeScreen.id,
+                            //   (route) => false,
+                            // );
+                          }
+                          else if(state is AuthenticationLoadingState){
+                            const CircularProgressIndicator();
+                          }
+                          else if (state is AuthenticationFailureState) {
                             showDialog(
                               context: context,
                               builder: (context) {
@@ -262,7 +267,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 BlocProvider.of<AuthenticationBloc>(
                                   context,
                                 ).add(
-                                  SignInUser(
+                                  SignInUserEvent(
                                     loginController.text.trim(),
                                     passwordController.text.trim(),
                                   ),

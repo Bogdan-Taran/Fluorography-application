@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
+import 'package:project_fluorography/services/auth_service.dart';
 
 import '../styles.dart';
 
@@ -13,6 +14,7 @@ class HomeScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     TextStyles textStyles = TextStyles();
+    AuthService _authService = AuthService();
     return Scaffold(
       body: Center(
         child: Column(
@@ -56,6 +58,10 @@ class HomeScreen extends StatelessWidget{
                     ),
                 );
               },
+            ),
+            ElevatedButton(
+                onPressed: _authService.getUserFormSharedPreferences,
+                child: Text('Print your id in console')
             )
           ],
         ),

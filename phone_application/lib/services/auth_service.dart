@@ -10,19 +10,37 @@ class AuthService {
 
 
   Future<UserData?> signInUser(String login, String password) async {
+    final prefs = await SharedPreferences.getInstance();
     try{
-      print('Try to login user through api');
+      // print('Try to login user through api');
       await _apiService.loginUser(login, password);
-      print('Try to get boolean hasToken');
+      // print('Try to get boolean hasToken');
       final bool hasToken = await hasAuthToken();
-      print('Start to check if there any token');
+      // print('Start to check if there any token');
       if(hasToken){
-        print('Send request to get Pretected Data through api');
-        final jsonData = _apiService.getProtectedData();
-        print('Try to convert data from json');
-        final userData = UserData.fromJson(await jsonData);
-        print('Try to return userData');
-        return userData;
+        try { // print('Send request to get Pretected Data through api');
+          final jsonData = await _apiService.getProtectedData();
+          print('typing jsonData');
+          print(jsonData);
+          final userData = UserData.fromJson(await jsonData['data']);
+
+          print('Typing id user from auth service - from userData');
+          print(userData.id);
+          print(userData.groups);
+          print(userData.firstname);
+          print(userData.network_city_id);
+          print(userData.roles);
+
+
+          //сохраняем пользователя локально
+          saveUserDataIntoSharedPreferences(userData);
+          print('Typing a network city id');
+          getUserFormSharedPreferences();
+          return userData;
+        }
+        catch (e) {
+          print('There appeared an unexpected error while sign in user');
+        }
       }
       else{
         print('Неверный логин или пароль');
@@ -56,19 +74,32 @@ class AuthService {
     }
   }
 
-  Future<void> authContorller() async {
-    final controller = StreamController<bool>();
+  Future<void> saveUserDataIntoSharedPreferences(UserData) async{
+    final prefs = await SharedPreferences.getInstance();
+    final int id;
+    final String firstname;
+    final String lastname;
+    String? patronymic;
+    final int network_city_id;
+    final List<int> roles;
+    final List<String> groups;
+
+    await prefs.setInt('network_city_id', UserData.network_city_id);
+
+    final int? id_user_from_shared = await prefs.getInt('network_city_id');
+    print('$id_user_from_shared');
+
   }
+
+  Future<void> getUserFormSharedPreferences() async{
+    final prefs = await SharedPreferences.getInstance();
+
+    final int? network_city_id_user = prefs.getInt('network_city_id');
+    print('network_city_id_user: $network_city_id_user');
+  }
+
+
+
 }
 
-class AuthState extends ChangeNotifier {
-  bool isAuthenticated = false;
-  String userId = '';
-  final ApiService _apiService = ApiService();
 
-  void login(String login, String password) {
-    // _apiService.loginUser(login, password);
-    final data = _apiService.loginUser(login, password);
-
-  }
-}

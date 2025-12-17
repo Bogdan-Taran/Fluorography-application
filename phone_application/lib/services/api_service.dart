@@ -52,9 +52,9 @@ class ApiService {
     if (token == null) {
       return {'success': false, 'error': 'User not authenticated'};
     }
-    print('Token recieved');
+    // print('Token recieved');
     final url = Uri.parse('$_baseUrl/api/profile');
-    print('Sending a request');
+    // print('Sending a request');
     final response = await http.get(
       url,
       headers: {
@@ -62,18 +62,20 @@ class ApiService {
         'Authorization': 'Bearer $token'
       },
     );
-    print('response recieved');
+    // print('response recieved');
     if(response.statusCode == 200){
-      print('statuscode is 200');
-      print('Typing response.body');
-      print(response.body);
+      // print('statuscode is 200');
+      // print('Typing response.body');
+      // print(response.body);
       final data = jsonDecode(response.body);
-      print(data);
+      print('Typing id: ');
+      print(data['id']);
+
       return {'success': true, 'data': data};
     }
     else if (response.statusCode == 401){
       await removeToken();
-      print('User unauthorized');
+      // print('User unauthorized');
       return {'success': false, 'error': 'Authentication failed'};
       // TODO: сделать обработчик на view
     }

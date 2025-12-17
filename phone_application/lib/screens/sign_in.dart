@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/styles.dart';
 import 'home_screen.dart';
 
@@ -237,15 +238,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         listener: (context, state) {
                           if (state is AuthenticationSuccessState) {
                             Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {return HomeScreen();}));
-                            // Navigator.pushNamedAndRemoveUntil(
-                            //   context,
-                            //   HomeScreen.id,
-                            //   (route) => false,
-                            // );
                           }
-                          else if(state is AuthenticationLoadingState){
-                            const CircularProgressIndicator();
-                          }
+                          // else if(state is AuthenticationLoadingState){
+                          //   CircularProgressIndicator();
+                          // }
                           else if (state is AuthenticationFailureState) {
                             showDialog(
                               context: context,
@@ -319,7 +315,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                   ),
                                 ),
                               ),
-                              child: Text(
+                              child: state is AuthenticationLoadingState ?
+                              LoadingAnimationWidget.halfTriangleDot(
+                                color: Colors.white,
+                                size: 24,)
+                              :
+                              Text(
                                 'Войти',
                                 style: TextStyle(
                                   fontSize: AppSizes.fontSizeMedium,
@@ -328,7 +329,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                   fontWeight: FontWeight.w600,
                                   fontFamily: 'Geologica',
                                 ),
-                              ),
+                              )
+
                             ),
                           );
                         },

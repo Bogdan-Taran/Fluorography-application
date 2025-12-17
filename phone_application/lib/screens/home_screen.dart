@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../styles.dart';
 
@@ -15,6 +16,11 @@ class HomeScreen extends StatelessWidget{
   Widget build(BuildContext context){
     TextStyles textStyles = TextStyles();
     AuthService _authService = AuthService();
+    final prefs = SharedPreferences.getInstance();
+    UserSharedPreferences _userSharedPreferences = UserSharedPreferences();
+
+
+
     return Scaffold(
       body: Center(
         child: Column(
@@ -24,6 +30,7 @@ class HomeScreen extends StatelessWidget{
               'Hello unknown user',
               style: textStyles.textStyleTitle(context),
             ),
+
             const SizedBox(
               height: 20,
             ),
@@ -60,7 +67,7 @@ class HomeScreen extends StatelessWidget{
               },
             ),
             ElevatedButton(
-                onPressed: _authService.getUserFormSharedPreferences,
+                onPressed: _userSharedPreferences.getUserFirstnameFromSharedPreferences,
                 child: Text('Print your id in console')
             )
           ],

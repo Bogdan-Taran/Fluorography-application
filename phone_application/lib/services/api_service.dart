@@ -64,13 +64,7 @@ class ApiService {
     );
     // print('response recieved');
     if(response.statusCode == 200){
-      // print('statuscode is 200');
-      // print('Typing response.body');
-      // print(response.body);
       final data = jsonDecode(response.body);
-      print('Typing id: ');
-      print(data['id']);
-
       return {'success': true, 'data': data};
     }
     else if (response.statusCode == 401){

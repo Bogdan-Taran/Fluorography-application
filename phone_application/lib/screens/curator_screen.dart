@@ -10,11 +10,13 @@ class CuratorScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
+
     TextStyles textStyles = TextStyles();
     final UserSharedPreferences _userSharedPreferences = UserSharedPreferences();
 
 
     return Scaffold(
+      backgroundColor: Colors.lightBlueAccent,
        body: Center(
          child: Column(
            children: [

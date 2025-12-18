@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/shared_pref_service.dart';
 import '../styles.dart';
+import 'admin_screen.dart';
 
 class HomeScreen extends StatelessWidget{
   static String id = 'home_screen';
@@ -19,10 +20,10 @@ class HomeScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    TextStyles textStyles = TextStyles();
-    AuthService _authService = AuthService();
+    final TextStyles _textStyles = TextStyles();
+    final AuthService _authService = AuthService();
     final prefs = SharedPreferences.getInstance();
-    UserSharedPreferences _userSharedPreferences = UserSharedPreferences();
+    final UserSharedPreferences _userSharedPreferences = UserSharedPreferences();
     // final String role =  await _userSharedPreferences.getUserRole();
 
     return FutureBuilder<String>(
@@ -30,7 +31,20 @@ class HomeScreen extends StatelessWidget{
       builder: (context, AsyncSnapshot<String> snapshot){
         if(snapshot.hasData){
           String role = snapshot.data!;
-          return CuratorScreen();
+          if(role == 'curator'){
+            return CuratorScreen();
+          }
+          else if(role == 'admin'){
+            return AdminScreen();
+          }
+          return Scaffold(
+            body: Center(
+              child: Text(
+                'Вы не подходите не под одну из ролей',
+                style: _textStyles.textStyleTitle(context),
+              ),
+            ),
+          );
           // return Text(
           //   'Your role is $role',
           //   style: textStyles.textStyleTitle(context),

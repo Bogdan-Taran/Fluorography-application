@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../services/shared_pref_service.dart';
 import '../styles.dart';
 
 class HomeScreen extends StatelessWidget{
@@ -18,6 +20,7 @@ class HomeScreen extends StatelessWidget{
     AuthService _authService = AuthService();
     final prefs = SharedPreferences.getInstance();
     UserSharedPreferences _userSharedPreferences = UserSharedPreferences();
+    // final String role =  await _userSharedPreferences.getUserRole();
 
 
 
@@ -27,8 +30,24 @@ class HomeScreen extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Hello unknown user',
-              style: textStyles.textStyleTitle(context),
+              'Hello, user, your role iS:',
+              // style: textStyles.textStyleTitle(context),
+            ),
+            FutureBuilder<String>(
+              future: _userSharedPreferences.getUserRole(),
+              builder: (context, AsyncSnapshot<String> snapshot){
+                if(snapshot.hasData){
+                  String role = snapshot.data!;
+                  return Text(
+                    'Your role is $role',
+                    style: textStyles.textStyleTitle(context),
+                  );
+                } else{
+                  return LoadingAnimationWidget.halfTriangleDot(
+                    color: Colors.white,
+                    size: 24,);
+                }
+              },
             ),
 
             const SizedBox(

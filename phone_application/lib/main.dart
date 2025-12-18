@@ -17,31 +17,6 @@ void main() {
     // DeviceOrientation.portraitDown,
   ]);
 
-  String initialRoute;
-  WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String role = prefs.getString('role');
-  String token = prefs.getString('authToken');
-
-  if(token.isEmpty){
-    initialRoute = 'login';
-  }
-  else{
-    if(role == 'curator'){
-      initialRoute = CuratorScreen();
-    }
-    else if(role == 'medic'){
-      initialRoute = MedicScreen();
-    }
-    else{
-      initialRoute = LoginScreen();
-    }
-  }
-
-  Widget app = MaterialApp(
-    initialRoute: initialRoute,
-  );
-
   runApp(MyApp());
 }
 
@@ -110,7 +85,6 @@ class _AuthCheckerState extends State<AuthChecker>{
       );
     }
     if(_isAuthenticated == true){
-
     }
     return _isAuthenticated ? HomeScreen() : SignInScreen();
   }

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
+import 'package:project_fluorography/bloc/navigation/navigation_bloc.dart';
 import 'package:project_fluorography/screens/home_screen.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/auth_service.dart';
+import 'package:project_fluorography/services/shared_pref_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -16,6 +18,31 @@ void main() {
     DeviceOrientation.portraitUp,
     // DeviceOrientation.portraitDown,
   ]);
+  //
+  // String initialRoute;
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  // String role = prefs.getString('role');
+  // String token = prefs.getString('authToken');
+  //
+  // if(token.isEmpty){
+  //   initialRoute = 'login';
+  // }
+  // else{
+  //   if(role == 'curator'){
+  //     initialRoute = CuratorScreen();
+  //   }
+  //   else if(role == 'medic'){
+  //     initialRoute = MedicScreen();
+  //   }
+  //   else{
+  //     initialRoute = LoginScreen();
+  //   }
+  // }
+  //
+  // Widget app = MaterialApp(
+  //   initialRoute: initialRoute,
+  // );
 
   runApp(MyApp());
 }
@@ -32,16 +59,16 @@ class MyApp extends StatelessWidget{
           return OrientationBuilder(
               builder: (context, orientation){
                 return MultiBlocProvider(
-                  providers: [
-                    BlocProvider<AuthenticationBloc>(
-                        create: (context) => AuthenticationBloc()
+                    providers: [
+                      BlocProvider<AuthenticationBloc>(
+                          create: (context) => AuthenticationBloc()
+                      )
+                    ],
+                    child: MaterialApp(
+                      debugShowCheckedModeBanner: false,
+                      title: 'Clean Flura',
+                      home: AuthChecker(),
                     )
-                  ],
-                  child: MaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    title: 'Clean Flura',
-                    home: AuthChecker(),
-                  )
                 );
               }
           );
@@ -85,14 +112,12 @@ class _AuthCheckerState extends State<AuthChecker>{
       );
     }
     if(_isAuthenticated == true){
+
     }
     return _isAuthenticated ? HomeScreen() : SignInScreen();
   }
 
 }
-
-
-
 
 
 

@@ -111,9 +111,7 @@ class _AuthCheckerState extends State<AuthChecker>{
         body: Center(child: CircularProgressIndicator()),
       );
     }
-    if(_isAuthenticated == true){
 
-    }
     return _isAuthenticated ? HomeScreen() : SignInScreen();
   }
 

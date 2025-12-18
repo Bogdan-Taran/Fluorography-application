@@ -45,17 +45,3 @@ class UserData {
   }
 }
 
-@immutable
-class UserRole {
-  final List<String> roles;
-
-  const UserRole({
-    required this.roles
-  });
-
-  factory UserRole.fromJson(Map<String, dynamic> json){
-    return UserRole(
-      roles: json["roles"]
-    );
-  }
-}

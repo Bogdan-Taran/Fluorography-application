@@ -20,7 +20,6 @@ class StudentData {
   });
 
   factory StudentData.fromJson(Map<String, dynamic> json) {
-
     return StudentData(
       id: json['id'] as int? ?? 0,
       lastname: json['lastname'] as String? ?? '',

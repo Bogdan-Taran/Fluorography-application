@@ -10,6 +10,7 @@ class StudentData {
   final String? fluorography;
   final String group;
 
+
   const StudentData({
     required this.id,
     required this.lastname,

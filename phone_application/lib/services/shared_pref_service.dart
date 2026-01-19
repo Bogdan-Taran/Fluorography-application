@@ -31,6 +31,11 @@ class UserSharedPreferences{
     print(prefs.getStringList('groups'));
   }
 
+  Future<List<String>> getCuratorListGroupsFromSharedPreferences() async{
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('groups')!;
+  }
+
 
   Future<String?> getUserFirstnameFromSharedPreferences() async{
     final prefs = await SharedPreferences.getInstance();
@@ -65,6 +70,7 @@ class UserSharedPreferences{
         break;
     }
   }
+
 
 
 

@@ -239,9 +239,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           if (state is AuthenticationSuccessState) {
                             Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {return HomeScreen();}));
                           }
-                          // else if(state is AuthenticationLoadingState){
-                          //   CircularProgressIndicator();
-                          // }
                           else if (state is AuthenticationFailureState) {
                             showDialog(
                               context: context,

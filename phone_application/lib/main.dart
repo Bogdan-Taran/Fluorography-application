@@ -9,7 +9,7 @@ import 'package:project_fluorography/services/auth_service.dart';
 import 'package:project_fluorography/services/shared_pref_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
+import 'bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,45 +47,42 @@ void main() {
   runApp(MyApp());
 }
 
-
-
-class MyApp extends StatelessWidget{
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return LayoutBuilder(
-        builder: (context, constraints) {
-          return OrientationBuilder(
-              builder: (context, orientation){
-                return MultiBlocProvider(
-                    providers: [
-                      BlocProvider<AuthenticationBloc>(
-                          create: (context) => AuthenticationBloc()
-                      )
-                    ],
-                    child: MaterialApp(
-                      debugShowCheckedModeBanner: false,
-                      title: 'Clean Flura',
-                      home: AuthChecker(),
-                    )
-                );
-              }
-          );
-        }
+      builder: (context, constraints) {
+        return OrientationBuilder(
+          builder: (context, orientation) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<AuthenticationBloc>(
+                  create: (context) => AuthenticationBloc(),
+                ),
+              ],
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Clean Flura',
+                home: AuthChecker(),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
 
-
-class AuthChecker extends StatefulWidget{
+class AuthChecker extends StatefulWidget {
   const AuthChecker({super.key});
 
   @override
   _AuthCheckerState createState() => _AuthCheckerState();
 }
 
-class _AuthCheckerState extends State<AuthChecker>{
+class _AuthCheckerState extends State<AuthChecker> {
   bool _isAuthenticated = false;
   bool _isLoading = true;
   final AuthService _authService = AuthService();
@@ -96,7 +93,7 @@ class _AuthCheckerState extends State<AuthChecker>{
     _checkAuthStatus();
   }
 
-  Future<void> _checkAuthStatus() async{
+  Future<void> _checkAuthStatus() async {
     bool hasToken = await _authService.hasAuthToken();
     setState(() {
       _isAuthenticated = hasToken;
@@ -106,17 +103,10 @@ class _AuthCheckerState extends State<AuthChecker>{
 
   @override
   Widget build(BuildContext context) {
-    if(_isLoading){
-      return Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+    if (_isLoading) {
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return _isAuthenticated ? HomeScreen() : SignInScreen();
   }
-
 }
-
-
-
-

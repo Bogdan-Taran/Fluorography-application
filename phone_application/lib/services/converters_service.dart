@@ -1,40 +1,46 @@
-class ConverterServices{
+import 'dart:math';
 
-  Future<String?> convertUserRoleFormListToNormalName(UserData) async{
+import 'package:get/get.dart';
+
+class ConverterServices {
+  Future<String?> convertUserRoleFormListToNormalName(UserData) async {
     final List<int> userRoles = UserData.roles;
     final String userRole;
-    if(userRoles.contains(1)){
+    if (userRoles.contains(1)) {
       userRole = 'medic';
-    }
-    else if(userRoles.contains(2)){
+    } else if (userRoles.contains(2)) {
       userRole = 'student';
-    }
-    else if (userRoles.contains(4)){
+    } else if (userRoles.contains(4)) {
       userRole = 'admin';
-    }
-    else if(userRoles.contains(5)){
+    } else if (userRoles.contains(5)) {
       userRole = 'curator';
-    }
-    else{
+    } else {
       userRole = 'undefined';
     }
     return userRole;
   }
 
 
-  String formatFluraDate(String? date){
-
-    if(date == null){
+  String formatFluraDate(String? date) {
+    if (date == null) {
       return 'Нет даты';
     }
-    else{
-      final dateTime = DateTime.parse(date);
-      return '${dateTime.day.toString().padLeft(2, '0')}.${dateTime.month.toString().padLeft(2, '0')}.${dateTime.year}';
+    if(date.toLowerCase() == 'null'){
+      return 'Нет даты';
     }
-
+    if (date is int){
+      return 'Дата int';
+    }
+    try{
+      final dateTime = DateTime.parse(date);
+      final String convertedTime =
+          '${dateTime.day.toString().padLeft(2, '0')}'
+          '.${dateTime.month.toString().padLeft(2, '0')}'
+          '.${dateTime.year}';
+      return convertedTime;
+    } catch (e){
+      print('Неверный формат даты $date');
+      return 'Нет даты';
+    }
   }
-
-
-
-
 }

@@ -91,10 +91,11 @@ class HeaderAccordionSectionBuildWidgetStaff extends StatelessWidget {
   }
 }
 
-Widget BuildAccordionSectionContentBuildMedic(
+Widget BuildAccordionSectionContentMedic(
   BuildContext context,
   List<StaffAndStudentsModel> data,
-  bool isEditing
+  bool isEditing,
+    String role,
 ) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,18 +107,20 @@ Widget BuildAccordionSectionContentBuildMedic(
         )
       else
         Column(
-          children:[
-          ...data[0].staffList.map(
-                (staff) => OneRowBuildAccordionSectionContentStaff(
-              staff: staff,
-              isEditing: isEditing,
-            ),
-          ),
-          ...data[1].studentsList.expand((group) {
-            return group.students.map((student) =>
-            OneRowBuildAccordionSectionContent(student: student, isEditing: isEditing));
-          }),
-        ]
+          children: role == 'staff' ?
+              data.expand((staff) {
+                return staff.staffList.map((e) =>
+                    OneRowBuildAccordionSectionContentStaff(
+                        staff: e, isEditing: isEditing));
+              }).toList()
+            :
+                data.expand((groups) {
+                  return groups.studentsList.expand((students) {
+                    return students.students.map((student) =>
+                        OneRowBuildAccordionSectionContent(
+                            student: student, isEditing: isEditing));
+                  });
+                }).toList()
         ),
       SizedBox(height: 15),
       ElevatedButton(
@@ -154,13 +157,8 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ConverterServices _converterService = ConverterServices();
-    CheckerService _checkerService = CheckerService();
 
-    final dateFluraString = _converterService.formatFluraDate(
-        student.fluorography);
-    final isOverdue = _checkerService.isFluorographyOverdue(
-        student.fluorography);
+    final dateFluraString = student.fluorography;
 
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(vertical: 5),
@@ -180,28 +178,12 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
               )
           ),
           Container(
-            child: Text(dateFluraString),
+            child: Text(dateFluraString!),
           )
         ],
       ),
     );
   }
-
-  // void showDateEditingDialog(BuildContext context){
-  //   showDialog(
-  //     context: context,
-  //     builder: (dialogContext) => DateEditDialog(
-  //       currentDate: student.fluorography,
-  //       onDateSelected: (newDate){
-  //         Navigator.of(dialogContext).pop();
-  //         dateFluorographyUpdate(student, newDate);
-  //       },
-  //       onCancel: (){
-  //         Navigator.of(dialogContext).pop();
-  //       }
-  //     )
-  //   );
-  // }
 }
 
 
@@ -218,13 +200,8 @@ class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ConverterServices _converterService = ConverterServices();
-    CheckerService _checkerService = CheckerService();
 
-    final dateFluraString = _converterService.formatFluraDate(
-        staff.fluorography);
-    final isOverdue = _checkerService.isFluorographyOverdue(
-        staff.fluorography);
+    final dateFluraString = staff.fluorography;
 
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(vertical: 5),
@@ -244,27 +221,12 @@ class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
               )
           ),
           Container(
-            child: Text(dateFluraString),
+            child: Text(dateFluraString!),
           )
         ],
       ),
     );
   }
 
-// void showDateEditingDialog(BuildContext context){
-//   showDialog(
-//     context: context,
-//     builder: (dialogContext) => DateEditDialog(
-//       currentDate: student.fluorography,
-//       onDateSelected: (newDate){
-//         Navigator.of(dialogContext).pop();
-//         dateFluorographyUpdate(student, newDate);
-//       },
-//       onCancel: (){
-//         Navigator.of(dialogContext).pop();
-//       }
-//     )
-//   );
-// }
 }
 

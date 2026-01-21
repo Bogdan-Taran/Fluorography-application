@@ -9,6 +9,8 @@
 
 import 'package:meta/meta.dart';
 
+import '../services/converters_service.dart';
+
 @immutable
 class StaffModel {
   final int id;
@@ -16,7 +18,7 @@ class StaffModel {
   final String firstname;
   final String patronymic;
   final List<String> groups;
-  final String fluorography;
+  final String? fluorography;
 
   const StaffModel({
     required this.id,
@@ -34,14 +36,18 @@ class StaffModel {
       groups = rawGroups.map((e) => e.toString()).toList();
     }
 
+    ConverterServices _converterService = ConverterServices();
+    String fluorography = _converterService.formatFluraDate(json['fluorography']);
+
     return StaffModel(
         id: json['id'] as int ?? 0,
         lastname: json['lastname'] as String? ?? '',
         firstname: json['firstname'] as String? ?? '',
         patronymic: json['patronymic'] as String? ?? '',
         groups: groups,
-        fluorography: json['fluorography'] as String? ?? ''
+        fluorography: fluorography
     );
   }
+
 
 }

@@ -200,6 +200,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
+  liquid_container:
+    dependency: "direct main"
+    description:
+      name: liquid_container
+      sha256: a5a23508e900f31dd47a90464356a470fe9524c7296d1884401c0ba28a1de62f
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   loading_animation_widget:
     dependency: "direct main"
     description:

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../services/converters_service.dart';
+
 
 @immutable
 class StudentData {
@@ -21,12 +23,16 @@ class StudentData {
   });
 
   factory StudentData.fromJson(Map<String, dynamic> json) {
+
+    ConverterServices _converterService = ConverterServices();
+    String fluorography = _converterService.formatFluraDate(json['fluorography']);
+
     return StudentData(
       id: json['id'] as int? ?? 0,
       lastname: json['lastname'] as String? ?? '',
       firstname: json['firstname'] as String? ?? '',
       patronymic: json['patronymic'] as String? ?? '',
-      fluorography: json['fluorography'] as String? ?? '',
+      fluorography: fluorography,
       group: json['group'] as String? ?? '',
     );
   }

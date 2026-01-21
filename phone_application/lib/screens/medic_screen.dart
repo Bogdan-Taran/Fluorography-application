@@ -13,33 +13,34 @@ import '../services/shared_pref_service.dart';
 import '../styles.dart';
 import '../widgets/accordion_widgets.dart';
 
-
-class MedicScreen extends StatefulWidget{
+class MedicScreen extends StatefulWidget {
   static String id = 'medic_screen';
+
   const MedicScreen({super.key});
 
   @override
   State<MedicScreen> createState() => _MedicScreen();
 }
 
-class _MedicScreen extends State<MedicScreen>{
-  final MedicBloc medicBloc = MedicBloc();
-
+class _MedicScreen extends State<MedicScreen> {
   @override
   void initState() {
-    medicBloc.add(MedicInitialEvent());
+    (context).read<MedicBloc>().add(MedicInitialEvent());
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
     TextStyles textStyles = TextStyles();
     final UserSharedPreferences _userSharedPreferences =
-    UserSharedPreferences();
+        UserSharedPreferences();
     BuildersScreen _buildersScreen = BuildersScreen();
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    final bloc = context
+        .read<MedicBloc>(); // Если ошибка — BlocProvider не найден
+    print('BLoc inst: $bloc');
 
     return SafeArea(
       child: Scaffold(
@@ -50,40 +51,45 @@ class _MedicScreen extends State<MedicScreen>{
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             // child: AccordionGeneralWidgetList(),
             child: BlocConsumer<MedicBloc, MedicState>(
-              bloc: MedicBloc(),
-                listenWhen: (previous, current) => current is MedicActionState,
-                buildWhen: (previous, current) => current is !MedicActionState,
-                listener: (context, state) {},
-                builder: (context, state) {
-                  switch (state.runtimeType){
-                    case MedicFetchingLoadingState():
-                      return _buildersScreen.buildLoading();
-                    case MedicFetchingErrorState():
-                      return Center(
-                        child: Text('Нет групп и сотрудников'),
-                      );
-                    case MedicLoadedCommunitySuccessfulState():
-                      final successfulState = state as MedicLoadedCommunitySuccessfulState;
-                      return buildMainContentMedic(context, successfulState.medicEntireCommunity);
-                    default:
-                      return Container(
-                        padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-                        width: MediaQuery.of(context).size.width * 1,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        decoration: BoxDecoration(
-                            color: Colors.transparent
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('У вас отсутствуют какие-либо люди в списках', style: TextStyle(fontSize: 18),),
-                          ],
-                        ),
-                      );
-                  }
-                },
-            )
+              listenWhen: (previous, current) => current is MedicActionState,
+              buildWhen: (previous, current) => current is! MedicActionState,
+              listener: (context, state) {},
+              builder: (context, state) {
+                switch (state.runtimeType) {
+                  case MedicFetchingLoadingState:
+                    return Center(child: _buildersScreen.buildLoading());
+                  case MedicFetchingErrorState:
+                    return Center(child: Text('Произошла ошибка'));
+                  case MedicLoadedCommunitySuccessfulState:
+                    final successfulState =
+                        state as MedicLoadedCommunitySuccessfulState;
+                    print('Печатаю лист');
+                    print(successfulState.medicEntireCommunity);
+                    return buildMainContentMedic(
+                      context,
+                      successfulState
+                          .medicEntireCommunity, //список с отдельным списком сотрудников и студентов
+                    );
+                  default:
+                    return Container(
+                      padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                      width: MediaQuery.of(context).size.width * 1,
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      decoration: BoxDecoration(color: Colors.transparent),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'У вас отсутствуют какие-либо люди в списках. Сисимасиси',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    );
+                }
+              },
+            ),
           ),
         ),
       ),
@@ -125,8 +131,8 @@ class AppBarMedicContent extends StatelessWidget {
           ElevatedButton(
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.resolveWith<Color>((
-                  Set<WidgetState> states,
-                  ) {
+                Set<WidgetState> states,
+              ) {
                 if (states.contains(WidgetState.disabled)) {
                   return const Color(0xffD5D6D7);
                 }
@@ -163,59 +169,153 @@ class AppBarMedicContent extends StatelessWidget {
   }
 }
 
-Widget buildMainContentMedic(BuildContext context, List<StaffAndStudentsModel> medicEntireCommunity){
+Widget buildMainContentMedic(
+  BuildContext context,
+  List<StaffAndStudentsModel> medicEntireCommunity,
+) {
   bool isEditing = false;
-  final bloc = context.read<WorkingWithFluorographyBloc>();
-  if (bloc.state is WorkingWithFluorographyEditState) {
-    final state = bloc.state as WorkingWithFluorographyEditState;
-    isEditing = state.isEditing;
-  }
+  BlocListener<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
+    listener: (context, state) {
+      switch (state.runtimeType) {
+        case WorkingWithFluorographyEditState:
+          final state =
+              (context).read<WorkingWithFluorographyBloc>().state
+                  as WorkingWithFluorographyEditState;
+          isEditing = state.isEditing;
+      }
+    },
+  );
   if (medicEntireCommunity.isEmpty) {
     return Center(child: Text('Не данных для построения главного экрана'));
   }
-  return AccordionGeneralWidgetListMedic(context, medicEntireCommunity, isEditing);
-}
-
-
-Widget AccordionGeneralWidgetListMedic(BuildContext context, List<StaffAndStudentsModel> medicEntireCommunity, bool isEditing){
-  HeaderAccordionSectionBuildWidgetStaff _HeaderAccordionSectionBuildWidgetStaff;
-  final int countStaff = medicEntireCommunity[0].staffList.length;
-  return Accordion(
-      headerBorderColor: const Color(0xffD4EAFF),
-      headerBorderColorOpened: const Color(0xffD4EAFF),
-      headerBorderWidth: 1,
-      headerBackgroundColorOpened: Colors.transparent,
-      headerBackgroundColor: Colors.white,
-      rightIcon: SvgPicture.asset(
-        'assets/images/icon_expand_down.svg',
-        height: 14,
-        width: 6,
-      ),
-      contentBackgroundColor: Colors.white,
-      contentBorderColor: const Color(0xffD4EAFF),
-      contentBorderWidth: 1,
-      scaleWhenAnimating: true,
-      openAndCloseAnimation: true,
-      disableScrolling: true,
-      headerPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 35),
-      sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
-      sectionClosingHapticFeedback: SectionHapticFeedback.light,
-      headerBorderRadius: 30,
-      children: medicEntireCommunity.map((medicData) {
-        return AccordionSection(
-            isOpen: false,
-            paddingBetweenClosedSections: 30,
-            paddingBetweenOpenSections: 30,
-            header: HeaderAccordionSectionBuildWidgetStaff(
-                countStaff: countStaff,
-            ),
-            contentHorizontalPadding: 12,
-            contentVerticalPadding: 12,
-            content: BuildAccordionSectionContentBuildMedic(context, medicEntireCommunity, isEditing)
-
-        );
-      }).toList(),
-
-
+  return AccordionGeneralWidgetListMedic(
+    context,
+    medicEntireCommunity,
+    isEditing,
   );
 }
+
+Widget AccordionGeneralWidgetListMedic(
+  BuildContext context,
+  List<StaffAndStudentsModel> medicEntireCommunity,
+  bool isEditing,
+) {
+  HeaderAccordionSectionBuildWidgetStaff
+  _HeaderAccordionSectionBuildWidgetStaff;
+
+  final int countStaff = medicEntireCommunity[0].staffList.length;
+
+  return Accordion(
+    headerBorderColor: const Color(0xffD4EAFF),
+    headerBorderColorOpened: const Color(0xffD4EAFF),
+    headerBorderWidth: 1,
+    headerBackgroundColorOpened: Colors.transparent,
+    headerBackgroundColor: Colors.white,
+    rightIcon: SvgPicture.asset(
+      'assets/images/icon_expand_down.svg',
+      height: 14,
+      width: 6,
+    ),
+    contentBackgroundColor: Colors.white,
+    contentBorderColor: const Color(0xffD4EAFF),
+    contentBorderWidth: 1,
+    scaleWhenAnimating: true,
+    openAndCloseAnimation: true,
+    disableScrolling: true,
+    headerPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 35),
+    sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
+    sectionClosingHapticFeedback: SectionHapticFeedback.light,
+    headerBorderRadius: 30,
+    children: [
+      ...medicEntireCommunity.where((item) => item.staffList.isNotEmpty).map((
+        e,
+      ) {
+        return AccordionSection(
+          isOpen: false,
+          paddingBetweenClosedSections: 30,
+          paddingBetweenOpenSections: 30,
+          header: HeaderAccordionSectionBuildWidgetStaff(
+            countStaff: e.staffList.length,
+          ),
+          contentHorizontalPadding: 12,
+          contentVerticalPadding: 12,
+          content: Column(
+            children: e.staffList
+                .map(
+                  (staff) => OneRowBuildAccordionSectionContentStaff(
+                    staff: staff,
+                    isEditing: isEditing,
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      }),
+      
+      ...medicEntireCommunity.where((item) => item.studentsList.isNotEmpty).expand((groups){
+        return groups.studentsList.map((group) {
+            return AccordionSection(
+                isOpen: false,
+                paddingBetweenClosedSections: 30,
+                paddingBetweenOpenSections: 30,
+                header: HeaderAccordionSectionBuildWidget(
+                  groupNumber: group.groupNumber,
+                  countStudents: group.students.length,
+                ),
+                contentHorizontalPadding: 12,
+                contentVerticalPadding: 12,
+                content: Column(
+                    children:
+                    group.students.map((student) {
+                      return OneRowBuildAccordionSectionContent(
+                        student: student,
+                        isEditing: isEditing,
+                      );
+                    }).toList()
+                )
+            );
+        });
+      })
+      
+      /*
+      ...medicEntireCommunity.expand((e) {
+        return e.studentsList.expand((groups){
+          return groups.students.map((group) => AccordionSection(
+              isOpen: false,
+              paddingBetweenClosedSections: 30,
+              paddingBetweenOpenSections: 30,
+              header: HeaderAccordionSectionBuildWidget(
+                countStudents: groups.students.length,
+                groupNumber: groups.groupNumber,
+              ),
+              contentHorizontalPadding: 12,
+              contentVerticalPadding: 12,
+              content: BuildAccordionSectionContentMedic(
+                  context,
+                  medicEntireCommunity,
+                  isEditing,
+                  'student'
+              )
+          ));
+        });
+      }),
+      */
+    ],
+  );
+}
+
+/*
+      return AccordionSection(
+        isOpen: false,
+        paddingBetweenClosedSections: 30,
+        paddingBetweenOpenSections: 30,
+        header: HeaderAccordionSectionBuildWidgetStaff(countStaff: countStaff),
+        contentHorizontalPadding: 12,
+        contentVerticalPadding: 12,
+        content: BuildAccordionSectionContentBuildMedic(
+          context,
+          medicEntireCommunity,
+          isEditing,
+        ),
+      );
+      */

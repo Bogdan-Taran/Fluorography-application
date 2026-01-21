@@ -21,7 +21,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     final List<StaffAndStudentsModel> staffAndStudentsList;
     try{
       staffAndStudentsList = await _ApiServiceGetCommunityMembers.getAllComuintyForMedic();
-      print(staffAndStudentsList.toString());
+      // print(staffAndStudentsList.toString());
       emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: staffAndStudentsList));
       print('Студенты и сотрудники успешно получны');
     }catch (e){

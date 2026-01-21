@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
+import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/screens/curator_screen.dart';
 import 'package:project_fluorography/screens/medic_screen.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
@@ -54,6 +55,10 @@ class HomeScreen extends StatelessWidget {
             );
             // return AdminScreen();
           } else if (role == 'medic') {
+            return BlocProvider(
+                create: (context) => MedicBloc(),
+                child: MedicScreen(),
+            );
             return MedicScreen();
           } else {
             try {

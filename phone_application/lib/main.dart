@@ -5,6 +5,7 @@ import 'package:project_fluorography/bloc/authentication/authentication_bloc.dar
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/bloc/navigation/navigation_bloc.dart';
 import 'package:project_fluorography/screens/home_screen.dart';
+import 'package:project_fluorography/screens/medic_screen.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/auth_service.dart';
 import 'package:project_fluorography/services/shared_pref_service.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
                 debugShowCheckedModeBanner: false,
                 title: 'Clean Flura',
                 home: AuthChecker(),
+                // home: MedicScreen(),
               ),
             );
           },

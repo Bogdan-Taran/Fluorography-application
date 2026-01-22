@@ -1,11 +1,17 @@
+import 'package:bottom_picker/bottom_picker.dart';
+import 'package:bottom_picker/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
+import 'converters_service.dart';
 
 class BuildersScreen {
+  ConverterServices _ConverterServices = ConverterServices();
+
   Widget buildLoading() {
     return Center(
       child: LoadingAnimationWidget.halfTriangleDot(
@@ -34,6 +40,56 @@ class BuildersScreen {
       ],
     )
     );
+  }
+
+
+  void openDatePicker(BuildContext context) {
+    BottomPicker.date(
+      headerBuilder: (context) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Выберите дату',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(0xFF72A7EB),
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Geologica',
+              ),
+            ),
+            IconButton(
+                onPressed: () {
+                  context.read<MedicBloc>().add(MedicCloseDatePickerEvent());
+                },
+                icon: Icon(Icons.close),
+              style: ButtonStyle(foregroundColor: MaterialStateProperty.all(Color(0xFF72A7EB))),
+            )
+          ],
+        );
+      },
+      dateOrder: DatePickerDateOrder.dmy,
+      // initialDateTime: DateTime(2025, 10, 01),
+      initialDateTime: DateTime.now(),
+      maxDateTime: DateTime(2030),
+      minDateTime: DateTime(2020),
+      onChange: (index) {
+        print(index);
+        String date = _ConverterServices.convertDatePicker(index);
+        print(date);
+        // context.read<MedicBloc>().add(MedicSelectDateEvent(selectedDate: date));
+      },
+      onSubmit: (index) {
+        print(index);
+        String date = _ConverterServices.convertDatePicker(index);
+        print(date);
+        context.read<MedicBloc>().add(MedicSelectDateEvent(selectedDate: date));
+      },
+      onDismiss: (p0) {
+        print(p0);
+      },
+      bottomPickerTheme: BottomPickerTheme.fluraPlate,
+    ).show(context);
   }
 }
 

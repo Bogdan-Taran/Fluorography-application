@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
+import 'package:project_fluorography/bloc/curator/curator_bloc.dart';
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/screens/curator_screen.dart';
 import 'package:project_fluorography/screens/medic_screen.dart';
@@ -34,15 +35,10 @@ class HomeScreen extends StatelessWidget {
 
           if (role == 'curator') {
             print('Ваша роль куратор');
-            return CuratorScreen();
-            // return Scaffold(
-            //   body: Center(
-            //     child: Text(
-            //       'Ваша роль куратор',
-            //       style: _textStyles.textStyleTitle(context),
-            //     ),
-            //   ),
-            // );
+            return BlocProvider(
+              create: (context) => CuratorBloc(),
+              child: CuratorScreen(),
+            );
           } else if (role == 'admin') {
             print('Ваша роль администратор');
             return Scaffold(

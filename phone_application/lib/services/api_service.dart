@@ -45,8 +45,6 @@ class ApiService {
   }
 
 
-
-
   Future<Map<String, dynamic>> getProtectedData() async {
     final token = await getToken();
     if (token == null) {
@@ -77,6 +75,35 @@ class ApiService {
       print('THERE HAPPEND an unexpected - not 200');
       final errorData = jsonDecode(response.body);
       return {'success': false, 'error': errorData};
+    }
+  }
+
+
+  Future<void> updateFluraDate(String selectedDate) async {
+    final url = Uri.parse('flura.tomtit-tomsk.ru/api/fluorography/');
+    final token = await getToken();
+    String selectedDate = '2025-11-21';
+
+    try {
+      final response = await http.patch(
+        url,
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode({
+          'date': '$selectedDate',
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        print('Post patched: $jsonData');
+      } else {
+        print('Failed to patch post. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
     }
   }
 }

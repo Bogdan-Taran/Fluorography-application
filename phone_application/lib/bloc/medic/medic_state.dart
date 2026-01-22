@@ -14,3 +14,9 @@ class MedicLoadedCommunitySuccessfulState extends MedicState{
   MedicLoadedCommunitySuccessfulState({required this.medicEntireCommunity});
 }
 class MedicFetchingErrorState extends MedicState{}
+
+class MedicLogoutSuccessfulState extends MedicState{}
+class MedicLogoutErrorState extends MedicState{}
+
+class MedicOpenDatePickerState extends MedicState{}
+class MedicCloseDatePickerState extends MedicState{}

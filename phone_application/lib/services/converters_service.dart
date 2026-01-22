@@ -20,6 +20,12 @@ class ConverterServices {
     return userRole;
   }
 
+  String convertDatePicker(DateTime date){
+    String rawDateString = date.toString();
+    String dateString = rawDateString.split(' ')[0];
+    return dateString;
+  }
+
 
   String formatFluraDate(String? date) {
     if (date == null) {

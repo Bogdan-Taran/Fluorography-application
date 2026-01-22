@@ -1,11 +1,14 @@
 import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
+import 'package:bottom_picker/bottom_picker.dart';
+import 'package:bottom_picker/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/models/staff_and_students_model.dart';
+import 'package:project_fluorography/screens/sign_in.dart';
 
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../services/builders_screen.dart';
@@ -33,14 +36,8 @@ class _MedicScreen extends State<MedicScreen> {
   Widget build(BuildContext context) {
     TextStyles textStyles = TextStyles();
     final UserSharedPreferences _userSharedPreferences =
-        UserSharedPreferences();
+    UserSharedPreferences();
     BuildersScreen _buildersScreen = BuildersScreen();
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    final bloc = context
-        .read<MedicBloc>(); // Если ошибка — BlocProvider не найден
-    print('BLoc inst: $bloc');
 
     return SafeArea(
       child: Scaffold(
@@ -49,11 +46,31 @@ class _MedicScreen extends State<MedicScreen> {
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            // child: AccordionGeneralWidgetList(),
             child: BlocConsumer<MedicBloc, MedicState>(
-              listenWhen: (previous, current) => current is MedicActionState,
+              listenWhen: (previous, current) => current is! MedicActionState,
               buildWhen: (previous, current) => current is! MedicActionState,
-              listener: (context, state) {},
+              listener: (context, state) {
+                switch (state.runtimeType) {
+                  case MedicLogoutSuccessfulState:
+                    print('Отработало сосотояния выхода');
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (BuildContext context) => SignInScreen()));
+                    break;
+                  case MedicLogoutErrorState:
+                    print('Ошибка при попытке выхода');
+                    break;
+                  case MedicFetchingLoadingState:
+                    _buildersScreen.buildLoading();
+                    print('Загрузка выхода');
+                    break;
+
+                  case MedicOpenDatePickerState:
+                    _buildersScreen.openDatePicker(context);
+                    break;
+                  case MedicCloseDatePickerState:
+                    Navigator.of(context).pop();
+                }
+              },
               builder: (context, state) {
                 switch (state.runtimeType) {
                   case MedicFetchingLoadingState:
@@ -62,7 +79,7 @@ class _MedicScreen extends State<MedicScreen> {
                     return Center(child: Text('Произошла ошибка'));
                   case MedicLoadedCommunitySuccessfulState:
                     final successfulState =
-                        state as MedicLoadedCommunitySuccessfulState;
+                    state as MedicLoadedCommunitySuccessfulState;
                     print('Печатаю лист');
                     print(successfulState.medicEntireCommunity);
                     return buildMainContentMedic(
@@ -70,11 +87,18 @@ class _MedicScreen extends State<MedicScreen> {
                       successfulState
                           .medicEntireCommunity, //список с отдельным списком сотрудников и студентов
                     );
+
                   default:
                     return Container(
                       padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-                      width: MediaQuery.of(context).size.width * 1,
-                      height: MediaQuery.of(context).size.height * 0.8,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 1,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.8,
                       decoration: BoxDecoration(color: Colors.transparent),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -84,6 +108,10 @@ class _MedicScreen extends State<MedicScreen> {
                             'У вас отсутствуют какие-либо люди в списках. Сисимасиси',
                             style: TextStyle(fontSize: 18),
                           ),
+                          ElevatedButton(onPressed: () {
+                            context.read<MedicBloc>().add(MedicOpenDatePickerEvent());
+                            print('Нажата кнопка выбора даты');
+                          }, child: Text('Выбор даты'))
                         ],
                       ),
                     );
@@ -99,9 +127,14 @@ class _MedicScreen extends State<MedicScreen> {
 
 PreferredSizeWidget AppBarMedic(BuildContext context) {
   return PreferredSize(
-    preferredSize: Size.fromHeight(MediaQuery.sizeOf(context).height * 0.09),
+    preferredSize: Size.fromHeight(MediaQuery
+        .sizeOf(context)
+        .height * 0.09),
     child: Container(
-      height: MediaQuery.of(context).size.height * 0.09,
+      height: MediaQuery
+          .of(context)
+          .size
+          .height * 0.09,
       decoration: const BoxDecoration(color: Colors.transparent),
       child: AppBarMedicContent(),
     ),
@@ -131,8 +164,7 @@ class AppBarMedicContent extends StatelessWidget {
           ElevatedButton(
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.resolveWith<Color>((
-                Set<WidgetState> states,
-              ) {
+                  Set<WidgetState> states,) {
                 if (states.contains(WidgetState.disabled)) {
                   return const Color(0xffD5D6D7);
                 }
@@ -146,13 +178,19 @@ class AppBarMedicContent extends StatelessWidget {
               }),
               foregroundColor: WidgetStateProperty.all(const Color(0xffffffff)),
               minimumSize: WidgetStateProperty.all(
-                Size(MediaQuery.of(context).size.width * 0.1, 35),
+                Size(MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.1, 35),
               ),
               shape: WidgetStateProperty.all(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              context.read<MedicBloc>().add(MedicLogoutEvent());
+              print('Нажата кнопка выхода');
+            },
             child: const Text(
               'Выход',
               style: TextStyle(
@@ -169,24 +207,54 @@ class AppBarMedicContent extends StatelessWidget {
   }
 }
 
-Widget buildMainContentMedic(
-  BuildContext context,
-  List<StaffAndStudentsModel> medicEntireCommunity,
-) {
+Widget buildMainContentMedic(BuildContext context,
+    List<StaffAndStudentsModel> medicEntireCommunity,) {
   bool isEditing = false;
-  BlocListener<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
-    listener: (context, state) {
-      switch (state.runtimeType) {
-        case WorkingWithFluorographyEditState:
-          final state =
-              (context).read<WorkingWithFluorographyBloc>().state
-                  as WorkingWithFluorographyEditState;
-          isEditing = state.isEditing;
-      }
-    },
-  );
+
   if (medicEntireCommunity.isEmpty) {
-    return Center(child: Text('Не данных для построения главного экрана'));
+    //return Center(child: Text('Не данных для построения главного экрана'));
+    return Center(child:
+    ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>((
+            Set<WidgetState> states,) {
+          if (states.contains(WidgetState.disabled)) {
+            return const Color(0xffD5D6D7);
+          }
+          if (states.contains(WidgetState.pressed)) {
+            return const Color(0xFF72A7EB);
+          }
+          if (states.contains(WidgetState.hovered)) {
+            return const Color(0xFFBADEFF);
+          }
+          return const Color(0xff98BFF3);
+        }),
+        foregroundColor: WidgetStateProperty.all(const Color(0xffffffff)),
+        minimumSize: WidgetStateProperty.all(
+          Size(MediaQuery
+              .of(context)
+              .size
+              .width * 0.1, 35),
+        ),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      ),
+      onPressed: () {
+        // _openDatePicker(context);
+        context.read<MedicBloc>().add(MedicOpenDatePickerEvent());
+      },
+      child: const Text(
+        '12.01.2026',
+        style: TextStyle(
+          fontSize: 16,
+          color: Color(0xffffffff),
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Geologica',
+        ),
+      ),
+    ),
+    );
   }
   return AccordionGeneralWidgetListMedic(
     context,
@@ -195,11 +263,10 @@ Widget buildMainContentMedic(
   );
 }
 
-Widget AccordionGeneralWidgetListMedic(
-  BuildContext context,
-  List<StaffAndStudentsModel> medicEntireCommunity,
-  bool isEditing,
-) {
+
+Widget AccordionGeneralWidgetListMedic(BuildContext context,
+    List<StaffAndStudentsModel> medicEntireCommunity,
+    bool isEditing,) {
   HeaderAccordionSectionBuildWidgetStaff
   _HeaderAccordionSectionBuildWidgetStaff;
 
@@ -228,8 +295,7 @@ Widget AccordionGeneralWidgetListMedic(
     headerBorderRadius: 30,
     children: [
       ...medicEntireCommunity.where((item) => item.staffList.isNotEmpty).map((
-        e,
-      ) {
+          e,) {
         return AccordionSection(
           isOpen: false,
           paddingBetweenClosedSections: 30,
@@ -242,41 +308,44 @@ Widget AccordionGeneralWidgetListMedic(
           content: Column(
             children: e.staffList
                 .map(
-                  (staff) => OneRowBuildAccordionSectionContentStaff(
+                  (staff) =>
+                  OneRowBuildAccordionSectionContentStaff(
                     staff: staff,
                     isEditing: isEditing,
                   ),
-                )
+            )
                 .toList(),
           ),
         );
       }),
-      
-      ...medicEntireCommunity.where((item) => item.studentsList.isNotEmpty).expand((groups){
+
+      ...medicEntireCommunity
+          .where((item) => item.studentsList.isNotEmpty)
+          .expand((groups) {
         return groups.studentsList.map((group) {
-            return AccordionSection(
-                isOpen: false,
-                paddingBetweenClosedSections: 30,
-                paddingBetweenOpenSections: 30,
-                header: HeaderAccordionSectionBuildWidget(
-                  groupNumber: group.groupNumber,
-                  countStudents: group.students.length,
-                ),
-                contentHorizontalPadding: 12,
-                contentVerticalPadding: 12,
-                content: Column(
-                    children:
-                    group.students.map((student) {
-                      return OneRowBuildAccordionSectionContent(
-                        student: student,
-                        isEditing: isEditing,
-                      );
-                    }).toList()
-                )
-            );
+          return AccordionSection(
+              isOpen: false,
+              paddingBetweenClosedSections: 30,
+              paddingBetweenOpenSections: 30,
+              header: HeaderAccordionSectionBuildWidget(
+                groupNumber: group.groupNumber,
+                countStudents: group.students.length,
+              ),
+              contentHorizontalPadding: 12,
+              contentVerticalPadding: 12,
+              content: Column(
+                  children:
+                  group.students.map((student) {
+                    return OneRowBuildAccordionSectionContent(
+                      student: student,
+                      isEditing: isEditing,
+                    );
+                  }).toList()
+              )
+          );
         });
       })
-      
+
       /*
       ...medicEntireCommunity.expand((e) {
         return e.studentsList.expand((groups){

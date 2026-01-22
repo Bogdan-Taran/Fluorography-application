@@ -28,61 +28,47 @@ class CuratorScreen extends StatefulWidget {
 }
 
 class _CuratorScreen extends State<CuratorScreen> {
-  final CuratorBloc curatorBloc = CuratorBloc();
-
   @override
   void initState() {
-    curatorBloc.add(CuratorInitialEvent());
+    (context).read<CuratorBloc>().add(CuratorInitialEvent());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    TextStyles textStyles = TextStyles();
-    final UserSharedPreferences _userSharedPreferences =
-        UserSharedPreferences();
     BuildersScreen _buildersScreen = BuildersScreen();
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return SafeArea(
       child: Scaffold(
-        // backgroundColor: Colors.lightBlueAccent,
         appBar: AppBarCurator(context),
+
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: BlocConsumer<CuratorBloc, CuratorState>(
-              bloc: CuratorBloc(),
-              listenWhen: (previous, current) => current is CuratorActionState,
+              listenWhen: (previous, current) => current is! CuratorActionState,
               buildWhen: (previous, current) => current is! CuratorActionState,
               listener: (context, state) {
-                if(state is CuratorLogOutSuccessfulState){
-                  print('Отработало сосотояния выхода');
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => SignInScreen()));
-                }
-                else if(state is CuratorLogOutErrorState){
-                  print('Ошибка при попытке выхода');
-                }
-                else if(state is CuratorFetchingLoadingState){
-                  print('Загрузка при попытке выйти');
-                  _buildersScreen.buildLoading();
-                }
-                else{
-                  print('listenner вышел через else');
+                switch (state.runtimeType) {
+                  case CuratorLogOutSuccessfulState:
+                    print('Отработало сосотояния выхода');
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (BuildContext context) => SignInScreen()));
+                    break;
+                  case CuratorLogOutErrorState:
+                    print('Ошибка при попытке выхода');
+                    break;
+                  case CuratorFetchingLoadingState:
+                    print('Загрузка при попытке выйти');
+                    _buildersScreen.buildLoading();
+                    break;
                 }
               },
               builder: (context, state) {
                 switch (state.runtimeType) {
-
-                  case CuratorFetchingLoadingState():
-                    return Center(
-                      child: _buildersScreen.buildLoading(),
-                    );
-                  case CuratorFetchingErrorState():
-                    return Center(
-                      child: Text('Нет групп'),
-                    );
+                  case CuratorFetchingLoadingState:
+                    return Center(child: _buildersScreen.buildLoading());
+                  case CuratorFetchingErrorState:
+                    return Center(child: Text('Нет групп'));
                   case CuratorLoadedGroupsSuccessfulState:
                     final successState =
                         state as CuratorLoadedGroupsSuccessfulState;
@@ -95,14 +81,15 @@ class _CuratorScreen extends State<CuratorScreen> {
                       padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
                       width: MediaQuery.of(context).size.width * 1,
                       height: MediaQuery.of(context).size.height * 0.8,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent
-                      ),
+                      decoration: BoxDecoration(color: Colors.transparent),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text('У вас отстутствуют группы кураторства', style: TextStyle(fontSize: 18),),
+                          Text(
+                            'У вас отстутствуют группы кураторства',
+                            style: TextStyle(fontSize: 18),
+                          ),
                         ],
                       ),
                     );
@@ -130,7 +117,6 @@ PreferredSizeWidget AppBarCurator(BuildContext context) {
 class AppBarCuratorContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    CuratorBloc curatorBloc = CuratorBloc();
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
       child: Row(
@@ -173,7 +159,7 @@ class AppBarCuratorContent extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              curatorBloc.add(CuratorSignOutEvent());
+              context.read<CuratorBloc>().add(CuratorSignOutEvent());
               print('Нажата кнопка выхода');
             },
             child: const Text(
@@ -197,11 +183,7 @@ Widget buildMainContent(
   List<SingleGroupWithStudentsModel> groups,
 ) {
   bool isEditing = false;
-  final bloc = context.read<WorkingWithFluorographyBloc>();
-  if (bloc.state is WorkingWithFluorographyEditState) {
-    final state = bloc.state as WorkingWithFluorographyEditState;
-    isEditing = state.isEditing;
-  }
+
   if (groups.isEmpty) {
     return Center(child: Text('Не данных для построения главного экрана'));
   }

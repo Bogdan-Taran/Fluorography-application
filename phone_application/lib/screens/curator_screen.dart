@@ -17,10 +17,10 @@ import '../services/builders_screen.dart';
 import '../services/shared_pref_service.dart';
 import '../styles.dart';
 import '../widgets/accordion_widgets.dart';
+import '../widgets/screens_widgets.dart';
 
 class CuratorScreen extends StatefulWidget {
-  static String id = 'curator_screen';
-
+  // static String id = 'curator_screen';
   const CuratorScreen({super.key});
 
   @override
@@ -33,6 +33,8 @@ class _CuratorScreen extends State<CuratorScreen> {
     (context).read<CuratorBloc>().add(CuratorInitialEvent());
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +107,9 @@ class _CuratorScreen extends State<CuratorScreen> {
 
 PreferredSizeWidget AppBarCurator(BuildContext context) {
   return PreferredSize(
-    preferredSize: Size.fromHeight(MediaQuery.sizeOf(context).height * 0.09),
+    preferredSize: Size.fromHeight(MediaQuery.sizeOf(context).height * 0.12),
     child: Container(
-      height: MediaQuery.of(context).size.height * 0.09,
+      height: MediaQuery.of(context).size.height * 0.12,
       decoration: const BoxDecoration(color: Colors.transparent),
       child: AppBarCuratorContent(),
     ),
@@ -117,61 +119,71 @@ PreferredSizeWidget AppBarCurator(BuildContext context) {
 class AppBarCuratorContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ScreensWidgets _ScreensWidgets = ScreensWidgets();
+
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          IconButton(
-            onPressed: () {},
-            splashRadius: 24,
-            padding: EdgeInsets.zero,
-            icon: SvgPicture.asset(
-              'assets/images/notification_icon.svg',
-              color: const Color(0xff98BFF3),
-              width: 35,
-              height: 35,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                onPressed: () {},
+                splashRadius: 24,
+                padding: EdgeInsets.zero,
+                icon: SvgPicture.asset(
+                  'assets/images/notification_icon.svg',
+                  color: const Color(0xff98BFF3),
+                  width: 35,
+                  height: 35,
+                ),
+              ),
+
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.resolveWith<Color>((
+                    Set<WidgetState> states,
+                  ) {
+                    if (states.contains(WidgetState.disabled)) {
+                      return const Color(0xffD5D6D7);
+                    }
+                    if (states.contains(WidgetState.pressed)) {
+                      return const Color(0xFF72A7EB);
+                    }
+                    if (states.contains(WidgetState.hovered)) {
+                      return const Color(0xFFBADEFF);
+                    }
+                    return const Color(0xff98BFF3);
+                  }),
+                  foregroundColor: WidgetStateProperty.all(const Color(0xffffffff)),
+                  minimumSize: WidgetStateProperty.all(
+                    Size(MediaQuery.of(context).size.width * 0.1, 35),
+                  ),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                ),
+                onPressed: () {
+                  context.read<CuratorBloc>().add(CuratorSignOutEvent());
+                  print('Нажата кнопка выхода');
+                },
+                child: const Text(
+                  'Выход',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xffffffff),
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Geologica',
+                  ),
+                ),
+              ),
+            ],
           ),
 
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.resolveWith<Color>((
-                Set<WidgetState> states,
-              ) {
-                if (states.contains(WidgetState.disabled)) {
-                  return const Color(0xffD5D6D7);
-                }
-                if (states.contains(WidgetState.pressed)) {
-                  return const Color(0xFF72A7EB);
-                }
-                if (states.contains(WidgetState.hovered)) {
-                  return const Color(0xFFBADEFF);
-                }
-                return const Color(0xff98BFF3);
-              }),
-              foregroundColor: WidgetStateProperty.all(const Color(0xffffffff)),
-              minimumSize: WidgetStateProperty.all(
-                Size(MediaQuery.of(context).size.width * 0.1, 35),
-              ),
-              shape: WidgetStateProperty.all(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              ),
-            ),
-            onPressed: () {
-              context.read<CuratorBloc>().add(CuratorSignOutEvent());
-              print('Нажата кнопка выхода');
-            },
-            child: const Text(
-              'Выход',
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xffffffff),
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Geologica',
-              ),
-            ),
-          ),
+          SizedBox(height: 10),
+
+          _ScreensWidgets.SearchBar(context: context)
         ],
       ),
     );
@@ -221,9 +233,14 @@ Widget AccordionGeneralWidgetList(
         isOpen: false,
         paddingBetweenClosedSections: 30,
         paddingBetweenOpenSections: 30,
-        header: HeaderAccordionSectionBuildWidget(
-          groupNumber: groupData.groupNumber,
-          countStudents: groupData.students.length,
+        // header: HeaderAccordionSectionBuildWidget(
+        //   groupNumber: groupData.groupNumber,
+        //   countStudents: groupData.students.length,
+        // ),
+        header: HeaderAccordionSectionWidgetBuild(
+            title: 'Группа',
+            count: groupData.students.length,
+            groupNumber: groupData.groupNumber,
         ),
         contentHorizontalPadding: 12,
         contentVerticalPadding: 12,
@@ -249,7 +266,7 @@ Widget buildAccordionSectionContentBuild(
       if (students.isEmpty)
         const Padding(
           padding: EdgeInsets.all(16),
-          child: Text('Студенты не найдены'),
+          child: Text('В этой группе нет студентов'),
         )
       else
         Column(

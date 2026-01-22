@@ -13,22 +13,26 @@ import '../services/builders_screen.dart';
 import '../services/checker_service.dart';
 import '../services/converters_service.dart';
 
-//Заголовок секции
-class HeaderAccordionSectionBuildWidget extends StatelessWidget {
-  final String groupNumber;
-  final int countStudents;
 
-  const HeaderAccordionSectionBuildWidget({
+class HeaderAccordionSectionWidgetBuild extends StatelessWidget{
+  final String title;
+  final int count;
+  final String? groupNumber;
+
+  HeaderAccordionSectionWidgetBuild({
     Key? key,
-    required this.groupNumber,
-    required this.countStudents,
+    required this.title,
+    required this.count,
+    this.groupNumber,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text('Группа $groupNumber'),
+        Text(
+          groupNumber == null? title : 'Группа $groupNumber'
+        ),
         SizedBox(width: 30),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -39,7 +43,7 @@ class HeaderAccordionSectionBuildWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(countStudents.toString()),
+              Text(count.toString()),
               SizedBox(width: 6),
               SvgPicture.asset(
                 'assets/images/people_icon.svg',
@@ -54,42 +58,6 @@ class HeaderAccordionSectionBuildWidget extends StatelessWidget {
   }
 }
 
-class HeaderAccordionSectionBuildWidgetStaff extends StatelessWidget {
-  final int countStaff;
-  const HeaderAccordionSectionBuildWidgetStaff({
-    Key? key,
-    required this.countStaff,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text('Сотрудники'),
-        SizedBox(width: 30),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-          decoration: BoxDecoration(
-            color: Color(0xffF29393),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(countStaff.toString()),
-              SizedBox(width: 6),
-              SvgPicture.asset(
-                'assets/images/people_icon.svg',
-                height: 12,
-                width: 12,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 Widget BuildAccordionSectionContentMedic(
   BuildContext context,

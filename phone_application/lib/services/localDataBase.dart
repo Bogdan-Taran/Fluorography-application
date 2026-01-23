@@ -7,6 +7,7 @@ import 'package:project_fluorography/models/single_group_with_students_model.dar
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+import '../models/staff_and_students_model.dart';
 import 'api_service_get_community_members.dart';
 
 class CacheService {
@@ -101,7 +102,7 @@ class CheckerCacheService {
   }
 
 
-  Future<List<SingleGroupWithStudentsModel>> getGroupsMedicWithCache() async {
+  Future<List<StaffAndStudentsModel>> getGroupsMedicWithCache() async {
     const cacheId = 'groups_medic_data';
 
     //check cache
@@ -112,7 +113,7 @@ class CheckerCacheService {
         final list = jsonDecode(cached) as List<dynamic>;
         print('Данные раскэшированы, выозвращаю их');
         return list
-            .map((e) => SingleGroupWithStudentsModel.fromJson(e))
+            .map((e) => StaffAndStudentsModel.fromJson(e))
             .toList();
       } catch (e) {
         print('Ошибка при получении кэшированных данных');
@@ -121,7 +122,7 @@ class CheckerCacheService {
     }
     print('Пробую обратиться к api');
     try {
-      final data = await _ApiServiceGetCommunityMembers.getGroupsForCurator();
+      final data = await _ApiServiceGetCommunityMembers.getAllComuintyForMedic();
       print('Данные из api получены');
       final jsonString = jsonEncode(data.map((e) => e.toJson()).toList());
       print('Сохраняю в кэш');
@@ -133,7 +134,7 @@ class CheckerCacheService {
     }
     print('Давай по новой, миша, всё хуйня - запрос к api');
     final dataFromApi =
-    await _ApiServiceGetCommunityMembers.getGroupsForCurator();
+    await _ApiServiceGetCommunityMembers.getAllComuintyForMedic();
     return dataFromApi;
   }
 }

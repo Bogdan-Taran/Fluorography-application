@@ -8,6 +8,7 @@ import 'package:project_fluorography/models/staff_and_students_model.dart';
 import '../../services/api_service.dart';
 import '../../services/api_service_get_community_members.dart';
 import '../../services/auth_service.dart';
+import '../../services/localDataBase.dart';
 
 part 'medic_event.dart';
 part 'medic_state.dart';
@@ -16,6 +17,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
   ApiServiceGetCommunityMembers _ApiServiceGetCommunityMembers = ApiServiceGetCommunityMembers();
   AuthService _AuthService = AuthService();
   ApiService _ApiService = ApiService();
+  CheckerCacheService _CheckerCacheService = CheckerCacheService();
 
   MedicBloc() : super(MedicInitial()) {
     on<MedicInitialEvent>(medicInitialEvent);
@@ -27,11 +29,11 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
 }
   FutureOr<void> medicInitialEvent(MedicInitialEvent event, Emitter<MedicState> emit) async{
     emit(MedicFetchingLoadingState());
+    List<StaffAndStudentsModel> staffAndStudentsList;
 
-    final List<StaffAndStudentsModel> staffAndStudentsList;
+
     try{
-      staffAndStudentsList = await _ApiServiceGetCommunityMembers.getAllComuintyForMedic();
-      // print(staffAndStudentsList.toString());
+      staffAndStudentsList = await _CheckerCacheService.getGroupsMedicWithCache();
       emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: staffAndStudentsList));
       print('Студенты и сотрудники успешно получны');
     }catch (e){

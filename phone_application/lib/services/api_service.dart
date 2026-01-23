@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class ApiService {
-  final String _baseUrl = 'http://flura.tomtit-tomsk.ru';
+  final String _baseUrl = 'https://flura.tomtit-tomsk.ru';
 
   Future<Map<String, dynamic>> loginUser(String login, String password) async {
     final url = Uri.parse('$_baseUrl/api/login/');
@@ -80,7 +80,7 @@ class ApiService {
 
 
   Future<void> updateFluraDate(String selectedDate) async {
-    final url = Uri.parse('flura.tomtit-tomsk.ru/api/fluorography/');
+    final url = Uri.parse('https://flura.tomtit-tomsk.ru/api/fluorography/');
     final token = await getToken();
     String selectedDate = '2025-11-21';
 

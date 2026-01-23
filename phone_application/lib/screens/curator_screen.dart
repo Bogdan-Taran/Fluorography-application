@@ -17,6 +17,7 @@ import '../services/builders_screen.dart';
 import '../services/shared_pref_service.dart';
 import '../styles.dart';
 import '../widgets/accordion_widgets.dart';
+import '../widgets/main_content_accordion_builder.dart';
 import '../widgets/screens_widgets.dart';
 
 class CuratorScreen extends StatefulWidget {
@@ -45,7 +46,7 @@ class _CuratorScreen extends State<CuratorScreen> {
 
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
             child: BlocConsumer<CuratorBloc, CuratorState>(
               listenWhen: (previous, current) => current is! CuratorActionState,
               buildWhen: (previous, current) => current is! CuratorActionState,
@@ -60,7 +61,7 @@ class _CuratorScreen extends State<CuratorScreen> {
                     print('Ошибка при попытке выхода');
                     break;
                   case CuratorFetchingLoadingState:
-                    print('Загрузка при попытке выйти');
+                    print('Загрузка');
                     _buildersScreen.buildLoading();
                     break;
                 }
@@ -70,14 +71,16 @@ class _CuratorScreen extends State<CuratorScreen> {
                   case CuratorFetchingLoadingState:
                     return Center(child: _buildersScreen.buildLoading());
                   case CuratorFetchingErrorState:
-                    return Center(child: Text('Нет групп'));
+                    return Center(child: Text('Ошибка при загрузке'));
                   case CuratorLoadedGroupsSuccessfulState:
                     final successState =
                         state as CuratorLoadedGroupsSuccessfulState;
-                    return buildMainContent(
-                      context,
-                      successState.curatorGroups,
-                    );
+                    // return buildMainContent(
+                    //   context,
+                    //  successState.curatorGroups,
+                    // );
+                    return MainContentAccordionBuilder(context, role: 'curator', groups: successState.curatorGroups,);
+
                   default:
                     return Container(
                       padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
@@ -190,6 +193,7 @@ class AppBarCuratorContent extends StatelessWidget {
   }
 }
 
+/*
 Widget buildMainContent(
   BuildContext context,
   List<SingleGroupWithStudentsModel> groups,
@@ -227,7 +231,7 @@ Widget AccordionGeneralWidgetList(
     headerPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 35),
     sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
     sectionClosingHapticFeedback: SectionHapticFeedback.light,
-    headerBorderRadius: 30,
+    headerBorderRadius: 25,
     children: groups.map((groupData) {
       return AccordionSection(
         isOpen: false,
@@ -297,3 +301,4 @@ Widget buildAccordionSectionContentBuild(
     ],
   );
 }
+*/

@@ -15,6 +15,7 @@ import '../services/builders_screen.dart';
 import '../services/shared_pref_service.dart';
 import '../styles.dart';
 import '../widgets/accordion_widgets.dart';
+import '../widgets/main_content_accordion_builder.dart';
 import '../widgets/screens_widgets.dart';
 
 class MedicScreen extends StatefulWidget {
@@ -83,11 +84,12 @@ class _MedicScreen extends State<MedicScreen> {
                     state as MedicLoadedCommunitySuccessfulState;
                     print('Печатаю лист');
                     print(successfulState.medicEntireCommunity);
-                    return buildMainContentMedic(
-                      context,
-                      successfulState
-                          .medicEntireCommunity, //список с отдельным списком сотрудников и студентов
-                    );
+                    // return buildMainContentMedic(
+                    //   context,
+                    //   successfulState
+                    //       .medicEntireCommunity, //список с отдельным списком сотрудников и студентов
+                    // );
+                    return MainContentAccordionBuilder(context, role: 'medic', medicEntireCommunity: successfulState.medicEntireCommunity,);
 
                   default:
                     return Container(
@@ -214,7 +216,7 @@ class AppBarMedicContent extends StatelessWidget {
     );
   }
 }
-
+/*
 Widget buildMainContentMedic(BuildContext context,
     List<StaffAndStudentsModel> medicEntireCommunity,) {
   bool isEditing = false;
@@ -309,4 +311,6 @@ Widget AccordionGeneralWidgetListMedic(BuildContext context,
       })
     ],
   );
+
 }
+*/

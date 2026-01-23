@@ -13,7 +13,7 @@ import 'package:project_fluorography/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServiceGetCommunityMembers {
-  final String _baseUrl = 'http://flura.tomtit-tomsk.ru';
+  final String _baseUrl = 'https://flura.tomtit-tomsk.ru';
 
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();

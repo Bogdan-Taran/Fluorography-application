@@ -7,6 +7,7 @@ import 'package:project_fluorography/models/single_group_with_students_model.dar
 
 import '../../services/api_service_get_community_members.dart';
 import '../../services/auth_service.dart';
+import '../../services/localDataBase.dart';
 
 part 'curator_event.dart';
 
@@ -15,6 +16,7 @@ part 'curator_state.dart';
 class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
   ApiServiceGetCommunityMembers _ApiServiceGetCommunityMembers = ApiServiceGetCommunityMembers();
   AuthService _AuthService = AuthService();
+  CheckerCacheService _CheckerCacheService = CheckerCacheService();
 
   CuratorBloc() : super(CuratorInitial()) {
     on<CuratorInitialEvent>(curatorInitialEvent);
@@ -26,9 +28,15 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
     Emitter<CuratorState> emit,
   ) async {
     emit(CuratorFetchingLoadingState());
-    final List<SingleGroupWithStudentsModel> curatorGroups;
+    List<SingleGroupWithStudentsModel> curatorGroups;
+
+
     try{
-      curatorGroups = await _ApiServiceGetCommunityMembers.getGroupsForCurator();
+      curatorGroups = await _CheckerCacheService.getGroupsCuratorWithCache();
+      // if(curatorGroups.isNotEmpty){
+      //   emit(CuratorLoadedGroupsSuccessfulState(curatorGroups: curatorGroups));
+      // }
+      // curatorGroups = await _ApiServiceGetCommunityMembers.getGroupsForCurator();
       print(curatorGroups.toString());
       emit(CuratorLoadedGroupsSuccessfulState(curatorGroups: curatorGroups));
     }

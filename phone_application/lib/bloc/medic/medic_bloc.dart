@@ -27,6 +27,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
 }
   FutureOr<void> medicInitialEvent(MedicInitialEvent event, Emitter<MedicState> emit) async{
     emit(MedicFetchingLoadingState());
+
     final List<StaffAndStudentsModel> staffAndStudentsList;
     try{
       staffAndStudentsList = await _ApiServiceGetCommunityMembers.getAllComuintyForMedic();

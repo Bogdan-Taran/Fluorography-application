@@ -36,4 +36,17 @@ class StudentData {
       group: json['group'] as String? ?? '',
     );
   }
+
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['lastname'] = this.lastname;
+    data['firstname'] = this.firstname;
+    data['patronymic'] = this.patronymic;
+    data['fluorography'] = this.fluorography;
+    data['group'] = this.group;
+    return data;
+  }
+
+
 }

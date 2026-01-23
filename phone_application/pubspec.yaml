@@ -36,6 +36,8 @@ dependencies:
   equatable: ^2.0.5
   liquid_container: ^1.0.4
   bottom_picker: ^4.1.0
+  path_provider: ^2.0.0
+  sqflite: ^2.0.0
 
 
 

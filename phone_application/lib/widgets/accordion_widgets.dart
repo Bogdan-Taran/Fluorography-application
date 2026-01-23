@@ -79,14 +79,14 @@ Widget BuildAccordionSectionContentMedic(
               data.expand((staff) {
                 return staff.staffList.map((e) =>
                     OneRowBuildAccordionSectionContentStaff(
-                        staff: e, isEditing: isEditing));
+                        staff: e));
               }).toList()
             :
                 data.expand((groups) {
                   return groups.studentsList.expand((students) {
                     return students.students.map((student) =>
                         OneRowBuildAccordionSectionContent(
-                            student: student, isEditing: isEditing));
+                            student: student));
                   });
                 }).toList()
         ),
@@ -113,14 +113,11 @@ Widget BuildAccordionSectionContentMedic(
 // одна строка для построения
 class OneRowBuildAccordionSectionContent extends StatelessWidget {
   final StudentData student;
-  final bool isEditing;
   // final Function(StudentData, DateTime) dateFluorographyUpdate;
 
   const OneRowBuildAccordionSectionContent({
     Key? key,
     required this.student,
-    required this.isEditing,
-    // required this.dateFluorographyUpdate,
   }) : super(key: key);
 
   @override
@@ -158,12 +155,10 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
 // одна строка для построения сотрудника
 class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
   final StaffModel staff;
-  final bool isEditing;
 
   const OneRowBuildAccordionSectionContentStaff({
     Key? key,
     required this.staff,
-    required this.isEditing,
   }) : super(key: key);
 
   @override

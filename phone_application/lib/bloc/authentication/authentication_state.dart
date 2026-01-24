@@ -12,9 +12,7 @@ class AuthenticationInitialState extends AuthenticationState {}
 
 //состояние загрузки
 class AuthenticationLoadingState extends AuthenticationState{
-  final bool isLoading;
 
-  AuthenticationLoadingState(this.isLoading);
 }
 
 //успешная авторизация

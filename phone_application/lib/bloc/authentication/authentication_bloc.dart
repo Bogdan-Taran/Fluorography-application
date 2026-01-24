@@ -13,7 +13,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<AuthenticationEvent>((event, emit) {});
 
     on<SignInUserEvent>((event, emit) async {
-      emit(AuthenticationLoadingState(true));
+      emit(AuthenticationLoadingState());
       try{
         final UserData? user = await authService.signInUser(event.login, event.password);
         if (user != null){
@@ -26,11 +26,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       catch (e) {
         print(e.toString());
       }
-      emit(AuthenticationLoadingState(true));
+      emit(AuthenticationLoadingState());
     });
 
     on<SignOutEvent>((event, emit) async {
-      emit(AuthenticationLoadingState(true));
+      emit(AuthenticationLoadingState());
       try{
         await authService.signOutUser();
         emit (AuthenticationLogOutState(isLoading: false, successful: true));
@@ -39,7 +39,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         print('error while logout');
         print(e.toString());
       }
-      emit(AuthenticationLoadingState(false));
+      emit(AuthenticationLoadingState());
     });
   }
 }

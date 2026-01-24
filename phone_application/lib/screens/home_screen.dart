@@ -9,6 +9,7 @@ import 'package:project_fluorography/screens/medic_screen.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../bloc/admin/admin_bloc.dart';
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../services/shared_pref_service.dart';
 import '../styles.dart';
@@ -25,7 +26,7 @@ class HomeScreen extends StatelessWidget {
     final AuthService _authService = AuthService();
     final prefs = SharedPreferences.getInstance();
     final UserSharedPreferences _userSharedPreferences =
-        UserSharedPreferences();
+    UserSharedPreferences();
 
     return FutureBuilder<String>(
       future: _userSharedPreferences.getUserRole(),
@@ -35,25 +36,27 @@ class HomeScreen extends StatelessWidget {
 
           if (role == 'curator') {
             print('Ваша роль куратор');
-            return BlocProvider(
-              create: (context) => CuratorBloc(),
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => CuratorBloc(),
+                ),
+                BlocProvider(
+                  create: (context) => AuthenticationBloc(),
+                ),
+              ],
               child: CuratorScreen(),
             );
           } else if (role == 'admin') {
-            print('Ваша роль администратор');
-            return Scaffold(
-              body: Center(
-                child: Text(
-                  'Ваша роль администратор',
-                  style: _textStyles.textStyleTitle(context),
-                ),
-              ),
-            );
-            // return AdminScreen();
+            // print('Ваша роль администратор');
+            // return BlocProvider(
+            //   create: (context) => AdminBloc(),
+            //   child: AdminScreen(),
+            // );
           } else if (role == 'medic') {
             return BlocProvider(
-                create: (context) => MedicBloc(),
-                child: MedicScreen(),
+              create: (context) => MedicBloc(),
+              child: MedicScreen(),
             );
             return MedicScreen();
           } else {

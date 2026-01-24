@@ -1,7 +1,89 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ScreensWidgets {
+  PreferredSizeWidget AppBarFlura<B extends Bloc<Object, Object>, E extends Object>({
+    required BuildContext context,
+    required B bloc,
+    required E event,
+}){
+    return PreferredSize(
+      preferredSize: Size.fromHeight(MediaQuery.sizeOf(context).height * 0.12),
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.12,
+        decoration: const BoxDecoration(color: Colors.transparent),
+        child:
+        Padding(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    splashRadius: 24,
+                    padding: EdgeInsets.zero,
+                    icon: SvgPicture.asset(
+                      'assets/images/notification_icon.svg',
+                      color: const Color(0xff98BFF3),
+                      width: 35,
+                      height: 35,
+                    ),
+                  ),
+
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>((
+                          Set<WidgetState> states,
+                          ) {
+                        if (states.contains(WidgetState.disabled)) {
+                          return const Color(0xffD5D6D7);
+                        }
+                        if (states.contains(WidgetState.pressed)) {
+                          return const Color(0xFF72A7EB);
+                        }
+                        if (states.contains(WidgetState.hovered)) {
+                          return const Color(0xFFBADEFF);
+                        }
+                        return const Color(0xff98BFF3);
+                      }),
+                      foregroundColor: WidgetStateProperty.all(const Color(0xffffffff)),
+                      minimumSize: WidgetStateProperty.all(
+                        Size(MediaQuery.of(context).size.width * 0.1, 35),
+                      ),
+                      shape: WidgetStateProperty.all(
+                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                    onPressed: () {
+                      context.read<B>().add(event);
+                      print('Нажата кнопка выхода');
+                    },
+                    child: const Text(
+                      'Выход',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xffffffff),
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Geologica',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 10),
+
+              SearchBar(context: context)
+            ],
+          ),
+        )
+      ),
+    );
+  }
 
   Widget SearchBar({
     required BuildContext context,

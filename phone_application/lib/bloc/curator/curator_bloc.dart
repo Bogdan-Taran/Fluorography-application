@@ -29,13 +29,8 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
     emit(CuratorFetchingLoadingState());
     List<SingleGroupWithStudentsModel> curatorGroups;
 
-
     try{
       curatorGroups = await _CheckerCacheService.getGroupsCuratorWithCache();
-      // if(curatorGroups.isNotEmpty){
-      //   emit(CuratorLoadedGroupsSuccessfulState(curatorGroups: curatorGroups));
-      // }
-      // curatorGroups = await _ApiServiceGetCommunityMembers.getGroupsForCurator();
       print(curatorGroups.toString());
       emit(CuratorLoadedGroupsSuccessfulState(curatorGroups: curatorGroups));
     }

@@ -70,7 +70,8 @@ class _CuratorScreen extends State<CuratorScreen> {
                   },
                 ),
               ],
-              child: BlocBuilder<CuratorBloc, CuratorState>(
+              child:
+              BlocBuilder<CuratorBloc, CuratorState>(
                 builder: (context, state) {
                   switch (state.runtimeType) {
                     case CuratorFetchingLoadingState:
@@ -80,15 +81,12 @@ class _CuratorScreen extends State<CuratorScreen> {
                     case CuratorLoadedGroupsSuccessfulState:
                       final successState =
                           state as CuratorLoadedGroupsSuccessfulState;
-                      // return buildMainContent(
-                      //   context,
-                      //  successState.curatorGroups,
-                      // );
                       return MainContentAccordionBuilder(
                         context,
                         role: 'curator',
                         groups: successState.curatorGroups,
                       );
+                      case BlocBuilder
 
                     default:
                       return Container(

@@ -85,6 +85,7 @@ class ScreensWidgets {
     );
   }
 
+
   Widget SearchBar({
     required BuildContext context,
   }) {

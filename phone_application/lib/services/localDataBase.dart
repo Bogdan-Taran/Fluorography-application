@@ -137,4 +137,41 @@ class CheckerCacheService {
     await _ApiServiceGetCommunityMembers.getAllComuintyForMedic();
     return dataFromApi;
   }
+
+
+  Future<List<SingleGroupWithStudentsModel>> getGroupsAdminWithCache() async {
+    const cacheId = 'groups_admin_data';
+
+    //check cache
+    final cached = await _cache.getCachedData(cacheId);
+    if (cached != null) {
+      try {
+        print('Пробую раскэшировать данные');
+        final list = jsonDecode(cached) as List<dynamic>;
+        print('Данные раскэшированы, выозвращаю их');
+        return list
+            .map((e) => SingleGroupWithStudentsModel.fromJson(e))
+            .toList();
+      } catch (e) {
+        print('Ошибка при получении кэшированных данных');
+        print(e);
+      }
+    }
+    print('Пробую обратиться к api');
+    try {
+      final data = await _ApiServiceGetCommunityMembers.getGroupsForAdmin();
+      print('Данные из api получены');
+      final jsonString = jsonEncode(data.map((e) => e.toJson()).toList());
+      print('Сохраняю в кэш');
+      await _cache.saveToCache(cacheId, jsonString);
+      print('Возвращаю данные');
+      return data;
+    } catch (e) {
+      print('Ошибка при попытке запросить данные из api и сохранить их в кэш');
+    }
+    print('Давай по новой, миша, всё хуйня - запрос к api');
+    final dataFromApi =
+    await _ApiServiceGetCommunityMembers.getGroupsForAdmin();
+    return dataFromApi;
+  }
 }

@@ -11,9 +11,6 @@ final class CuratorInitial extends CuratorState {}
 class CuratorFetchingLoadingState extends CuratorState{}
 class CuratorFetchingErrorState extends CuratorState{}
 
-class CuratorLogOutSuccessfulState extends CuratorState{}
-class CuratorLogOutErrorState extends CuratorState{}
-
 
 class CuratorLoadedGroupsSuccessfulState extends CuratorState {
   final List<SingleGroupWithStudentsModel> curatorGroups;

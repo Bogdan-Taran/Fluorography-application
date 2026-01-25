@@ -48,11 +48,18 @@ class HomeScreen extends StatelessWidget {
               child: CuratorScreen(),
             );
           } else if (role == 'admin') {
-            // print('Ваша роль администратор');
-            // return BlocProvider(
-            //   create: (context) => AdminBloc(),
-            //   child: AdminScreen(),
-            // );
+            print('Ваша роль администратор');
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => AdminBloc(),
+                ),
+                BlocProvider(
+                  create: (context) => AuthenticationBloc(),
+                ),
+              ],
+              child: AdminScreen(),
+            );
           } else if (role == 'medic') {
             return BlocProvider(
               create: (context) => MedicBloc(),

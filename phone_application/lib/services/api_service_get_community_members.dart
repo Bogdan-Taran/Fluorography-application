@@ -155,6 +155,19 @@ class ApiServiceGetCommunityMembers {
     return finalListAllGroupsForCurator;
   }
 
+  Future<List<SingleGroupWithStudentsModel>> getGroupsForAdmin() async {
+    List<SingleGroupWithStudentsModel> finalListAllGroupsForAdmin = [];
+    try{
+      finalListAllGroupsForAdmin = await getAllGroupsIteration();
+      return finalListAllGroupsForAdmin;
+    } catch (e){
+      print('Произошла ошибка при попытке получить группы для админа');
+    }
+    return finalListAllGroupsForAdmin;
+  }
+
+
+
   Future<List<SingleGroupWithStudentsModel>> getAllGroupsIteration() async {
     final groups = await getGroups();
     final List<SingleGroupWithStudentsModel> finalListAllGroups = [];

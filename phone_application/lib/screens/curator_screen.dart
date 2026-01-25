@@ -34,7 +34,6 @@ class _CuratorScreen extends State<CuratorScreen> {
           event: SignOutEvent(),
         ),
 
-        // appBar: AppBarCurator(context),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
@@ -61,17 +60,12 @@ class _CuratorScreen extends State<CuratorScreen> {
                 BlocListener<CuratorBloc, CuratorState>(
                   listener: (context, state) {
                     switch (state.runtimeType) {
-                      case CuratorLogOutErrorState:
-                        print('Ошибка при попытке выхода');
-                        break;
-                      case CuratorFetchingLoadingState:
-                        print('Загрузка');
-                        _buildersScreen.buildLoading();
-                        break;
-                      case AuthenticationLoadingState:
-                        print('Загрузка');
-                        _buildersScreen.buildLoading();
-                        break;
+                      // TODO: убрать все logout
+                      // case CuratorFetchingLoadingState:
+                      //   print('Загрузка');
+                      //   _buildersScreen.buildLoading();
+                      //   break;
+
                     }
                   },
                 ),

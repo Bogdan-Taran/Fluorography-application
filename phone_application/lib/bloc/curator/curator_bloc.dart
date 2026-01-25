@@ -20,7 +20,6 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
 
   CuratorBloc() : super(CuratorInitial()) {
     on<CuratorInitialEvent>(curatorInitialEvent);
-    on<CuratorSignOutEvent>(curatorSignOutEvent);
   }
 
   FutureOr<void> curatorInitialEvent(
@@ -47,17 +46,4 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
     }
   }
 
-  FutureOr<void> curatorSignOutEvent(CuratorSignOutEvent event, Emitter<CuratorState> emit) async{
-    emit(CuratorFetchingLoadingState());
-    try{
-      await _AuthService.signOutUser();
-      emit (CuratorLogOutSuccessfulState());
-      print('Излучил успешное состояние выхода');
-    }
-    catch (e){
-      print('error while logout');
-      print(e.toString());
-    }
-    emit(CuratorLogOutErrorState());
-  }
 }

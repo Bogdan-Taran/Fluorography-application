@@ -4,6 +4,3 @@ part of 'curator_bloc.dart';
 abstract class CuratorEvent {}
 
 class CuratorInitialEvent extends CuratorEvent{}
-
-
-class CuratorSignOutEvent extends CuratorEvent{}

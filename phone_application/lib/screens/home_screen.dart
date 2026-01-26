@@ -76,6 +76,9 @@ class HomeScreen extends StatelessWidget {
                 BlocProvider(
                   create: (context) => SearchBloc(),
                 ),
+                BlocProvider(
+                  create: (context) => WorkingWithFluorographyBloc(),
+                ),
               ],
               child: MedicScreen(),
             );

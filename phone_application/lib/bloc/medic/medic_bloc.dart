@@ -84,5 +84,6 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
   FutureOr<void> medicCloseDatePickerEvent(MedicCloseDatePickerEvent event, Emitter<MedicState> emit) {
     emit(MedicCloseDatePickerState());
   }
+
 }
 

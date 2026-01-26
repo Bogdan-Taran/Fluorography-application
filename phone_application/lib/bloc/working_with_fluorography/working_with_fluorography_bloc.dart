@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
@@ -8,26 +10,42 @@ part 'working_with_fluorography_state.dart';
 
 class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, WorkingWithFluorographyState> {
   WorkingWithFluorographyBloc() : super(WorkingWithFluorographyInitial()) {
-    on<WorkingWithFluorographyEvent>((event, emit) {});
-    on<LoadCuratorGroupsEvent>((event, emit){
+    on<TurnOnEditingModeEvent>(turnOnEditingModeEvent);
+    on<CancelEditingModeEvent>(cancelEditingModeEvent);
+    on<EnableEditingModeEvent>(enableEditingModeEvent);
 
-    });
     // on<UpdateFluorographyDateEvent>(onUpdateFluorographyDateEvent);
     //on<CancelEditingModeEvent>(onCancelEditingModeEvent);
     // on<EnableEditingModeEvent>(onEnableEditingModeEvent);
   }
 
-  Future<void> onUpdateFluorographyDateEvent(UpdateFluorographyDateEvent event, Emitter<WorkingWithFluorographyState> emit) async{
 
+  FutureOr<void> turnOnEditingModeEvent(TurnOnEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
+    emit(EditModeWorkingWithFluorographyState());
   }
 
-  Future<void> onCancelEditingModeEvent () async {}
 
+  FutureOr<void> cancelEditingModeEvent(CancelEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
+    emit(CancelEditModeWorkingWithFluorographyState());
+  }
+
+  FutureOr<void> enableEditingModeEvent(EnableEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
+    // loading
+    // api call
+
+    // success:
+    emit(EnableEditModeWorkingWithFluorographyState());
+
+  //   error:
+  //   ErrorState
+  }
 }
 
+
 class SelectDateBloc extends Bloc<SelectDateEvent, SelectDateState>{
-  SelectDateBloc(): super(const SelectDateState()){
+  SelectDateBloc(): super(SelectDateState()){
     on<SelectDateEvent>
         (event, emit) => emit(state.copyWith(selectedDate: event.selectedDate));
   }
 }
+

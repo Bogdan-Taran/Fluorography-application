@@ -6,12 +6,13 @@ abstract class WorkingWithFluorographyEvent extends Equatable{
   List<Object> get props => [];
 }
 
+class WorkingWithFluorographyInitialEvent extends WorkingWithFluorographyEvent{}
+
 class LoadCuratorGroupsEvent extends WorkingWithFluorographyEvent{
   final List<String> groupNumber;
   const LoadCuratorGroupsEvent(this.groupNumber);
 }
 
-class LoadAllStudentsEvent extends WorkingWithFluorographyEvent{}
 
 class SearchCommunityEvent extends WorkingWithFluorographyEvent{
   final String query;
@@ -24,6 +25,7 @@ class UpdateFluorographyDateEvent extends WorkingWithFluorographyEvent{
   const UpdateFluorographyDateEvent(this.studentId, this.newDate);
 }
 
+class TurnOnEditingModeEvent extends WorkingWithFluorographyEvent{}
 class CancelEditingModeEvent extends WorkingWithFluorographyEvent{}
 class EnableEditingModeEvent extends WorkingWithFluorographyEvent{}
 

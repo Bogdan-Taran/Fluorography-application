@@ -2,107 +2,97 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:project_fluorography/bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 
 import '../services/checker_service.dart';
 
 class ScreensWidgets {
   CheckerService _CheckerService = CheckerService();
 
-  PreferredSizeWidget AppBarFlura<B extends Bloc<Object,
-      Object>, E extends Object>({
-    required BuildContext context,
-    required B bloc,
-    required E event,
-  }) {
+  PreferredSizeWidget AppBarFlura<
+    B extends Bloc<Object, Object>,
+    E extends Object
+  >({required BuildContext context, required B bloc, required E event}) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(MediaQuery
-          .sizeOf(context)
-          .height * 0.13),
+      preferredSize: Size.fromHeight(MediaQuery.sizeOf(context).height * 0.13),
       child: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height * 0.13,
-          decoration: const BoxDecoration(color: Colors.transparent),
-          child:
-          Padding(
-            padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      splashRadius: 24,
-                      padding: EdgeInsets.zero,
-                      icon: SvgPicture.asset(
-                        'assets/images/notification_icon.svg',
-                        color: const Color(0xff98BFF3),
-                        width: 35,
-                        height: 35,
-                      ),
+        height: MediaQuery.of(context).size.height * 0.13,
+        decoration: const BoxDecoration(color: Colors.transparent),
+        child: Padding(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    splashRadius: 24,
+                    padding: EdgeInsets.zero,
+                    icon: SvgPicture.asset(
+                      'assets/images/notification_icon.svg',
+                      color: const Color(0xff98BFF3),
+                      width: 35,
+                      height: 35,
                     ),
+                  ),
 
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.resolveWith<
-                            Color>((Set<WidgetState> states,) {
-                          if (states.contains(WidgetState.disabled)) {
-                            return const Color(0xffD5D6D7);
-                          }
-                          if (states.contains(WidgetState.pressed)) {
-                            return const Color(0xFF72A7EB);
-                          }
-                          if (states.contains(WidgetState.hovered)) {
-                            return const Color(0xFFBADEFF);
-                          }
-                          return const Color(0xff98BFF3);
-                        }),
-                        foregroundColor: WidgetStateProperty.all(
-                            const Color(0xffffffff)),
-                        minimumSize: WidgetStateProperty.all(
-                          Size(MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.1, 35),
-                        ),
-                        shape: WidgetStateProperty.all(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                        ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>((
+                        Set<WidgetState> states,
+                      ) {
+                        if (states.contains(WidgetState.disabled)) {
+                          return const Color(0xffD5D6D7);
+                        }
+                        if (states.contains(WidgetState.pressed)) {
+                          return const Color(0xFF72A7EB);
+                        }
+                        if (states.contains(WidgetState.hovered)) {
+                          return const Color(0xFFBADEFF);
+                        }
+                        return const Color(0xff98BFF3);
+                      }),
+                      foregroundColor: WidgetStateProperty.all(
+                        const Color(0xffffffff),
                       ),
-                      onPressed: () {
-                        context.read<B>().add(event);
-                        print('Нажата кнопка выхода');
-                      },
-                      child: const Text(
-                        'Выход',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xffffffff),
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Geologica',
+                      minimumSize: WidgetStateProperty.all(
+                        Size(MediaQuery.of(context).size.width * 0.1, 35),
+                      ),
+                      shape: WidgetStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                    onPressed: () {
+                      context.read<B>().add(event);
+                      print('Нажата кнопка выхода');
+                    },
+                    child: const Text(
+                      'Выход',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xffffffff),
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Geologica',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
-                SizedBox(height: 10),
+              SizedBox(height: 10),
 
-                SearchBar(context: context)
-              ],
-            ),
-          )
+              SearchBar(context: context),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-
-  Widget SearchBar({
-    required BuildContext context,
-  }) {
+  Widget SearchBar({required BuildContext context}) {
     final TextEditingController searchController = TextEditingController();
     return TextField(
       controller: searchController,
@@ -130,10 +120,7 @@ class ScreensWidgets {
         ),
         hintText: 'Поиск',
         hintStyle: TextStyle(
-          fontSize: MediaQuery
-              .of(context)
-              .size
-              .height * 0.016,
+          fontSize: MediaQuery.of(context).size.height * 0.016,
           color: Color(0xff98BFF3),
           fontWeight: FontWeight.w500,
         ),
@@ -148,19 +135,18 @@ class ScreensWidgets {
     );
   }
 
-  Widget EditElevatedButton({
-    required BuildContext context,
-  }) {
+  Widget EditElevatedButton({required BuildContext context}) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        context.read<WorkingWithFluorographyBloc>().add(
+          TurnOnEditingModeEvent(),
+        );
+      },
       style: ElevatedButton.styleFrom(backgroundColor: Color(0xff98BFF3)),
       child: Text(
         'Редактировать',
         style: TextStyle(
-          fontSize: MediaQuery
-              .of(context)
-              .size
-              .height * 0.016,
+          fontSize: MediaQuery.of(context).size.height * 0.016,
           color: Color(0xffffffff),
           fontFamily: 'Geologica',
         ),
@@ -168,12 +154,99 @@ class ScreensWidgets {
     );
   }
 
-
+  Widget EditRowWithButtons({required BuildContext context}) {
+    return Row(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            context.read<WorkingWithFluorographyBloc>().add(
+              CancelEditingModeEvent(),
+            );
+          },
+          style: ElevatedButton.styleFrom(backgroundColor: Color(0xffffffff)),
+          child: Text(
+            'Отменить',
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.height * 0.016,
+              color: Color(0xff98BFF3),
+              fontFamily: 'Geologica',
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            context.read<WorkingWithFluorographyBloc>().add(
+              EnableEditingModeEvent(),
+            );
+          },
+          style: ElevatedButton.styleFrom(backgroundColor: Color(0xff98BFF3)),
+          child: Text(
+            'Сохранить',
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.height * 0.016,
+              color: Color(0xffffffff),
+              fontFamily: 'Geologica',
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget DataFluraContainer({
     required BuildContext context,
     required String dataContainer,
   }) {
+    bool isEditing = false;
+    return BlocListener<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
+      listener: (context, state) {
+        switch (state.runtimeType) {
+          case EditModeWorkingWithFluorographyState:
+            print('Состояние изменения');
+            isEditing = true;
+          case CancelEditingModeEvent:
+            print('Состояние отмены');
+            isEditing = false;
+          case EnableEditingModeEvent:
+            print('Состояние применения');
+            isEditing = false;
+          default:
+            print('Дефолтное сосотоянеи');
+            isEditing = false;
+        }
+      },
+      child: BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
+        builder: (context, state){
+          return ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor:
+                isEditing ?
+                Color(0xff98BFF3):
+                switch(_CheckerService.isFluorographyOverdue(dataContainer)){
+                  DataStatus.unknown => const Color(0xffF29393),
+                  DataStatus.overdue => const Color(0xffF29393),
+                  DataStatus.quitOverdue => const Color(0xffFFE550),
+                  DataStatus.noOverdue => Colors.transparent,
+                },
+                shadowColor: Colors.transparent
+            ),
+            onPressed: () {},
+            child: Text(
+              dataContainer,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color(0xff26292B),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+
+
+
+    /*
     return Container(
       decoration: BoxDecoration(
         color: switch(_CheckerService.isFluorographyOverdue(dataContainer)){
@@ -187,7 +260,7 @@ class ScreensWidgets {
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 1,
-          horizontal: 1,
+          horizontal: 8,
         ),
         child: Text(
           dataContainer,
@@ -198,6 +271,6 @@ class ScreensWidgets {
           ),
         ),
       ),
-    );
+    );*/
   }
 }

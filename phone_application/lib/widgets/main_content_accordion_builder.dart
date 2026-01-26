@@ -2,11 +2,13 @@ import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/models/single_group_with_students_model.dart';
 import 'package:project_fluorography/models/staff_and_students_model.dart';
 import 'package:project_fluorography/widgets/screens_widgets.dart';
 
+import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../screens/curator_screen.dart';
 import 'accordion_widgets.dart';
 
@@ -105,8 +107,23 @@ class MainContentAccordionBuilder extends StatelessWidget {
                   ),
                 )
                 .toList(),
-                // TODO
-              _ScreensWidgets.EditElevatedButton(context: context),
+                BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
+                  builder: (context, state){
+                    switch(state.runtimeType){
+                      case EditModeWorkingWithFluorographyState:
+                        return _ScreensWidgets.EditRowWithButtons(context: context);
+                      case CancelEditingModeEvent:
+                        return _ScreensWidgets.EditElevatedButton(context: context);
+                      case EnableEditingModeEvent:
+                        return _ScreensWidgets.EditElevatedButton(context: context);
+                      default:
+                        return _ScreensWidgets.EditElevatedButton(context: context);
+                    }
+
+                  },
+
+                )
+              // _ScreensWidgets.EditElevatedButton(context: context),
                 ]
 
           ),
@@ -135,7 +152,21 @@ class MainContentAccordionBuilder extends StatelessWidget {
                     );
                   }),
 
-                    _ScreensWidgets.EditElevatedButton(context: context),
+                    BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
+                      builder: (context, state){
+                        switch(state.runtimeType){
+                          case EditModeWorkingWithFluorographyState:
+                            return _ScreensWidgets.EditRowWithButtons(context: context);
+                          case CancelEditingModeEvent:
+                            return _ScreensWidgets.EditElevatedButton(context: context);
+                          case EnableEditingModeEvent:
+                            return _ScreensWidgets.EditElevatedButton(context: context);
+                          default:
+                            return _ScreensWidgets.EditElevatedButton(context: context);
+                        }
+                      },
+
+                    )
                   ]
                 ),
               );

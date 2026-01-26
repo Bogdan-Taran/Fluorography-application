@@ -49,6 +49,12 @@ class CacheService {
     final db = await database;
     final result = await db.query('cache', where: 'id = ?', whereArgs: [id]);
     if (result.isNotEmpty) {
+      // final timestamp = result.first['timestamp'] as int;
+      // if(DateTime.now().millisecondsSinceEpoch - timestamp > 36000){
+      //   await removeFromCache(id);
+      //   return null;
+      // }
+
       return result.first['data'] as String?;
     }
     return null;
@@ -67,7 +73,6 @@ class CheckerCacheService {
 
   Future<List<SingleGroupWithStudentsModel>> getGroupsCuratorWithCache() async {
     const cacheId = 'groups_data';
-
     //check cache
     final cached = await _cache.getCachedData(cacheId);
     if (cached != null) {
@@ -103,7 +108,8 @@ class CheckerCacheService {
 
 
   Future<List<StaffAndStudentsModel>> getGroupsMedicWithCache() async {
-    const cacheId = 'groups_medic_data';
+    // const cacheId = 'groups_medic_data';
+    const cacheId = 'groups_data';
 
     //check cache
     final cached = await _cache.getCachedData(cacheId);
@@ -140,7 +146,8 @@ class CheckerCacheService {
 
 
   Future<List<SingleGroupWithStudentsModel>> getGroupsAdminWithCache() async {
-    const cacheId = 'groups_admin_data';
+    // const cacheId = 'groups_admin_data';
+    const cacheId = 'groups_data';
 
     //check cache
     final cached = await _cache.getCachedData(cacheId);

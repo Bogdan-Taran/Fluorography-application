@@ -65,11 +65,20 @@ class HomeScreen extends StatelessWidget {
               child: AdminScreen(),
             );
           } else if (role == 'medic') {
-            return BlocProvider(
-              create: (context) => MedicBloc(),
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => MedicBloc(),
+                ),
+                BlocProvider(
+                  create: (context) => AuthenticationBloc(),
+                ),
+                BlocProvider(
+                  create: (context) => SearchBloc(),
+                ),
+              ],
               child: MedicScreen(),
             );
-            return MedicScreen();
           } else {
             try {
               print('Ваша роль $role');

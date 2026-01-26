@@ -2,12 +2,14 @@ import 'package:bloc/bloc.dart';
 import 'package:project_fluorography/services/auth_service.dart';
 
 import '../../models/user_model.dart';
+import '../../services/localDataBase.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final AuthService authService = AuthService();
+  CacheService _CacheService = CacheService();
 
   AuthenticationBloc() : super(AuthenticationInitialState()) {
     on<AuthenticationEvent>((event, emit) {});
@@ -33,6 +35,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       emit(AuthenticationLoadingState());
       try{
         await authService.signOutUser();
+        await _CacheService.removeFromCache('groups_data');
         emit (AuthenticationLogOutState(isLoading: false, successful: true));
       }
       catch (e){

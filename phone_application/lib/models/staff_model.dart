@@ -46,6 +46,7 @@ class StaffModel {
         patronymic: json['patronymic'] as String? ?? '',
         groups: groups,
         fluorography: fluorography
+        // fluorography: json['fluorography'] as String ?? ''
     );
   }
 

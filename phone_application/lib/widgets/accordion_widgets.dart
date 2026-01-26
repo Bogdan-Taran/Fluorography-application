@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:project_fluorography/models/single_group_with_students_model.dart';
 import 'package:project_fluorography/models/staff_model.dart';
 import 'package:project_fluorography/models/student_model.dart';
+import 'package:project_fluorography/widgets/screens_widgets.dart';
 
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../models/staff_and_students_model.dart';
@@ -62,7 +63,6 @@ class HeaderAccordionSectionWidgetBuild extends StatelessWidget{
 Widget BuildAccordionSectionContentMedic(
   BuildContext context,
   List<StaffAndStudentsModel> data,
-  bool isEditing,
     String role,
 ) {
   return Column(
@@ -92,17 +92,7 @@ Widget BuildAccordionSectionContentMedic(
         ),
       SizedBox(height: 15),
       ElevatedButton(
-        onPressed: () {
-          if (isEditing) {
-            context.read<WorkingWithFluorographyBloc>().add(
-              CancelEditingModeEvent(),
-            );
-          } else {
-            context.read<WorkingWithFluorographyBloc>().add(
-              EnableEditingModeEvent(),
-            );
-          }
-        },
+        onPressed: () {},
         child: Text('Редактировать'),
       ),
     ],
@@ -122,7 +112,7 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    ScreensWidgets _ScreensWidgets = ScreensWidgets();
     final dateFluraString = student.fluorography;
 
     return Padding(
@@ -142,9 +132,7 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
                 ],
               )
           ),
-          Container(
-            child: Text(dateFluraString!),
-          )
+          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!)
         ],
       ),
     );
@@ -163,6 +151,7 @@ class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreensWidgets _ScreensWidgets = ScreensWidgets();
 
     final dateFluraString = staff.fluorography;
 
@@ -183,9 +172,7 @@ class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
                 ],
               )
           ),
-          Container(
-            child: Text(dateFluraString!),
-          )
+          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!)
         ],
       ),
     );

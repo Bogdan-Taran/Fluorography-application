@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/models/single_group_with_students_model.dart';
 import 'package:project_fluorography/models/staff_and_students_model.dart';
+import 'package:project_fluorography/widgets/screens_widgets.dart';
 
 import '../screens/curator_screen.dart';
 import 'accordion_widgets.dart';
@@ -13,6 +14,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
   final String role;
   final List<SingleGroupWithStudentsModel>? groups;
   final List<StaffAndStudentsModel>? medicEntireCommunity;
+  ScreensWidgets _ScreensWidgets = ScreensWidgets();
 
   MainContentAccordionBuilder(
     BuildContext context, {
@@ -26,7 +28,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     if (medicEntireCommunity != null && medicEntireCommunity!.isNotEmpty) {
       return constructorAccordionBuild(
-          children: buildMedicListAccordionSections()
+          children: buildMedicListAccordionSections(context)
       );
     } else if (groups != null && groups!.isNotEmpty) {
       return constructorAccordionBuild(children: buildCuratorListAccordionSections());
@@ -61,9 +63,10 @@ class MainContentAccordionBuilder extends StatelessWidget {
     );
   }
 
-  List<AccordionSection> buildMedicListAccordionSections() {
+  List<AccordionSection> buildMedicListAccordionSections(BuildContext context) {
     if(medicEntireCommunity == null || medicEntireCommunity!.isEmpty){
-      return [AccordionSection(
+      return [
+        AccordionSection(
         isOpen: false,
         paddingBetweenClosedSections: 30,
         paddingBetweenOpenSections: 30,
@@ -73,10 +76,10 @@ class MainContentAccordionBuilder extends StatelessWidget {
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
           ],
         ),
-      )
+      ),
+
       ];
     }
     return [
@@ -94,13 +97,18 @@ class MainContentAccordionBuilder extends StatelessWidget {
           contentHorizontalPadding: 12,
           contentVerticalPadding: 12,
           content: Column(
-            children: e.staffList
+            children: [
+              ...e.staffList
                 .map(
                   (staff) => OneRowBuildAccordionSectionContentStaff(
                     staff: staff,
                   ),
                 )
                 .toList(),
+                // TODO
+              _ScreensWidgets.EditElevatedButton(context: context),
+                ]
+
           ),
         );
       }),
@@ -120,21 +128,27 @@ class MainContentAccordionBuilder extends StatelessWidget {
                 contentHorizontalPadding: 12,
                 contentVerticalPadding: 12,
                 content: Column(
-                  children: group.students.map((student) {
+                  children: [
+                    ...group.students.map((student) {
                     return OneRowBuildAccordionSectionContent(
                       student: student,
                     );
-                  }).toList(),
+                  }),
+
+                    _ScreensWidgets.EditElevatedButton(context: context),
+                  ]
                 ),
               );
             });
           }),
+      // ElevatedButton(onPressed: (){}, child: Text('Сис')),
     ];
   }
 
   List<AccordionSection> buildCuratorListAccordionSections() {
     if(groups == null || groups!.isEmpty){
-      return [AccordionSection(
+      return [
+        AccordionSection(
         isOpen: false,
         paddingBetweenClosedSections: 30,
         paddingBetweenOpenSections: 30,
@@ -147,7 +161,8 @@ class MainContentAccordionBuilder extends StatelessWidget {
             Text('Нема')
           ],
         ),
-      )
+      ),
+
       ];
     }
     return groups!.map((groupData) {

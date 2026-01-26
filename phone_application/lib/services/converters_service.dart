@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
 class ConverterServices {
@@ -28,25 +28,36 @@ class ConverterServices {
 
 
   String formatFluraDate(String? date) {
+    /*
+    if(date != null && date.trim().isEmpty) return 'Нет даты';
+    try{
+      final dt = DateTime.parse(date!);
+      return DateFormat('dd.MM.yyyy').format(dt);
+    } catch(e){
+      return 'Неверный формат';
+    }
+
+     */
+
     if (date == null) {
+      print('Нет даты');
       return 'Нет даты';
-    }
-    if(date.toLowerCase() == 'null'){
-      return 'Нет даты';
-    }
-    if (date is int){
-      return 'Дата int';
     }
     try{
-      final dateTime = DateTime.parse(date);
-      final String convertedTime =
-          '${dateTime.day.toString().padLeft(2, '0')}'
-          '.${dateTime.month.toString().padLeft(2, '0')}'
-          '.${dateTime.year}';
-      return convertedTime;
+      // final dt = DateFormat('dd.MM.yyyy').format(DateTime.parse(date));
+      final dt = date;
+      print('Есть дата: $dt');
+      return dt;
+      // final dateTime = DateTime.parse(date);
+      // final String convertedTime =
+      //     '${dateTime.day.toString().padLeft(2, '0')}'
+      //     '.${dateTime.month.toString().padLeft(2, '0')}'
+      //     '.${dateTime.year}';
+      // return convertedTime;
     } catch (e){
       //print('Неверный формат даты $date');
-      return 'Нет даты';
+      return 'Catch - нет даты';
     }
+
   }
 }

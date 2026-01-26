@@ -10,9 +10,9 @@ class ScreensWidgets {
     required E event,
 }){
     return PreferredSize(
-      preferredSize: Size.fromHeight(MediaQuery.sizeOf(context).height * 0.12),
+      preferredSize: Size.fromHeight(MediaQuery.sizeOf(context).height * 0.13),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.12,
+        height: MediaQuery.of(context).size.height * 0.13,
         decoration: const BoxDecoration(color: Colors.transparent),
         child:
         Padding(

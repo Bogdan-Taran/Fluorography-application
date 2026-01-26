@@ -48,5 +48,7 @@ class StudentData {
     return data;
   }
 
+  String get searchKey => '$lastname $firstname $patronymic $group'.toLowerCase();
+
 
 }

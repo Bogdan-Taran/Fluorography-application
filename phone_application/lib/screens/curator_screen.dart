@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/bloc/curator/curator_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
+import '../bloc/search/search_bloc.dart';
 import '../services/builders_screen.dart';
 import '../widgets/main_content_accordion_builder.dart';
 import '../widgets/screens_widgets.dart';
@@ -85,8 +86,15 @@ class _CuratorScreen extends State<CuratorScreen> {
                         context,
                         role: 'curator',
                         groups: successState.curatorGroups,
-                      );
-                      case BlocBuilder
+                      );/*
+                      case SearchUpdatedState
+                      BlocBuilder<SearchBloc, SearchState>(
+                        builder: (context, state){
+                          switch(state.runtimeType){
+                            case SearchLoadingState:
+                          }
+                        }
+                      )*/
 
                     default:
                       return Container(

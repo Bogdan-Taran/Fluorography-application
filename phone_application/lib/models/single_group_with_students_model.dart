@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:project_fluorography/models/student_model.dart';
 import 'dart:convert';
+
+import 'multipleGroupsModel.dart';
 @immutable
-class SingleGroupWithStudentsModel {
+class SingleGroupWithStudentsModel implements MultiplieGroupsModel{
   final String groupNumber;
   final List<StudentData> students;
 
@@ -31,9 +33,6 @@ class SingleGroupWithStudentsModel {
   //convert from string
   static SingleGroupWithStudentsModel fromCacheString(String str) =>
       SingleGroupWithStudentsModel.fromJson(jsonDecode(str));
-
-
-
 
   factory SingleGroupWithStudentsModel.initial(String groupNumber) {
     return SingleGroupWithStudentsModel(groupNumber: groupNumber, students: []);

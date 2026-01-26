@@ -45,7 +45,7 @@ class ConverterServices {
           '.${dateTime.year}';
       return convertedTime;
     } catch (e){
-      print('Неверный формат даты $date');
+      //print('Неверный формат даты $date');
       return 'Нет даты';
     }
   }

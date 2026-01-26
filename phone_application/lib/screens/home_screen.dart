@@ -10,6 +10,7 @@ import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/admin/admin_bloc.dart';
+import '../bloc/search/search_bloc.dart';
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../services/shared_pref_service.dart';
 import '../styles.dart';
@@ -43,6 +44,9 @@ class HomeScreen extends StatelessWidget {
                 ),
                 BlocProvider(
                   create: (context) => AuthenticationBloc(),
+                ),
+                BlocProvider(
+                  create: (context) => SearchBloc(),
                 ),
               ],
               child: CuratorScreen(),

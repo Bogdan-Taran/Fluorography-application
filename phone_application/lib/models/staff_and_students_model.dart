@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'package:project_fluorography/models/single_group_with_students_model.dart';
 import 'package:project_fluorography/models/staff_model.dart';
+import 'multipleGroupsModel.dart';
 
 @immutable
-class StaffAndStudentsModel {
+class StaffAndStudentsModel implements MultiplieGroupsModel{
   final List<StaffModel> staffList;
   final List<SingleGroupWithStudentsModel> studentsList;
 

@@ -10,6 +10,7 @@ import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/models/staff_and_students_model.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 
+import '../bloc/authentication/authentication_bloc.dart';
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../services/builders_screen.dart';
 import '../services/shared_pref_service.dart';
@@ -20,9 +21,7 @@ import '../widgets/screens_widgets.dart';
 
 class MedicScreen extends StatefulWidget {
   static String id = 'medic_screen';
-
   const MedicScreen({super.key});
-
   @override
   State<MedicScreen> createState() => _MedicScreen();
 }
@@ -36,21 +35,23 @@ class _MedicScreen extends State<MedicScreen> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyles textStyles = TextStyles();
-    final UserSharedPreferences _userSharedPreferences =
-    UserSharedPreferences();
     BuildersScreen _buildersScreen = BuildersScreen();
+    ScreensWidgets _ScreensWidgets = ScreensWidgets();
 
     return SafeArea(
       child: Scaffold(
         // backgroundColor: Colors.lightBlueAccent,
-        appBar: AppBarMedic(context),
+        appBar: _ScreensWidgets.AppBarFlura(
+          context: context,
+          bloc: context.read<AuthenticationBloc>(),
+          event: SignOutEvent(),
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: BlocConsumer<MedicBloc, MedicState>(
-              listenWhen: (previous, current) => current is! MedicActionState,
-              buildWhen: (previous, current) => current is! MedicActionState,
+              // listenWhen: (previous, current) => current is! MedicActionState,
+              // buildWhen: (previous, current) => current is! MedicActionState,
               listener: (context, state) {
                 switch (state.runtimeType) {
                   case MedicLogoutSuccessfulState:
@@ -127,7 +128,7 @@ class _MedicScreen extends State<MedicScreen> {
     );
   }
 }
-
+/*
 PreferredSizeWidget AppBarMedic(BuildContext context) {
   return PreferredSize(
     preferredSize: Size.fromHeight(MediaQuery
@@ -216,6 +217,7 @@ class AppBarMedicContent extends StatelessWidget {
     );
   }
 }
+*/
 /*
 Widget buildMainContentMedic(BuildContext context,
     List<StaffAndStudentsModel> medicEntireCommunity,) {

@@ -162,12 +162,14 @@ Widget BuildAccordionSectionContentMedic(
 class OneRowBuildAccordionSectionContent extends StatelessWidget {
   final StudentData student;
   final String uniqueId;
+  final String uniqueEditingSectionId;
   // final Function(StudentData, DateTime) dateFluorographyUpdate;
 
   const OneRowBuildAccordionSectionContent({
     Key? key,
     required this.student,
-    required this.uniqueId
+    required this.uniqueId,
+    required this.uniqueEditingSectionId
   }) : super(key: key);
 
   @override
@@ -192,7 +194,7 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
                 ],
               )
           ),
-          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueDateContainerId: uniqueId)
+          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueDateContainerId: uniqueId, uniqueEditingSectionId: uniqueEditingSectionId)
         ],
       ),
     );
@@ -204,11 +206,13 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
 class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
   final StaffModel staff;
   final String uniqueStaffId;
+  final String uniqueEditingSectionId;
 
   const OneRowBuildAccordionSectionContentStaff({
     Key? key,
     required this.staff,
-    required this.uniqueStaffId
+    required this.uniqueStaffId,
+    required this.uniqueEditingSectionId
   }) : super(key: key);
 
   @override
@@ -234,7 +238,7 @@ class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
                 ],
               )
           ),
-          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueDateContainerId: uniqueStaffId)
+          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueDateContainerId: uniqueStaffId, uniqueEditingSectionId: uniqueEditingSectionId)
         ],
       ),
     );

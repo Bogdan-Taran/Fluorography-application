@@ -10,6 +10,7 @@ import 'package:project_fluorography/widgets/screens_widgets.dart';
 
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../screens/curator_screen.dart';
+import '../services/builders_screen.dart';
 import 'accordion_widgets.dart';
 
 // главный построитель контента в аккордионах медика, куратора и админа
@@ -69,6 +70,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
 
   // конструтор для построения списка секций для медика. Добавляются сначала сотрудники, потом - студенты
   List<AccordionSection> buildMedicListAccordionSections(BuildContext context) {
+    BuildersScreen _BuildersScreen = BuildersScreen();
     if(medicEntireCommunity == null || medicEntireCommunity!.isEmpty){
       return [
         AccordionSection(
@@ -92,6 +94,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
       ...medicEntireCommunity!.where((item) => item.staffList.isNotEmpty).map((e) {
         final String uniqueStaffSectionId = 'id_staff_section';
         bool isEditing = false;
+        bool isDatePickerOpened = false;
         return AccordionSection(
           isOpen: false,
           paddingBetweenClosedSections: 30,
@@ -108,15 +111,23 @@ class MainContentAccordionBuilder extends StatelessWidget {
                     .map(
                       (staff) {
                         final uniqueStaffId = 'staff_${staff.id}_${staff.lastname}';
-                        return OneRowBuildAccordionSectionContentStaff(
-                      staff: staff,
+                        return BlocListener<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
+                          listener: (context, state){
+                            isDatePickerOpened = state.editingStates[uniqueStaffId] ?? false;
+                            isDatePickerOpened ? _BuildersScreen.openDatePicker(context) : () {};
+                          },
+                          child: OneRowBuildAccordionSectionContentStaff(
+                          staff: staff,
                           // uniqueStaffId: uniqueStaffId,
-                          uniqueStaffId: uniqueStaffSectionId,
-                    );}),
+                          uniqueStaffId: uniqueStaffId,
+                            uniqueEditingSectionId: uniqueStaffSectionId,
+                        ),);
+                        }),
+
                 BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
                   builder: (context, state){
                     isEditing = state.editingStates[uniqueStaffSectionId] ?? false;
-                    print('Перестраиваю виджет с id $uniqueStaffSectionId, изменяемость: $isEditing');
+                    //print('Перестраиваю виджет с id $uniqueStaffSectionId, изменяемость: $isEditing');
                     return _ScreensWidgets.EditRowWithButtons(context: context, uniqueId: uniqueStaffSectionId, isEditing: isEditing);
                   },
                 )
@@ -165,13 +176,14 @@ class MainContentAccordionBuilder extends StatelessWidget {
                     return OneRowBuildAccordionSectionContent(
                       student: student,
                       // uniqueId: uniqueStudentId,
-                      uniqueId: uniqueGroupSectionId,
+                      uniqueId: uniqueStudentId,
+                      uniqueEditingSectionId: uniqueGroupSectionId,
                     );
                   }),
                   BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
                     builder: (context, state){
                       isEditing = state.editingStates[uniqueGroupSectionId] ?? false;
-                      print('Перестраиваю виджет с id $uniqueGroupSectionId, изменяемость: $isEditing');
+                      //print('Перестраиваю виджет с id $uniqueGroupSectionId, изменяемость: $isEditing');
                       return _ScreensWidgets.EditRowWithButtons(context: context, uniqueId: uniqueGroupSectionId, isEditing: isEditing);
                     },
                   )
@@ -222,6 +234,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
       ];
     }
     return groups!.map((groupData) {
+      final String uniqueGroupSectionId = 'id_group_${groupData.groupNumber}';
       return AccordionSection(
         isOpen: false,
         paddingBetweenClosedSections: 30,
@@ -250,6 +263,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
                         return OneRowBuildAccordionSectionContent(
                           student: student,
                           uniqueId: uniqueStudentId,
+                          uniqueEditingSectionId: uniqueGroupSectionId,
                         );
                       }
                     )

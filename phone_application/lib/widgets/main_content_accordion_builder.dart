@@ -109,9 +109,10 @@ class MainContentAccordionBuilder extends StatelessWidget {
                       (staff) {
                         final uniqueStaffId = 'staff_${staff.id}_${staff.lastname}';
                         return OneRowBuildAccordionSectionContentStaff(
-                    staff: staff,
-                          uniqueStaffId: uniqueStaffId,
-                    );}).toList(),
+                      staff: staff,
+                          // uniqueStaffId: uniqueStaffId,
+                          uniqueStaffId: uniqueStaffSectionId,
+                    );}),
                 BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
                   builder: (context, state){
                     isEditing = state.editingStates[uniqueStaffSectionId] ?? false;
@@ -163,7 +164,8 @@ class MainContentAccordionBuilder extends StatelessWidget {
                     final uniqueStudentId = 'student_${student.id}_${student.lastname}';
                     return OneRowBuildAccordionSectionContent(
                       student: student,
-                      uniqueId: uniqueStudentId,
+                      // uniqueId: uniqueStudentId,
+                      uniqueId: uniqueGroupSectionId,
                     );
                   }),
                   BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(

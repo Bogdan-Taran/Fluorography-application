@@ -202,13 +202,13 @@ class ScreensWidgets {
   Widget DataFluraContainer({
     required BuildContext context,
     required String dataContainer,
-    required String uniqueId,
+    required String uniqueDateContainerId,
   }) {
     bool isEditing = false;
     return BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
       builder: (context, state) {
-        final isEditing = state.editingStates[uniqueId] ?? false;
-
+        isEditing = state.editingStates[uniqueDateContainerId] ?? false;
+        print('Перестраиваю виджет с id $uniqueDateContainerId, изменяемость: $isEditing');
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
               backgroundColor:
@@ -231,8 +231,8 @@ class ScreensWidgets {
           ),
           // TODO: make opening Datepicker
           onPressed: isEditing ? () {
-            context.read<WorkingWithFluorographyBloc>().add(OpenDatePickerEvent(uniqueId: uniqueId));
-          } : null,
+            context.read<WorkingWithFluorographyBloc>().add(OpenDatePickerEvent(uniqueId: uniqueDateContainerId));
+          } : () {},
           child: Text(
             dataContainer,
             textAlign: TextAlign.center,

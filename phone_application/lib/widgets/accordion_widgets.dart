@@ -192,7 +192,7 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
                 ],
               )
           ),
-          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueId: uniqueId)
+          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueDateContainerId: uniqueId)
         ],
       ),
     );
@@ -234,7 +234,7 @@ class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
                 ],
               )
           ),
-          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueId: uniqueStaffId)
+          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueDateContainerId: uniqueStaffId)
         ],
       ),
     );

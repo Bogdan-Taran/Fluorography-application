@@ -38,6 +38,7 @@ class CancelEditingModeEvent extends WorkingWithFluorographyEvent{
 }
 
 class EnableEditingModeEvent extends WorkingWithFluorographyEvent{}
+
 class OpenDatePickerEvent extends WorkingWithFluorographyEvent{
   final String uniqueId;
   OpenDatePickerEvent({required this.uniqueId});

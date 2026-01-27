@@ -9,7 +9,7 @@ part 'working_with_fluorography_event.dart';
 part 'working_with_fluorography_state.dart';
 
 class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, WorkingWithFluorographyState> {
-  WorkingWithFluorographyBloc() : super(WorkingWithFluorographyInitial()) {
+  WorkingWithFluorographyBloc() : super(WorkingWithFluorographyState()) {
     on<TurnOnEditingModeEvent>(turnOnEditingModeEvent);
     on<CancelEditingModeEvent>(cancelEditingModeEvent);
     on<EnableEditingModeEvent>(enableEditingModeEvent);
@@ -18,12 +18,18 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
 
 
   FutureOr<void> turnOnEditingModeEvent(TurnOnEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
-    emit(EditModeWorkingWithFluorographyState());
+    final newStates = Map<String, bool>.from(state.editingStates);
+    newStates[event.uniqueId] = true;
+    emit(state.copyWith(editingStates: newStates));
+    // emit(EditModeWorkingWithFluorographyState());
   }
 
 
   FutureOr<void> cancelEditingModeEvent(CancelEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
-    emit(CancelEditModeWorkingWithFluorographyState());
+    final newStates = Map<String, bool>.from(state.editingStates);
+    newStates[event.uniqueId] = false;
+    emit(state.copyWith(editingStates: newStates));
+    // emit(CancelEditModeWorkingWithFluorographyState());
   }
 
   FutureOr<void> enableEditingModeEvent(EnableEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
@@ -45,8 +51,8 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
 
 class SelectDateBloc extends Bloc<SelectDateEvent, SelectDateState>{
   SelectDateBloc(): super(SelectDateState()){
-    on<SelectDateEvent>
-        (event, emit) => emit(state.copyWith(selectedDate: event.selectedDate));
+    // on<SelectDateEvent>
+    //     (event, emit) => emit(state.copyWith(selectedDate: event.selectedDate));
   }
 }
 

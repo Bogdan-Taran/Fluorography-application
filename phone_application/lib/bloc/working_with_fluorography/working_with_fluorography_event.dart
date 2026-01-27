@@ -25,10 +25,23 @@ class UpdateFluorographyDateEvent extends WorkingWithFluorographyEvent{
   const UpdateFluorographyDateEvent(this.studentId, this.newDate);
 }
 
-class TurnOnEditingModeEvent extends WorkingWithFluorographyEvent{}
-class CancelEditingModeEvent extends WorkingWithFluorographyEvent{}
+class TurnOnEditingModeEvent extends WorkingWithFluorographyEvent{
+  final String uniqueId;
+  TurnOnEditingModeEvent({
+    required this.uniqueId,
+});
+}
+
+class CancelEditingModeEvent extends WorkingWithFluorographyEvent{
+  final String uniqueId;
+  CancelEditingModeEvent({required this.uniqueId});
+}
+
 class EnableEditingModeEvent extends WorkingWithFluorographyEvent{}
-class OpenDatePickerEvent extends WorkingWithFluorographyEvent{}
+class OpenDatePickerEvent extends WorkingWithFluorographyEvent{
+  final String uniqueId;
+  OpenDatePickerEvent({required this.uniqueId});
+}
 
 class SelectDateEvent extends WorkingWithFluorographyEvent{
   final DateTime selectedDate;

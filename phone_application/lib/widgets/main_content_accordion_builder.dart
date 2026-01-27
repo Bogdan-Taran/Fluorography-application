@@ -12,6 +12,7 @@ import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../screens/curator_screen.dart';
 import 'accordion_widgets.dart';
 
+// главный построитель контента в аккордионах медика, куратора и админа
 class MainContentAccordionBuilder extends StatelessWidget {
   final String role;
   final List<SingleGroupWithStudentsModel>? groups;
@@ -39,6 +40,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
     }
   }
 
+  // конструктор для построения виджета аккордиона (тот, что содержит секции списком)
   Widget constructorAccordionBuild({required List<AccordionSection> children}) {
     return Accordion(
       headerBorderColor: const Color(0xffD4EAFF),
@@ -65,30 +67,31 @@ class MainContentAccordionBuilder extends StatelessWidget {
     );
   }
 
+  // конструтор для построения списка секций для медика. Добавляются сначала сотрудники, потом - студенты
   List<AccordionSection> buildMedicListAccordionSections(BuildContext context) {
     if(medicEntireCommunity == null || medicEntireCommunity!.isEmpty){
       return [
         AccordionSection(
-        isOpen: false,
-        paddingBetweenClosedSections: 30,
-        paddingBetweenOpenSections: 30,
-        header: Text('Без данных у медика'),
-        contentHorizontalPadding: 12,
-        contentVerticalPadding: 12,
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-          ],
+          isOpen: false,
+          paddingBetweenClosedSections: 30,
+          paddingBetweenOpenSections: 30,
+          header: Text('Без данных у медика'),
+          contentHorizontalPadding: 12,
+          contentVerticalPadding: 12,
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+            ],
+          ),
         ),
-      ),
 
       ];
     }
     return [
-      ...medicEntireCommunity!.where((item) => item.staffList.isNotEmpty).map((
-        e,
-      ) {
-        // TODO: change to lazy loading section
+      // добавляем в список секцию с сотрудниками
+      ...medicEntireCommunity!.where((item) => item.staffList.isNotEmpty).map((e) {
+        final String uniqueStaffSectionId = 'id_staff_section';
+        bool isEditing = false;
         return AccordionSection(
           isOpen: false,
           paddingBetweenClosedSections: 30,
@@ -100,78 +103,102 @@ class MainContentAccordionBuilder extends StatelessWidget {
           contentHorizontalPadding: 12,
           contentVerticalPadding: 12,
           content: Column(
-            children: [
-              ...e.staffList
-                .map(
-                  (staff) => OneRowBuildAccordionSectionContentStaff(
+              children: [
+                ...e.staffList
+                    .map(
+                      (staff) {
+                        final uniqueStaffId = 'staff_${staff.id}_${staff.lastname}';
+                        return OneRowBuildAccordionSectionContentStaff(
                     staff: staff,
-                  ),).toList(),
+                          uniqueStaffId: uniqueStaffId,
+                    );}).toList(),
                 BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
                   builder: (context, state){
-                    switch(state.runtimeType){
-                      case EditModeWorkingWithFluorographyState:
-                        return _ScreensWidgets.EditRowWithButtons(context: context);
-                      case CancelEditingModeEvent:
-                        return _ScreensWidgets.EditElevatedButton(context: context);
-                      case EnableEditingModeEvent:
-                        return _ScreensWidgets.EditElevatedButton(context: context);
-                      default:
-                        return _ScreensWidgets.EditElevatedButton(context: context);
-                    }
+                    isEditing = state.editingStates[uniqueStaffSectionId] ?? false;
+                    print('Перестраиваю виджет с id $uniqueStaffSectionId, изменяемость: $isEditing');
+                    return _ScreensWidgets.EditRowWithButtons(context: context, uniqueId: uniqueStaffSectionId, isEditing: isEditing);
                   },
                 )
-              // _ScreensWidgets.EditElevatedButton(context: context),
-                ]
+                // BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
+                //   builder: (context, state){
+                //     switch(state.runtimeType){
+                //       case EditModeWorkingWithFluorographyState:
+                //         return _ScreensWidgets.EditRowWithButtons(context: context);
+                //       case CancelEditingModeEvent:
+                //         return _ScreensWidgets.EditElevatedButton(context: context);
+                //       case EnableEditingModeEvent:
+                //         return _ScreensWidgets.EditElevatedButton(context: context);
+                //       default:
+                //         return _ScreensWidgets.EditElevatedButton(context: context);
+                //     }
+                //   },
+                // )
+                // _ScreensWidgets.EditElevatedButton(context: context),
+              ]
           ),
         );
       }),
+
+      // добавляем в список секции групп со студентами
       ...medicEntireCommunity!
           .where((item) => item.studentsList.isNotEmpty)
           .expand((groups) {
-            return groups.studentsList.map((group) {
-              return AccordionSection(
-                isOpen: false,
-                paddingBetweenClosedSections: 30,
-                paddingBetweenOpenSections: 30,
-                header: HeaderAccordionSectionWidgetBuild(
-                  groupNumber: group.groupNumber,
-                  count: group.students.length,
-                  title: 'Группа',
-                ),
-                contentHorizontalPadding: 12,
-                contentVerticalPadding: 12,
-                content: Column(
-                  children: [
-                    ...group.students.map((student) {
+        return groups.studentsList.map((group) {
+          final String uniqueGroupSectionId = 'id_group_${group.groupNumber}';
+          bool isEditing = false;
+          return AccordionSection(
+            isOpen: false,
+            paddingBetweenClosedSections: 30,
+            paddingBetweenOpenSections: 30,
+            header: HeaderAccordionSectionWidgetBuild(
+              groupNumber: group.groupNumber,
+              count: group.students.length,
+              title: 'Группа',
+            ),
+            contentHorizontalPadding: 12,
+            contentVerticalPadding: 12,
+            content: Column(
+                children: [
+                  ...group.students.map((student) {
+                    final uniqueStudentId = 'student_${student.id}_${student.lastname}';
                     return OneRowBuildAccordionSectionContent(
                       student: student,
+                      uniqueId: uniqueStudentId,
                     );
                   }),
+                  BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
+                    builder: (context, state){
+                      isEditing = state.editingStates[uniqueGroupSectionId] ?? false;
+                      print('Перестраиваю виджет с id $uniqueGroupSectionId, изменяемость: $isEditing');
+                      return _ScreensWidgets.EditRowWithButtons(context: context, uniqueId: uniqueGroupSectionId, isEditing: isEditing);
+                    },
+                  )
 
-                    BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
-                      builder: (context, state){
-                        switch(state.runtimeType){
-                          case EditModeWorkingWithFluorographyState:
-                            return _ScreensWidgets.EditRowWithButtons(context: context);
-                          case CancelEditingModeEvent:
-                            return _ScreensWidgets.EditElevatedButton(context: context);
-                          case EnableEditingModeEvent:
-                            return _ScreensWidgets.EditElevatedButton(context: context);
-                          default:
-                            return _ScreensWidgets.EditElevatedButton(context: context);
-                        }
-                      },
-
-                    )
-                  ]
-                ),
-              );
-            });
-          }),
+                  // BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
+                  //   builder: (context, state){
+                  //     switch(state.runtimeType){
+                  //       case EditModeWorkingWithFluorographyState:
+                  //         return _ScreensWidgets.EditRowWithButtons(context: context);
+                  //       case CancelEditingModeEvent:
+                  //         return _ScreensWidgets.EditElevatedButton(context: context);
+                  //       case EnableEditingModeEvent:
+                  //         return _ScreensWidgets.EditElevatedButton(context: context);
+                  //       default:
+                  //         return _ScreensWidgets.EditElevatedButton(context: context);
+                  //     }
+                  //   },
+                  //
+                  // )
+                ]
+            ),
+          );
+        });
+      }),
       // ElevatedButton(onPressed: (){}, child: Text('Сис')),
     ];
   }
 
+  // кнострутор для построения списка секций для куратора (только его группы)
   List<AccordionSection> buildCuratorListAccordionSections() {
     if(groups == null || groups!.isEmpty){
       return [
@@ -216,8 +243,13 @@ class MainContentAccordionBuilder extends StatelessWidget {
               Column(
                 children: groupData.students
                     .map(
-                      (student) =>
-                          OneRowBuildAccordionSectionContent(student: student),
+                      (student) {
+                        final uniqueStudentId = 'student_${student.id}_${student.lastname}';
+                        return OneRowBuildAccordionSectionContent(
+                          student: student,
+                          uniqueId: uniqueStudentId,
+                        );
+                      }
                     )
                     .toList(),),
                 SizedBox(height: 15),

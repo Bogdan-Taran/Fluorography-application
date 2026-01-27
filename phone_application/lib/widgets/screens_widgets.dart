@@ -137,11 +137,11 @@ class ScreensWidgets {
     );
   }
 
-  Widget EditElevatedButton({required BuildContext context}) {
+  Widget EditElevatedButton({required BuildContext context, required String uniqueId}) {
     return ElevatedButton(
       onPressed: () {
         context.read<WorkingWithFluorographyBloc>().add(
-          TurnOnEditingModeEvent(),
+          TurnOnEditingModeEvent(uniqueId: uniqueId),
         );
       },
       style: ElevatedButton.styleFrom(backgroundColor: Color(0xff98BFF3)),
@@ -156,13 +156,14 @@ class ScreensWidgets {
     );
   }
 
-  Widget EditRowWithButtons({required BuildContext context}) {
-    return Row(
+  Widget EditRowWithButtons({required BuildContext context, required String uniqueId, required bool isEditing}) {
+    return isEditing?
+    Row(
       children: [
         ElevatedButton(
           onPressed: () {
             context.read<WorkingWithFluorographyBloc>().add(
-              CancelEditingModeEvent(),
+              CancelEditingModeEvent(uniqueId: uniqueId),
             );
           },
           style: ElevatedButton.styleFrom(backgroundColor: Color(0xffffffff)),
@@ -192,100 +193,56 @@ class ScreensWidgets {
           ),
         ),
       ],
-    );
+    ) :
+        EditElevatedButton(context: context, uniqueId: uniqueId);
   }
 
+
+  // конструтор для построения контейнера (кнопки) с датой флюры человека
   Widget DataFluraContainer({
     required BuildContext context,
     required String dataContainer,
+    required String uniqueId,
   }) {
     bool isEditing = false;
-    return BlocListener<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
-      listener: (context, state) {
-        switch (state.runtimeType) {
-          case EditModeWorkingWithFluorographyState:
-            print('Состояние изменения');
-            isEditing = true;
-          case CancelEditingModeEvent:
-            print('Состояние отмены');
-            isEditing = false;
-          case EnableEditingModeEvent:
-            print('Состояние применения');
-            isEditing = false;
-          case OpenedDatePickerState:
-            print('Состояние открытия datepicker');
-            _BuildersScreen.openDatePicker(context);
-          default:
-            print('Дефолтное сосотоянеи');
-            isEditing = false;
-        }
-      },
-      child: BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
-        builder: (context, state){
-          return ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor:
-                isEditing ?
-                Colors.transparent:
-                switch(_CheckerService.isFluorographyOverdue(dataContainer)){
-                  DataStatus.unknown => const Color(0xffF29393),
-                  DataStatus.overdue => const Color(0xffF29393),
-                  DataStatus.quitOverdue => const Color(0xffFFE550),
-                  DataStatus.noOverdue => Colors.transparent,
-                },
-                shadowColor: Colors.transparent,
+    return BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
+      builder: (context, state) {
+        final isEditing = state.editingStates[uniqueId] ?? false;
+
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor:
+              isEditing ?
+              Colors.transparent:
+              switch(_CheckerService.isFluorographyOverdue(dataContainer)){
+                DataStatus.unknown => const Color(0xffF29393),
+                DataStatus.overdue => const Color(0xffF29393),
+                DataStatus.quitOverdue => const Color(0xffFFE550),
+                DataStatus.noOverdue => Colors.transparent,
+              },
+              shadowColor: Colors.transparent,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12)
+                  borderRadius: BorderRadius.circular(12)
               ),
               side: BorderSide(
-                width: 2,
-                color: isEditing ? Color(0xff98BFF3) : Colors.transparent
+                  width: 2,
+                  color: isEditing ? Color(0xff98BFF3) : Colors.transparent
               )
-            ),
-            // TODO: make opening Datepicker
-            onPressed: isEditing ? () {
-              context.read<WorkingWithFluorographyBloc>().add(OpenDatePickerEvent());
-            } : null,
-            child: Text(
-              dataContainer,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color(0xff26292B),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-
-
-
-    /*
-    return Container(
-      decoration: BoxDecoration(
-        color: switch(_CheckerService.isFluorographyOverdue(dataContainer)){
-          DataStatus.unknown => const Color(0xffF29393),
-          DataStatus.overdue => const Color(0xffF29393),
-          DataStatus.quitOverdue => const Color(0xffFFE550),
-          DataStatus.noOverdue => Colors.transparent,
-        },
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 1,
-          horizontal: 8,
-        ),
-        child: Text(
-          dataContainer,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Color(0xff26292B),
           ),
-        ),
-      ),
-    );*/
+          // TODO: make opening Datepicker
+          onPressed: isEditing ? () {
+            context.read<WorkingWithFluorographyBloc>().add(OpenDatePickerEvent(uniqueId: uniqueId));
+          } : null,
+          child: Text(
+            dataContainer,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color(0xff26292B),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

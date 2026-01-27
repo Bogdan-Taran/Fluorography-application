@@ -8,7 +8,7 @@ import 'package:project_fluorography/models/student_model.dart';
 import 'package:project_fluorography/widgets/screens_widgets.dart';
 import '../models/staff_and_students_model.dart';
 
-
+/*
 class LazyAccordionSection extends StatefulWidget{
   final Widget header; //our headerAccordion widget
   final List<Widget> Function() contentBuilder; //function for init in first-start application
@@ -62,10 +62,11 @@ class _LazyAccordionSectionState extends State<LazyAccordionSection>{
     );
   }
 }
+*/
 
 
 
-
+// констутор для построения шапок секций медика, куратора и админа
 class HeaderAccordionSectionWidgetBuild extends StatelessWidget{
   final String title;
   final int count;
@@ -110,7 +111,7 @@ class HeaderAccordionSectionWidgetBuild extends StatelessWidget{
   }
 }
 
-
+/*
 Widget BuildAccordionSectionContentMedic(
   BuildContext context,
   List<StaffAndStudentsModel> data,
@@ -128,16 +129,21 @@ Widget BuildAccordionSectionContentMedic(
         Column(
           children: role == 'staff' ?
               data.expand((staff) {
-                return staff.staffList.map((e) =>
-                    OneRowBuildAccordionSectionContentStaff(
-                        staff: e));
+                return staff.staffList.map((e) {
+                    return OneRowBuildAccordionSectionContentStaff(
+                        staff: e);
+                });
               }).toList()
             :
                 data.expand((groups) {
                   return groups.studentsList.expand((students) {
-                    return students.students.map((student) =>
-                        OneRowBuildAccordionSectionContent(
-                            student: student));
+                    return students.students.map((student) {
+                      final uniqueStudentId = 'student_${student.id}_${student.lastname}';
+                        return OneRowBuildAccordionSectionContent(
+                            student: student,
+                          uniqueId: uniqueStudentId,
+                        );
+                    });
                   });
                 }).toList()
         ),
@@ -149,16 +155,19 @@ Widget BuildAccordionSectionContentMedic(
     ],
   );
 }
+*/
 
 
-// одна строка для построения
+// конструтор для построения одной единицы строки для студентов
 class OneRowBuildAccordionSectionContent extends StatelessWidget {
   final StudentData student;
+  final String uniqueId;
   // final Function(StudentData, DateTime) dateFluorographyUpdate;
 
   const OneRowBuildAccordionSectionContent({
     Key? key,
     required this.student,
+    required this.uniqueId
   }) : super(key: key);
 
   @override
@@ -183,7 +192,7 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
                 ],
               )
           ),
-          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!)
+          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueId: uniqueId)
         ],
       ),
     );
@@ -191,13 +200,15 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
 }
 
 
-// одна строка для построения сотрудника
+// конструтор для построения одной единицы строки сотрудника
 class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
   final StaffModel staff;
+  final String uniqueStaffId;
 
   const OneRowBuildAccordionSectionContentStaff({
     Key? key,
     required this.staff,
+    required this.uniqueStaffId
   }) : super(key: key);
 
   @override
@@ -223,11 +234,10 @@ class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
                 ],
               )
           ),
-          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!)
+          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueId: uniqueStaffId)
         ],
       ),
     );
   }
-
 }
 

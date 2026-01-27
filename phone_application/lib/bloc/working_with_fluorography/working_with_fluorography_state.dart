@@ -7,6 +7,7 @@ final class WorkingWithFluorographyInitial extends WorkingWithFluorographyState{
 class EditModeWorkingWithFluorographyState extends WorkingWithFluorographyState{}
 class CancelEditModeWorkingWithFluorographyState extends WorkingWithFluorographyState{}
 class EnableEditModeWorkingWithFluorographyState extends WorkingWithFluorographyState{}
+class OpenedDatePickerState extends WorkingWithFluorographyState{}
 
 
 

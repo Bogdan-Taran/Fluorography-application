@@ -28,6 +28,7 @@ class UpdateFluorographyDateEvent extends WorkingWithFluorographyEvent{
 class TurnOnEditingModeEvent extends WorkingWithFluorographyEvent{}
 class CancelEditingModeEvent extends WorkingWithFluorographyEvent{}
 class EnableEditingModeEvent extends WorkingWithFluorographyEvent{}
+class OpenDatePickerEvent extends WorkingWithFluorographyEvent{}
 
 class SelectDateEvent extends WorkingWithFluorographyEvent{
   final DateTime selectedDate;

@@ -88,6 +88,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
       ...medicEntireCommunity!.where((item) => item.staffList.isNotEmpty).map((
         e,
       ) {
+        // TODO: change to lazy loading section
         return AccordionSection(
           isOpen: false,
           paddingBetweenClosedSections: 30,
@@ -104,9 +105,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
                 .map(
                   (staff) => OneRowBuildAccordionSectionContentStaff(
                     staff: staff,
-                  ),
-                )
-                .toList(),
+                  ),).toList(),
                 BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
                   builder: (context, state){
                     switch(state.runtimeType){
@@ -119,13 +118,10 @@ class MainContentAccordionBuilder extends StatelessWidget {
                       default:
                         return _ScreensWidgets.EditElevatedButton(context: context);
                     }
-
                   },
-
                 )
               // _ScreensWidgets.EditElevatedButton(context: context),
                 ]
-
           ),
         );
       }),

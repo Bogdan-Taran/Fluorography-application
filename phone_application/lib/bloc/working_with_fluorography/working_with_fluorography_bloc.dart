@@ -13,10 +13,7 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
     on<TurnOnEditingModeEvent>(turnOnEditingModeEvent);
     on<CancelEditingModeEvent>(cancelEditingModeEvent);
     on<EnableEditingModeEvent>(enableEditingModeEvent);
-
-    // on<UpdateFluorographyDateEvent>(onUpdateFluorographyDateEvent);
-    //on<CancelEditingModeEvent>(onCancelEditingModeEvent);
-    // on<EnableEditingModeEvent>(onEnableEditingModeEvent);
+    on<OpenDatePickerEvent>(openDatePickerEvent);
   }
 
 
@@ -38,6 +35,10 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
 
   //   error:
   //   ErrorState
+  }
+
+  FutureOr<void> openDatePickerEvent(OpenDatePickerEvent event, Emitter<WorkingWithFluorographyState> emit) {
+    emit(OpenedDatePickerState());
   }
 }
 

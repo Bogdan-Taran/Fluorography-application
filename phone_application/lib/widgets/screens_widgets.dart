@@ -4,10 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 
+import '../services/builders_screen.dart';
 import '../services/checker_service.dart';
 
 class ScreensWidgets {
   CheckerService _CheckerService = CheckerService();
+  BuildersScreen _BuildersScreen = BuildersScreen();
 
   PreferredSizeWidget AppBarFlura<
     B extends Bloc<Object, Object>,
@@ -210,6 +212,9 @@ class ScreensWidgets {
           case EnableEditingModeEvent:
             print('Состояние применения');
             isEditing = false;
+          case OpenedDatePickerState:
+            print('Состояние открытия datepicker');
+            _BuildersScreen.openDatePicker(context);
           default:
             print('Дефолтное сосотоянеи');
             isEditing = false;
@@ -221,16 +226,26 @@ class ScreensWidgets {
             style: ElevatedButton.styleFrom(
                 backgroundColor:
                 isEditing ?
-                Color(0xff98BFF3):
+                Colors.transparent:
                 switch(_CheckerService.isFluorographyOverdue(dataContainer)){
                   DataStatus.unknown => const Color(0xffF29393),
                   DataStatus.overdue => const Color(0xffF29393),
                   DataStatus.quitOverdue => const Color(0xffFFE550),
                   DataStatus.noOverdue => Colors.transparent,
                 },
-                shadowColor: Colors.transparent
+                shadowColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)
+              ),
+              side: BorderSide(
+                width: 2,
+                color: isEditing ? Color(0xff98BFF3) : Colors.transparent
+              )
             ),
-            onPressed: () {},
+            // TODO: make opening Datepicker
+            onPressed: isEditing ? () {
+              context.read<WorkingWithFluorographyBloc>().add(OpenDatePickerEvent());
+            } : null,
             child: Text(
               dataContainer,
               textAlign: TextAlign.center,

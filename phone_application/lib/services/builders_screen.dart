@@ -42,7 +42,7 @@ class BuildersScreen {
     );
   }
 
-
+  // TODO: change MedicBloc to WorkingWithFluorographyBloc
   void openDatePicker(BuildContext context) {
     BottomPicker.date(
       headerBuilder: (context) {

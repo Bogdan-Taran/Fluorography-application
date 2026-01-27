@@ -1,18 +1,69 @@
+import 'package:accordion/accordion.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart' as http;
-import 'package:project_fluorography/models/single_group_with_students_model.dart';
 import 'package:project_fluorography/models/staff_model.dart';
 import 'package:project_fluorography/models/student_model.dart';
 import 'package:project_fluorography/widgets/screens_widgets.dart';
-
-import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../models/staff_and_students_model.dart';
-import '../services/builders_screen.dart';
-import '../services/checker_service.dart';
-import '../services/converters_service.dart';
+
+
+class LazyAccordionSection extends StatefulWidget{
+  final Widget header; //our headerAccordion widget
+  final List<Widget> Function() contentBuilder; //function for init in first-start application
+  final bool initiallyOpen; // boolean that shows that in init hearer will be closed
+
+  LazyAccordionSection({
+    required this.header,
+    required this.contentBuilder,
+    this.initiallyOpen = false,
+  });
+
+  @override
+  _LazyAccordionSectionState createState() => _LazyAccordionSectionState();
+}
+
+class _LazyAccordionSectionState extends State<LazyAccordionSection>{
+  bool isOpen = false;
+  bool hasBuildContent = false;
+  Widget? cachedContent;
+
+  @override
+  void initState(){
+    super.initState();
+    isOpen = widget.initiallyOpen;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if(isOpen && !hasBuildContent){
+      cachedContent = Column(
+        children: widget.contentBuilder(),
+      );
+      hasBuildContent = true;
+    }
+
+    return AccordionSection(
+      isOpen: isOpen,
+      header: widget.header,
+      content: isOpen && cachedContent != null ? cachedContent! : SizedBox.shrink(),
+      // TODO: change to Bloc
+      onOpenSection: () => setState(() {
+        isOpen = true;
+        if(!hasBuildContent){
+          cachedContent = Column(
+            children: widget.contentBuilder(),
+          );
+          hasBuildContent = true;
+        }
+      }),
+      onCloseSection: () => setState(() => isOpen = false),
+    );
+  }
+}
+
+
 
 
 class HeaderAccordionSectionWidgetBuild extends StatelessWidget{

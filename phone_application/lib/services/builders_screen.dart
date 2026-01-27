@@ -43,7 +43,7 @@ class BuildersScreen {
   }
 
   // TODO: change MedicBloc to WorkingWithFluorographyBloc
-  void openDatePicker(BuildContext context) {
+  void openDatePicker(BuildContext context, String uniqueDateContainerId, WorkingWithFluorographyBloc bloc) {
     BottomPicker.date(
       headerBuilder: (context) {
         return Row(
@@ -60,7 +60,9 @@ class BuildersScreen {
             ),
             IconButton(
                 onPressed: () {
-                  context.read<MedicBloc>().add(MedicCloseDatePickerEvent());
+                  // context.read<MedicBloc>().add(MedicCloseDatePickerEvent());
+                  bloc.add(CloseDatePickerEvent(uniqueId: uniqueDateContainerId));
+                  Navigator.of(context).pop();
                 },
                 icon: Icon(Icons.close),
               style: ButtonStyle(foregroundColor: MaterialStateProperty.all(Color(0xFF72A7EB))),

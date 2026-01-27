@@ -230,7 +230,6 @@ class ScreensWidgets {
                   color: isEditing ? Color(0xff98BFF3) : Colors.transparent
               )
           ),
-          // TODO: make opening Datepicker
           onPressed: isEditing ? () {
             print('Нажата кнопка');
             context.read<WorkingWithFluorographyBloc>().add(OpenDatePickerEvent(uniqueId: uniqueDateContainerId));

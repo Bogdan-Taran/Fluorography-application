@@ -43,6 +43,10 @@ class OpenDatePickerEvent extends WorkingWithFluorographyEvent{
   final String uniqueId;
   OpenDatePickerEvent({required this.uniqueId});
 }
+class CloseDatePickerEvent extends WorkingWithFluorographyEvent{
+  final String uniqueId;
+  CloseDatePickerEvent({required this.uniqueId});
+}
 
 class SelectDateEvent extends WorkingWithFluorographyEvent{
   final DateTime selectedDate;

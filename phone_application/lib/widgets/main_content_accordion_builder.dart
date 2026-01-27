@@ -114,7 +114,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
                         return BlocListener<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
                           listener: (context, state){
                             isDatePickerOpened = state.editingStates[uniqueStaffId] ?? false;
-                            isDatePickerOpened ? _BuildersScreen.openDatePicker(context) : () {};
+                            isDatePickerOpened ? _BuildersScreen.openDatePicker(context, uniqueStaffId, context.read<WorkingWithFluorographyBloc>()) : (){};
                           },
                           child: OneRowBuildAccordionSectionContentStaff(
                           staff: staff,

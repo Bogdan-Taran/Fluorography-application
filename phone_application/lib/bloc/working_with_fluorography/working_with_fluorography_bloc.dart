@@ -14,6 +14,7 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
     on<CancelEditingModeEvent>(cancelEditingModeEvent);
     on<EnableEditingModeEvent>(enableEditingModeEvent);
     on<OpenDatePickerEvent>(openDatePickerEvent);
+    on<CloseDatePickerEvent>(closeDatePickerEvent);
   }
 
 
@@ -37,6 +38,11 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
     newStates[event.uniqueId] = true;
     emit(state.copyWith(editingStates: newStates));
   }
+  FutureOr<void> closeDatePickerEvent(CloseDatePickerEvent event, Emitter<WorkingWithFluorographyState> emit) {
+    final newStates = Map<String, bool>.from(state.editingStates);
+    newStates[event.uniqueId] = false;
+    emit(state.copyWith(editingStates: newStates));
+  }
 
   FutureOr<void> enableEditingModeEvent(EnableEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
     // loading
@@ -48,6 +54,7 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
   //   error:
   //   ErrorState
   }
+
 
 
 }

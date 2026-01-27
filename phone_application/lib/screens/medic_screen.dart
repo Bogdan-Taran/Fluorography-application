@@ -72,11 +72,11 @@ class _MedicScreen extends State<MedicScreen> {
                               print('Загрузка выхода');
                               break;
 
-                            case MedicOpenDatePickerState:
-                              _buildersScreen.openDatePicker(context);
-                              break;
-                            case MedicCloseDatePickerState:
-                              Navigator.of(context).pop();
+                            // case MedicOpenDatePickerState:
+                            //   _buildersScreen.openDatePicker(context, );
+                            //   break;
+                            // case MedicCloseDatePickerState:
+                            //   Navigator.of(context).pop();
                           }
                         }),
                     BlocListener<AuthenticationBloc, AuthenticationState>(

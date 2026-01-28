@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
               ],
               child: MaterialApp(
                 debugShowCheckedModeBanner: false,
-                title: 'Clean Flura',
+                title: 'Flura',
                 home: AuthChecker(),
                 // home: MedicScreen(),
               ),

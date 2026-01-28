@@ -183,6 +183,7 @@ class ScreensWidgets {
             context.read<WorkingWithFluorographyBloc>().add(
               SaveEditingModeEvent(),
             );
+            context.read<WorkingWithFluorographyBloc>().add(CancelEditingModeEvent(uniqueId: uniqueId));
           },
           style: ElevatedButton.styleFrom(backgroundColor: Color(0xff98BFF3)),
           child: Text(

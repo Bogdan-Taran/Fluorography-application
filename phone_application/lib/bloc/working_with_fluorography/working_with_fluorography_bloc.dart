@@ -33,6 +33,7 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
   FutureOr<void> cancelEditingModeEvent(CancelEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
     final newStates = Map<String, bool>.from(state.editingStates);
     newStates[event.uniqueId] = false;
+    emit(state.copyWith(tempDates: {}));
     emit(state.copyWith(editingStates: newStates));
     // emit(CancelEditModeWorkingWithFluorographyState());
   }
@@ -59,15 +60,14 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
     }
   }
 
-
-
-  FutureOr<void> saveEditingModeEvent(SaveEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
+  Future<void> saveEditingModeEvent(SaveEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) async {
     final newDatesPatch = state.tempDates;
     print('Даты котрые будут изменены: $newDatesPatch');
     //сначала завершаются все процессы отправки и обносления, затем очищаем
-    _ApiService.updateFluraDateFromSet(newDatesPatch).then((_){
+    await _ApiService.updateFluraDateFromSet(newDatesPatch).then((_){
       emit(state.copyWith(tempDates: {}));
     });
+
 
   }
 }

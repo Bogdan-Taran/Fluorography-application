@@ -23,15 +23,13 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     on<MedicInitialEvent>(medicInitialEvent);
     on<MedicLogoutEvent>(medicLogoutEvent);
     on<MedicOpenDatePickerEvent>(medicOpenDatePickerEvent);
-    on<MedicSelectDateEvent>(medicSelectDateEvent);
+    // on<MedicSelectDateEvent>(medicSelectDateEvent);
     on<MedicCloseDatePickerEvent>(medicCloseDatePickerEvent);
 
 }
   FutureOr<void> medicInitialEvent(MedicInitialEvent event, Emitter<MedicState> emit) async{
     emit(MedicFetchingLoadingState());
     List<StaffAndStudentsModel> staffAndStudentsList;
-
-
     try{
       staffAndStudentsList = await _CheckerCacheService.getGroupsMedicWithCache();
       emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: staffAndStudentsList));
@@ -41,8 +39,6 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
       print('Не удалось загрузить студентов с сотрудниками');
       log(e.toString());
     }
-
-
   }
 
   FutureOr<void> medicLogoutEvent(MedicLogoutEvent event, Emitter<MedicState> emit) async {
@@ -68,18 +64,18 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
 
 
 
-  FutureOr<void> medicSelectDateEvent(MedicSelectDateEvent event, Emitter<MedicState> emit) async {
-    emit(MedicFetchingLoadingState());
-    try{
-      await _ApiService.updateFluraDate(event.selectedDate);
-      emit(MedicCloseDatePickerState());
-    }catch (e){
-      print('Произошла ошибка fetch-a');
-      log(e.toString());
-    }
-
-
-  }
+  // FutureOr<void> medicSelectDateEvent(MedicSelectDateEvent event, Emitter<MedicState> emit) async {
+  //   emit(MedicFetchingLoadingState());
+  //   try{
+  //     await _ApiService.updateFluraDate(event.selectedDate);
+  //     emit(MedicCloseDatePickerState());
+  //   }catch (e){
+  //     print('Произошла ошибка fetch-a');
+  //     log(e.toString());
+  //   }
+  //
+  //
+  // }
 
   FutureOr<void> medicCloseDatePickerEvent(MedicCloseDatePickerEvent event, Emitter<MedicState> emit) {
     emit(MedicCloseDatePickerState());

@@ -11,15 +11,14 @@ abstract class AuthenticationState {
 class AuthenticationInitialState extends AuthenticationState {}
 
 //состояние загрузки
-class AuthenticationLoadingState extends AuthenticationState{
-
-}
-
-//успешная авторизация
-class AuthenticationSuccessState extends AuthenticationState{
+class AuthenticationLoadingState extends AuthenticationState{}
+//не авторизирован
+class NotAuthenticatedState extends AuthenticationState{}
+class AuthorizedState extends AuthenticationState{}
+//успешная авторизация после логина
+class AuthenticationSuccessAfterLoginState extends AuthenticationState{
   final UserData user;
-
-  const AuthenticationSuccessState(this.user);
+  const AuthenticationSuccessAfterLoginState(this.user);
   @override
   List<Object> get props => [user];
 }

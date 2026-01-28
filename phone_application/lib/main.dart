@@ -8,6 +8,7 @@ import 'package:project_fluorography/screens/home_screen.dart';
 import 'package:project_fluorography/screens/medic_screen.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/auth_service.dart';
+import 'package:project_fluorography/services/builders_screen.dart';
 import 'package:project_fluorography/services/shared_pref_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,36 +58,41 @@ class MyApp extends StatelessWidget {
 
 class AuthChecker extends StatefulWidget {
   const AuthChecker({super.key});
-
   @override
   _AuthCheckerState createState() => _AuthCheckerState();
 }
 
 class _AuthCheckerState extends State<AuthChecker> {
-  bool _isAuthenticated = false;
-  bool _isLoading = true;
-  final AuthService _authService = AuthService();
-
   @override
   void initState() {
     super.initState();
-    _checkAuthStatus();
-  }
-
-  Future<void> _checkAuthStatus() async {
-    bool hasToken = await _authService.hasAuthToken();
-    setState(() {
-      _isAuthenticated = hasToken;
-      _isLoading = false;
-    });
+    context.read<AuthenticationBloc>().add(IsAuthenticatedCheckEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+    BuildersScreen _BuildersScreen = BuildersScreen();
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state){
+        switch(state.runtimeType){
+          case AuthenticationLoadingState:
+            _BuildersScreen.buildLoading();
+          case NotAuthenticatedState:
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        SignInScreen()));
+          case AuthorizedState:
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        HomeScreen()));
+          default:
+            _BuildersScreen.buildLoading();
+        }
+      },
+      child: SizedBox(height: 0,),
+    );
 
-    return _isAuthenticated ? HomeScreen() : SignInScreen();
   }
 }

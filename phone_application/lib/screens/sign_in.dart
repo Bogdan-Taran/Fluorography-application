@@ -30,9 +30,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
-    TextStyles textStyles = TextStyles();
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -236,7 +233,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                       BlocConsumer<AuthenticationBloc, AuthenticationState>(
                         listener: (context, state) {
-                          if (state is AuthenticationSuccessState) {
+                          if (state is AuthenticationSuccessAfterLoginState) {
                             Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {return HomeScreen();}));
                           }
                           else if (state is AuthenticationFailureState) {

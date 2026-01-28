@@ -5,6 +5,8 @@ abstract class AuthenticationEvent {
   List<Object> get props => [];
 }
 
+class IsAuthenticatedCheckEvent extends AuthenticationEvent{}
+
 class SignInUserEvent extends AuthenticationEvent{
   final String login;
   final String password;

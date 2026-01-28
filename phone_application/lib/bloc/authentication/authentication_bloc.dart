@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:project_fluorography/services/auth_service.dart';
 
@@ -13,13 +15,14 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   AuthenticationBloc() : super(AuthenticationInitialState()) {
     on<AuthenticationEvent>((event, emit) {});
+    on<IsAuthenticatedCheckEvent>(isAuthenticatedCheckEvent);
 
     on<SignInUserEvent>((event, emit) async {
       emit(AuthenticationLoadingState());
       try{
         final UserData? user = await authService.signInUser(event.login, event.password);
         if (user != null){
-          emit(AuthenticationSuccessState(user));
+          emit(AuthenticationSuccessAfterLoginState(user));
         }
         else{
           emit(const AuthenticationFailureState(errorMessage: 'Login user falied'));
@@ -44,5 +47,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       }
       emit(AuthenticationLoadingState());
     });
+  }
+
+  FutureOr<void> isAuthenticatedCheckEvent(IsAuthenticatedCheckEvent event, Emitter<AuthenticationState> emit) async{
+    emit(AuthenticationLoadingState());
+    bool isAuthenticatedHasToken = await authService.hasAuthToken();
+    isAuthenticatedHasToken ? emit(AuthorizedState()) : emit(NotAuthenticatedState());
+
   }
 }

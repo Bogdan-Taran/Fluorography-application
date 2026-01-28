@@ -6,10 +6,12 @@ import 'package:project_fluorography/bloc/working_with_fluorography/working_with
 
 import '../services/builders_screen.dart';
 import '../services/checker_service.dart';
+import '../services/converters_service.dart';
 
 class ScreensWidgets {
   CheckerService _CheckerService = CheckerService();
   BuildersScreen _BuildersScreen = BuildersScreen();
+  ConverterServices _ConverterServices = ConverterServices();
 
   PreferredSizeWidget AppBarFlura<
     B extends Bloc<Object, Object>,
@@ -179,7 +181,7 @@ class ScreensWidgets {
         ElevatedButton(
           onPressed: () {
             context.read<WorkingWithFluorographyBloc>().add(
-              EnableEditingModeEvent(),
+              SaveEditingModeEvent(),
             );
           },
           style: ElevatedButton.styleFrom(backgroundColor: Color(0xff98BFF3)),
@@ -210,6 +212,8 @@ class ScreensWidgets {
       builder: (context, state) {
         isEditing = state.editingStates[uniqueEditingSectionId] ?? false;
         // print('Перестраиваю виджет с id $uniqueDateContainerId, изменяемость: $isEditing');
+        final displayDate = state.tempDates[uniqueDateContainerId] ?? dataContainer;
+        // print('Отображаемая дата: $displayDate');
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
               backgroundColor:
@@ -233,11 +237,14 @@ class ScreensWidgets {
           onPressed: isEditing ? () {
             print('Нажата кнопка');
             context.read<WorkingWithFluorographyBloc>().add(OpenDatePickerEvent(uniqueId: uniqueDateContainerId));
+            _BuildersScreen.openDatePicker(context, uniqueDateContainerId, context.read<WorkingWithFluorographyBloc>());
             print('Должен открыться datepicker');
             print('Открыл datePicker для $uniqueDateContainerId');
           } : () {},
           child: Text(
-            dataContainer,
+            // dataContainer,
+            // _ConverterServices.formatFluraDate(displayDate),
+            displayDate,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.bold,

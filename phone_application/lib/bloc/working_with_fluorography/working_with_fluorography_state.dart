@@ -3,15 +3,23 @@ part of 'working_with_fluorography_bloc.dart';
 // abstract class WorkingWithFluorographyState extends Equatable{
 class WorkingWithFluorographyState extends Equatable{
   final Map<String, bool> editingStates;
-  WorkingWithFluorographyState({this.editingStates = const {}});
+  final Map<String, String> tempDates;
+  WorkingWithFluorographyState({
+    this.editingStates = const {},
+    this.tempDates = const {}
+  });
 
-  WorkingWithFluorographyState copyWith({Map<String, bool>? editingStates}){
+  WorkingWithFluorographyState copyWith({
+    Map<String, bool>? editingStates,
+    Map<String, String>? tempDates,
+  }){
     return WorkingWithFluorographyState(
-      editingStates: editingStates ?? this.editingStates
+      editingStates: editingStates ?? this.editingStates,
+      tempDates: tempDates ?? this.tempDates,
     );
   }
   @override
-  List<Object> get props => [editingStates];
+  List<Object> get props => [editingStates, tempDates];
 }
 
 final class WorkingWithFluorographyInitial extends WorkingWithFluorographyState{}

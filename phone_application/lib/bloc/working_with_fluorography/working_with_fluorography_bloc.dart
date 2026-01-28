@@ -12,9 +12,10 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
   WorkingWithFluorographyBloc() : super(WorkingWithFluorographyState()) {
     on<TurnOnEditingModeEvent>(turnOnEditingModeEvent);
     on<CancelEditingModeEvent>(cancelEditingModeEvent);
-    on<EnableEditingModeEvent>(enableEditingModeEvent);
     on<OpenDatePickerEvent>(openDatePickerEvent);
     on<CloseDatePickerEvent>(closeDatePickerEvent);
+    on<SelectDateEvent>(selectDateEvent);
+    on<SaveEditingModeEvent>(saveEditingModeEvent);
   }
 
 
@@ -44,26 +45,30 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
     emit(state.copyWith(editingStates: newStates));
   }
 
-  FutureOr<void> enableEditingModeEvent(EnableEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
-    // loading
-    // api call
-
-    // success:
-    emit(EnableEditModeWorkingWithFluorographyState());
-
-  //   error:
-  //   ErrorState
+  FutureOr<void> selectDateEvent(SelectDateEvent event, Emitter<WorkingWithFluorographyState> emit) {
+    final isCurrentlyEditing = state.editingStates[event.uniqueContainerId] ?? false;
+    print('Пришло событие выбора даты, состояение измеенния: $isCurrentlyEditing');
+    if(isCurrentlyEditing){
+      final newTempDates = Map<String, String>.from(state.tempDates);
+      newTempDates[event.uniqueContainerId] = event.selectedDate;
+      print('Bloc. Изменяю дату (${event.selectedDate}) для ${event.uniqueContainerId}');
+      emit(state.copyWith(tempDates: newTempDates));
+    }
   }
 
 
 
-}
-
-
-class SelectDateBloc extends Bloc<SelectDateEvent, SelectDateState>{
-  SelectDateBloc(): super(SelectDateState()){
-    // on<SelectDateEvent>
-    //     (event, emit) => emit(state.copyWith(selectedDate: event.selectedDate));
+  FutureOr<void> saveEditingModeEvent(SaveEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
+    final newDatesPatch = state.tempDates;
+    print('Даты котрые будут изменены: $newDatesPatch');
   }
 }
+
+
+// class SelectDateBloc extends Bloc<SelectDateEvent, SelectDateState>{
+//   SelectDateBloc(): super(SelectDateState()){
+//     // on<SelectDateEvent>
+//     //     (event, emit) => emit(state.copyWith(selectedDate: event.selectedDate));
+//   }
+// }
 

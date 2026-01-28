@@ -110,11 +110,12 @@ class MainContentAccordionBuilder extends StatelessWidget {
                 ...e.staffList
                     .map(
                       (staff) {
-                        final uniqueStaffId = 'staff_${staff.id}_${staff.lastname}';
+                        // final uniqueStaffId = 'staff_${staff.id}_${staff.lastname}';
+                        final uniqueStaffId = '${staff.id}';
                         return BlocListener<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
                           listener: (context, state){
                             isDatePickerOpened = state.editingStates[uniqueStaffId] ?? false;
-                            isDatePickerOpened ? _BuildersScreen.openDatePicker(context, uniqueStaffId, context.read<WorkingWithFluorographyBloc>()) : (){};
+                            // isDatePickerOpened ? _BuildersScreen.openDatePicker(context, uniqueStaffId, context.read<WorkingWithFluorographyBloc>()) : (){};
                           },
                           child: OneRowBuildAccordionSectionContentStaff(
                           staff: staff,
@@ -259,7 +260,8 @@ class MainContentAccordionBuilder extends StatelessWidget {
                 children: groupData.students
                     .map(
                       (student) {
-                        final uniqueStudentId = 'student_${student.id}_${student.lastname}';
+                        // final uniqueStudentId = 'student_${student.id}_${student.lastname}';
+                        final uniqueStudentId = '${student.id}';
                         return OneRowBuildAccordionSectionContent(
                           student: student,
                           uniqueId: uniqueStudentId,

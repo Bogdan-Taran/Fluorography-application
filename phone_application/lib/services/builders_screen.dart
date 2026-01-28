@@ -84,8 +84,9 @@ class BuildersScreen {
       onSubmit: (index) {
         print(index);
         String date = _ConverterServices.convertDatePicker(index);
-        print(date);
-        context.read<MedicBloc>().add(MedicSelectDateEvent(selectedDate: date));
+        print('Печатаю дату: $date');
+        bloc.add(SelectDateEvent(selectedDate: date, uniqueContainerId: uniqueDateContainerId));
+        print('Вызвал ивент выбора даты, selected date: $date, uniqueContainerId: $uniqueDateContainerId');
       },
       onDismiss: (p0) {
         print(p0);

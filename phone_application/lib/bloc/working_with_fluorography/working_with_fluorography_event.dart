@@ -37,7 +37,10 @@ class CancelEditingModeEvent extends WorkingWithFluorographyEvent{
   CancelEditingModeEvent({required this.uniqueId});
 }
 
-class EnableEditingModeEvent extends WorkingWithFluorographyEvent{}
+class SaveEditingModeEvent extends WorkingWithFluorographyEvent{
+  @override
+  List<Object> get props => [];
+}
 
 class OpenDatePickerEvent extends WorkingWithFluorographyEvent{
   final String uniqueId;
@@ -49,12 +52,12 @@ class CloseDatePickerEvent extends WorkingWithFluorographyEvent{
 }
 
 class SelectDateEvent extends WorkingWithFluorographyEvent{
-  final DateTime selectedDate;
+  final String uniqueContainerId;
+  final String selectedDate;
   const SelectDateEvent({
-    required this.selectedDate
+    required this.selectedDate,
+    required this.uniqueContainerId
   });
-  @override
-  List<Object> get props => [selectedDate];
 }
 
 

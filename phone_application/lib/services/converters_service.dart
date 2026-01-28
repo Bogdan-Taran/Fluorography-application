@@ -26,6 +26,10 @@ class ConverterServices {
     return dateString;
   }
 
+  String convertInputId(String uniqueId){
+    return uniqueId.split('_')[1];
+  }
+
 
   String formatFluraDate(String? date) {
     /*
@@ -44,7 +48,7 @@ class ConverterServices {
       return 'Нет даты';
     }
     try{
-      // final dt = DateFormat('dd.MM.yyyy').format(DateTime.parse(date));
+      //final dt = DateFormat('dd.MM.yyyy').format(DateTime.parse(date));
       final dt = date;
       print('Есть дата: $dt');
       return dt;

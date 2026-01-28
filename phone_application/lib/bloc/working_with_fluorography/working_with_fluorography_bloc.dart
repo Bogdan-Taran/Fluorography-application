@@ -5,10 +5,13 @@ import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:project_fluorography/models/single_group_with_students_model.dart';
 
+import '../../services/api_service.dart';
+
 part 'working_with_fluorography_event.dart';
 part 'working_with_fluorography_state.dart';
 
 class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, WorkingWithFluorographyState> {
+  ApiService _ApiService = ApiService();
   WorkingWithFluorographyBloc() : super(WorkingWithFluorographyState()) {
     on<TurnOnEditingModeEvent>(turnOnEditingModeEvent);
     on<CancelEditingModeEvent>(cancelEditingModeEvent);
@@ -61,6 +64,11 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
   FutureOr<void> saveEditingModeEvent(SaveEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) {
     final newDatesPatch = state.tempDates;
     print('Даты котрые будут изменены: $newDatesPatch');
+    //сначала завершаются все процессы отправки и обносления, затем очищаем
+    _ApiService.updateFluraDateFromSet(newDatesPatch).then((_){
+      emit(state.copyWith(tempDates: {}));
+    });
+
   }
 }
 

@@ -78,11 +78,23 @@ class ApiService {
     }
   }
 
-
-  Future<void> updateFluraDate(String selectedDate) async {
-    final url = Uri.parse('https://flura.tomtit-tomsk.ru/api/fluorography/');
+  // цикл для обновления выбранных дат
+  Future<void> updateFluraDateFromSet(Map<String, String> dateMap) async{
+    try {
+      await Future.forEach(
+          dateMap.entries, (MapEntry<String, String> entry) async {
+        final uniqueId = entry.key;
+        final selectedDate = entry.value;
+        await updateFluraDate(selectedDate, uniqueId);
+      });
+    } catch(e){
+      print(e);
+    }
+  }
+  Future<void> updateFluraDate(String selectedDate, String uniqueId) async {
+    final url = Uri.parse('https://flura.tomtit-tomsk.ru/api/fluorography/$uniqueId');
     final token = await getToken();
-    String selectedDate = '2025-11-21';
+    // String selectedDate = '2025-11-21';
 
     try {
       final response = await http.patch(
@@ -92,7 +104,7 @@ class ApiService {
           'Authorization': 'Bearer $token'
         },
         body: jsonEncode({
-          'date': '$selectedDate',
+          'date': selectedDate,
         }),
       );
 

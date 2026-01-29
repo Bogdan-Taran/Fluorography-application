@@ -70,9 +70,11 @@ class HomeScreen extends StatelessWidget {
                 BlocProvider(
                   create: (context) => MedicBloc(),
                 ),
+                /*
                 BlocProvider(
                   create: (context) => AuthenticationBloc(),
                 ),
+                */
                 BlocProvider(
                   create: (context) => SearchBloc(),
                 ),

@@ -14,9 +14,7 @@ class AuthService {
 
 
   Future<UserData?> signInUser(String login, String password) async {
-    final prefs = await SharedPreferences.getInstance();
     try{
-
       await _apiService.loginUser(login, password);
       final bool hasToken = await hasAuthToken();
       if(hasToken){

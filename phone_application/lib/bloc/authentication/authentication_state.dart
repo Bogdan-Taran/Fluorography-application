@@ -9,7 +9,6 @@ abstract class AuthenticationState {
 
 //инициализация состояния - начальное состояние процесса аутентификации
 class AuthenticationInitialState extends AuthenticationState {}
-
 //состояние загрузки
 class AuthenticationLoadingState extends AuthenticationState{}
 //не авторизирован

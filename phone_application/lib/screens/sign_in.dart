@@ -29,6 +29,12 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    context.read<AuthenticationBloc>().add(LoggingInInitializationEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -230,23 +236,28 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       SizedBox(height: screenHeight * 0.02),
 
-
                       BlocConsumer<AuthenticationBloc, AuthenticationState>(
                         listener: (context, state) {
-                          if (state is AuthenticationSuccessAfterLoginState) {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) {return HomeScreen();}));
-                          }
-                          else if (state is AuthenticationFailureState) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return const AlertDialog(
-                                  content: Text(
-                                    'error: AuthenticationFailureState',
-                                  ),
-                                );
-                              },
-                            );
+                          switch (state.runtimeType) {
+                            case AuthenticationSuccessAfterLoginState:
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return HomeScreen();
+                                  },
+                                ),
+                              );
+                            case AuthenticationFailureState:
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const AlertDialog(
+                                    content: Text(
+                                      'Ошибка авторизации',
+                                    ),
+                                  );
+                                },
+                              );
                           }
                         },
                         builder: (context, state) {
@@ -254,14 +265,11 @@ class _SignInScreenState extends State<SignInScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 35),
                             child: ElevatedButton(
                               onPressed: () {
-                                BlocProvider.of<AuthenticationBloc>(
-                                  context,
-                                ).add(
-                                  SignInUserEvent(
-                                    loginController.text.trim(),
-                                    passwordController.text.trim(),
-                                  ),
-                                );
+                                context.read<AuthenticationBloc>().add(SignInUserEvent(
+                                  loginController.text.trim(),
+                                  passwordController.text.trim(),
+                                ));
+
                               },
                               style: ButtonStyle(
                                 elevation:
@@ -309,22 +317,21 @@ class _SignInScreenState extends State<SignInScreen> {
                                   ),
                                 ),
                               ),
-                              child: state is AuthenticationLoadingState ?
-                              LoadingAnimationWidget.halfTriangleDot(
-                                color: Colors.white,
-                                size: 24,)
-                              :
-                              Text(
-                                'Войти',
-                                style: TextStyle(
-                                  fontSize: AppSizes.fontSizeMedium,
-                                  // fontSize: screenWidth * AppSizes.fontSizeMedium,
-                                  color: Color(0xffffffff),
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: 'Geologica',
-                                ),
-                              )
-
+                              child: state is AuthenticationLoadingState
+                                  ? LoadingAnimationWidget.halfTriangleDot(
+                                      color: Colors.white,
+                                      size: 24,
+                                    )
+                                  : Text(
+                                      'Войти',
+                                      style: TextStyle(
+                                        fontSize: AppSizes.fontSizeMedium,
+                                        // fontSize: screenWidth * AppSizes.fontSizeMedium,
+                                        color: Color(0xffffffff),
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'Geologica',
+                                      ),
+                                    ),
                             ),
                           );
                         },

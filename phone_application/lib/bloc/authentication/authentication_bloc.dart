@@ -31,7 +31,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       catch (e) {
         print(e.toString());
       }
-      emit(AuthenticationLoadingState());
+      // emit(AuthenticationLoadingState());
     });
 
     on<SignOutEvent>((event, emit) async {
@@ -45,7 +45,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         print('error while logout');
         print(e.toString());
       }
-      emit(AuthenticationLoadingState());
+      // emit(AuthenticationLoadingState());
     });
   }
 

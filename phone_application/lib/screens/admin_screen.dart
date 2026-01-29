@@ -34,9 +34,12 @@ class _AdminScreen extends State<AdminScreen> {
     BuildersScreen _buildersScreen = BuildersScreen();
 
     return SafeArea(child: Scaffold(
-        appBar: _ScreensWidgets.AppBarFlura(context: context,
-            bloc: context.read<AuthenticationBloc>(),
-            event: SignOutEvent()),
+        appBar: AppBarFlura(
+          bloc: context.read<AuthenticationBloc>(),
+          event: SignOutEvent(),
+          context: context,
+          preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.13),
+        ),
         body: SingleChildScrollView(
     child: Padding(
     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),

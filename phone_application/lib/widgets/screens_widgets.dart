@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
@@ -8,11 +9,98 @@ import '../services/builders_screen.dart';
 import '../services/checker_service.dart';
 import '../services/converters_service.dart';
 
+class EditElevatedButtonBuildWidget extends StatelessWidget {
+  final String uniqueId;
+
+  const EditElevatedButtonBuildWidget({super.key, required this.uniqueId});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        context.read<WorkingWithFluorographyBloc>().add(
+          TurnOnEditingModeEvent(uniqueId: uniqueId),
+        );
+      },
+      style: ElevatedButton.styleFrom(backgroundColor: Color(0xff98BFF3)),
+      child: Text(
+        'Редактировать',
+        style: TextStyle(
+          fontSize: MediaQuery.of(context).size.height * 0.016,
+          color: Color(0xffffffff),
+          fontFamily: 'Geologica',
+        ),
+      ),
+    );
+  }
+}
+
+class EditRowWithButtons extends StatelessWidget {
+  final String uniqueId;
+  final bool isEditing;
+
+  const EditRowWithButtons({
+    super.key,
+    required this.uniqueId,
+    required this.isEditing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return isEditing
+        ? Row(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  context.read<WorkingWithFluorographyBloc>().add(
+                    CancelEditingModeEvent(uniqueId: uniqueId),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xffffffff),
+                ),
+                child: Text(
+                  'Отменить',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.016,
+                    color: Color(0xff98BFF3),
+                    fontFamily: 'Geologica',
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<WorkingWithFluorographyBloc>().add(
+                    SaveEditingModeEvent(),
+                  );
+                  context.read<WorkingWithFluorographyBloc>().add(
+                    CancelEditingModeEvent(uniqueId: uniqueId),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xff98BFF3),
+                ),
+                child: Text(
+                  'Сохранить',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.016,
+                    color: Color(0xffffffff),
+                    fontFamily: 'Geologica',
+                  ),
+                ),
+              ),
+            ],
+          )
+        : EditElevatedButtonBuildWidget(key: key, uniqueId: uniqueId);
+  }
+}
+
 class ScreensWidgets {
   CheckerService _CheckerService = CheckerService();
   BuildersScreen _BuildersScreen = BuildersScreen();
   ConverterServices _ConverterServices = ConverterServices();
 
+  /*
   PreferredSizeWidget AppBarFlura<
     B extends Bloc<Object, Object>,
     E extends Object
@@ -88,15 +176,194 @@ class ScreensWidgets {
 
               SizedBox(height: 10),
 
-              SearchBar(context: context),
+              SearchBarBuildWidget(),
             ],
           ),
         ),
       ),
     );
-  }
+  }*/
+}
 
-  Widget SearchBar({required BuildContext context}) {
+class AppBarFlura<B extends Bloc<Object, Object>, E extends Object> extends StatelessWidget  implements PreferredSizeWidget{
+  final BuildContext context;
+  final B bloc;
+  final E event;
+
+  @override
+  final Size preferredSize;
+
+  const AppBarFlura({Key? key, required this.context, required this.bloc, required this.event, required this.preferredSize}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        statusBarBrightness: Brightness.light,
+      ),
+      flexibleSpace: Container(
+        height: preferredSize.height,
+        // height: MediaQuery.of(context).size.height * 0.13,
+        decoration: const BoxDecoration(color: Colors.white),
+        child: Padding(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    splashRadius: 24,
+                    padding: EdgeInsets.zero,
+                    icon: SvgPicture.asset(
+                      'assets/images/notification_icon.svg',
+                      color: const Color(0xff98BFF3),
+                      width: 35,
+                      height: 35,
+                    ),
+                  ),
+
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>((
+                          Set<WidgetState> states,
+                          ) {
+                        if (states.contains(WidgetState.disabled)) {
+                          return const Color(0xffD5D6D7);
+                        }
+                        if (states.contains(WidgetState.pressed)) {
+                          return const Color(0xFF72A7EB);
+                        }
+                        if (states.contains(WidgetState.hovered)) {
+                          return const Color(0xFFBADEFF);
+                        }
+                        return const Color(0xff98BFF3);
+                      }),
+                      foregroundColor: WidgetStateProperty.all(
+                        const Color(0xffffffff),
+                      ),
+                      minimumSize: WidgetStateProperty.all(
+                        Size(MediaQuery.of(context).size.width * 0.1, 35),
+                      ),
+                      shape: WidgetStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    onPressed: () {
+                      context.read<B>().add(event);
+                      print('Нажата кнопка выхода');
+                    },
+                    child: const Text(
+                      'Выход',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xffffffff),
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Geologica',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              SearchBarBuildWidget(),
+            ],
+          ),
+        ),
+      ),
+      toolbarHeight: preferredSize.height,
+      elevation: 0,
+    );
+  }
+}
+
+class DataFluraContainerBuildWidget extends StatelessWidget {
+  final String dataContainer;
+  final String uniqueDateContainerId;
+  final String uniqueEditingSectionId;
+
+  const DataFluraContainerBuildWidget({
+    super.key,
+    required this.dataContainer,
+    required this.uniqueDateContainerId,
+    required this.uniqueEditingSectionId,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    CheckerService _CheckerService = CheckerService();
+    BuildersScreen _BuildersScreen = BuildersScreen();
+    bool isEditing = false;
+    return BlocBuilder<
+      WorkingWithFluorographyBloc,
+      WorkingWithFluorographyState
+    >(
+      builder: (context, state) {
+        isEditing = state.editingStates[uniqueEditingSectionId] ?? false;
+        // print('Перестраиваю виджет с id $uniqueDateContainerId, изменяемость: $isEditing');
+        final displayDate =
+            state.tempDates[uniqueDateContainerId] ?? dataContainer;
+        // print('Отображаемая дата: $displayDate');
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isEditing
+                ? Colors.transparent
+                : switch (_CheckerService.isFluorographyOverdue(
+                    dataContainer,
+                  )) {
+                    DataStatus.unknown => const Color(0xffF29393),
+                    DataStatus.overdue => const Color(0xffF29393),
+                    DataStatus.quitOverdue => const Color(0xffFFE550),
+                    DataStatus.noOverdue => Colors.transparent,
+                  },
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            side: BorderSide(
+              width: 2,
+              color: isEditing ? Color(0xff98BFF3) : Colors.transparent,
+            ),
+          ),
+          onPressed: isEditing
+              ? () {
+                  print('Нажата кнопка');
+                  context.read<WorkingWithFluorographyBloc>().add(
+                    OpenDatePickerEvent(uniqueId: uniqueDateContainerId),
+                  );
+                  _BuildersScreen.openDatePicker(
+                    context,
+                    uniqueDateContainerId,
+                    context.read<WorkingWithFluorographyBloc>(),
+                  );
+                  print('Должен открыться datepicker');
+                  print('Открыл datePicker для $uniqueDateContainerId');
+                }
+              : () {},
+          child: Text(
+            // dataContainer,
+            // _ConverterServices.formatFluraDate(displayDate),
+            displayDate,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color(0xff26292B),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class SearchBarBuildWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     final TextEditingController searchController = TextEditingController();
     return TextField(
       controller: searchController,
@@ -136,124 +403,6 @@ class ScreensWidgets {
       },
       enableSuggestions: false,
       autocorrect: false,
-    );
-  }
-
-  Widget EditElevatedButton({required BuildContext context, required String uniqueId}) {
-    return ElevatedButton(
-      onPressed: () {
-        context.read<WorkingWithFluorographyBloc>().add(
-          TurnOnEditingModeEvent(uniqueId: uniqueId),
-        );
-      },
-      style: ElevatedButton.styleFrom(backgroundColor: Color(0xff98BFF3)),
-      child: Text(
-        'Редактировать',
-        style: TextStyle(
-          fontSize: MediaQuery.of(context).size.height * 0.016,
-          color: Color(0xffffffff),
-          fontFamily: 'Geologica',
-        ),
-      ),
-    );
-  }
-
-  Widget EditRowWithButtons({required BuildContext context, required String uniqueId, required bool isEditing}) {
-    return isEditing?
-    Row(
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            context.read<WorkingWithFluorographyBloc>().add(
-              CancelEditingModeEvent(uniqueId: uniqueId),
-            );
-          },
-          style: ElevatedButton.styleFrom(backgroundColor: Color(0xffffffff)),
-          child: Text(
-            'Отменить',
-            style: TextStyle(
-              fontSize: MediaQuery.of(context).size.height * 0.016,
-              color: Color(0xff98BFF3),
-              fontFamily: 'Geologica',
-            ),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            context.read<WorkingWithFluorographyBloc>().add(
-              SaveEditingModeEvent(),
-            );
-            context.read<WorkingWithFluorographyBloc>().add(CancelEditingModeEvent(uniqueId: uniqueId));
-          },
-          style: ElevatedButton.styleFrom(backgroundColor: Color(0xff98BFF3)),
-          child: Text(
-            'Сохранить',
-            style: TextStyle(
-              fontSize: MediaQuery.of(context).size.height * 0.016,
-              color: Color(0xffffffff),
-              fontFamily: 'Geologica',
-            ),
-          ),
-        ),
-      ],
-    ) :
-        EditElevatedButton(context: context, uniqueId: uniqueId);
-  }
-
-
-  // конструтор для построения контейнера (кнопки) с датой флюры человека
-  Widget DataFluraContainer({
-    required BuildContext context,
-    required String dataContainer,
-    required String uniqueDateContainerId,
-    required String uniqueEditingSectionId,
-  }) {
-    bool isEditing = false;
-    return BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
-      builder: (context, state) {
-        isEditing = state.editingStates[uniqueEditingSectionId] ?? false;
-        // print('Перестраиваю виджет с id $uniqueDateContainerId, изменяемость: $isEditing');
-        final displayDate = state.tempDates[uniqueDateContainerId] ?? dataContainer;
-        // print('Отображаемая дата: $displayDate');
-        return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              backgroundColor:
-              isEditing ?
-              Colors.transparent:
-              switch(_CheckerService.isFluorographyOverdue(dataContainer)){
-                DataStatus.unknown => const Color(0xffF29393),
-                DataStatus.overdue => const Color(0xffF29393),
-                DataStatus.quitOverdue => const Color(0xffFFE550),
-                DataStatus.noOverdue => Colors.transparent,
-              },
-              shadowColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)
-              ),
-              side: BorderSide(
-                  width: 2,
-                  color: isEditing ? Color(0xff98BFF3) : Colors.transparent
-              )
-          ),
-          onPressed: isEditing ? () {
-            print('Нажата кнопка');
-            context.read<WorkingWithFluorographyBloc>().add(OpenDatePickerEvent(uniqueId: uniqueDateContainerId));
-            _BuildersScreen.openDatePicker(context, uniqueDateContainerId, context.read<WorkingWithFluorographyBloc>());
-            print('Должен открыться datepicker');
-            print('Открыл datePicker для $uniqueDateContainerId');
-          } : () {},
-          child: Text(
-            // dataContainer,
-            // _ConverterServices.formatFluraDate(displayDate),
-            displayDate,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Color(0xff26292B),
-            ),
-          ),
-        );
-      },
     );
   }
 }

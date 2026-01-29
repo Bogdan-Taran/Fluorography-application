@@ -8,64 +8,6 @@ import 'package:project_fluorography/models/student_model.dart';
 import 'package:project_fluorography/widgets/screens_widgets.dart';
 import '../models/staff_and_students_model.dart';
 
-/*
-class LazyAccordionSection extends StatefulWidget{
-  final Widget header; //our headerAccordion widget
-  final List<Widget> Function() contentBuilder; //function for init in first-start application
-  final bool initiallyOpen; // boolean that shows that in init hearer will be closed
-
-  LazyAccordionSection({
-    required this.header,
-    required this.contentBuilder,
-    this.initiallyOpen = false,
-  });
-
-  @override
-  _LazyAccordionSectionState createState() => _LazyAccordionSectionState();
-}
-
-class _LazyAccordionSectionState extends State<LazyAccordionSection>{
-  bool isOpen = false;
-  bool hasBuildContent = false;
-  Widget? cachedContent;
-
-  @override
-  void initState(){
-    super.initState();
-    isOpen = widget.initiallyOpen;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if(isOpen && !hasBuildContent){
-      cachedContent = Column(
-        children: widget.contentBuilder(),
-      );
-      hasBuildContent = true;
-    }
-
-    return AccordionSection(
-      isOpen: isOpen,
-      header: widget.header,
-      content: isOpen && cachedContent != null ? cachedContent! : SizedBox.shrink(),
-      // TODO: change to Bloc
-      onOpenSection: () => setState(() {
-        isOpen = true;
-        if(!hasBuildContent){
-          cachedContent = Column(
-            children: widget.contentBuilder(),
-          );
-          hasBuildContent = true;
-        }
-      }),
-      onCloseSection: () => setState(() => isOpen = false),
-    );
-  }
-}
-*/
-
-
-
 // констутор для построения шапок секций медика, куратора и админа
 class HeaderAccordionSectionWidgetBuild extends StatelessWidget{
   final String title;
@@ -111,54 +53,6 @@ class HeaderAccordionSectionWidgetBuild extends StatelessWidget{
   }
 }
 
-// не используется
-/*
-Widget BuildAccordionSectionContentMedic(
-  BuildContext context,
-  List<StaffAndStudentsModel> data,
-    String role,
-) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      if (data.isEmpty)
-        const Padding(
-          padding: EdgeInsets.all(16),
-          child: Text('Студенты не найдены'),
-        )
-      else
-        Column(
-          children: role == 'staff' ?
-              data.expand((staff) {
-                return staff.staffList.map((e) {
-                    return OneRowBuildAccordionSectionContentStaff(
-                        staff: e);
-                });
-              }).toList()
-            :
-                data.expand((groups) {
-                  return groups.studentsList.expand((students) {
-                    return students.students.map((student) {
-                      final uniqueStudentId = 'student_${student.id}_${student.lastname}';
-                        return OneRowBuildAccordionSectionContent(
-                            student: student,
-                          uniqueId: uniqueStudentId,
-                        );
-                    });
-                  });
-                }).toList()
-        ),
-      SizedBox(height: 15),
-      ElevatedButton(
-        onPressed: () {},
-        child: Text('Редактировать'),
-      ),
-    ],
-  );
-}
-*/
-
-
 // конструтор для построения одной единицы строки для студентов
 class OneRowBuildAccordionSectionContent extends StatelessWidget {
   final StudentData student;
@@ -195,7 +89,8 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
                 ],
               )
           ),
-          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueDateContainerId: uniqueId, uniqueEditingSectionId: uniqueEditingSectionId)
+          DataFluraContainerBuildWidget(uniqueEditingSectionId: uniqueEditingSectionId, dataContainer: dateFluraString!, uniqueDateContainerId: uniqueId, key: key,)
+          // _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueDateContainerId: uniqueId, uniqueEditingSectionId: uniqueEditingSectionId)
         ],
       ),
     );
@@ -239,7 +134,8 @@ class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
                 ],
               )
           ),
-          _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueDateContainerId: uniqueStaffId, uniqueEditingSectionId: uniqueEditingSectionId)
+          DataFluraContainerBuildWidget(uniqueDateContainerId: uniqueStaffId, dataContainer: dateFluraString!, uniqueEditingSectionId: uniqueEditingSectionId, key: key,)
+          // _ScreensWidgets.DataFluraContainer(context: context, dataContainer: dateFluraString!, uniqueDateContainerId: uniqueStaffId, uniqueEditingSectionId: uniqueEditingSectionId)
         ],
       ),
     );

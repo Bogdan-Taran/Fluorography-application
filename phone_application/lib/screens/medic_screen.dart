@@ -35,10 +35,11 @@ class _MedicScreen extends State<MedicScreen> {
     return ColorfulSafeArea(
       color: Colors.white,
         child: Scaffold(
-            appBar: _ScreensWidgets.AppBarFlura(
-              context: context,
+            appBar: AppBarFlura(
               bloc: context.read<AuthenticationBloc>(),
               event: SignOutEvent(),
+              context: context,
+              preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.13),
             ),
             body: SingleChildScrollView(
                 child: Padding(

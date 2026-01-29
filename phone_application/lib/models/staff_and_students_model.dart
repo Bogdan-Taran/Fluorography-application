@@ -11,7 +11,14 @@ class StaffAndStudentsModel implements MultiplieGroupsModel{
   final List<SingleGroupWithStudentsModel> studentsList;
 
   StaffAndStudentsModel({required this.staffList, required this.studentsList});
-  
+
+  StaffAndStudentsModel copyWith({
+    List<StaffModel>? staffList,
+    List<SingleGroupWithStudentsModel>? studentsList,
+}){
+    return StaffAndStudentsModel(staffList: staffList ?? this.staffList, studentsList: studentsList ?? this.studentsList);
+  }
+
   Map<String, dynamic> toJson(){
     return{
       'staffList': staffList.map((staff) => staff.toJson()).toList(),

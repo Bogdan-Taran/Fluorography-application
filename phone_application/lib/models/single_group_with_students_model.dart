@@ -13,6 +13,7 @@ class SingleGroupWithStudentsModel implements MultiplieGroupsModel{
     required this.students,
   });
 
+
   //convert to json
   Map<String, dynamic> toJson(){
     return{

@@ -23,6 +23,10 @@ void main() {
     DeviceOrientation.portraitUp,
     // DeviceOrientation.portraitDown,
   ]);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarBrightness: Brightness.light
+  ));
 
   runApp(MyApp());
 }
@@ -45,6 +49,15 @@ class MyApp extends StatelessWidget {
               child: MaterialApp(
                 debugShowCheckedModeBanner: false,
                 title: 'Flura',
+                theme: ThemeData(
+                  appBarTheme: AppBarTheme(
+                    systemOverlayStyle: SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent,
+                      statusBarBrightness: Brightness.light
+                    )
+
+                  )
+                ),
                 home: AuthChecker(),
                 // home: MedicScreen(),
               ),

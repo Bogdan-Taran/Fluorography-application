@@ -40,7 +40,7 @@ class _SignInScreenState extends State<SignInScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(statusBarColor: Colors.black54),
+      value: SystemUiOverlayStyle(statusBarColor: Colors.white),
       child: Scaffold(
         backgroundColor: Color(0xFFFFFFFF),
         body: Stack(

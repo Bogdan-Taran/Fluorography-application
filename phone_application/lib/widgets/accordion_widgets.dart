@@ -111,6 +111,7 @@ class HeaderAccordionSectionWidgetBuild extends StatelessWidget{
   }
 }
 
+// не используется
 /*
 Widget BuildAccordionSectionContentMedic(
   BuildContext context,

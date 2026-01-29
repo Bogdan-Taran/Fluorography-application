@@ -13,6 +13,39 @@ import '../screens/curator_screen.dart';
 import '../services/builders_screen.dart';
 import 'accordion_widgets.dart';
 
+
+class ConstructorAccordionBuildWidget extends StatelessWidget{
+  final List<AccordionSection> children;
+  const ConstructorAccordionBuildWidget({super.key, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Accordion(
+      headerBorderColor: const Color(0xffD4EAFF),
+      headerBorderColorOpened: const Color(0xffD4EAFF),
+      headerBorderWidth: 1,
+      headerBackgroundColorOpened: Colors.transparent,
+      headerBackgroundColor: Colors.white,
+      rightIcon: SvgPicture.asset(
+        'assets/images/icon_expand_down.svg',
+        height: 14,
+        width: 6,
+      ),
+      contentBackgroundColor: Colors.white,
+      contentBorderColor: const Color(0xffD4EAFF),
+      contentBorderWidth: 1,
+      scaleWhenAnimating: true,
+      openAndCloseAnimation: true,
+      disableScrolling: true,
+      headerPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 35),
+      sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
+      sectionClosingHapticFeedback: SectionHapticFeedback.light,
+      headerBorderRadius: 25,
+      children: children,
+    );
+  }
+}
+
 // главный построитель контента в аккордионах медика, куратора и админа
 class MainContentAccordionBuilder extends StatelessWidget {
   final String role;
@@ -32,7 +65,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     if (medicEntireCommunity != null && medicEntireCommunity!.isNotEmpty) {
       return constructorAccordionBuild(
-          children: buildMedicListAccordionSections(context)
+          children: buildMedicListAccordionSections(context: context)
       );
     } else if (groups != null && groups!.isNotEmpty) {
       return constructorAccordionBuild(children: buildCuratorListAccordionSections());
@@ -41,6 +74,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
     }
   }
 
+  // TODO: заменить на class
   // конструктор для построения виджета аккордиона (тот, что содержит секции списком)
   Widget constructorAccordionBuild({required List<AccordionSection> children}) {
     return Accordion(
@@ -69,7 +103,9 @@ class MainContentAccordionBuilder extends StatelessWidget {
   }
 
   // конструтор для построения списка секций для медика. Добавляются сначала сотрудники, потом - студенты
-  List<AccordionSection> buildMedicListAccordionSections(BuildContext context) {
+  List<AccordionSection> buildMedicListAccordionSections({
+    required BuildContext context,
+  }) {
     BuildersScreen _BuildersScreen = BuildersScreen();
     if(medicEntireCommunity == null || medicEntireCommunity!.isEmpty){
       return [

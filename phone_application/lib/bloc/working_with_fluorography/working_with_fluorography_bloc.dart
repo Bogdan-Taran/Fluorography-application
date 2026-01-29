@@ -63,10 +63,16 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
   Future<void> saveEditingModeEvent(SaveEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) async {
     final newDatesPatch = state.tempDates;
     print('Даты котрые будут изменены: $newDatesPatch');
+
     //сначала завершаются все процессы отправки и обносления, затем очищаем
+    // TODO: проверить на статус ответа
     await _ApiService.updateFluraDateFromSet(newDatesPatch).then((_){
       emit(state.copyWith(tempDates: {}));
     });
+    // пока что железное решение - сразу подставлять без проверки
+    emit(SuccessfullyPatchedSetDatesState(newDateSet: newDatesPatch));
+
+  //   замена дат в UI
 
 
   }

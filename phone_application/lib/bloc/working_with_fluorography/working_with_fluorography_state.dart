@@ -29,6 +29,12 @@ class CancelEditModeWorkingWithFluorographyState extends WorkingWithFluorography
 class EnableEditModeWorkingWithFluorographyState extends WorkingWithFluorographyState{}
 class OpenedDatePickerState extends WorkingWithFluorographyState{}
 
+class SuccessfullyPatchedSetDatesState extends WorkingWithFluorographyState{
+  final Map<String, String> newDateSet;
+
+  SuccessfullyPatchedSetDatesState({required this.newDateSet});
+}
+
 
 
 class SelectDateState extends WorkingWithFluorographyState{

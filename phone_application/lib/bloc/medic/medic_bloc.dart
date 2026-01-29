@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:project_fluorography/models/staff_and_students_model.dart';
+import 'package:project_fluorography/models/staff_model.dart';
 
 import '../../services/api_service.dart';
 import '../../services/api_service_get_community_members.dart';
@@ -25,6 +26,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     on<MedicOpenDatePickerEvent>(medicOpenDatePickerEvent);
     // on<MedicSelectDateEvent>(medicSelectDateEvent);
     on<MedicCloseDatePickerEvent>(medicCloseDatePickerEvent);
+    on<MedicFetchedNewDateSetEvent>(medicFetchedNewDateSetEvent);
 
 }
   FutureOr<void> medicInitialEvent(MedicInitialEvent event, Emitter<MedicState> emit) async{
@@ -81,5 +83,46 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     emit(MedicCloseDatePickerState());
   }
 
+
+  FutureOr<void> medicFetchedNewDateSetEvent(MedicFetchedNewDateSetEvent event, Emitter<MedicState> emit) async{
+    emit(MedicFetchingLoadingState());
+    List<StaffAndStudentsModel> staffAndStudentsList;
+    try{
+      staffAndStudentsList = await _CheckerCacheService.getGroupsMedicWithCache();
+
+      final updatedList = staffAndStudentsList.map((model) {
+        final updatedStaffList = model.staffList.map((staff){
+          final newDate = event.newDateSet[staff.id.toString()];
+          if(newDate != null){
+            return staff.copyWith(fluorography: newDate);
+          }
+          return staff;
+        }).toList();
+
+        final updatedStudentsList = model.studentsList.map((group){
+          final updatedStudents = group.students.map((student){
+            final newDate = event.newDateSet[student.id.toString()];
+            if(newDate != null){
+              return student.copyWith(fluorography: newDate);
+            }
+            return student;
+          }).toList();
+          return group.copyWith(students: updatedStudents);
+        }).toList();
+        return model.copyWith(
+          studentsList: updatedStudentsList,
+          staffList: updatedStaffList
+        );
+      }).toList();
+
+      // изменять только секцию данной группы
+      emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: updatedList));
+      print('Даты успешно изменены');
+    }catch (e){
+      emit(MedicFetchingErrorState());
+      print('Не удалось обновить даты');
+      log(e.toString());
+    }
+  }
 }
 

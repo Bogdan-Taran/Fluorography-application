@@ -61,5 +61,16 @@ class StaffModel {
     return data;
   }
 
+  StaffModel copyWith({String? fluorography}){
+    return StaffModel(
+      id: id,
+      lastname: lastname,
+      firstname: firstname,
+      patronymic: patronymic,
+      groups: groups,
+      fluorography: fluorography ?? this.fluorography,
+    );
+  }
+
 
 }

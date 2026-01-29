@@ -20,3 +20,10 @@ class MedicSelectDateEvent extends MedicEvent{
   });
 }
 
+
+class MedicFetchedNewDateSetEvent extends MedicEvent{
+  final Map<String, String> newDateSet;
+  MedicFetchedNewDateSetEvent({required this.newDateSet});
+  List<Object> get props => [newDateSet];
+}
+

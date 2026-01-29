@@ -48,12 +48,14 @@ class CacheService {
   Future<String?> getCachedData(String id) async {
     final db = await database;
     final result = await db.query('cache', where: 'id = ?', whereArgs: [id]);
+
     if (result.isNotEmpty) {
       final timestamp = result.first['timestamp'] as int;
+/*
       if(DateTime.now().millisecondsSinceEpoch - timestamp > 36000){
          await removeFromCache(id);
          return null;
-       }
+       }*/
 
       return result.first['data'] as String?;
     }

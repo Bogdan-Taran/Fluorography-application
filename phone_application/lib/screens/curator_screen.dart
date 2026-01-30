@@ -17,6 +17,7 @@ class CuratorScreen extends StatefulWidget {
 }
 
 class _CuratorScreen extends State<CuratorScreen> {
+  final searchController = TextEditingController();
   @override
   void initState() {
     (context).read<CuratorBloc>().add(CuratorInitialEvent());
@@ -24,17 +25,23 @@ class _CuratorScreen extends State<CuratorScreen> {
   }
 
   @override
+  void dispose(){
+    searchController.dispose();
+    super.dispose();
+}
+
+  @override
   Widget build(BuildContext context) {
     BuildersScreen _buildersScreen = BuildersScreen();
-    ScreensWidgets _ScreensWidgets = ScreensWidgets();
     return SafeArea(
       child: Scaffold(
-        appBar: AppBarFlura(
-          bloc: context.read<AuthenticationBloc>(),
-          event: SignOutEvent(),
-          context: context,
-          preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.13),
-        ),
+        // appBar: AppBarFlura(
+        //   bloc: context.read<AuthenticationBloc>(),
+        //   event: SignOutEvent(),
+        //   context: context,
+        //   preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.13),
+        //   searchController: searchController,
+        // ),
 
         body: SingleChildScrollView(
           child: Padding(

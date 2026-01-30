@@ -20,6 +20,8 @@ class MedicSelectDateEvent extends MedicEvent{
   });
 }
 
+class OnTapTextFieldEvent extends MedicEvent{}
+
 
 class MedicFetchedNewDateSetEvent extends MedicEvent{
   final Map<String, String> newDateSet;

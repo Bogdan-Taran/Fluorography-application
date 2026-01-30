@@ -10,9 +10,9 @@ final class MedicInitial extends MedicState {}
 class MedicFetchingLoadingState extends MedicState{}
 class MedicLoadedCommunitySuccessfulState extends MedicState{
   final List<StaffAndStudentsModel> medicEntireCommunity;
-
   MedicLoadedCommunitySuccessfulState({required this.medicEntireCommunity});
 }
+class MedicNormalState extends MedicState{}
 class MedicFetchingErrorState extends MedicState{}
 
 class MedicLogoutSuccessfulState extends MedicState{}

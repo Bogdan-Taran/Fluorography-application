@@ -48,7 +48,6 @@ class MedicConstructorAccordionBuildWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    ScreensWidgets _ScreensWidgets = ScreensWidgets();
     return Accordion(
       headerBorderColor: const Color(0xffD4EAFF),
       headerBorderColorOpened: const Color(0xffD4EAFF),

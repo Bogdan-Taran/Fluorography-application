@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
+import 'package:project_fluorography/models/staff_and_students_model.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import '../bloc/authentication/authentication_bloc.dart';
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
@@ -11,8 +12,6 @@ import '../widgets/screens_widgets.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 
 class MedicScreen extends StatefulWidget {
-  static String id = 'medic_screen';
-
   const MedicScreen({super.key});
 
   @override
@@ -20,6 +19,9 @@ class MedicScreen extends StatefulWidget {
 }
 
 class _MedicScreen extends State<MedicScreen> {
+  // late final List<StaffAndStudentsModel> entireMedicData;
+  final searchController = TextEditingController();
+
   @override
   void initState() {
     (context).read<MedicBloc>().add(MedicInitialEvent());
@@ -27,10 +29,14 @@ class _MedicScreen extends State<MedicScreen> {
   }
 
   @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     BuildersScreen _buildersScreen = BuildersScreen();
-    ScreensWidgets _ScreensWidgets = ScreensWidgets();
-
 
     return ColorfulSafeArea(
       color: Colors.white,
@@ -40,6 +46,9 @@ class _MedicScreen extends State<MedicScreen> {
               event: SignOutEvent(),
               context: context,
               preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.13),
+              searchController: searchController,
+              onTapTextFieldEvent: OnTapTextFieldEvent(),
+              blocFromScreen: context.read<MedicBloc>(),
             ),
             body: SingleChildScrollView(
                 child: Padding(

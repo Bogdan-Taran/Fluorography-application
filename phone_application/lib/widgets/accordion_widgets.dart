@@ -69,7 +69,7 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreensWidgets _ScreensWidgets = ScreensWidgets();
+
     final dateFluraString = student.fluorography;
 
     return Padding(
@@ -113,8 +113,6 @@ class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreensWidgets _ScreensWidgets = ScreensWidgets();
-
     final dateFluraString = staff.fluorography;
 
     return Padding(

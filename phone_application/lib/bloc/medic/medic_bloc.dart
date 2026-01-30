@@ -36,6 +36,8 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
       staffAndStudentsList = await _CheckerCacheService.getGroupsMedicWithCache();
       emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: staffAndStudentsList));
       print('Студенты и сотрудники успешно получны');
+      // emit(MedicNormalState());
+      // print('Нормальное состояние');
     }catch (e){
       emit(MedicFetchingErrorState());
       print('Не удалось загрузить студентов с сотрудниками');

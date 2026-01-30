@@ -9,5 +9,4 @@ class SearchChangedEvent extends SearchEvent{
   final List<StaffAndStudentsModel>? entireGroups;
 
   SearchChangedEvent({required this.query, this.allGroups, this.entireGroups});
-
 }

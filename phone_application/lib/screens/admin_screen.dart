@@ -22,24 +22,31 @@ class AdminScreen extends StatefulWidget {
 }
 
 class _AdminScreen extends State<AdminScreen> {
+
+  final searchController = TextEditingController();
   @override
   void initState() {
     (context).read<AdminBloc>().add(AdminInitialEvent());
     super.initState();
   }
+  @override
+  void dispose(){
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    ScreensWidgets _ScreensWidgets = ScreensWidgets();
     BuildersScreen _buildersScreen = BuildersScreen();
 
     return SafeArea(child: Scaffold(
-        appBar: AppBarFlura(
-          bloc: context.read<AuthenticationBloc>(),
-          event: SignOutEvent(),
-          context: context,
-          preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.13),
-        ),
+        // appBar: AppBarFlura(
+        //   bloc: context.read<AuthenticationBloc>(),
+        //   event: SignOutEvent(),
+        //   context: context,
+        //   preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.13),
+        //   searchController: searchController,
+        // ),
         body: SingleChildScrollView(
     child: Padding(
     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),

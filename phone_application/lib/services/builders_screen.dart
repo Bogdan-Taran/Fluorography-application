@@ -42,7 +42,7 @@ class BuildersScreen {
     );
   }
 
-  // TODO: change MedicBloc to WorkingWithFluorographyBloc
+
   void openDatePicker(BuildContext context, String uniqueDateContainerId, WorkingWithFluorographyBloc bloc) {
     BottomPicker.date(
       headerBuilder: (context) {
@@ -96,60 +96,3 @@ class BuildersScreen {
   }
 }
 
-
-// class DateEditDialog extends StatefulWidget {
-//   final String? currentDate;
-//   final Function(DateTime) onDateSelected;
-//   final VoidCallback onCancel;
-//
-//   DateEditDialog({
-//     Key? key,
-//     this.currentDate,
-//     required this.onDateSelected,
-//     required this.onCancel,
-//   }) : super(key: key);
-//
-//   @override
-//   State<DateEditDialog> createState() => _DateEditDialogState();
-// }
-
-  // class _DateEditDialogState extends State<DateEditDialog>{
-  // late DateTime selectedDate;
-  //
-  // @override
-  // Widget build(BuildContext context){
-  //   return AlertDialog(
-  //     title: Text('Изменить дату флюорографии'),
-  //     content: Column(
-  //       children: [
-  //         Text(widget.currentDate!),
-  //         SizedBox(height: 16,),
-  //         Row(
-  //           children: [
-  //             Expanded(
-  //                 child: TextButton(
-  //                   onPressed: () async {
-  //                     final date = await showDatePicker(
-  //                         context: context,
-  //                         initialDate: selectedDate,
-  //                         firstDate: DateTime(2024),
-  //                         lastDate: DateTime(2027));
-  //                     if(date != null){
-  //                       BlocListener<SelectDateBloc, SelectDateState>(
-  //                         listener: (context, state) {
-  //                           selectedDate = (state.selectedDate)!;
-  //                         },
-  //                       );
-  //                     }
-  //                   },
-  //                   child: Text('Выбрать дату нахуй'),
-  //                 )
-  //             )
-  //           ],
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
-//
-// }

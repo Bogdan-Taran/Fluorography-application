@@ -61,6 +61,9 @@ class StaffModel {
     return data;
   }
 
+  String get searchKey =>
+      '$lastname $firstname $patronymic $groups'.toLowerCase();
+
   StaffModel copyWith({String? fluorography}){
     return StaffModel(
       id: id,

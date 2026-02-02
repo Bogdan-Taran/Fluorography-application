@@ -255,6 +255,19 @@ class _MedicScreen extends State<MedicScreen> {
                             );
                           }
                       ),
+                      BlocBuilder<SearchBloc, SearchState>(builder: (context, state){
+                          switch(state.runtimeType){
+                            case SearchUpdatedState:
+                              final successfulState = state as SearchUpdatedState;
+                              final filtered = successfulState.filteredGroups.cast<StaffAndStudentsModel>();
+                              print('Печатаю отфильтрованный список');
+                              print(filtered);
+                              // return MedicConstructorAccordionBuildWidget(medicEntireCommunity: successfulState.filteredGroups.cast<StaffAndStudentsModel>());
+                            case SearchNotFoundState:
+                              return Text('Отфильтрованный список пуст, ничего не найдено');
+                          }
+                          return Text('дефолтное значение');
+                      }),
                       MultiBlocListener(
                         listeners: [
                           BlocListener<MedicBloc, MedicState>(

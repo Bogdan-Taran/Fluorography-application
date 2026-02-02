@@ -19,10 +19,7 @@ class MedicSelectDateEvent extends MedicEvent{
 }
 
 class OnTapTextFieldEvent extends MedicEvent{}
-class OnChangedSearchTextEvent extends MedicEvent{
-  final String query;
-  OnChangedSearchTextEvent({required this.query});
-}
+
 
 class MedicFetchedNewDateSetEvent extends MedicEvent{
   final Map<String, String> newDateSet;

@@ -31,7 +31,7 @@ class _MedicScreen extends State<MedicScreen> {
   void initState() {
     super.initState();
     (context).read<MedicBloc>().add(MedicInitialEvent());
-    searchController.addListener(_printLatestValue);
+    //searchController.addListener(_printLatestValue);
   }
 
   @override
@@ -122,7 +122,7 @@ class _MedicScreen extends State<MedicScreen> {
                             ),
                           ),
                         ],
-                      ),
+                      ),/*
                       const SizedBox(height: 10),
                       TextField(
                         onTap: (){
@@ -168,7 +168,7 @@ class _MedicScreen extends State<MedicScreen> {
                         },
                         enableSuggestions: false,
                         autocorrect: false,
-                      )
+                      )*/
                     ],
                   ),
                 ),
@@ -179,121 +179,199 @@ class _MedicScreen extends State<MedicScreen> {
             body: SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  child: MultiBlocListener(
-                    listeners: [
-                      BlocListener<MedicBloc, MedicState>(
-                        listener: (context, state) {
-                          switch (state.runtimeType) {
-                            case MedicLogoutSuccessfulState:
-                              print('Отработало сосотояния выхода');
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => SignInScreen(),
+                  child: Column(
+                    children: [
+                      BlocSelector<MedicBloc, MedicState, List<StaffAndStudentsModel>?>(
+                          selector: (state){
+                            if(state is MedicLoadedCommunitySuccessfulState){
+                              return state.medicEntireCommunity;
+                            }
+                            return null;
+                          },
+                          builder: (context, data){
+                            if(data != null){
+                              return TextField(
+                                onTap: (){
+                                  context.read<MedicBloc>().add(OnTapTextFieldEvent());
+                                },
+                                // controller: searchController,
+                                onChanged: (query){
+                                  print('Отправляю query: $query в движок поиска');
+                                  context.read<SearchBloc>().add(
+                                    SearchChangedEvent(
+                                        query: query,
+                                        entireGroups: data
+                                    )
+                                  );
+                                  print('Запрос отправил');
+                                },
+                                decoration: InputDecoration(
+                                  prefixIcon: Padding(
+                                    padding: const EdgeInsets.only(left: 16, right: 8),
+                                    child: SvgPicture.asset(
+                                      'assets/images/serch_icon.svg',
+                                      width: 20,
+                                      height: 20,
+                                      color: const Color(0xff98BFF3),
+                                    ),
+                                  ),
+                                  enabled: true,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                    borderSide: BorderSide(color: Color(0xff98BFF3), width: 1.0),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                    borderSide: BorderSide(color: Color(0xff72A7EB), width: 2),
+                                  ),
+                                  hintText: 'Поиск',
+                                  hintStyle: TextStyle(
+                                    fontSize: MediaQuery.of(context).size.height * 0.016,
+                                    color: Color(0xff98BFF3),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 30),
                                 ),
                               );
-                              break;
-                            case MedicLogoutErrorState:
-                              print('Ошибка при попытке выхода');
-                              break;
-                            case MedicFetchingLoadingState:
-                              _buildersScreen.buildLoading();
-                              print('Загрузка выхода');
-                              break;
+                            }
+                            return TextField(
+                              controller: searchController,
+                              decoration: InputDecoration(hintText: 'Загрузка...'),
+                              onTap: (){
+                                context.read<MedicBloc>().add(OnTapTextFieldEvent());
+                              },
+                              onChanged: (query){
+                                if(query.length >= 3 ){
+                                  print('Отправляю query: $query в движок поиска');
+                                  context.read<SearchBloc>().add(
+                                      SearchChangedEvent(
+                                          query: query,
+                                          entireGroups: data
+                                      )
+                                  );
+                                  print('Запрос отправил');
+                                }
+                              },
+                            );
+                          }
+                      ),
+                      MultiBlocListener(
+                        listeners: [
+                          BlocListener<MedicBloc, MedicState>(
+                            listener: (context, state) {
+                              switch (state.runtimeType) {
+                                case MedicLogoutSuccessfulState:
+                                  print('Отработало сосотояния выхода');
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) => SignInScreen(),
+                                    ),
+                                  );
+                                  break;
+                                case MedicLogoutErrorState:
+                                  print('Ошибка при попытке выхода');
+                                  break;
+                                case MedicFetchingLoadingState:
+                                  _buildersScreen.buildLoading();
+                                  print('Загрузка выхода');
+                                  break;
 
-                            // case MedicOpenDatePickerState:
-                            //   _buildersScreen.openDatePicker(context, );
-                            //   break;
-                            // case MedicCloseDatePickerState:
-                            //   Navigator.of(context).pop();
-                          }
-                        },
-                      ),
-                      BlocListener<AuthenticationBloc, AuthenticationState>(
-                        listener: (context, state) {
-                          switch (state.runtimeType) {
-                            case AuthenticationLogOutState:
-                              print('Отработало сосотояния выхода');
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => SignInScreen(),
-                                ),
-                              );
-                              break;
-                            case AuthenticationLoadingState:
-                              print('Загрузка');
-                              _buildersScreen.buildLoading();
-                              break;
-                          }
-                        },
-                      ),
-                      BlocListener<
-                        WorkingWithFluorographyBloc,
-                        WorkingWithFluorographyState
-                      >(
-                        listener: (context, state) {
-                          switch (state.runtimeType) {
-                            case SuccessfullyPatchedSetDatesState:
-                              // здесь подставляются tempDates из главного State
-                              context.read<MedicBloc>().add(
-                                MedicFetchedNewDateSetEvent(
-                                  newDateSet: state.tempDates,
-                                ),
-                              );
-                          }
-                        },
+                                // case MedicOpenDatePickerState:
+                                //   _buildersScreen.openDatePicker(context, );
+                                //   break;
+                                // case MedicCloseDatePickerState:
+                                //   Navigator.of(context).pop();
+                              }
+                            },
+                          ),
+                          BlocListener<AuthenticationBloc, AuthenticationState>(
+                            listener: (context, state) {
+                              switch (state.runtimeType) {
+                                case AuthenticationLogOutState:
+                                  print('Отработало сосотояния выхода');
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) => SignInScreen(),
+                                    ),
+                                  );
+                                  break;
+                                case AuthenticationLoadingState:
+                                  print('Загрузка');
+                                  _buildersScreen.buildLoading();
+                                  break;
+                              }
+                            },
+                          ),
+                          BlocListener<
+                            WorkingWithFluorographyBloc,
+                            WorkingWithFluorographyState
+                          >(
+                            listener: (context, state) {
+                              switch (state.runtimeType) {
+                                case SuccessfullyPatchedSetDatesState:
+                                  // здесь подставляются tempDates из главного State
+                                  context.read<MedicBloc>().add(
+                                    MedicFetchedNewDateSetEvent(
+                                      newDateSet: state.tempDates,
+                                    ),
+                                  );
+                              }
+                            },
+                          ),
+                        ],
+                        child: BlocBuilder<MedicBloc, MedicState>(
+                          builder: (context, medicState) {
+                            switch (medicState.runtimeType) {
+                              case MedicFetchingLoadingState:
+                                return Center(child: _buildersScreen.buildLoading());
+                              case MedicFetchingErrorState:
+                                return Center(child: Text('Произошла ошибка'));
+
+                              case MedicLoadedCommunitySuccessfulState:
+                                final successfulState =
+                                    medicState as MedicLoadedCommunitySuccessfulState;
+                                print('Печатаю лист');
+                                print(successfulState.medicEntireCommunity);
+                                // return MedicConstructorAccordionBuildWidget(
+                                //   medicEntireCommunity: filteredEntireMedicData,
+                                // );
+
+                                return MedicConstructorAccordionBuildWidget(
+                                  medicEntireCommunity: successfulState.medicEntireCommunity,
+                                );
+                                /*
+                                return MainContentAccordionBuilder(
+                                  context,
+                                  role: 'medic',
+                                  medicEntireCommunity:
+                                      successfulState.medicEntireCommunity,
+                                );*/
+                              case MedicSearchState:
+                                return SizedBox(
+                                  height: 100,
+                                );
+                              default:
+                                return Container(
+                                  padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                                  width: MediaQuery.of(context).size.width * 1,
+                                  height: MediaQuery.of(context).size.height * 0.8,
+                                  decoration: BoxDecoration(color: Colors.transparent),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Отсутствуют сотрудники или студенты',
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                            }
+                          },
+                        ),
                       ),
                     ],
-                    child: BlocBuilder<MedicBloc, MedicState>(
-                      builder: (context, medicState) {
-                        switch (medicState.runtimeType) {
-                          case MedicFetchingLoadingState:
-                            return Center(child: _buildersScreen.buildLoading());
-                          case MedicFetchingErrorState:
-                            return Center(child: Text('Произошла ошибка'));
-
-                          case MedicLoadedCommunitySuccessfulState:
-                            final successfulState =
-                                medicState as MedicLoadedCommunitySuccessfulState;
-                            print('Печатаю лист');
-                            print(successfulState.medicEntireCommunity);
-                            return MedicConstructorAccordionBuildWidget(
-                              medicEntireCommunity: filteredEntireMedicData,
-                            );
-                            /*
-                            return MedicConstructorAccordionBuildWidget(
-                              medicEntireCommunity: successfulState.medicEntireCommunity,
-                            );*/
-                            /*
-                            return MainContentAccordionBuilder(
-                              context,
-                              role: 'medic',
-                              medicEntireCommunity:
-                                  successfulState.medicEntireCommunity,
-                            );*/
-                          case MedicSearchState:
-                            return SizedBox(
-                              height: 100,
-                            );
-                          default:
-                            return Container(
-                              padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-                              width: MediaQuery.of(context).size.width * 1,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              decoration: BoxDecoration(color: Colors.transparent),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Отсутствуют сотрудники или студенты',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ],
-                              ),
-                            );
-                        }
-                      },
-                    ),
                   ),
                 ),
               ),

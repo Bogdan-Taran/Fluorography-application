@@ -12,7 +12,7 @@ class MedicLoadedCommunitySuccessfulState extends MedicState{
   final List<StaffAndStudentsModel> medicEntireCommunity;
   MedicLoadedCommunitySuccessfulState({required this.medicEntireCommunity});
 }
-class MedicNormalState extends MedicState{}
+class MedicSearchState extends MedicState{}
 class MedicFetchingErrorState extends MedicState{}
 
 class MedicLogoutSuccessfulState extends MedicState{}

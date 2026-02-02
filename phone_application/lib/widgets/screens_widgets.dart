@@ -1,13 +1,9 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
-
 import '../services/builders_screen.dart';
 import '../services/checker_service.dart';
-import '../services/converters_service.dart';
 
 class EditElevatedButtonBuildWidget extends StatelessWidget {
   final String uniqueId;
@@ -96,7 +92,7 @@ class EditRowWithButtons extends StatelessWidget {
 }
 
 
-
+/*
 class AppBarFlura<B extends Bloc<Object, Object>, E extends Object> extends StatelessWidget  implements PreferredSizeWidget{
   final BuildContext context;
   final B bloc;
@@ -186,7 +182,46 @@ class AppBarFlura<B extends Bloc<Object, Object>, E extends Object> extends Stat
                 ],
               ),
               const SizedBox(height: 10),
-              SearchBarBuildWidget(searchController: searchController, blocFromScreen: blocFromScreen, onTapTextFieldEvent: onTapTextFieldEvent,),
+              TextField(
+                onTap: context.read,
+                controller: searchController,
+                cursorColor: Color(0xff72A7EB),
+                cursorHeight: 25,
+                cursorWidth: 1.5,
+                decoration: InputDecoration(
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 8),
+                    child: SvgPicture.asset(
+                      'assets/images/serch_icon.svg',
+                      width: 20,
+                      height: 20,
+                      color: const Color(0xff98BFF3),
+                    ),
+                  ),
+                  enabled: true,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                    borderSide: BorderSide(color: Color(0xff98BFF3), width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                    borderSide: BorderSide(color: Color(0xff72A7EB), width: 2),
+                  ),
+                  hintText: 'Поиск',
+                  hintStyle: TextStyle(
+                    fontSize: MediaQuery.of(context).size.height * 0.016,
+                    color: Color(0xff98BFF3),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 30),
+                ),
+                keyboardType: TextInputType.text,
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                enableSuggestions: false,
+                autocorrect: false,
+              )
             ],
           ),
         ),
@@ -196,8 +231,8 @@ class AppBarFlura<B extends Bloc<Object, Object>, E extends Object> extends Stat
     );
   }
 }
-
-
+*/
+/*
 class SearchBarBuildWidget<B extends Bloc<Object, Object>, E extends Object> extends StatelessWidget {
   final TextEditingController searchController;
   final B blocFromScreen;
@@ -250,7 +285,7 @@ class SearchBarBuildWidget<B extends Bloc<Object, Object>, E extends Object> ext
     );
   }
 }
-
+*/
 
 class DataFluraContainerBuildWidget extends StatelessWidget {
   final String dataContainer;

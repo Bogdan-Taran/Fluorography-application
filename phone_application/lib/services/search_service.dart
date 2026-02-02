@@ -6,8 +6,8 @@ class SearchService{
   List<MultiplieGroupsModel> filterGroups({
     List<SingleGroupWithStudentsModel>? filteredGroups,
     List<StaffAndStudentsModel>? filteredEntireGroups,
-    required String query}){
-
+    required String query
+  }){
     if(filteredGroups != null && filteredGroups.isNotEmpty){
       return filteredGroups.map((e) {
         final matchingItem = e.students.where((s) => s.searchKey.contains(query)).toList();

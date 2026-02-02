@@ -27,6 +27,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     // on<MedicSelectDateEvent>(medicSelectDateEvent);
     on<MedicCloseDatePickerEvent>(medicCloseDatePickerEvent);
     on<MedicFetchedNewDateSetEvent>(medicFetchedNewDateSetEvent);
+    on<OnTapTextFieldEvent>(onTapTextFieldEvent);
 
 }
   FutureOr<void> medicInitialEvent(MedicInitialEvent event, Emitter<MedicState> emit) async{
@@ -59,7 +60,6 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     emit(MedicLogoutErrorState());
   }
 
-
   FutureOr<void> medicOpenDatePickerEvent(MedicOpenDatePickerEvent event, Emitter<MedicState> emit) {
     print('Начинаю излучать открытие пикера');
     emit(MedicOpenDatePickerState());
@@ -84,7 +84,6 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
   FutureOr<void> medicCloseDatePickerEvent(MedicCloseDatePickerEvent event, Emitter<MedicState> emit) {
     emit(MedicCloseDatePickerState());
   }
-
 
   FutureOr<void> medicFetchedNewDateSetEvent(MedicFetchedNewDateSetEvent event, Emitter<MedicState> emit) async{
     emit(MedicFetchingLoadingState());
@@ -125,6 +124,11 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
       print('Не удалось обновить даты');
       log(e.toString());
     }
+  }
+
+  FutureOr<void> onTapTextFieldEvent(OnTapTextFieldEvent event, Emitter<MedicState> emit) {
+    emit(MedicSearchState());
+    print('Излучаю нормальное состояние');
   }
 }
 

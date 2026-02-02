@@ -1,14 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
-import 'package:project_fluorography/models/staff_and_students_model.dart';
+import 'package:project_fluorography/bloc/search/search_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import '../bloc/authentication/authentication_bloc.dart';
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
+import '../models/staff_and_students_model.dart';
 import '../services/builders_screen.dart';
 import '../widgets/main_content_accordion_builder.dart';
-import '../widgets/screens_widgets.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 
 class MedicScreen extends StatefulWidget {
@@ -19,13 +23,15 @@ class MedicScreen extends StatefulWidget {
 }
 
 class _MedicScreen extends State<MedicScreen> {
-  // late final List<StaffAndStudentsModel> entireMedicData;
+  // late List<StaffAndStudentsModel> filteredEntireMedicData;
   final searchController = TextEditingController();
+  late List<StaffAndStudentsModel> staffAndStudentsList;
 
   @override
   void initState() {
-    (context).read<MedicBloc>().add(MedicInitialEvent());
     super.initState();
+    (context).read<MedicBloc>().add(MedicInitialEvent());
+    searchController.addListener(_printLatestValue);
   }
 
   @override
@@ -34,21 +40,141 @@ class _MedicScreen extends State<MedicScreen> {
     super.dispose();
   }
 
+  FutureOr _printLatestValue() async{
+    if(searchController.text.length >= 3){
+    print('Введенный текст: ${searchController.text}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     BuildersScreen _buildersScreen = BuildersScreen();
+    final appBarHeight = MediaQuery.of(context).size.height * 0.13;
 
     return ColorfulSafeArea(
       color: Colors.white,
         child: Scaffold(
-            appBar: AppBarFlura(
-              bloc: context.read<AuthenticationBloc>(),
-              event: SignOutEvent(),
-              context: context,
-              preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.13),
-              searchController: searchController,
-              onTapTextFieldEvent: OnTapTextFieldEvent(),
-              blocFromScreen: context.read<MedicBloc>(),
+            // AppBar
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              flexibleSpace: Container(
+                height: appBarHeight,
+                decoration: const BoxDecoration(color: Colors.white),
+                child: Padding(
+                  padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            splashRadius: 24,
+                            padding: EdgeInsets.zero,
+                            icon: SvgPicture.asset(
+                              'assets/images/notification_icon.svg',
+                              color: const Color(0xff98BFF3),
+                              width: 35,
+                              height: 35,
+                            ),
+                          ),
+
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.resolveWith<Color>((
+                                  Set<WidgetState> states,
+                                  ) {
+                                if (states.contains(WidgetState.disabled)) {
+                                  return const Color(0xffD5D6D7);
+                                }
+                                if (states.contains(WidgetState.pressed)) {
+                                  return const Color(0xFF72A7EB);
+                                }
+                                if (states.contains(WidgetState.hovered)) {
+                                  return const Color(0xFFBADEFF);
+                                }
+                                return const Color(0xff98BFF3);
+                              }),
+                              foregroundColor: WidgetStateProperty.all(
+                                const Color(0xffffffff),
+                              ),
+                              minimumSize: WidgetStateProperty.all(
+                                Size(MediaQuery.of(context).size.width * 0.1, 35),
+                              ),
+                              shape: WidgetStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                            onPressed: () {
+                              context.read<AuthenticationBloc>().add(SignOutEvent());
+                              print('Нажата кнопка выхода');
+                            },
+                            child: const Text(
+                              'Выход',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xffffffff),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Geologica',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        onTap: (){
+                          context.read<MedicBloc>().add(OnTapTextFieldEvent());
+                        },
+                        // onChanged: (){
+                        //   context.read<MedicBloc>().add(event)
+                        // },
+                        controller: searchController,
+                        cursorColor: Color(0xff72A7EB),
+                        cursorHeight: 25,
+                        cursorWidth: 1.5,
+                        decoration: InputDecoration(
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.only(left: 16, right: 8),
+                            child: SvgPicture.asset(
+                              'assets/images/serch_icon.svg',
+                              width: 20,
+                              height: 20,
+                              color: const Color(0xff98BFF3),
+                            ),
+                          ),
+                          enabled: true,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                            borderSide: BorderSide(color: Color(0xff98BFF3), width: 1.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                            borderSide: BorderSide(color: Color(0xff72A7EB), width: 2),
+                          ),
+                          hintText: 'Поиск',
+                          hintStyle: TextStyle(
+                            fontSize: MediaQuery.of(context).size.height * 0.016,
+                            color: Color(0xff98BFF3),
+                            fontWeight: FontWeight.w500,
+                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 30),
+                        ),
+                        keyboardType: TextInputType.text,
+                        onTapOutside: (event) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
+                        enableSuggestions: false,
+                        autocorrect: false,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              toolbarHeight: appBarHeight,
+              elevation: 0,
             ),
             body: SingleChildScrollView(
                 child: Padding(
@@ -130,11 +256,23 @@ class _MedicScreen extends State<MedicScreen> {
                                 medicState as MedicLoadedCommunitySuccessfulState;
                             print('Печатаю лист');
                             print(successfulState.medicEntireCommunity);
+                            return MedicConstructorAccordionBuildWidget(
+                              medicEntireCommunity: filteredEntireMedicData,
+                            );
+                            /*
+                            return MedicConstructorAccordionBuildWidget(
+                              medicEntireCommunity: successfulState.medicEntireCommunity,
+                            );*/
+                            /*
                             return MainContentAccordionBuilder(
                               context,
                               role: 'medic',
                               medicEntireCommunity:
                                   successfulState.medicEntireCommunity,
+                            );*/
+                          case MedicSearchState:
+                            return SizedBox(
+                              height: 100,
                             );
                           default:
                             return Container(

@@ -38,9 +38,6 @@ class MainContentAccordionBuilder extends StatelessWidget {
   }
 }
 
-
-
-
 // строит аккордион со всеми вложенностями для медика
 class MedicConstructorAccordionBuildWidget extends StatelessWidget{
   final List<StaffAndStudentsModel>? medicEntireCommunity;
@@ -48,19 +45,21 @@ class MedicConstructorAccordionBuildWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+  const lightBlueColor = Color(0xffD4EAFF);
+  const whiteColor = Colors.white;
     return Accordion(
-      headerBorderColor: const Color(0xffD4EAFF),
-      headerBorderColorOpened: const Color(0xffD4EAFF),
+      headerBorderColor: lightBlueColor,
+      headerBorderColorOpened: lightBlueColor,
       headerBorderWidth: 1,
       headerBackgroundColorOpened: Colors.transparent,
-      headerBackgroundColor: Colors.white,
+      headerBackgroundColor: whiteColor,
       rightIcon: SvgPicture.asset(
         'assets/images/icon_expand_down.svg',
         height: 14,
         width: 6,
       ),
-      contentBackgroundColor: Colors.white,
-      contentBorderColor: const Color(0xffD4EAFF),
+      contentBackgroundColor: whiteColor,
+      contentBorderColor: lightBlueColor,
       contentBorderWidth: 1,
       scaleWhenAnimating: true,
       openAndCloseAnimation: true,

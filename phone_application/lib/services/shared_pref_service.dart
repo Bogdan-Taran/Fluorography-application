@@ -44,6 +44,7 @@ class UserSharedPreferences{
   }
 
   Future<String> getUserRole() async{
+    print('Получаю роль из SharedPreferences');
     final prefs = await SharedPreferences.getInstance();
     final String? role = prefs.getString('role');
     switch (role){

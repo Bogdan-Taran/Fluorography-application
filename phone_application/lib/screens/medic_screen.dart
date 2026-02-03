@@ -12,6 +12,7 @@ import '../bloc/authentication/authentication_bloc.dart';
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../models/staff_and_students_model.dart';
 import '../services/builders_screen.dart';
+import '../services/localDataBase.dart';
 import '../widgets/main_content_accordion_builder.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 
@@ -23,19 +24,54 @@ class MedicScreen extends StatefulWidget {
 }
 
 class _MedicScreen extends State<MedicScreen> {
-  // late List<StaffAndStudentsModel> filteredEntireMedicData;
-  final searchController = TextEditingController();
-  late List<StaffAndStudentsModel> staffAndStudentsList;
+  late final Future<List<StaffAndStudentsModel>> futureCommunity;
+  TextEditingController searchController = TextEditingController();
+  CheckerCacheService _CheckerCacheService = CheckerCacheService();
+
+  List<StaffAndStudentsModel> allCommunity = [];
+  List<StaffAndStudentsModel> filteredCommunity = [];
 
   @override
   void initState() {
     super.initState();
     (context).read<MedicBloc>().add(MedicInitialEvent());
-    //searchController.addListener(_printLatestValue);
+    futureCommunity = _CheckerCacheService.getGroupsMedicWithCache().then((data) {
+
+      allCommunity = data;
+      filteredCommunity = data;
+      return data;
+    });
+
+    searchController.addListener(onSearchChanged);
   }
+
+  void onSearchChanged() {
+    final query = searchController.text.trim().toLowerCase();
+    if(query.isEmpty){
+      updateFilteredCommunity(allCommunity);
+    }
+    else if(query.length >= 3){
+      final filtered = filterCommunity(allCommunity, query);
+      updateFilteredCommunity(filtered);
+    }
+  }
+
+  List<StaffAndStudentsModel> filterCommunity(List<StaffAndStudentsModel> community, String query){
+    return community;
+  }
+
+  void updateFilteredCommunity(List<StaffAndStudentsModel> community){
+    // if(mounted){
+//       setState(() {
+//         _filteredGroups = groups;
+//       });
+//     }
+  }
+
 
   @override
   void dispose() {
+    searchController.removeListener(onSearchChanged);
     searchController.dispose();
     super.dispose();
   }
@@ -125,15 +161,19 @@ class _MedicScreen extends State<MedicScreen> {
                         ),
                       ),
                     ],
-                  ) /*
+                  ),
                       const SizedBox(height: 10),
                       TextField(
                         onTap: (){
                           context.read<MedicBloc>().add(OnTapTextFieldEvent());
                         },
-                        // onChanged: (){
-                        //   context.read<MedicBloc>().add(event)
-                        // },
+                         onChanged: (query){
+                          print('Экран, query: $query');
+                          if(query.length >= 3){
+                            context.read<MedicBloc>().add(SearchChangedMedicEvent(query: searchController.text.toLowerCase(), entireGroups: allCommunity));
+                          }
+
+                         },
                         controller: searchController,
                         cursorColor: Color(0xff72A7EB),
                         cursorHeight: 25,
@@ -171,7 +211,7 @@ class _MedicScreen extends State<MedicScreen> {
                         },
                         enableSuggestions: false,
                         autocorrect: false,
-                      )*/,
+                      ),
                 ],
               ),
             ),
@@ -184,136 +224,27 @@ class _MedicScreen extends State<MedicScreen> {
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Column(
               children: [
-                BlocSelector<
-                  MedicBloc,
-                  MedicState,
-                  List<StaffAndStudentsModel>?
-                >(
-                  selector: (state) {
-                    if (state is MedicLoadedCommunitySuccessfulState) {
-                      print(
-                        'Экран: состояние: MedicLoadedCommunitySuccessfulState',
-                      );
-                      return state.medicEntireCommunity;
-                    } else if (state is MedicSearchState) {
-                      print('Экран: состояние: MedicSearchState');
-                      return state.medicFilteredCommunity;
-                    }
-                    else if(state is MedicFilteredState){
-                      print('Состояние отфильтрованного');
-                      return state.medicFilteredCommunity;
-                    }
-                    print(
-                      'Экран: состояние НЕ MedicLoadedCommunitySuccessfulState',
-                    );
-                    return null;
-                  },
-                  builder: (context, data) {
-                    List<StaffAndStudentsModel> entireListMedic;
-                    if (data != null) {
-                      print('Экран: data != null');
-                      entireListMedic = data;
-                      return TextField(
-                        onTap: () {
-                          context.read<MedicBloc>().add(OnTapTextFieldEvent());
-                        },
-                        // controller: searchController,
-                        onChanged: (query) {
-                          if (query.length >= 3) {
-                            print('Отправляю query: $query в движок поиска');
-                            context.read<MedicBloc>().add(
-                              SearchChangedMedicEvent(
-                                query: query,
-                                entireGroups: data
-                              ),
-                            );
-                            print('Запрос отправил');
-                          }
-                        },
-                        decoration: InputDecoration(
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.only(left: 16, right: 8),
-                            child: SvgPicture.asset(
-                              'assets/images/serch_icon.svg',
-                              width: 20,
-                              height: 20,
-                              color: const Color(0xff98BFF3),
-                            ),
-                          ),
-                          enabled: true,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16.0),
-                            borderSide: BorderSide(
-                              color: Color(0xff98BFF3),
-                              width: 1.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16.0),
-                            borderSide: BorderSide(
-                              color: Color(0xff72A7EB),
-                              width: 2,
-                            ),
-                          ),
-                          hintText: 'Поиск',
-                          hintStyle: TextStyle(
-                            fontSize:
-                                MediaQuery.of(context).size.height * 0.016,
-                            color: Color(0xff98BFF3),
-                            fontWeight: FontWeight.w500,
-                          ),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 30),
-                        ),
-                      );
-                    }
-                    print('Экран: data == null');
-                    return Text('data == null');
-                  },
-                ),
-                BlocBuilder<MedicBloc, MedicState>(
-                  builder: (context, state) {
-                    switch (state.runtimeType) {
-                      case MedicFilteredState:
-                        final successfulState = state as MedicFilteredState;
-                        final filtered = successfulState.medicFilteredCommunity;
-                        print('Печатаю отфильтрованный список');
-                        print(filtered);
-                        return MedicConstructorAccordionBuildWidget(medicEntireCommunity: filtered);
-                      case MedicNoDataState:
-                        return Text(
-                          'Отфильтрованный список пуст, ничего не найдено',
-                        );
-                    }
-                    return Text('дефолтное значение');
-                  },
-                ),
                 MultiBlocListener(
                   listeners: [
                     BlocListener<MedicBloc, MedicState>(
                       listener: (context, state) {
                         switch (state.runtimeType) {
-                          case MedicLogoutSuccessfulState:
-                            print('Отработало сосотояния выхода');
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    SignInScreen(),
-                              ),
-                            );
-                            break;
-                          case MedicLogoutErrorState:
-                            print('Ошибка при попытке выхода');
-                            break;
+                          // case MedicLogoutSuccessfulState:
+                          //   print('Отработало сосотояния выхода');
+                          //   Navigator.of(context).pushReplacement(
+                          //     MaterialPageRoute(
+                          //       builder: (BuildContext context) =>
+                          //           SignInScreen(),
+                          //     ),
+                          //   );
+                          //   break;
+                          // case MedicLogoutErrorState:
+                          //   print('Ошибка при попытке выхода');
+                          //   break;
                           case MedicFetchingLoadingState:
                             _buildersScreen.buildLoading();
                             print('Загрузка выхода');
                             break;
-
-                          // case MedicOpenDatePickerState:
-                          //   _buildersScreen.openDatePicker(context, );
-                          //   break;
-                          // case MedicCloseDatePickerState:
-                          //   Navigator.of(context).pop();
                         }
                       },
                     ),
@@ -326,8 +257,7 @@ class _MedicScreen extends State<MedicScreen> {
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     SignInScreen(),
-                              ),
-                            );
+                              ));
                             break;
                           case AuthenticationLoadingState:
                             print('Загрузка');
@@ -353,6 +283,8 @@ class _MedicScreen extends State<MedicScreen> {
                       },
                     ),
                   ],
+                  // child: Text('Лягушка')
+
                   child: BlocBuilder<MedicBloc, MedicState>(
                     builder: (context, medicState) {
                       switch (medicState.runtimeType) {
@@ -364,7 +296,7 @@ class _MedicScreen extends State<MedicScreen> {
                         case MedicLoadedCommunitySuccessfulState:
                           final successfulState =
                               medicState as MedicLoadedCommunitySuccessfulState;
-                          print('Печатаю лист');
+                          print('Печатаю лист комунны');
                           print(successfulState.medicEntireCommunity);
                           return MedicConstructorAccordionBuildWidget(
                             medicEntireCommunity:
@@ -372,6 +304,20 @@ class _MedicScreen extends State<MedicScreen> {
                           );
                         case MedicSearchState:
                           return SizedBox(height: 100);
+                        case MedicNoDataState:
+                          return Center(
+                            child: Text(
+                              'Ничего не нашлось по вашему заросу'
+                            ),
+                          );
+                        case MedicFilteredState:
+                          final successfulState = medicState as MedicFilteredState;
+                          print('Экран: MedicFilteredState');
+                          print(successfulState.medicFilteredCommunity);
+                          return MedicConstructorAccordionBuildWidget(
+                            medicEntireCommunity:
+                            successfulState.medicFilteredCommunity,
+                          );
                         default:
                           return Container(
                             padding: EdgeInsetsGeometry.symmetric(

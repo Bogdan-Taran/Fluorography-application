@@ -130,6 +130,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
   }
 
   FutureOr<void> onTapTextFieldEvent(OnTapTextFieldEvent event, Emitter<MedicState> emit) {
+    emit(MedicSearchState());
     /*
     final currentState = state;
     if(currentState is MedicLoadedCommunitySuccessfulState){
@@ -173,7 +174,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
       print('Отфильтровал. Вот что получилось: ${filteredGroups}');
       emit(MedicFilteredState(medicFilteredCommunity: filteredGroups));
     }
-    emit(MedicNoDataState());
+    // emit(MedicNoDataState());
   }
 }
 

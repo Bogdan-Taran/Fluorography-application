@@ -3,9 +3,11 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:project_fluorography/models/single_group_with_students_model.dart';
 import 'package:project_fluorography/models/staff_and_students_model.dart';
 import 'package:project_fluorography/models/staff_model.dart';
 
+import '../../models/multipleGroupsModel.dart';
 import '../../services/api_service.dart';
 import '../../services/api_service_get_community_members.dart';
 import '../../services/auth_service.dart';
@@ -28,6 +30,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     on<MedicCloseDatePickerEvent>(medicCloseDatePickerEvent);
     on<MedicFetchedNewDateSetEvent>(medicFetchedNewDateSetEvent);
     on<OnTapTextFieldEvent>(onTapTextFieldEvent);
+    on<SearchChangedMedicEvent>(searchChangedMedicEvent);
 
 }
   FutureOr<void> medicInitialEvent(MedicInitialEvent event, Emitter<MedicState> emit) async{
@@ -127,8 +130,50 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
   }
 
   FutureOr<void> onTapTextFieldEvent(OnTapTextFieldEvent event, Emitter<MedicState> emit) {
-    emit(MedicSearchState());
-    print('Излучаю нормальное состояние');
+    /*
+    final currentState = state;
+    if(currentState is MedicLoadedCommunitySuccessfulState){
+      print('Bloc: current is MedicLoadedCommunitySuccessfulState');
+      emit(MedicSearchState(medicEntireCommunity: currentState.medicEntireCommunity));
+    }
+    else if(currentState is MedicSearchState){
+      print('Bloc: current is MedicSearchState');
+      emit(currentState);
+    }
+    emit(currentState);
+     */
+  }
+
+  FutureOr<void> searchChangedMedicEvent(
+      SearchChangedMedicEvent event,
+      Emitter<MedicState> emit,
+      ) {
+    List<StaffAndStudentsModel>? entireGroups = event.entireGroups;
+    List<StaffAndStudentsModel> filteredGroups = [];
+    final query = event.query;
+    if (query.isEmpty) {
+      print('Bloc: query пустой');
+      emit(MedicNoDataState());
+    }
+    print('Bloc: пришёл query: $query');
+    if(entireGroups != null) {
+      print('Bloc: пришедшие группы не пусты');
+    print('Bloc: наичнаю сортировку');
+      filteredGroups = entireGroups.map((e) {
+      final matchingStaff = e.staffList.where((sta) => sta.searchKey.contains(query)).toList();
+      final matchingStudent = e.studentsList.expand((group){
+        return group.students.where((stu) => stu.searchKey.contains(query));
+      }).toList();
+      return matchingStaff.isEmpty & matchingStudent.isEmpty ? null :
+      e.copyWith(staffList: matchingStaff, studentsList: [SingleGroupWithStudentsModel(groupNumber: '', students: matchingStudent)]);
+    }).whereType<StaffAndStudentsModel>().toList();
+    }
+
+    if(filteredGroups != null){
+      print('Отфильтровал. Вот что получилось: ${filteredGroups}');
+      emit(MedicFilteredState(medicFilteredCommunity: filteredGroups));
+    }
+    emit(MedicNoDataState());
   }
 }
 

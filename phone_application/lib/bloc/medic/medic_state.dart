@@ -12,7 +12,16 @@ class MedicLoadedCommunitySuccessfulState extends MedicState{
   final List<StaffAndStudentsModel> medicEntireCommunity;
   MedicLoadedCommunitySuccessfulState({required this.medicEntireCommunity});
 }
-class MedicSearchState extends MedicState{}
+class MedicSearchState extends MedicState{
+  final List<StaffAndStudentsModel>? medicFilteredCommunity;
+  MedicSearchState({this.medicFilteredCommunity});
+}
+class MedicNoDataState extends MedicState{}
+class MedicFilteredState extends MedicState{
+  final List<StaffAndStudentsModel> medicFilteredCommunity;
+  MedicFilteredState({required this.medicFilteredCommunity});
+}
+
 class MedicFetchingErrorState extends MedicState{}
 
 class MedicLogoutSuccessfulState extends MedicState{}

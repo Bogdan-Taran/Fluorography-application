@@ -19,7 +19,11 @@ class MedicSelectDateEvent extends MedicEvent{
 }
 
 class OnTapTextFieldEvent extends MedicEvent{}
-
+class SearchChangedMedicEvent extends MedicEvent{
+  final String query;
+  final List<StaffAndStudentsModel>? entireGroups;
+  SearchChangedMedicEvent({required this.query, this.entireGroups});
+}
 
 class MedicFetchedNewDateSetEvent extends MedicEvent{
   final Map<String, String> newDateSet;

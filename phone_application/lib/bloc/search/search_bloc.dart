@@ -16,15 +16,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchService _SearchService = SearchService();
 
   SearchBloc() : super(SearchInitial()) {
-    on<SearchChangedEvent>(searchChangedEvent);
+    // on<SearchChangedEvent>(searchChangedEvent);
   }
-
+/*
   FutureOr<void> searchChangedEvent(
     SearchChangedEvent event,
     Emitter<SearchState> emit,
   ) {
     List<SingleGroupWithStudentsModel> allGroups = [];
-    List<StaffAndStudentsModel> entireGroups = event.entireGroups;
+    List<StaffAndStudentsModel>? entireGroups = event.entireGroups;
     List<MultiplieGroupsModel> filteredGroups = [];
     final query = event.query;
     if (query.isEmpty) {
@@ -44,4 +44,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     emit(SearchNotFoundState());
 
   }
+  */
+
 }

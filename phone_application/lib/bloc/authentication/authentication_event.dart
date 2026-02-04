@@ -22,5 +22,10 @@ class SignOutEvent extends AuthenticationEvent{
   @override
   List<Object> get props => throw UnimplementedError();
 }
+class SignOutAcceptEvent extends AuthenticationEvent{
+  const SignOutAcceptEvent();
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
 
 

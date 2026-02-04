@@ -178,3 +178,9 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
   }
 }
 
+extension BlocReset on MedicBloc{
+  void reset(dynamic initialState){
+    emit(initialState);
+  }
+}
+

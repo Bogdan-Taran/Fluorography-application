@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
     UserSharedPreferences _userSharedPreferences = UserSharedPreferences();
     BuildersScreen _buildersScreen = BuildersScreen();
 
-
+  /*
     return BlocProvider(
         create: (context) => AppStartupBloc()..add(AppStartUpInitEvent()),
       child: BlocBuilder<AppStartupBloc, AppStartupState>(
@@ -97,7 +97,7 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
-    );
+    );*/
 
 
     return FutureBuilder<String>(
@@ -113,9 +113,9 @@ class HomeScreen extends StatelessWidget {
                 BlocProvider(
                   create: (context) => CuratorBloc(),
                 ),
-                BlocProvider(
-                  create: (context) => AuthenticationBloc(),
-                ),
+                // BlocProvider(
+                //   create: (context) => AuthenticationBloc(),
+                // ),
                 BlocProvider(
                   create: (context) => SearchBloc(),
                 ),
@@ -129,9 +129,9 @@ class HomeScreen extends StatelessWidget {
                 BlocProvider(
                   create: (context) => AdminBloc(),
                 ),
-                BlocProvider(
-                  create: (context) => AuthenticationBloc(),
-                ),
+                // BlocProvider(
+                //   create: (context) => AuthenticationBloc(),
+                // ),
               ],
               child: AdminScreen(),
             );
@@ -141,11 +141,11 @@ class HomeScreen extends StatelessWidget {
                 BlocProvider(
                   create: (context) => MedicBloc(),
                 ),
-                /*
-                BlocProvider(
-                  create: (context) => AuthenticationBloc(),
-                ),
-                */
+
+                // BlocProvider(
+                //   create: (context) => AuthenticationBloc(),
+                // ),
+
                 BlocProvider(
                   create: (context) => SearchBloc(),
                 ),

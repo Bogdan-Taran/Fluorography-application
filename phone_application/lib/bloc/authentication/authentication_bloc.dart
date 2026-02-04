@@ -16,6 +16,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   AuthenticationBloc() : super(AuthenticationInitialState()) {
     on<AuthenticationEvent>((event, emit) {});
     on<IsAuthenticatedCheckEvent>(isAuthenticatedCheckEvent);
+    on<SignOutEvent>(signOutEvent);
+    on<SignOutAcceptEvent>(signOutAcceptEvent);
 
     on<SignInUserEvent>((event, emit) async {
       emit(AuthenticationLoadingState());
@@ -33,26 +35,27 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       }
       // emit(AuthenticationLoadingState());
     });
-
-    on<SignOutEvent>((event, emit) async {
-      emit(AuthenticationLoadingState());
-      try{
-        await authService.signOutUser();
-        await _CacheService.removeFromCache('groups_data');
-        emit (AuthenticationLogOutState(isLoading: false, successful: true));
-      }
-      catch (e){
-        print('error while logout');
-        print(e.toString());
-      }
-      // emit(AuthenticationLoadingState());
-    });
   }
-
   FutureOr<void> isAuthenticatedCheckEvent(IsAuthenticatedCheckEvent event, Emitter<AuthenticationState> emit) async{
     emit(AuthenticationLoadingState());
     bool isAuthenticatedHasToken = await authService.hasAuthToken();
     isAuthenticatedHasToken ? emit(AuthorizedState()) : emit(NotAuthenticatedState());
 
+  }
+  FutureOr<void> signOutEvent(SignOutEvent event, Emitter<AuthenticationState> emit) {
+    emit(HasAcceptedLogOutState());
+  }
+  FutureOr<void> signOutAcceptEvent(SignOutAcceptEvent event, Emitter<AuthenticationState> emit) async{
+    emit(AuthenticationLoadingState());
+    try{
+      await authService.signOutUser();
+      await _CacheService.removeFromCache('groups_data');
+      emit (AuthenticationLogOutState(isLoading: false, successful: true));
+    }
+    catch (e){
+      print('error while logout');
+      print(e.toString());
+    }
+    // emit(AuthenticationLoadingState());
   }
 }

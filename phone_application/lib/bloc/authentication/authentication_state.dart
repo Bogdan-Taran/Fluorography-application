@@ -25,9 +25,7 @@ class AuthenticationSuccessAfterLoginState extends AuthenticationState{
 //неудачная авторизация
 class AuthenticationFailureState extends AuthenticationState{
   final String errorMessage;
-
   const AuthenticationFailureState({required this.errorMessage});
-
   @override
   List<Object> get props => [errorMessage];
 }
@@ -40,4 +38,6 @@ class AuthenticationLogOutState extends AuthenticationState{
   AuthenticationLogOutState({required this.isLoading, required this.successful});
   List<Object> get props => [];
 }
+
+class HasAcceptedLogOutState extends AuthenticationState{}
 

@@ -10,6 +10,7 @@ import 'package:project_fluorography/bloc/search/search_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import '../bloc/authentication/authentication_bloc.dart';
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
+import '../main.dart';
 import '../models/staff_and_students_model.dart';
 import '../services/builders_screen.dart';
 import '../services/localDataBase.dart';
@@ -80,7 +81,7 @@ class _MedicScreen extends State<MedicScreen> {
 
   FutureOr _printLatestValue() async {
     if (searchController.text.length >= 3) {
-      print('Введенный текст: ${searchController.text}');
+      print('Экран:  =Введенный текст: ${searchController.text}');
     }
   }
 
@@ -96,6 +97,7 @@ class _MedicScreen extends State<MedicScreen> {
         resizeToAvoidBottomInset: true,
         // AppBar
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           flexibleSpace: Container(
             height: appBarHeight,
@@ -152,7 +154,7 @@ class _MedicScreen extends State<MedicScreen> {
                           context.read<AuthenticationBloc>().add(
                             SignOutEvent(),
                           );
-                          print('Нажата кнопка выхода');
+                          print('Экран: Нажата кнопка выхода');
                         },
                         child: const Text(
                           'Выход',
@@ -257,7 +259,7 @@ class _MedicScreen extends State<MedicScreen> {
                           //   break;
                           case MedicFetchingLoadingState:
                             _buildersScreen.buildLoading();
-                            print('Загрузка выхода');
+                            print('Экран: Загрузка MedicFetchingLoadingState');
                             break;
                         }
                       },
@@ -266,7 +268,7 @@ class _MedicScreen extends State<MedicScreen> {
                       listener: (context, state) {
                         switch (state.runtimeType) {
                           case HasAcceptedLogOutState:
-                            print('Отработало сосотояние подтверждения выхода');
+                            print('Экран: появилось контекстное меню сосотояние подтверждения выхода');
 
                             showDialog(
                               context: context,
@@ -325,6 +327,7 @@ class _MedicScreen extends State<MedicScreen> {
                                         ),
                                       ),
                                       onPressed: () {
+                                        print('Экран: Нажата кнопка отмены');
                                         Navigator.of(context).pop();
                                       },
                                       child: const Text(
@@ -406,13 +409,14 @@ class _MedicScreen extends State<MedicScreen> {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    SignInScreen(),
+                                    //SignInScreen(),
+                                    AuthChecker(),
                               ),
                             );
-                            print('Нажата кнопка выхода');
+                            print('Экран: Нажата кнопка подтверждения выхода');
                             break;
                           case AuthenticationLoadingState:
-                            print('Загрузка');
+                            print('Экран: Загрузка AuthenticationLoadingState');
                             _buildersScreen.buildLoading();
                             break;
                         }
@@ -449,8 +453,8 @@ class _MedicScreen extends State<MedicScreen> {
                           print('Экран: состояние MedicLoadedCommunitySuccessfulState');
                           final successfulState =
                               medicState as MedicLoadedCommunitySuccessfulState;
-                          print('Печатаю лист комунны');
-                          print(successfulState.medicEntireCommunity);
+                          // print('Экран: Печатаю лист комунны');
+                          // print(successfulState.medicEntireCommunity);
                           return MedicConstructorAccordionBuildWidget(
                             medicEntireCommunity:
                                 successfulState.medicEntireCommunity,
@@ -459,7 +463,7 @@ class _MedicScreen extends State<MedicScreen> {
                           return SizedBox(height: 100);
                         case MedicNoDataState:
                           return Center(
-                            child: Text('Ничего не нашлось по вашему заросу'),
+                            child: Text('Экран: Ничего не нашлось по вашему заросу'),
                           );
                         case MedicFilteredState:
                           final successfulState =

@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
     UserSharedPreferences _userSharedPreferences = UserSharedPreferences();
     BuildersScreen _buildersScreen = BuildersScreen();
 
-  /*
+
     return BlocProvider(
         create: (context) => AppStartupBloc()..add(AppStartUpInitEvent()),
       child: BlocBuilder<AppStartupBloc, AppStartupState>(
@@ -97,10 +97,10 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
-    );*/
+    );
 
 
-    return FutureBuilder<String>(
+/*    return FutureBuilder<String>(
       future: _userSharedPreferences.getUserRole(),
       builder: (context, AsyncSnapshot<String> snapshot) {
         if (snapshot.hasData) {
@@ -178,6 +178,6 @@ class HomeScreen extends StatelessWidget {
           );
         }
       },
-    );
+    );*/
   }
 }

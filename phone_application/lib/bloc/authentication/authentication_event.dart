@@ -17,15 +17,7 @@ class SignInUserEvent extends AuthenticationEvent{
   List<Object> get props => [login, password];
 }
 
-class SignOutEvent extends AuthenticationEvent{
-  const SignOutEvent();
-  @override
-  List<Object> get props => throw UnimplementedError();
-}
-class SignOutAcceptEvent extends AuthenticationEvent{
-  const SignOutAcceptEvent();
-  @override
-  List<Object> get props => throw UnimplementedError();
-}
+class SignOutEvent extends AuthenticationEvent{}
+class SignOutAcceptEvent extends AuthenticationEvent{}
 
 

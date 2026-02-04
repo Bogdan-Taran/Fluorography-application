@@ -266,7 +266,7 @@ class _MedicScreen extends State<MedicScreen> {
                       listener: (context, state) {
                         switch (state.runtimeType) {
                           case HasAcceptedLogOutState:
-                            print('Отработало сосотояния выхода');
+                            print('Отработало сосотояние подтверждения выхода');
 
                             showDialog(
                               context: context,

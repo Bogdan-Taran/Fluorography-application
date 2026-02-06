@@ -239,47 +239,45 @@ class _MedicScreen extends State<MedicScreen> {
         body: Stack(
           children: [
             Positioned.fill(
-                child: IgnorePointer(
-                  child: // Декорации
-                  Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment(1, -1),
-                        child: SvgPicture.asset(
-                          'assets/images/vectorRight.svg',
-                          semanticsLabel: 'Top SVG Image',
-                          fit: BoxFit.fitWidth,
-                        ),
+              child: IgnorePointer(
+                child: // Декорации
+                Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment(1, -1),
+                      child: SvgPicture.asset(
+                        'assets/images/vectorRight.svg',
+                        semanticsLabel: 'Top SVG Image',
+                        fit: BoxFit.fitWidth,
                       ),
-                      Align(
-                        alignment: Alignment(1, 0.5),
-                        child: SvgPicture.asset(
-                          'assets/images/vectorLine.svg',
-                          semanticsLabel: 'Top SVG Image',
-                          fit: BoxFit.fill,
-                            width: MediaQuery.of(context).size.width * 1
-
-                        ),
+                    ),
+                    Align(
+                      alignment: Alignment(1, 0.5),
+                      child: SvgPicture.asset(
+                        'assets/images/vectorLine.svg',
+                        semanticsLabel: 'Top SVG Image',
+                        fit: BoxFit.fill,
+                        width: MediaQuery.of(context).size.width * 1,
                       ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        // alignment: Alignment(1, 0.7),
-                        child: SvgPicture.asset(
-                          'assets/images/vectorBottom.svg',
-                          fit: BoxFit.fitWidth,
-                          width: MediaQuery.of(context).size.width * 1,
-                        ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      // alignment: Alignment(1, 0.7),
+                      child: SvgPicture.asset(
+                        'assets/images/vectorBottom.svg',
+                        fit: BoxFit.fitWidth,
+                        width: MediaQuery.of(context).size.width * 1,
                       ),
-                    ],
-                  ),
-                )
+                    ),
+                  ],
+                ),
+              ),
             ),
             SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                 child: Column(
                   children: [
-
                     MultiBlocListener(
                       listeners: [
                         BlocListener<MedicBloc, MedicState>(
@@ -302,7 +300,9 @@ class _MedicScreen extends State<MedicScreen> {
                                 break;
                               case MedicFetchingLoadingState:
                                 _buildersScreen.buildLoading();
-                                print('Экран: Загрузка MedicFetchingLoadingState');
+                                print(
+                                  'Экран: Загрузка MedicFetchingLoadingState',
+                                );
                                 break;
                             }
                           },
@@ -311,7 +311,9 @@ class _MedicScreen extends State<MedicScreen> {
                           listener: (context, state) {
                             switch (state.runtimeType) {
                               case HasAcceptedLogOutState:
-                                print('Экран: появилось контекстное меню сосотояние подтверждения выхода');
+                                print(
+                                  'Экран: появилось контекстное меню сосотояние подтверждения выхода',
+                                );
 
                                 showDialog(
                                   context: context,
@@ -321,7 +323,9 @@ class _MedicScreen extends State<MedicScreen> {
                                       content: SingleChildScrollView(
                                         child: ListBody(
                                           children: const <Widget>[
-                                            Text('Вы уверены что хотите выйти?'),
+                                            Text(
+                                              'Вы уверены что хотите выйти?',
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -336,41 +340,53 @@ class _MedicScreen extends State<MedicScreen> {
                                                   if (states.contains(
                                                     WidgetState.disabled,
                                                   )) {
-                                                    return const Color(0xffD5D6D7);
+                                                    return const Color(
+                                                      0xffD5D6D7,
+                                                    );
                                                   }
                                                   if (states.contains(
                                                     WidgetState.pressed,
                                                   )) {
-                                                    return const Color(0xFFE4E4E4);
+                                                    return const Color(
+                                                      0xFFE4E4E4,
+                                                    );
                                                   }
                                                   if (states.contains(
                                                     WidgetState.hovered,
                                                   )) {
-                                                    return const Color(0xFFBADEFF);
+                                                    return const Color(
+                                                      0xFFBADEFF,
+                                                    );
                                                   }
-                                                  return const Color(0xffffffff);
+                                                  return const Color(
+                                                    0xffffffff,
+                                                  );
                                                 }),
                                             foregroundColor:
                                                 WidgetStateProperty.all(
                                                   const Color(0xffffffff),
                                                 ),
-                                            minimumSize: WidgetStateProperty.all(
-                                              Size(
-                                                MediaQuery.of(context).size.width *
-                                                    0.1,
-                                                35,
-                                              ),
-                                            ),
+                                            minimumSize:
+                                                WidgetStateProperty.all(
+                                                  Size(
+                                                    MediaQuery.of(
+                                                          context,
+                                                        ).size.width *
+                                                        0.1,
+                                                    35,
+                                                  ),
+                                                ),
                                             shape: WidgetStateProperty.all(
                                               RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(
-                                                  10,
-                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                               ),
                                             ),
                                           ),
                                           onPressed: () {
-                                            print('Экран: Нажата кнопка отмены');
+                                            print(
+                                              'Экран: Нажата кнопка отмены',
+                                            );
                                             Navigator.of(context).pop();
                                           },
                                           child: const Text(
@@ -393,43 +409,53 @@ class _MedicScreen extends State<MedicScreen> {
                                                   if (states.contains(
                                                     WidgetState.disabled,
                                                   )) {
-                                                    return const Color(0xffD5D6D7);
+                                                    return const Color(
+                                                      0xffD5D6D7,
+                                                    );
                                                   }
                                                   if (states.contains(
                                                     WidgetState.pressed,
                                                   )) {
-                                                    return const Color(0xFF72A7EB);
+                                                    return const Color(
+                                                      0xFF72A7EB,
+                                                    );
                                                   }
                                                   if (states.contains(
                                                     WidgetState.hovered,
                                                   )) {
-                                                    return const Color(0xFFBADEFF);
+                                                    return const Color(
+                                                      0xFFBADEFF,
+                                                    );
                                                   }
-                                                  return const Color(0xff98BFF3);
+                                                  return const Color(
+                                                    0xff98BFF3,
+                                                  );
                                                 }),
                                             foregroundColor:
                                                 WidgetStateProperty.all(
                                                   const Color(0xffffffff),
                                                 ),
-                                            minimumSize: WidgetStateProperty.all(
-                                              Size(
-                                                MediaQuery.of(context).size.width *
-                                                    0.1,
-                                                35,
-                                              ),
-                                            ),
+                                            minimumSize:
+                                                WidgetStateProperty.all(
+                                                  Size(
+                                                    MediaQuery.of(
+                                                          context,
+                                                        ).size.width *
+                                                        0.1,
+                                                    35,
+                                                  ),
+                                                ),
                                             shape: WidgetStateProperty.all(
                                               RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(
-                                                  10,
-                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                               ),
                                             ),
                                           ),
                                           onPressed: () {
-                                            context.read<AuthenticationBloc>().add(
-                                              SignOutAcceptEvent(),
-                                            );
+                                            context
+                                                .read<AuthenticationBloc>()
+                                                .add(SignOutAcceptEvent());
                                           },
                                           child: const Text(
                                             'Да',
@@ -448,13 +474,24 @@ class _MedicScreen extends State<MedicScreen> {
                                 break;
 
                               case AuthenticationLogOutState:
-                                // TODO
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AuthChecker()));
-                              context.read<MedicBloc>().add(MedicLogoutEvent());
-                                print('Экран: Нажата кнопка подтверждения выхода');
+                                //   TODO: попробовать добавить mounted
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AuthChecker(),
+                                  ),
+                                );
+                                context.read<MedicBloc>().add(
+                                  MedicLogoutEvent(),
+                                );
+                                print(
+                                  'Экран: Нажата кнопка подтверждения выхода',
+                                );
                                 break;
                               case AuthenticationLoadingState:
-                                print('Экран: Загрузка AuthenticationLoadingState');
+                                print(
+                                  'Экран: Загрузка AuthenticationLoadingState',
+                                );
                                 _buildersScreen.buildLoading();
                                 break;
                             }
@@ -483,14 +520,19 @@ class _MedicScreen extends State<MedicScreen> {
                         builder: (context, medicState) {
                           switch (medicState.runtimeType) {
                             case MedicFetchingLoadingState:
-                              return Center(child: _buildersScreen.buildLoading());
+                              return Center(
+                                child: _buildersScreen.buildLoading(),
+                              );
                             case MedicFetchingErrorState:
                               return Center(child: Text('Произошла ошибка'));
 
                             case MedicLoadedCommunitySuccessfulState:
-                              print('Экран: состояние MedicLoadedCommunitySuccessfulState');
+                              print(
+                                'Экран: состояние MedicLoadedCommunitySuccessfulState',
+                              );
                               final successfulState =
-                                  medicState as MedicLoadedCommunitySuccessfulState;
+                                  medicState
+                                      as MedicLoadedCommunitySuccessfulState;
                               // print('Экран: Печатаю лист комунны');
                               // print(successfulState.medicEntireCommunity);
                               return MedicConstructorAccordionBuildWidget(
@@ -501,7 +543,9 @@ class _MedicScreen extends State<MedicScreen> {
                               return SizedBox(height: 100);
                             case MedicNoDataState:
                               return Center(
-                                child: Text('Экран: Ничего не нашлось по вашему заросу'),
+                                child: Text(
+                                  'Экран: Ничего не нашлось по вашему заросу',
+                                ),
                               );
                             case MedicFilteredState:
                               final successfulState =
@@ -518,7 +562,8 @@ class _MedicScreen extends State<MedicScreen> {
                                   horizontal: 15,
                                 ),
                                 width: MediaQuery.of(context).size.width * 1,
-                                height: MediaQuery.of(context).size.height * 0.8,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
                                 decoration: BoxDecoration(
                                   color: Colors.transparent,
                                 ),

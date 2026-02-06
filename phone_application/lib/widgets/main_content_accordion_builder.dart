@@ -64,10 +64,10 @@ class MedicConstructorAccordionBuildWidget extends StatelessWidget{
       scaleWhenAnimating: true,
       openAndCloseAnimation: true,
       disableScrolling: true,
-      headerPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 35),
+      headerPadding: const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
       sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
       sectionClosingHapticFeedback: SectionHapticFeedback.light,
-      headerBorderRadius: 25,
+      headerBorderRadius: 16,
       children:
         [
       // добавляем в список секцию с сотрудниками
@@ -76,14 +76,14 @@ class MedicConstructorAccordionBuildWidget extends StatelessWidget{
         bool isEditing = false;
         return AccordionSection(
           isOpen: false,
-          paddingBetweenClosedSections: 30,
-          paddingBetweenOpenSections: 30,
+          paddingBetweenClosedSections: 10,
+          paddingBetweenOpenSections: 10,
           header: HeaderAccordionSectionWidgetBuild(
             title: 'Сотрудники',
             count: e.staffList.length,
           ),
-          contentHorizontalPadding: 12,
-          contentVerticalPadding: 12,
+          contentHorizontalPadding: 16,
+          // contentVerticalPadding: 2,
           content: Column(
               children: [
                 ...e.staffList
@@ -125,15 +125,15 @@ class MedicConstructorAccordionBuildWidget extends StatelessWidget{
           bool isEditing = false;
           return AccordionSection(
             isOpen: false,
-            paddingBetweenClosedSections: 30,
-            paddingBetweenOpenSections: 30,
+            paddingBetweenClosedSections: 10,
+            paddingBetweenOpenSections: 10,
             header: HeaderAccordionSectionWidgetBuild(
               groupNumber: group.groupNumber,
               count: group.students.length,
               title: 'Группа',
             ),
             contentHorizontalPadding: 12,
-            contentVerticalPadding: 12,
+            // contentVerticalPadding: 12,
             content: Column(
                 children: [
                   ...group.students.map((student) {

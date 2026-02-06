@@ -73,7 +73,7 @@ class OneRowBuildAccordionSectionContent extends StatelessWidget {
     final dateFluraString = student.fluorography;
 
     return Padding(
-      padding: EdgeInsetsGeometry.symmetric(vertical: 5),
+      padding: EdgeInsetsGeometry.symmetric(vertical: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -116,7 +116,7 @@ class OneRowBuildAccordionSectionContentStaff extends StatelessWidget {
     final dateFluraString = staff.fluorography;
 
     return Padding(
-      padding: EdgeInsetsGeometry.symmetric(vertical: 5),
+      padding: EdgeInsetsGeometry.symmetric(vertical: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

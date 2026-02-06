@@ -52,7 +52,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
   FutureOr<void> medicLogoutEvent(MedicLogoutEvent event, Emitter<MedicState> emit) async {
     emit(MedicFetchingLoadingState());
     try{
-      await _AuthService.signOutUser();
+      // await _AuthService.signOutUser();
       emit (MedicLogoutSuccessfulState());
       print('Излучил успешное состояние выхода');
     }

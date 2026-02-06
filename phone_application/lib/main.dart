@@ -94,7 +94,9 @@ class _AuthCheckerState extends State<AuthChecker> {
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                     builder: (BuildContext context) =>
-                        SignInScreen()));
+                        SignInScreen()
+                       // HomeScreen()
+                ));
           case AuthorizedState:
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(

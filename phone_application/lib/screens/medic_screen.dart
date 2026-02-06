@@ -451,14 +451,6 @@ class _MedicScreen extends State<MedicScreen> {
                                 // TODO
                               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AuthChecker()));
                               context.read<MedicBloc>().add(MedicLogoutEvent());
-                              /*
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        //SignInScreen(),
-                                        AuthChecker(),
-                                  ),
-                                );*/
                                 print('Экран: Нажата кнопка подтверждения выхода');
                                 break;
                               case AuthenticationLoadingState:

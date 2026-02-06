@@ -136,8 +136,7 @@ class DataFluraContainerBuildWidget extends StatelessWidget {
     bool isEditing = false;
     return BlocBuilder<
       WorkingWithFluorographyBloc,
-      WorkingWithFluorographyState
-    >(
+      WorkingWithFluorographyState>(
       builder: (context, state) {
         isEditing = state.editingStates[uniqueEditingSectionId] ?? false;
         // print('Перестраиваю виджет с id $uniqueDateContainerId, изменяемость: $isEditing');

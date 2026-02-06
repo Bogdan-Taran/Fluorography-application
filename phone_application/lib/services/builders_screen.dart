@@ -16,35 +16,51 @@ class BuildersScreen {
     return Center(
       child: LoadingAnimationWidget.halfTriangleDot(
         color: Colors.white,
-        size: 24,),
+        size: 24,
+      ),
     );
   }
 
   Widget buildError(String errorMessage) {
     return Center(
       child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(Icons.error, size: 64, color: Colors.red),
-        const SizedBox(height: 16),
-        Text(
-          'Ошибка: $errorMessage',
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.red, fontSize: 16),
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: () {},
-          child: const Text('Повторить'),
-        ),
-      ],
-    )
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.error, size: 64, color: Colors.red),
+          const SizedBox(height: 16),
+          Text(
+            'Ошибка: $errorMessage',
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.red, fontSize: 16),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(onPressed: () {}, child: const Text('Повторить')),
+        ],
+      ),
     );
   }
 
-
-  void openDatePicker(BuildContext context, String uniqueDateContainerId, WorkingWithFluorographyBloc bloc) {
+  void openDatePicker(
+    BuildContext context,
+    String uniqueDateContainerId,
+    WorkingWithFluorographyBloc bloc,
+  ) {
+    final dateNow = DateTime.now();
     BottomPicker.date(
+      buttonContent: Text(
+        textAlign: TextAlign.center,
+        'Выбрать',
+        style: TextStyle(
+          fontSize: 16,
+          color: Color(0xFFFFFFFF),
+          fontWeight: FontWeight.w400,
+          fontFamily: 'Geologica',
+        ),
+      ),
+      buttonStyle: BoxDecoration(
+        color: Color(0xff98BFF3),
+        borderRadius: BorderRadius.circular(14),
+      ),
       headerBuilder: (context) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -54,19 +70,21 @@ class BuildersScreen {
               style: TextStyle(
                 fontSize: 16,
                 color: Color(0xFF72A7EB),
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w400,
                 fontFamily: 'Geologica',
               ),
             ),
             IconButton(
-                onPressed: () {
-                  // context.read<MedicBloc>().add(MedicCloseDatePickerEvent());
-                  bloc.add(CloseDatePickerEvent(uniqueId: uniqueDateContainerId));
-                  Navigator.of(context).pop();
-                },
-                icon: Icon(Icons.close),
-              style: ButtonStyle(foregroundColor: MaterialStateProperty.all(Color(0xFF72A7EB))),
-            )
+              onPressed: () {
+                // context.read<MedicBloc>().add(MedicCloseDatePickerEvent());
+                bloc.add(CloseDatePickerEvent(uniqueId: uniqueDateContainerId));
+                Navigator.of(context).pop();
+              },
+              icon: Icon(Icons.close),
+              style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all(Color(0xFF72A7EB)),
+              ),
+            ),
           ],
         );
       },
@@ -74,7 +92,7 @@ class BuildersScreen {
       // initialDateTime: DateTime(2025, 10, 01),
       initialDateTime: DateTime.now(),
       maxDateTime: DateTime.now(),
-      minDateTime: DateTime(2020),
+      minDateTime: dateNow.subtract(Duration(days: 365 * 2)),
       onChange: (index) {
         print(index);
         String date = _ConverterServices.convertDatePicker(index);
@@ -85,8 +103,15 @@ class BuildersScreen {
         print(index);
         String date = _ConverterServices.convertDatePicker(index);
         print('Печатаю дату: $date');
-        bloc.add(SelectDateEvent(selectedDate: date, uniqueContainerId: uniqueDateContainerId));
-        print('Вызвал ивент выбора даты, selected date: $date, uniqueContainerId: $uniqueDateContainerId');
+        bloc.add(
+          SelectDateEvent(
+            selectedDate: date,
+            uniqueContainerId: uniqueDateContainerId,
+          ),
+        );
+        print(
+          'Вызвал ивент выбора даты, selected date: $date, uniqueContainerId: $uniqueDateContainerId',
+        );
       },
       onDismiss: (p0) {
         print(p0);
@@ -95,4 +120,3 @@ class BuildersScreen {
     ).show(context);
   }
 }
-

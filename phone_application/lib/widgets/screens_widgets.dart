@@ -18,7 +18,11 @@ class EditElevatedButtonBuildWidget extends StatelessWidget {
           TurnOnEditingModeEvent(uniqueId: uniqueId),
         );
       },
-      style: ElevatedButton.styleFrom(backgroundColor: Color(0xff98BFF3)),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color(0xff98BFF3),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shadowColor: Colors.transparent,
+      ),
       child: Text(
         'Редактировать',
         style: TextStyle(
@@ -45,6 +49,8 @@ class EditRowWithButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return isEditing
         ? Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton(
                 onPressed: () {
@@ -54,6 +60,14 @@ class EditRowWithButtons extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xffffffff),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  shadowColor: Colors.transparent,
+                  side: BorderSide(
+                    width: 1,
+                    color: isEditing ? Color(0xff98BFF3) : Colors.transparent,
+                  ),
                 ),
                 child: Text(
                   'Отменить',
@@ -63,6 +77,9 @@ class EditRowWithButtons extends StatelessWidget {
                     fontFamily: 'Geologica',
                   ),
                 ),
+              ),
+              SizedBox(
+                width: 18,
               ),
               ElevatedButton(
                 onPressed: () {
@@ -75,6 +92,10 @@ class EditRowWithButtons extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xff98BFF3),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  shadowColor: Colors.transparent,
                 ),
                 child: Text(
                   'Сохранить',
@@ -87,205 +108,14 @@ class EditRowWithButtons extends StatelessWidget {
               ),
             ],
           )
-        : EditElevatedButtonBuildWidget(key: key, uniqueId: uniqueId);
-  }
-}
-
-
-/*
-class AppBarFlura<B extends Bloc<Object, Object>, E extends Object> extends StatelessWidget  implements PreferredSizeWidget{
-  final BuildContext context;
-  final B bloc;
-  final E event;
-  final B blocFromScreen;
-  final E onTapTextFieldEvent;
-  final TextEditingController searchController;
-
-  @override
-  final Size preferredSize;
-
-  const AppBarFlura({Key? key, required this.context, required this.bloc, required this.event, required this.preferredSize, required this.searchController, required this.blocFromScreen, required this.onTapTextFieldEvent}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        statusBarBrightness: Brightness.light,
-      ),
-      flexibleSpace: Container(
-        height: preferredSize.height,
-        // height: MediaQuery.of(context).size.height * 0.13,
-        decoration: const BoxDecoration(color: Colors.white),
-        child: Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
-          child: Column(
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    onPressed: () {},
-                    splashRadius: 24,
-                    padding: EdgeInsets.zero,
-                    icon: SvgPicture.asset(
-                      'assets/images/notification_icon.svg',
-                      color: const Color(0xff98BFF3),
-                      width: 35,
-                      height: 35,
-                    ),
-                  ),
-
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>((
-                          Set<WidgetState> states,
-                          ) {
-                        if (states.contains(WidgetState.disabled)) {
-                          return const Color(0xffD5D6D7);
-                        }
-                        if (states.contains(WidgetState.pressed)) {
-                          return const Color(0xFF72A7EB);
-                        }
-                        if (states.contains(WidgetState.hovered)) {
-                          return const Color(0xFFBADEFF);
-                        }
-                        return const Color(0xff98BFF3);
-                      }),
-                      foregroundColor: WidgetStateProperty.all(
-                        const Color(0xffffffff),
-                      ),
-                      minimumSize: WidgetStateProperty.all(
-                        Size(MediaQuery.of(context).size.width * 0.1, 35),
-                      ),
-                      shape: WidgetStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    onPressed: () {
-                      context.read<B>().add(event);
-                      print('Нажата кнопка выхода');
-                    },
-                    child: const Text(
-                      'Выход',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xffffffff),
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Geologica',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                onTap: context.read,
-                controller: searchController,
-                cursorColor: Color(0xff72A7EB),
-                cursorHeight: 25,
-                cursorWidth: 1.5,
-                decoration: InputDecoration(
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 8),
-                    child: SvgPicture.asset(
-                      'assets/images/serch_icon.svg',
-                      width: 20,
-                      height: 20,
-                      color: const Color(0xff98BFF3),
-                    ),
-                  ),
-                  enabled: true,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                    borderSide: BorderSide(color: Color(0xff98BFF3), width: 1.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                    borderSide: BorderSide(color: Color(0xff72A7EB), width: 2),
-                  ),
-                  hintText: 'Поиск',
-                  hintStyle: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * 0.016,
-                    color: Color(0xff98BFF3),
-                    fontWeight: FontWeight.w500,
-                  ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 30),
-                ),
-                keyboardType: TextInputType.text,
-                onTapOutside: (event) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                enableSuggestions: false,
-                autocorrect: false,
-              )
+              EditElevatedButtonBuildWidget(key: key, uniqueId: uniqueId),
             ],
-          ),
-        ),
-      ),
-      toolbarHeight: preferredSize.height,
-      elevation: 0,
-    );
+          );
   }
 }
-*/
-/*
-class SearchBarBuildWidget<B extends Bloc<Object, Object>, E extends Object> extends StatelessWidget {
-  final TextEditingController searchController;
-  final B blocFromScreen;
-  final E onTapTextFieldEvent;
-
-  const SearchBarBuildWidget({super.key, required this.searchController, required this.blocFromScreen, required this.onTapTextFieldEvent});
-
-  @override
-  Widget build(BuildContext context) {
-
-    return TextField(
-      onTap: context.read,
-      controller: searchController,
-      cursorColor: Color(0xff72A7EB),
-      cursorHeight: 25,
-      cursorWidth: 1.5,
-      decoration: InputDecoration(
-        prefixIcon: Padding(
-          padding: const EdgeInsets.only(left: 16, right: 8),
-          child: SvgPicture.asset(
-            'assets/images/serch_icon.svg',
-            width: 20,
-            height: 20,
-            color: const Color(0xff98BFF3),
-          ),
-        ),
-        enabled: true,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.0),
-          borderSide: BorderSide(color: Color(0xff98BFF3), width: 1.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16.0),
-          borderSide: BorderSide(color: Color(0xff72A7EB), width: 2),
-        ),
-        hintText: 'Поиск',
-        hintStyle: TextStyle(
-          fontSize: MediaQuery.of(context).size.height * 0.016,
-          color: Color(0xff98BFF3),
-          fontWeight: FontWeight.w500,
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 30),
-      ),
-      keyboardType: TextInputType.text,
-      onTapOutside: (event) {
-        FocusManager.instance.primaryFocus?.unfocus();
-      },
-      enableSuggestions: false,
-      autocorrect: false,
-    );
-  }
-}
-*/
 
 class DataFluraContainerBuildWidget extends StatelessWidget {
   final String dataContainer;
@@ -316,6 +146,8 @@ class DataFluraContainerBuildWidget extends StatelessWidget {
         // print('Отображаемая дата: $displayDate');
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
+            minimumSize: Size(30, 15),
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             backgroundColor: isEditing
                 ? Colors.transparent
                 : switch (_CheckerService.isFluorographyOverdue(
@@ -328,7 +160,7 @@ class DataFluraContainerBuildWidget extends StatelessWidget {
                   },
             shadowColor: Colors.transparent,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(18),
             ),
             side: BorderSide(
               width: 2,
@@ -365,4 +197,3 @@ class DataFluraContainerBuildWidget extends StatelessWidget {
     );
   }
 }
-

@@ -95,6 +95,7 @@ class _MedicScreen extends State<MedicScreen> {
       color: Colors.white,
       child: Scaffold(
         resizeToAvoidBottomInset: true,
+        backgroundColor: Color(0xffffffff),
         // AppBar
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -235,279 +236,320 @@ class _MedicScreen extends State<MedicScreen> {
           toolbarHeight: appBarHeight,
           elevation: 0,
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: Column(
-              children: [
-                MultiBlocListener(
-                  listeners: [
-                    BlocListener<MedicBloc, MedicState>(
-                      listener: (context, state) {
-                        switch (state.runtimeType) {
-                          // case MedicLogoutSuccessfulState:
-                          //   print('Отработало сосотояния выхода');
-                          //   Navigator.of(context).pushReplacement(
-                          //     MaterialPageRoute(
-                          //       builder: (BuildContext context) =>
-                          //           SignInScreen(),
-                          //     ),
-                          //   );
-                          //   break;
-                          // case MedicLogoutErrorState:
-                          //   print('Ошибка при попытке выхода');
-                          //   break;
-                          case MedicLogoutSuccessfulState:
-                            print('Отработало сосотояния выхода');
-                            break;
-                          case MedicFetchingLoadingState:
-                            _buildersScreen.buildLoading();
-                            print('Экран: Загрузка MedicFetchingLoadingState');
-                            break;
-                        }
-                      },
-                    ),
-                    BlocListener<AuthenticationBloc, AuthenticationState>(
-                      listener: (context, state) {
-                        switch (state.runtimeType) {
-                          case HasAcceptedLogOutState:
-                            print('Экран: появилось контекстное меню сосотояние подтверждения выхода');
+        body: Stack(
+          children: [
+            Positioned.fill(
+                child: IgnorePointer(
+                  child: // Декорации
+                  Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment(1, -1),
+                        child: SvgPicture.asset(
+                          'assets/images/vectorRight.svg',
+                          semanticsLabel: 'Top SVG Image',
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment(1, 0.5),
+                        child: SvgPicture.asset(
+                          'assets/images/vectorLine.svg',
+                          semanticsLabel: 'Top SVG Image',
+                          fit: BoxFit.fill,
+                            width: MediaQuery.of(context).size.width * 1
 
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text('Подтверждение выхода'),
-                                  content: SingleChildScrollView(
-                                    child: ListBody(
-                                      children: const <Widget>[
-                                        Text('Вы уверены что хотите выйти?'),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        // alignment: Alignment(1, 0.7),
+                        child: SvgPicture.asset(
+                          'assets/images/vectorBottom.svg',
+                          fit: BoxFit.fitWidth,
+                          width: MediaQuery.of(context).size.width * 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+            ),
+            SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                child: Column(
+                  children: [
+
+                    MultiBlocListener(
+                      listeners: [
+                        BlocListener<MedicBloc, MedicState>(
+                          listener: (context, state) {
+                            switch (state.runtimeType) {
+                              // case MedicLogoutSuccessfulState:
+                              //   print('Отработало сосотояния выхода');
+                              //   Navigator.of(context).pushReplacement(
+                              //     MaterialPageRoute(
+                              //       builder: (BuildContext context) =>
+                              //           SignInScreen(),
+                              //     ),
+                              //   );
+                              //   break;
+                              // case MedicLogoutErrorState:
+                              //   print('Ошибка при попытке выхода');
+                              //   break;
+                              case MedicLogoutSuccessfulState:
+                                print('Отработало сосотояния выхода');
+                                break;
+                              case MedicFetchingLoadingState:
+                                _buildersScreen.buildLoading();
+                                print('Экран: Загрузка MedicFetchingLoadingState');
+                                break;
+                            }
+                          },
+                        ),
+                        BlocListener<AuthenticationBloc, AuthenticationState>(
+                          listener: (context, state) {
+                            switch (state.runtimeType) {
+                              case HasAcceptedLogOutState:
+                                print('Экран: появилось контекстное меню сосотояние подтверждения выхода');
+
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text('Подтверждение выхода'),
+                                      content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: const <Widget>[
+                                            Text('Вы уверены что хотите выйти?'),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        // no
+                                        ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                WidgetStateProperty.resolveWith<
+                                                  Color
+                                                >((Set<WidgetState> states) {
+                                                  if (states.contains(
+                                                    WidgetState.disabled,
+                                                  )) {
+                                                    return const Color(0xffD5D6D7);
+                                                  }
+                                                  if (states.contains(
+                                                    WidgetState.pressed,
+                                                  )) {
+                                                    return const Color(0xFFE4E4E4);
+                                                  }
+                                                  if (states.contains(
+                                                    WidgetState.hovered,
+                                                  )) {
+                                                    return const Color(0xFFBADEFF);
+                                                  }
+                                                  return const Color(0xffffffff);
+                                                }),
+                                            foregroundColor:
+                                                WidgetStateProperty.all(
+                                                  const Color(0xffffffff),
+                                                ),
+                                            minimumSize: WidgetStateProperty.all(
+                                              Size(
+                                                MediaQuery.of(context).size.width *
+                                                    0.1,
+                                                35,
+                                              ),
+                                            ),
+                                            shape: WidgetStateProperty.all(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                  10,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            print('Экран: Нажата кнопка отмены');
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text(
+                                            'Отмена',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Color(0xff98BFF3),
+                                              fontWeight: FontWeight.w600,
+                                              fontFamily: 'Geologica',
+                                            ),
+                                          ),
+                                        ),
+                                        //yes
+                                        ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                WidgetStateProperty.resolveWith<
+                                                  Color
+                                                >((Set<WidgetState> states) {
+                                                  if (states.contains(
+                                                    WidgetState.disabled,
+                                                  )) {
+                                                    return const Color(0xffD5D6D7);
+                                                  }
+                                                  if (states.contains(
+                                                    WidgetState.pressed,
+                                                  )) {
+                                                    return const Color(0xFF72A7EB);
+                                                  }
+                                                  if (states.contains(
+                                                    WidgetState.hovered,
+                                                  )) {
+                                                    return const Color(0xFFBADEFF);
+                                                  }
+                                                  return const Color(0xff98BFF3);
+                                                }),
+                                            foregroundColor:
+                                                WidgetStateProperty.all(
+                                                  const Color(0xffffffff),
+                                                ),
+                                            minimumSize: WidgetStateProperty.all(
+                                              Size(
+                                                MediaQuery.of(context).size.width *
+                                                    0.1,
+                                                35,
+                                              ),
+                                            ),
+                                            shape: WidgetStateProperty.all(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                  10,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            context.read<AuthenticationBloc>().add(
+                                              SignOutAcceptEvent(),
+                                            );
+                                          },
+                                          child: const Text(
+                                            'Да',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Color(0xffffffff),
+                                              fontWeight: FontWeight.w600,
+                                              fontFamily: 'Geologica',
+                                            ),
+                                          ),
+                                        ),
                                       ],
-                                    ),
+                                    );
+                                  },
+                                );
+                                break;
+
+                              case AuthenticationLogOutState:
+                                // TODO
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AuthChecker()));
+                              context.read<MedicBloc>().add(MedicLogoutEvent());
+                              /*
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        //SignInScreen(),
+                                        AuthChecker(),
                                   ),
-                                  actions: <Widget>[
-                                    // no
-                                    ElevatedButton(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStateProperty.resolveWith<
-                                              Color
-                                            >((Set<WidgetState> states) {
-                                              if (states.contains(
-                                                WidgetState.disabled,
-                                              )) {
-                                                return const Color(0xffD5D6D7);
-                                              }
-                                              if (states.contains(
-                                                WidgetState.pressed,
-                                              )) {
-                                                return const Color(0xFFE4E4E4);
-                                              }
-                                              if (states.contains(
-                                                WidgetState.hovered,
-                                              )) {
-                                                return const Color(0xFFBADEFF);
-                                              }
-                                              return const Color(0xffffffff);
-                                            }),
-                                        foregroundColor:
-                                            WidgetStateProperty.all(
-                                              const Color(0xffffffff),
-                                            ),
-                                        minimumSize: WidgetStateProperty.all(
-                                          Size(
-                                            MediaQuery.of(context).size.width *
-                                                0.1,
-                                            35,
-                                          ),
-                                        ),
-                                        shape: WidgetStateProperty.all(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        print('Экран: Нажата кнопка отмены');
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text(
-                                        'Отмена',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Color(0xff98BFF3),
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: 'Geologica',
-                                        ),
-                                      ),
-                                    ),
-                                    //yes
-                                    ElevatedButton(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStateProperty.resolveWith<
-                                              Color
-                                            >((Set<WidgetState> states) {
-                                              if (states.contains(
-                                                WidgetState.disabled,
-                                              )) {
-                                                return const Color(0xffD5D6D7);
-                                              }
-                                              if (states.contains(
-                                                WidgetState.pressed,
-                                              )) {
-                                                return const Color(0xFF72A7EB);
-                                              }
-                                              if (states.contains(
-                                                WidgetState.hovered,
-                                              )) {
-                                                return const Color(0xFFBADEFF);
-                                              }
-                                              return const Color(0xff98BFF3);
-                                            }),
-                                        foregroundColor:
-                                            WidgetStateProperty.all(
-                                              const Color(0xffffffff),
-                                            ),
-                                        minimumSize: WidgetStateProperty.all(
-                                          Size(
-                                            MediaQuery.of(context).size.width *
-                                                0.1,
-                                            35,
-                                          ),
-                                        ),
-                                        shape: WidgetStateProperty.all(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        context.read<AuthenticationBloc>().add(
-                                          SignOutAcceptEvent(),
-                                        );
-                                      },
-                                      child: const Text(
-                                        'Да',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Color(0xffffffff),
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: 'Geologica',
-                                        ),
-                                      ),
+                                );*/
+                                print('Экран: Нажата кнопка подтверждения выхода');
+                                break;
+                              case AuthenticationLoadingState:
+                                print('Экран: Загрузка AuthenticationLoadingState');
+                                _buildersScreen.buildLoading();
+                                break;
+                            }
+                          },
+                        ),
+                        BlocListener<
+                          WorkingWithFluorographyBloc,
+                          WorkingWithFluorographyState
+                        >(
+                          listener: (context, state) {
+                            switch (state.runtimeType) {
+                              case SuccessfullyPatchedSetDatesState:
+                                // здесь подставляются tempDates из главного State
+                                context.read<MedicBloc>().add(
+                                  MedicFetchedNewDateSetEvent(
+                                    newDateSet: state.tempDates,
+                                  ),
+                                );
+                            }
+                          },
+                        ),
+                      ],
+
+                      // child: Text('Лягушка')
+                      child: BlocBuilder<MedicBloc, MedicState>(
+                        builder: (context, medicState) {
+                          switch (medicState.runtimeType) {
+                            case MedicFetchingLoadingState:
+                              return Center(child: _buildersScreen.buildLoading());
+                            case MedicFetchingErrorState:
+                              return Center(child: Text('Произошла ошибка'));
+
+                            case MedicLoadedCommunitySuccessfulState:
+                              print('Экран: состояние MedicLoadedCommunitySuccessfulState');
+                              final successfulState =
+                                  medicState as MedicLoadedCommunitySuccessfulState;
+                              // print('Экран: Печатаю лист комунны');
+                              // print(successfulState.medicEntireCommunity);
+                              return MedicConstructorAccordionBuildWidget(
+                                medicEntireCommunity:
+                                    successfulState.medicEntireCommunity,
+                              );
+                            case MedicSearchState:
+                              return SizedBox(height: 100);
+                            case MedicNoDataState:
+                              return Center(
+                                child: Text('Экран: Ничего не нашлось по вашему заросу'),
+                              );
+                            case MedicFilteredState:
+                              final successfulState =
+                                  medicState as MedicFilteredState;
+                              print('Экран: MedicFilteredState');
+                              print(successfulState.medicFilteredCommunity);
+                              return MedicConstructorAccordionBuildWidget(
+                                medicEntireCommunity:
+                                    successfulState.medicFilteredCommunity,
+                              );
+                            default:
+                              return Container(
+                                padding: EdgeInsetsGeometry.symmetric(
+                                  horizontal: 15,
+                                ),
+                                width: MediaQuery.of(context).size.width * 1,
+                                height: MediaQuery.of(context).size.height * 0.8,
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Отсутствуют сотрудники или студенты',
+                                      style: TextStyle(fontSize: 18),
                                     ),
                                   ],
-                                );
-                              },
-                            );
-                            break;
-
-                          case AuthenticationLogOutState:
-                            // TODO
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AuthChecker()));
-                          context.read<MedicBloc>().add(MedicLogoutEvent());
-                          /*
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    //SignInScreen(),
-                                    AuthChecker(),
-                              ),
-                            );*/
-                            print('Экран: Нажата кнопка подтверждения выхода');
-                            break;
-                          case AuthenticationLoadingState:
-                            print('Экран: Загрузка AuthenticationLoadingState');
-                            _buildersScreen.buildLoading();
-                            break;
-                        }
-                      },
-                    ),
-                    BlocListener<
-                      WorkingWithFluorographyBloc,
-                      WorkingWithFluorographyState
-                    >(
-                      listener: (context, state) {
-                        switch (state.runtimeType) {
-                          case SuccessfullyPatchedSetDatesState:
-                            // здесь подставляются tempDates из главного State
-                            context.read<MedicBloc>().add(
-                              MedicFetchedNewDateSetEvent(
-                                newDateSet: state.tempDates,
-                              ),
-                            );
-                        }
-                      },
+                                ),
+                              );
+                          }
+                        },
+                      ),
                     ),
                   ],
-
-                  // child: Text('Лягушка')
-                  child: BlocBuilder<MedicBloc, MedicState>(
-                    builder: (context, medicState) {
-                      switch (medicState.runtimeType) {
-                        case MedicFetchingLoadingState:
-                          return Center(child: _buildersScreen.buildLoading());
-                        case MedicFetchingErrorState:
-                          return Center(child: Text('Произошла ошибка'));
-
-                        case MedicLoadedCommunitySuccessfulState:
-                          print('Экран: состояние MedicLoadedCommunitySuccessfulState');
-                          final successfulState =
-                              medicState as MedicLoadedCommunitySuccessfulState;
-                          // print('Экран: Печатаю лист комунны');
-                          // print(successfulState.medicEntireCommunity);
-                          return MedicConstructorAccordionBuildWidget(
-                            medicEntireCommunity:
-                                successfulState.medicEntireCommunity,
-                          );
-                        case MedicSearchState:
-                          return SizedBox(height: 100);
-                        case MedicNoDataState:
-                          return Center(
-                            child: Text('Экран: Ничего не нашлось по вашему заросу'),
-                          );
-                        case MedicFilteredState:
-                          final successfulState =
-                              medicState as MedicFilteredState;
-                          print('Экран: MedicFilteredState');
-                          print(successfulState.medicFilteredCommunity);
-                          return MedicConstructorAccordionBuildWidget(
-                            medicEntireCommunity:
-                                successfulState.medicFilteredCommunity,
-                          );
-                        default:
-                          return Container(
-                            padding: EdgeInsetsGeometry.symmetric(
-                              horizontal: 15,
-                            ),
-                            width: MediaQuery.of(context).size.width * 1,
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Отсутствуют сотрудники или студенты',
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                              ],
-                            ),
-                          );
-                      }
-                    },
-                  ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

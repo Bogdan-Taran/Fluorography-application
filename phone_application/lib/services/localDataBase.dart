@@ -132,6 +132,12 @@ class CheckerCacheService {
     try {
       final data = await _ApiServiceGetCommunityMembers.getAllComuintyForMedic();
       print('Данные из api получены');
+      print('Данные сотрудников из api Dio тоже получены, печатаю');
+      await _ApiServiceGetCommunityMembers.getStaffDio();
+
+      print('Данные студентов по Dio получаю:');
+      await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
+
       final jsonString = jsonEncode(data.map((e) => e.toJson()).toList());
       print('Сохраняю в кэш');
       await _cache.saveToCache(cacheId, jsonString);

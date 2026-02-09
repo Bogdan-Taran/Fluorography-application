@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
-
+import 'package:json_annotation/json_annotation.dart';
 import '../services/converters_service.dart';
 
+// part 'studentdata.g.dart';
+
+// @JsonSerializable()
 @immutable
 class StudentData {
   final int id;
@@ -20,6 +23,7 @@ class StudentData {
     required this.group,
   });
 
+
   factory StudentData.fromJson(Map<String, dynamic> json) {
     ConverterServices _converterService = ConverterServices();
     String fluorography = _converterService.formatFluraDate(
@@ -35,6 +39,9 @@ class StudentData {
       group: json['group'] as String? ?? '',
     );
   }
+  // factory StudentData.fromJson(Map<String, dynamic> json) => _$StudentDataFromJson(json);
+
+  // Map<String, dynamic> toJson() => _$StudentDataToJson(this);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

@@ -137,7 +137,7 @@ class MedicConstructorAccordionBuildWidget extends StatelessWidget{
             content: Column(
                 children: [
                   ...group.students.map((student) {
-                    final uniqueStudentId = 'student_${student.id}_${student.lastname}';
+                    final uniqueStudentId = '${student.id}';
                     return OneRowBuildAccordionSectionContent(
                       student: student,
                       // uniqueId: uniqueStudentId,

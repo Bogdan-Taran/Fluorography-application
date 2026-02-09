@@ -80,23 +80,25 @@ class ApiService {
 
   // цикл для обновления выбранных дат
   Future<void> updateFluraDateFromSet(Map<String, String> dateMap) async{
+    print('Заупскаю цикл для обновления выбранных дат');
+    final token = await getToken();
     try {
       await Future.forEach(
           dateMap.entries, (MapEntry<String, String> entry) async {
         final uniqueId = entry.key;
+        print('Обновляю дату для $uniqueId');
         final selectedDate = entry.value;
-        await updateFluraDate(selectedDate, uniqueId);
+        await updateFluraDate(selectedDate, uniqueId, token!);
       });
     } catch(e){
       print(e);
     }
   }
-  Future<void> updateFluraDate(String selectedDate, String uniqueId) async {
+  Future<void> updateFluraDate(String selectedDate, String uniqueId, String token) async {
     final url = Uri.parse('https://flura.tomtit-tomsk.ru/api/fluorography/$uniqueId');
-    final token = await getToken();
     // String selectedDate = '2025-11-21';
-
     try {
+      print('Пробую патчить дату');
       final response = await http.patch(
         url,
         headers: {
@@ -107,6 +109,7 @@ class ApiService {
           'date': selectedDate,
         }),
       );
+      print('Закончил пробовать');
 
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
@@ -115,7 +118,7 @@ class ApiService {
         print('Failed to patch post. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error: $e');
+      print('Error while patching: $e');
     }
   }
 }

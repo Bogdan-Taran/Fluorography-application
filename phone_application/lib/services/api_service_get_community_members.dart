@@ -298,4 +298,3 @@ class ApiServiceGetCommunityMembers {
     return finalListAllCommunityForMedic;
   }
 }
-class ApiServiceGetCommunityMembersDio {}

@@ -89,9 +89,10 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
   }
 
   FutureOr<void> medicFetchedNewDateSetEvent(MedicFetchedNewDateSetEvent event, Emitter<MedicState> emit) async{
-    emit(MedicFetchingLoadingState());
+    // emit(MedicFetchingLoadingState());
     List<StaffAndStudentsModel> staffAndStudentsList;
     try{
+      emit(MedicFetchingLoadingState());
       staffAndStudentsList = await _CheckerCacheService.getGroupsMedicWithCache();
 
       final updatedList = staffAndStudentsList.map((model) {

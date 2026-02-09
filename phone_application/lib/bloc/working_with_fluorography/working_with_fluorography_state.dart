@@ -31,7 +31,6 @@ class OpenedDatePickerState extends WorkingWithFluorographyState{}
 
 class SuccessfullyPatchedSetDatesState extends WorkingWithFluorographyState{
   final Map<String, String> newDateSet;
-
   SuccessfullyPatchedSetDatesState({required this.newDateSet});
 }
 

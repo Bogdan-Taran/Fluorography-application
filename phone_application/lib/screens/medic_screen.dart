@@ -505,9 +505,10 @@ class _MedicScreen extends State<MedicScreen> {
                             switch (state.runtimeType) {
                               case SuccessfullyPatchedSetDatesState:
                                 // здесь подставляются tempDates из главного State
+                              final datesState = state as SuccessfullyPatchedSetDatesState;
                                 context.read<MedicBloc>().add(
                                   MedicFetchedNewDateSetEvent(
-                                    newDateSet: state.tempDates,
+                                    newDateSet: datesState.newDateSet
                                   ),
                                 );
                             }

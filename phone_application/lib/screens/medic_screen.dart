@@ -17,6 +17,8 @@ import '../services/localDataBase.dart';
 import '../widgets/main_content_accordion_builder.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 
+import '../widgets/main_content_accordion_builder_light.dart';
+
 class MedicScreen extends StatefulWidget {
   const MedicScreen({super.key});
 
@@ -35,7 +37,8 @@ class _MedicScreen extends State<MedicScreen> {
   @override
   void initState() {
     super.initState();
-    (context).read<MedicBloc>().add(MedicInitialEvent());
+    // (context).read<MedicBloc>().add(MedicInitialEvent());
+    (context).read<MedicBloc>().add(MedicFetchEvent());
     futureCommunity = _CheckerCacheService.getGroupsMedicWithCache().then((
       data,
     ) {
@@ -122,6 +125,7 @@ class _MedicScreen extends State<MedicScreen> {
                         ),
                       ),
 
+                      // Sign Out Button
                       ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
@@ -225,6 +229,9 @@ class _MedicScreen extends State<MedicScreen> {
                     keyboardType: TextInputType.text,
                     onTapOutside: (event) {
                       FocusManager.instance.primaryFocus?.unfocus();
+                      // context.read<MedicBloc>().add(
+                      //     OnTapOutsideTextFieldMedicEvent()
+                      // );
                     },
                     enableSuggestions: false,
                     autocorrect: false,
@@ -238,7 +245,9 @@ class _MedicScreen extends State<MedicScreen> {
         ),
         body: Stack(
           children: [
-            Positioned.fill(
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
               child: IgnorePointer(
                 child: // Декорации
                 Stack(
@@ -314,7 +323,6 @@ class _MedicScreen extends State<MedicScreen> {
                                 print(
                                   'Экран: появилось контекстное меню сосотояние подтверждения выхода',
                                 );
-
                                 showDialog(
                                   context: context,
                                   builder: (context) {
@@ -494,6 +502,26 @@ class _MedicScreen extends State<MedicScreen> {
                                 );
                                 _buildersScreen.buildLoading();
                                 break;
+                              case AuthenticationLogOutErrorState:
+                                showDialog(
+                                  context: context,
+                                  builder: (dialogContext) {
+                                    return AlertDialog(
+                                      title: Text("Ошибка"),
+                                      content: Text(
+                                        'Произошла ошибка при попытке выйти',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(dialogContext).pop(),
+                                          child: Text("OK"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                break;
                             }
                           },
                         ),
@@ -505,10 +533,11 @@ class _MedicScreen extends State<MedicScreen> {
                             switch (state.runtimeType) {
                               case SuccessfullyPatchedSetDatesState:
                                 // здесь подставляются tempDates из главного State
-                              final datesState = state as SuccessfullyPatchedSetDatesState;
+                                final datesState =
+                                    state as SuccessfullyPatchedSetDatesState;
                                 context.read<MedicBloc>().add(
                                   MedicFetchedNewDateSetEvent(
-                                    newDateSet: datesState.newDateSet
+                                    newDateSet: datesState.newDateSet,
                                   ),
                                 );
                             }
@@ -521,27 +550,29 @@ class _MedicScreen extends State<MedicScreen> {
                         builder: (context, medicState) {
                           switch (medicState.runtimeType) {
                             case MedicFetchingLoadingState:
-                              return Center(
-                                child: _buildersScreen.buildLoading(),
-                              );
+                              return Center(child: _buildersScreen.buildLoading());
                             case MedicFetchingErrorState:
                               return Center(child: Text('Произошла ошибка'));
-
                             case MedicLoadedCommunitySuccessfulState:
-                              print(
-                                'Экран: состояние MedicLoadedCommunitySuccessfulState',
-                              );
+                              print('Экран: состояние MedicLoadedCommunitySuccessfulState',);
                               final successfulState =
                                   medicState
                                       as MedicLoadedCommunitySuccessfulState;
-                              // print('Экран: Печатаю лист комунны');
-                              // print(successfulState.medicEntireCommunity);
+
                               return MedicConstructorAccordionBuildWidget(
                                 medicEntireCommunity:
                                     successfulState.medicEntireCommunity,
                               );
+                            /*
+                              return MedicConstructorAccordionBuildWidget(
+                                medicEntireCommunity:
+                                    successfulState.medicEntireCommunity,
+                              );*/
                             case MedicSearchState:
-                              return SizedBox(height: 100);
+                              return SizedBox(
+                                height: MediaQuery.of(context).size.height * 1,
+                                width: MediaQuery.of(context).size.width * 1,
+                              );
                             case MedicNoDataState:
                               return Center(
                                 child: Text(
@@ -556,6 +587,11 @@ class _MedicScreen extends State<MedicScreen> {
                               return MedicConstructorAccordionBuildWidget(
                                 medicEntireCommunity:
                                     successfulState.medicFilteredCommunity,
+                              );
+                            case MedicUsualState:
+                              print('Экран: состояние MedicUsualState');
+                              return MedicConstructorAccordionBuildWidget(
+                                medicEntireCommunity: allCommunity,
                               );
                             default:
                               return Container(

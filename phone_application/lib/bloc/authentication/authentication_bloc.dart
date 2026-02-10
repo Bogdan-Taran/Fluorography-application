@@ -56,6 +56,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       print('error while logout');
       print(e.toString());
     }
-    // emit(AuthenticationLoadingState());
+    emit(AuthenticationLogOutErrorState());
   }
 }

@@ -15,11 +15,13 @@ class AuthService {
 
   Future<UserData?> signInUser(String login, String password) async {
     try{
-      await _apiService.loginUser(login, password);
+      //await _apiService.loginUser(login, password);
+      await _apiService.loginUserDio(login, password);
       final bool hasToken = await hasAuthToken();
       if(hasToken){
         try {
-          final jsonData = await _apiService.getProtectedData();
+          final jsonData = await _apiService.getProtectedDataDio();
+          // NotAuthenticatedEvent
           final userData = UserData.fromJson(await jsonData['data']);
 
           //сохраняем пользователя локально
@@ -56,7 +58,9 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('authToken');
     if (token != null) return true;
-    else return false;
+    else {
+      return false;
+    }
   }
 
 

@@ -19,3 +19,7 @@ class CuratorLoadedGroupsSuccessfulState extends CuratorState {
     required this.curatorGroups
   });
 }
+class CuratorLogoutSuccessfulState extends CuratorState{}
+class CuratorLogoutErrorState extends CuratorState{}
+
+class CuratorSearchState extends CuratorState{}

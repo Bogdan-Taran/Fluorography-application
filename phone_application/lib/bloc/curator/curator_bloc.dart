@@ -20,6 +20,9 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
 
   CuratorBloc() : super(CuratorInitial()) {
     on<CuratorInitialEvent>(curatorInitialEvent);
+    on<CuratorLogoutEvent> (curatorLogoutEvent);
+    on<SearchChangedCuratorEvent>(searchChangedCuratorEvent);
+    on<OnTapTextFieldEvent>(onTapTextFieldEvent);
   }
 
   FutureOr<void> curatorInitialEvent(
@@ -41,4 +44,22 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
     }
   }
 
+
+  FutureOr<void> curatorLogoutEvent(CuratorLogoutEvent event, Emitter<CuratorState> emit) async{
+    emit(CuratorFetchingLoadingState());
+    try{
+      emit(CuratorLogoutSuccessfulState());
+    } catch(e) {
+      print('There is appeared an Error while LogOut Curator: ${e.toString()}');
+    }
+    emit(CuratorLogoutErrorState());
+  }
+
+  FutureOr<void> searchChangedCuratorEvent(SearchChangedCuratorEvent event, Emitter<CuratorState> emit) {
+  //   прописать логику
+  }
+
+  FutureOr<void> onTapTextFieldEvent(OnTapTextFieldEvent event, Emitter<CuratorState> emit) {
+    emit(CuratorSearchState());
+  }
 }

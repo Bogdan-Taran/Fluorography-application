@@ -8,10 +8,16 @@ abstract class MedicActionState extends MedicState{}
 final class MedicInitial extends MedicState {}
 
 class MedicFetchingLoadingState extends MedicState{}
+
 class MedicLoadedCommunitySuccessfulState extends MedicState{
   final List<StaffAndStudentsModel> medicEntireCommunity;
   MedicLoadedCommunitySuccessfulState({required this.medicEntireCommunity});
 }
+/*
+class MedicLoadedCommunitySuccessfulState extends MedicState{
+  final List<MedicDisplayItem> displayItems;
+  MedicLoadedCommunitySuccessfulState({required this.displayItems});
+}*/
 class MedicSearchState extends MedicState{
   final List<StaffAndStudentsModel>? medicFilteredCommunity;
   MedicSearchState({this.medicFilteredCommunity});
@@ -21,6 +27,7 @@ class MedicFilteredState extends MedicState{
   final List<StaffAndStudentsModel> medicFilteredCommunity;
   MedicFilteredState({required this.medicFilteredCommunity});
 }
+class MedicUsualState extends MedicState{}
 
 class MedicFetchingErrorState extends MedicState{}
 

@@ -43,8 +43,9 @@ class HomeScreen extends StatelessWidget {
               return MultiBlocProvider(
                 providers: [
                   BlocProvider(create: (context) => CuratorBloc(),),
-                  BlocProvider(create: (context) => AuthenticationBloc(),),
+                  // BlocProvider(create: (context) => AuthenticationBloc(),),
                   BlocProvider(create: (context) => SearchBloc(),),
+                  BlocProvider(create: (context) => WorkingWithFluorographyBloc(),),
                 ],
                 child: CuratorScreen(),
               );

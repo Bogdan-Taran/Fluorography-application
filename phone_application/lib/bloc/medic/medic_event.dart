@@ -6,6 +6,7 @@ abstract class MedicEvent {
 }
 
 class MedicInitialEvent extends MedicEvent{}
+class MedicFetchEvent extends MedicEvent{}
 
 class MedicLogoutEvent extends MedicEvent{}
 
@@ -24,6 +25,8 @@ class SearchChangedMedicEvent extends MedicEvent{
   final List<StaffAndStudentsModel>? entireGroups;
   SearchChangedMedicEvent({required this.query, this.entireGroups});
 }
+class OnTapOutsideTextFieldMedicEvent extends MedicEvent{}
+
 
 class MedicFetchedNewDateSetEvent extends MedicEvent{
   final Map<String, String> newDateSet;

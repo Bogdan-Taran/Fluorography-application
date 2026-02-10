@@ -1,11 +1,15 @@
 import 'dart:core';
+import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/bloc/curator/curator_bloc.dart';
+import 'package:project_fluorography/models/single_group_with_students_model.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import '../bloc/search/search_bloc.dart';
+import '../main.dart';
+import '../services/api_service_get_community_members.dart';
 import '../services/builders_screen.dart';
 import '../widgets/main_content_accordion_builder.dart';
 import '../widgets/screens_widgets.dart';
@@ -19,25 +23,42 @@ class CuratorScreen extends StatefulWidget {
 
 class _CuratorScreen extends State<CuratorScreen> {
   final searchController = TextEditingController();
+  late final Future<List<SingleGroupWithStudentsModel>> futureGroupsMethod;
+  ApiServiceGetCommunityMembers _ApiServiceGetCommunityMembers = ApiServiceGetCommunityMembers();
+  List<SingleGroupWithStudentsModel> curatorGroups = [];
+
   @override
   void initState() {
     (context).read<CuratorBloc>().add(CuratorInitialEvent());
+    futureGroupsMethod = _ApiServiceGetCommunityMembers.getGroupsForCurator().then((
+        data,
+        ) {
+      curatorGroups = data;
+      return data;
+    });
     super.initState();
   }
 
   @override
-  void dispose(){
+  void dispose() {
     searchController.dispose();
     super.dispose();
-}
+  }
 
   @override
   Widget build(BuildContext context) {
     BuildersScreen _buildersScreen = BuildersScreen();
     final appBarHeight = MediaQuery.of(context).size.height * 0.13;
-    return SafeArea(
+    final blueColor = Color(0xff98BFF3);
+
+    return ColorfulSafeArea(
+      color: Colors.white,
       child: Scaffold(
+        backgroundColor: Color(0xffffffff),
+        resizeToAvoidBottomInset: true,
+        // AppBar
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           flexibleSpace: Container(
             height: appBarHeight,
@@ -61,6 +82,7 @@ class _CuratorScreen extends State<CuratorScreen> {
                         ),
                       ),
 
+                      // Sign Out Button
                       ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
@@ -94,7 +116,7 @@ class _CuratorScreen extends State<CuratorScreen> {
                           context.read<AuthenticationBloc>().add(
                             SignOutEvent(),
                           );
-                          print('Нажата кнопка выхода');
+                          print('Экран: Нажата кнопка выхода');
                         },
                         child: const Text(
                           'Выход',
@@ -109,19 +131,17 @@ class _CuratorScreen extends State<CuratorScreen> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  // TODO
-                  /*
                   TextField(
                     onTap: () {
-                      context.read<MedicBloc>().add(OnTapTextFieldEvent());
+                      context.read<CuratorBloc>().add(OnTapTextFieldEvent());
                     },
                     onChanged: (query) {
                       print('Экран, query: $query');
                       if (query.length >= 3) {
-                        context.read<MedicBloc>().add(
-                          SearchChangedMedicEvent(
+                        context.read<CuratorBloc>().add(
+                          SearchChangedCuratorEvent(
                             query: searchController.text.toLowerCase(),
-                            entireGroups: allCommunity,
+                            groups: curatorGroups
                           ),
                         );
                       }
@@ -166,10 +186,13 @@ class _CuratorScreen extends State<CuratorScreen> {
                     keyboardType: TextInputType.text,
                     onTapOutside: (event) {
                       FocusManager.instance.primaryFocus?.unfocus();
+                      // context.read<MedicBloc>().add(
+                      //     OnTapOutsideTextFieldMedicEvent()
+                      // );
                     },
                     enableSuggestions: false,
                     autocorrect: false,
-                  ),*/
+                  ),
                 ],
               ),
             ),
@@ -178,228 +201,284 @@ class _CuratorScreen extends State<CuratorScreen> {
           elevation: 0,
         ),
 
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-            child: MultiBlocListener(
-              listeners: [
-                BlocListener<AuthenticationBloc, AuthenticationState>(
-                  listener: (context, state) {
-                    switch (state.runtimeType) {
-                      case HasAcceptedLogOutState:
-                        print('Отработало сосотояния выхода');
-
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Подтверждение выхода'),
-                              content: SingleChildScrollView(
-                                child: ListBody(
-                                  children: const <Widget>[
-                                    Text('Вы уверены что хотите выйти?'),
-                                  ],
-                                ),
-                              ),
-                              actions: <Widget>[
-                                // no
-                                ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                    WidgetStateProperty.resolveWith<
-                                        Color
-                                    >((Set<WidgetState> states) {
-                                      if (states.contains(
-                                        WidgetState.disabled,
-                                      )) {
-                                        return const Color(0xffD5D6D7);
-                                      }
-                                      if (states.contains(
-                                        WidgetState.pressed,
-                                      )) {
-                                        return const Color(0xFFE4E4E4);
-                                      }
-                                      if (states.contains(
-                                        WidgetState.hovered,
-                                      )) {
-                                        return const Color(0xFFBADEFF);
-                                      }
-                                      return const Color(0xffffffff);
-                                    }),
-                                    foregroundColor:
-                                    WidgetStateProperty.all(
-                                      const Color(0xffffffff),
-                                    ),
-                                    minimumSize: WidgetStateProperty.all(
-                                      Size(
-                                        MediaQuery.of(context).size.width *
-                                            0.1,
-                                        35,
-                                      ),
-                                    ),
-                                    shape: WidgetStateProperty.all(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          10,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text(
-                                    'Отмена',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(0xff98BFF3),
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: 'Geologica',
-                                    ),
-                                  ),
-                                ),
-                                //yes
-                                ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                    WidgetStateProperty.resolveWith<
-                                        Color
-                                    >((Set<WidgetState> states) {
-                                      if (states.contains(
-                                        WidgetState.disabled,
-                                      )) {
-                                        return const Color(0xffD5D6D7);
-                                      }
-                                      if (states.contains(
-                                        WidgetState.pressed,
-                                      )) {
-                                        return const Color(0xFF72A7EB);
-                                      }
-                                      if (states.contains(
-                                        WidgetState.hovered,
-                                      )) {
-                                        return const Color(0xFFBADEFF);
-                                      }
-                                      return const Color(0xff98BFF3);
-                                    }),
-                                    foregroundColor:
-                                    WidgetStateProperty.all(
-                                      const Color(0xffffffff),
-                                    ),
-                                    minimumSize: WidgetStateProperty.all(
-                                      Size(
-                                        MediaQuery.of(context).size.width *
-                                            0.1,
-                                        35,
-                                      ),
-                                    ),
-                                    shape: WidgetStateProperty.all(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          10,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    context.read<AuthenticationBloc>().add(
-                                      SignOutAcceptEvent(),
-                                    );
-                                  },
-                                  child: const Text(
-                                    'Да',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(0xffffffff),
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: 'Geologica',
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                        break;
-
-                      case AuthenticationLogOutState:
-                      // TODO
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                SignInScreen(),
-                          ),
-                        );
-                        print('Нажата кнопка выхода');
-                        break;
-                      case AuthenticationLoadingState:
-                        print('Загрузка');
-                        _buildersScreen.buildLoading();
-                        break;
-                    }
-                  },
-                ),
-                BlocListener<CuratorBloc, CuratorState>(
-                  listener: (context, state) {
-                    switch (state.runtimeType) {
-                      // TODO: убрать все logout
-                      // case CuratorFetchingLoadingState:
-                      //   print('Загрузка');
-                      //   _buildersScreen.buildLoading();
-                      //   break;
-
-                    }
-                  },
-                ),
-              ],
-              child:
-              BlocBuilder<CuratorBloc, CuratorState>(
-                builder: (context, state) {
-                  switch (state.runtimeType) {
-                    case CuratorFetchingLoadingState:
-                      return Center(child: _buildersScreen.buildLoading());
-                    case CuratorFetchingErrorState:
-                      return Center(child: Text('Ошибка при загрузке'));
-                    case CuratorLoadedGroupsSuccessfulState:
-                      final successState =
-                          state as CuratorLoadedGroupsSuccessfulState;
-                      return MainContentAccordionBuilder(
-                        context,
-                        role: 'curator',
-                        groups: successState.curatorGroups,
-                      );/*
-                      case SearchUpdatedState
-                      BlocBuilder<SearchBloc, SearchState>(
-                        builder: (context, state){
-                          switch(state.runtimeType){
-                            case SearchLoadingState:
-                          }
-                        }
-                      )*/
-
-                    default:
-                      return Container(
-                        padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+        body: Stack(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: IgnorePointer(
+                child: // Декорации
+                Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment(1, -1),
+                      child: SvgPicture.asset(
+                        'assets/images/vectorRight.svg',
+                        semanticsLabel: 'Top SVG Image',
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment(1, 0.5),
+                      child: SvgPicture.asset(
+                        'assets/images/vectorLine.svg',
+                        semanticsLabel: 'Top SVG Image',
+                        fit: BoxFit.fill,
                         width: MediaQuery.of(context).size.width * 1,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        decoration: BoxDecoration(color: Colors.transparent),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'У вас отстутствуют группы кураторства',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ],
-                        ),
-                      );
-                  }
-                },
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      // alignment: Alignment(1, 0.7),
+                      child: SvgPicture.asset(
+                        'assets/images/vectorBottom.svg',
+                        fit: BoxFit.fitWidth,
+                        width: MediaQuery.of(context).size.width * 1,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
+            SingleChildScrollView(
 
-          ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                child: MultiBlocListener(
+                  listeners: [
+                    BlocListener<AuthenticationBloc, AuthenticationState>(
+                      listener: (context, state) {
+                        switch (state.runtimeType) {
+                          case HasAcceptedLogOutState:
+                            print('Отработало сосотояния выхода');
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Подтверждение выхода'),
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: const <Widget>[
+                                        Text('Вы уверены что хотите выйти?'),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    // no
+                                    ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            WidgetStateProperty.resolveWith<Color>((
+                                              Set<WidgetState> states,
+                                            ) {
+                                              if (states.contains(
+                                                WidgetState.disabled,
+                                              )) {
+                                                return const Color(0xffD5D6D7);
+                                              }
+                                              if (states.contains(
+                                                WidgetState.pressed,
+                                              )) {
+                                                return const Color(0xFFE4E4E4);
+                                              }
+                                              if (states.contains(
+                                                WidgetState.hovered,
+                                              )) {
+                                                return const Color(0xFFBADEFF);
+                                              }
+                                              return const Color(0xffffffff);
+                                            }),
+                                        foregroundColor: WidgetStateProperty.all(
+                                          const Color(0xffffffff),
+                                        ),
+                                        minimumSize: WidgetStateProperty.all(
+                                          Size(
+                                            MediaQuery.of(context).size.width * 0.1,
+                                            35,
+                                          ),
+                                        ),
+                                        shape: WidgetStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        print('Экран: Нажата кнопка отмены');
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text(
+                                        'Отмена',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Color(0xff98BFF3),
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Geologica',
+                                        ),
+                                      ),
+                                    ),
+                                    //yes
+                                    ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            WidgetStateProperty.resolveWith<Color>((
+                                              Set<WidgetState> states,
+                                            ) {
+                                              if (states.contains(
+                                                WidgetState.disabled,
+                                              )) {
+                                                return const Color(0xffD5D6D7);
+                                              }
+                                              if (states.contains(
+                                                WidgetState.pressed,
+                                              )) {
+                                                return const Color(0xFF72A7EB);
+                                              }
+                                              if (states.contains(
+                                                WidgetState.hovered,
+                                              )) {
+                                                return const Color(0xFFBADEFF);
+                                              }
+                                              return const Color(0xff98BFF3);
+                                            }),
+                                        foregroundColor: WidgetStateProperty.all(
+                                          const Color(0xffffffff),
+                                        ),
+                                        minimumSize: WidgetStateProperty.all(
+                                          Size(
+                                            MediaQuery.of(context).size.width * 0.1,
+                                            35,
+                                          ),
+                                        ),
+                                        shape: WidgetStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        context.read<AuthenticationBloc>().add(
+                                          SignOutAcceptEvent(),
+                                        );
+                                      },
+                                      child: const Text(
+                                        'Да',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Color(0xffffffff),
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Geologica',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                            break;
+
+                          case AuthenticationLogOutState:
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AuthChecker(),
+                              ),
+                            );
+                            context.read<CuratorBloc>().add(CuratorLogoutEvent());
+                            break;
+                          case AuthenticationLoadingState:
+                            print('Экран: Загрузка AuthenticationLoadingState');
+                            _buildersScreen.buildLoading();
+                            break;
+                          case AuthenticationLogOutErrorState:
+                            showDialog(
+                              context: context,
+                              builder: (dialogContext) {
+                                return AlertDialog(
+                                  title: Text("Ошибка"),
+                                  content: Text(
+                                    'Произошла ошибка при попытке выйти',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(dialogContext).pop(),
+                                      child: Text("OK"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                            break;
+                        }
+                      },
+                    ),
+                    BlocListener<CuratorBloc, CuratorState>(
+                      listener: (context, state) {
+                        switch (state.runtimeType) {
+                          // TODO: убрать все logout
+                          // case CuratorFetchingLoadingState:
+                          //   print('Загрузка');
+                          //   _buildersScreen.buildLoading();
+                          //   break;
+                        }
+                      },
+                    ),
+                  ],
+                  child: BlocBuilder<CuratorBloc, CuratorState>(
+                    builder: (context, state) {
+                      switch (state.runtimeType) {
+                        case CuratorFetchingLoadingState:
+                          return Center(child: _buildersScreen.buildLoading());
+                        case CuratorFetchingErrorState:
+                          return Center(child: Text('Произошла ошибка'));
+                        case CuratorLoadedGroupsSuccessfulState:
+                          print('Экран: состояние CuratorLoadedGroupsSuccessfulState',);
+                          final successState =
+                              state as CuratorLoadedGroupsSuccessfulState;
+                          return CuratorConstructorAccordionBuildWidget(
+                            groups: successState.curatorGroups,
+                          );
+                          /*
+                          return MainContentAccordionBuilder(
+                            context,
+                            role: 'curator',
+                            groups: successState.curatorGroups,
+                          );*/
+                        /*
+                          case SearchUpdatedState
+                          BlocBuilder<SearchBloc, SearchState>(
+                            builder: (context, state){
+                              switch(state.runtimeType){
+                                case SearchLoadingState:
+                              }
+                            }
+                          )*/
+
+                        default:
+                          return Container(
+                            padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                            width: MediaQuery.of(context).size.width * 1,
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            decoration: BoxDecoration(color: Colors.transparent),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'У вас отстутствуют группы кураторства',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                          );
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

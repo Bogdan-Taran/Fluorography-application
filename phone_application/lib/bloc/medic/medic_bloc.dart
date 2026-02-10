@@ -12,6 +12,7 @@ import '../../services/api_service.dart';
 import '../../services/api_service_get_community_members.dart';
 import '../../services/auth_service.dart';
 import '../../services/localDataBase.dart';
+import '../../widgets/main_content_accordion_builder_light.dart';
 
 part 'medic_event.dart';
 part 'medic_state.dart';
@@ -23,7 +24,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
   CheckerCacheService _CheckerCacheService = CheckerCacheService();
 
   MedicBloc() : super(MedicInitial()) {
-    on<MedicInitialEvent>(medicInitialEvent);
+    // on<MedicInitialEvent>(medicInitialEvent);
     on<MedicLogoutEvent>(medicLogoutEvent);
     on<MedicOpenDatePickerEvent>(medicOpenDatePickerEvent);
     // on<MedicSelectDateEvent>(medicSelectDateEvent);
@@ -31,8 +32,10 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     on<MedicFetchedNewDateSetEvent>(medicFetchedNewDateSetEvent);
     on<OnTapTextFieldEvent>(onTapTextFieldEvent);
     on<SearchChangedMedicEvent>(searchChangedMedicEvent);
+    on<OnTapOutsideTextFieldMedicEvent>(onTapOutsideTextFieldMedicEvent);
+    on<MedicFetchEvent>(medicFetchEvent);
 
-}
+}/*
   FutureOr<void> medicInitialEvent(MedicInitialEvent event, Emitter<MedicState> emit) async{
     emit(MedicFetchingLoadingState());
     List<StaffAndStudentsModel> staffAndStudentsList;
@@ -47,7 +50,25 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
       print('Не удалось загрузить студентов с сотрудниками');
       log(e.toString());
     }
+  }*/
+
+  FutureOr<void> medicFetchEvent(MedicFetchEvent event, Emitter<MedicState> emit) async {
+    emit(MedicFetchingLoadingState());
+    List<StaffAndStudentsModel> allCommunity = await _ApiServiceGetCommunityMembers.getAllComuintyForMedic();
+    print('Bloc Medic: Студенты и сотрудники успешно получны');
+    //
+    // final allStaff = allCommunity.expand((e) => e.staffList).toList();
+    // if(allStaff.isNotEmpty){
+    //   displayItem.add(StaffSection(title: 'Сотрудники', count: allStaff.length, staffList: allStaff));
+    // }
+    // for(var item in allCommunity){
+    //   for(var group in item.studentsList){
+    //     displayItem.add(GroupSection(title: 'Группа', count: group.students.length, groupNumber: group.groupNumber, students: group.students));
+    //   }
+    // }
+    emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: allCommunity));
   }
+
 
   FutureOr<void> medicLogoutEvent(MedicLogoutEvent event, Emitter<MedicState> emit) async {
     emit(MedicFetchingLoadingState());
@@ -121,7 +142,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
       }).toList();
 
       // изменять только секцию данной группы
-      emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: updatedList));
+      /*emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: updatedList));*/
       print('Даты успешно изменены');
     }catch (e){
       emit(MedicFetchingErrorState());
@@ -177,6 +198,12 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     }
     // emit(MedicNoDataState());
   }
+
+  FutureOr<void> onTapOutsideTextFieldMedicEvent(OnTapOutsideTextFieldMedicEvent event, Emitter<MedicState> emit) {
+    emit(MedicUsualState());
+  }
+
+
 }
 
 extension BlocReset on MedicBloc{

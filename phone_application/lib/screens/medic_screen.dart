@@ -559,30 +559,20 @@ class _MedicScreen extends State<MedicScreen> {
                               return Center(child: Text('Произошла ошибка'));
                             case MedicLoadedCommunitySuccessfulState:
                               print('Экран: состояние MedicLoadedCommunitySuccessfulState',);
-                              final successfulState =
-                                  medicState
-                                      as MedicLoadedCommunitySuccessfulState;
-
+                              final successfulState = medicState as MedicLoadedCommunitySuccessfulState;
                               return MedicConstructorAccordionBuildWidget(
                                 medicEntireCommunity:
                                     successfulState.medicEntireCommunity,
                               );
-                            /*
-                              return MedicConstructorAccordionBuildWidget(
-                                medicEntireCommunity:
-                                    successfulState.medicEntireCommunity,
-                              );*/
+
                             case MedicSearchState:
                               print('Экран: состояние MedicSearchState');
-                              return SizedBox(
-                                height: MediaQuery.of(context).size.height * 1,
-                                width: MediaQuery.of(context).size.width * 1,
-                              );
+                              return SizedBox();
                             case MedicNoDataState:
                               print('Экран: состояние MedicNoDataState');
                               return Center(
                                 child: Text(
-                                  'Экран: Ничего не нашлось по вашему заросу',
+                                  'Ничего не нашлось по вашему заросу',
                                 ),
                               );
                             case MedicFilteredState:

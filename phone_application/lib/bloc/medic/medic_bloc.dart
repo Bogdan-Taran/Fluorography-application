@@ -113,7 +113,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     // emit(MedicFetchingLoadingState());
     List<StaffAndStudentsModel> staffAndStudentsList;
     try{
-      emit(MedicFetchingLoadingState());
+      // emit(MedicFetchingLoadingState());
       staffAndStudentsList = await _CheckerCacheService.getGroupsMedicWithCache();
 
       final updatedList = staffAndStudentsList.map((model) {
@@ -153,18 +153,6 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
 
   FutureOr<void> onTapTextFieldEvent(OnTapTextFieldEvent event, Emitter<MedicState> emit) {
     emit(MedicSearchState());
-    /*
-    final currentState = state;
-    if(currentState is MedicLoadedCommunitySuccessfulState){
-      print('Bloc: current is MedicLoadedCommunitySuccessfulState');
-      emit(MedicSearchState(medicEntireCommunity: currentState.medicEntireCommunity));
-    }
-    else if(currentState is MedicSearchState){
-      print('Bloc: current is MedicSearchState');
-      emit(currentState);
-    }
-    emit(currentState);
-     */
   }
 
   FutureOr<void> searchChangedMedicEvent(
@@ -191,12 +179,17 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
       e.copyWith(staffList: matchingStaff, studentsList: [SingleGroupWithStudentsModel(groupNumber: '', students: matchingStudent)]);
     }).whereType<StaffAndStudentsModel>().toList();
     }
-
+    if(filteredGroups.isEmpty){
+      emit(MedicNoDataState());
+    }
     if(filteredGroups != null){
       print('Отфильтровал. Вот что получилось: ${filteredGroups}');
       emit(MedicFilteredState(medicFilteredCommunity: filteredGroups));
     }
-    // emit(MedicNoDataState());
+    else{
+      emit(MedicNoDataState());
+    }
+
   }
 
   FutureOr<void> onTapOutsideTextFieldMedicEvent(OnTapOutsideTextFieldMedicEvent event, Emitter<MedicState> emit) {

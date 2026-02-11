@@ -31,7 +31,7 @@ class SearchChangedMedicEvent extends MedicEvent{
 }
 class OnTapOutsideTextFieldMedicEvent extends MedicEvent{}
 
-
+// local cache storage
 class MedicFetchedNewDateSetEvent extends MedicEvent{
   final Map<String, String> newDateSet;
   MedicFetchedNewDateSetEvent({required this.newDateSet});

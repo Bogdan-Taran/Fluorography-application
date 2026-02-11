@@ -576,6 +576,7 @@ class _MedicScreen extends State<MedicScreen> {
                               print('Экран: состояние MedicFetchingErrorState');
                               return Center(child: Text('Произошла ошибка'));
                             case MedicLoadedCommunitySuccessfulState:
+                              searchController.clear();
                               print(
                                 'Экран: состояние MedicLoadedCommunitySuccessfulState',
                               );

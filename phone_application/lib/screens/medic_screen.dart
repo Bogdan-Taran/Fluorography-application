@@ -576,7 +576,6 @@ class _MedicScreen extends State<MedicScreen> {
                                 ),
                               );
                             case MedicFilteredState:
-
                               final successfulState =
                                   medicState as MedicFilteredState;
                               print('Экран: MedicFilteredState');

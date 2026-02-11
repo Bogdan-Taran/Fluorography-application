@@ -155,41 +155,49 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     emit(MedicSearchState());
   }
 
+
   FutureOr<void> searchChangedMedicEvent(
       SearchChangedMedicEvent event,
       Emitter<MedicState> emit,
-      ) {
+      ) async {
     List<StaffAndStudentsModel>? entireGroups = event.entireGroups;
-    List<StaffAndStudentsModel> filteredGroups = [];
-    final query = event.query;
-    if (query.isEmpty) {
-      print('Bloc: query пустой');
+    if(entireGroups == null || event.query.isEmpty){
+      print('Bloc: группы пусты или queryотсутствует');
       emit(MedicNoDataState());
-    }
-    print('Bloc: пришёл query: $query');
-    if(entireGroups != null) {
-      print('Bloc: пришедшие группы не пусты');
-    print('Bloc: наичнаю сортировку');
-      filteredGroups = entireGroups.map((e) {
-      final matchingStaff = e.staffList.where((sta) => sta.searchKey.contains(query)).toList();
-      final matchingStudent = e.studentsList.expand((group){
-        return group.students.where((stu) => stu.searchKey.contains(query));
-      }).toList();
-      return matchingStaff.isEmpty & matchingStudent.isEmpty ? null :
-      e.copyWith(staffList: matchingStaff, studentsList: [SingleGroupWithStudentsModel(groupNumber: '', students: matchingStudent)]);
-    }).whereType<StaffAndStudentsModel>().toList();
-    }
-    if(filteredGroups.isEmpty){
-      emit(MedicNoDataState());
-    }
-    if(filteredGroups != null){
-      print('Отфильтровал. Вот что получилось: ${filteredGroups}');
-      emit(MedicFilteredState(medicFilteredCommunity: filteredGroups));
-    }
-    else{
-      emit(MedicNoDataState());
+      return;
     }
 
+    final query = event.query.toLowerCase().trim();
+    print('Bloc: пришёл query: $query');
+    final filteredGroups = <StaffAndStudentsModel>[];
+
+    for(final groupData in entireGroups) {
+      final matchingStaff = groupData.staffList.where((staff) => staff.searchKey.contains(query)).toList();
+
+      final matchingGroups = <SingleGroupWithStudentsModel>[];
+      for(final group in groupData.studentsList) {
+        final matchingStudents = group.students.where((student) => student.searchKey.contains(query)).toList();
+
+        if(matchingStudents.isNotEmpty) {
+          matchingGroups.add(SingleGroupWithStudentsModel(
+              groupNumber: group.groupNumber, students: matchingStudents));
+        }
+      }
+      if(matchingStaff.isNotEmpty || matchingGroups.isNotEmpty){
+        final filteredGroupData = groupData.copyWith(
+          staffList: matchingStaff,
+          studentsList: matchingGroups
+        );
+        filteredGroups.add(filteredGroupData);
+      }
+    }
+    if(filteredGroups.isEmpty) {
+      print('Bloc: ничего не найдено');
+      emit(MedicNoDataState());
+    } else {
+      print('Bloc: отфильтровал. Вот что получилось: $filteredGroups');
+      emit(MedicFilteredState(medicFilteredCommunity: filteredGroups));
+    }
   }
 
   FutureOr<void> onTapOutsideTextFieldMedicEvent(OnTapOutsideTextFieldMedicEvent event, Emitter<MedicState> emit) {

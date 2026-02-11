@@ -5,19 +5,16 @@ abstract class MedicState {}
 
 abstract class MedicActionState extends MedicState{}
 
+// api, fetch
 final class MedicInitial extends MedicState {}
-
+class MedicFetchingErrorState extends MedicState{}
 class MedicFetchingLoadingState extends MedicState{}
-
 class MedicLoadedCommunitySuccessfulState extends MedicState{
   final List<StaffAndStudentsModel> medicEntireCommunity;
   MedicLoadedCommunitySuccessfulState({required this.medicEntireCommunity});
 }
-/*
-class MedicLoadedCommunitySuccessfulState extends MedicState{
-  final List<MedicDisplayItem> displayItems;
-  MedicLoadedCommunitySuccessfulState({required this.displayItems});
-}*/
+
+//search
 class MedicSearchState extends MedicState{
   final List<StaffAndStudentsModel>? medicFilteredCommunity;
   MedicSearchState({this.medicFilteredCommunity});
@@ -29,10 +26,12 @@ class MedicFilteredState extends MedicState{
 }
 class MedicUsualState extends MedicState{}
 
-class MedicFetchingErrorState extends MedicState{}
-
+// authentication
 class MedicLogoutSuccessfulState extends MedicState{}
 class MedicLogoutErrorState extends MedicState{}
 
+//select dates
 class MedicOpenDatePickerState extends MedicState{}
 class MedicCloseDatePickerState extends MedicState{}
+
+

@@ -40,11 +40,9 @@ class BuildersScreen {
     );
   }
 
-  void openDatePicker(
-    BuildContext context,
-    String uniqueDateContainerId,
-    WorkingWithFluorographyBloc bloc,
-  ) {
+  void openDatePicker(BuildContext context,
+      String uniqueDateContainerId,
+      WorkingWithFluorographyBloc bloc,) {
     final dateNow = DateTime.now();
     BottomPicker.date(
       buttonContent: Text(
@@ -119,4 +117,66 @@ class BuildersScreen {
       bottomPickerTheme: BottomPickerTheme.fluraPlate,
     ).show(context);
   }
+}
+
+class PopUpMessage extends StatelessWidget {
+  final String message;
+  final bool isSuccess;
+
+  const PopUpMessage({
+    super.key,
+    required this.message,
+    required this.isSuccess,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return
+      Positioned(
+          top: 80,
+          left: 20,
+          right: 20,
+          child: Material(
+            child: Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: isSuccess ? Color(0xff1DD300) : Color(0xffF80012),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                        isSuccess? Icons.check_circle_outline : Icons.error_outline,
+                        color: Colors.white
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        message,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+            ),
+          )
+      );
+  }
+}
+
+void showPopMessage(
+    BuildContext context,
+    String message,
+    bool isSuccess
+    ){
+  OverlayEntry? overlayEntry;
+  overlayEntry = OverlayEntry(builder: (context){
+    return PopUpMessage(message: message, isSuccess: isSuccess);
+  });
+  Overlay.of(context).insert(overlayEntry);
+  Future.delayed(Duration(seconds: 2), (){
+    if(overlayEntry!.mounted){
+      overlayEntry.remove();
+    }
+  });
 }

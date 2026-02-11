@@ -62,16 +62,18 @@ class WorkingWithFluorographyBloc extends Bloc<WorkingWithFluorographyEvent, Wor
 
   Future<void> saveEditingModeEvent(SaveEditingModeEvent event, Emitter<WorkingWithFluorographyState> emit) async {
     final newDatesPatch = state.tempDates;
-    emit(SuccessfullyPatchedSetDatesState(newDateSet: newDatesPatch));
     print('Даты котрые будут изменены: $newDatesPatch');
-    await _ApiService.updateFluraDateFromSet(newDatesPatch).then((_){
-      emit(state.copyWith(tempDates: {}));
-    });
+    final result = await _ApiService.updateFluraDateFromSet(newDatesPatch);
+    emit(state.copyWith(tempDates: {}));
 
-  //   замена дат в UI
-
+    if(result['success']){
+      emit(SuccessfullyPatchedSetDatesState(newDateSet: newDatesPatch));
+    } else{
+      emit(FailToPatchDatesState());
+    }
 
   }
+
 }
 
 

@@ -93,7 +93,7 @@ class _MedicScreen extends State<MedicScreen> {
     BuildersScreen _buildersScreen = BuildersScreen();
     final appBarHeight = MediaQuery.of(context).size.height * 0.13;
     final blueColor = Color(0xff98BFF3);
-
+    PopUpMessage _PopUpMessage;
 
     return ColorfulSafeArea(
       color: Colors.white,
@@ -211,8 +211,10 @@ class _MedicScreen extends State<MedicScreen> {
                           //context.read<MedicBloc>().add(OnTapTextFieldEvent());
                         },
                         icon: Icon(
-                            Icons.clear,
-                          color: searchController.text.isEmpty? Colors.transparent : const Color(0xff98BFF3),
+                          Icons.clear,
+                          color: searchController.text.isEmpty
+                              ? Colors.transparent
+                              : const Color(0xff98BFF3),
                         ),
                       ),
                       enabled: true,
@@ -304,18 +306,6 @@ class _MedicScreen extends State<MedicScreen> {
                         BlocListener<MedicBloc, MedicState>(
                           listener: (context, state) {
                             switch (state.runtimeType) {
-                              // case MedicLogoutSuccessfulState:
-                              //   print('Отработало сосотояния выхода');
-                              //   Navigator.of(context).pushReplacement(
-                              //     MaterialPageRoute(
-                              //       builder: (BuildContext context) =>
-                              //           SignInScreen(),
-                              //     ),
-                              //   );
-                              //   break;
-                              // case MedicLogoutErrorState:
-                              //   print('Ошибка при попытке выхода');
-                              //   break;
                               case MedicLogoutSuccessfulState:
                                 print('Отработало сосотояния выхода');
                                 break;
@@ -544,14 +534,27 @@ class _MedicScreen extends State<MedicScreen> {
                           listener: (context, state) {
                             switch (state.runtimeType) {
                               case SuccessfullyPatchedSetDatesState:
-                                print('Экран: состояние SuccessfullyPatchedSetDatesState');
-                                // здесь подставляются tempDates из главного State
+                                print(
+                                  'Экран: состояние SuccessfullyPatchedSetDatesState',
+                                );
                                 final datesState =
                                     state as SuccessfullyPatchedSetDatesState;
+                                showPopMessage(
+                                  context,
+                                  'Успешнаое сохранение',
+                                  true,
+                                );
                                 context.read<MedicBloc>().add(
                                   MedicFetchedNewDateSetEvent(
                                     newDateSet: datesState.newDateSet,
                                   ),
+                                );
+                                break;
+                              case FailToPatchDatesState:
+                                showPopMessage(
+                                  context,
+                                  'Ошибка при сохранении',
+                                  false,
                                 );
                             }
                           },
@@ -563,14 +566,22 @@ class _MedicScreen extends State<MedicScreen> {
                         builder: (context, medicState) {
                           switch (medicState.runtimeType) {
                             case MedicFetchingLoadingState:
-                              print('Экран: состояние MedicFetchingLoadingState');
-                              return Center(child: _buildersScreen.buildLoading());
+                              print(
+                                'Экран: состояние MedicFetchingLoadingState',
+                              );
+                              return Center(
+                                child: _buildersScreen.buildLoading(),
+                              );
                             case MedicFetchingErrorState:
                               print('Экран: состояние MedicFetchingErrorState');
                               return Center(child: Text('Произошла ошибка'));
                             case MedicLoadedCommunitySuccessfulState:
-                              print('Экран: состояние MedicLoadedCommunitySuccessfulState',);
-                              final successfulState = medicState as MedicLoadedCommunitySuccessfulState;
+                              print(
+                                'Экран: состояние MedicLoadedCommunitySuccessfulState',
+                              );
+                              final successfulState =
+                                  medicState
+                                      as MedicLoadedCommunitySuccessfulState;
                               return MedicConstructorAccordionBuildWidget(
                                 medicEntireCommunity:
                                     successfulState.medicEntireCommunity,

@@ -140,7 +140,6 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
           staffList: updatedStaffList
         );
       }).toList();
-
       // изменять только секцию данной группы
       emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: updatedList));
       print('Даты успешно изменены');

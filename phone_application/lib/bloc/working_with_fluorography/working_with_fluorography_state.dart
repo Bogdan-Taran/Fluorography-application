@@ -33,6 +33,7 @@ class SuccessfullyPatchedSetDatesState extends WorkingWithFluorographyState{
   final Map<String, String> newDateSet;
   SuccessfullyPatchedSetDatesState({required this.newDateSet});
 }
+class FailToPatchDatesState extends WorkingWithFluorographyState{}
 
 
 

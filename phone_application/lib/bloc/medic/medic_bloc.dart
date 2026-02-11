@@ -142,7 +142,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
       }).toList();
 
       // изменять только секцию данной группы
-      /*emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: updatedList));*/
+      emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: updatedList));
       print('Даты успешно изменены');
     }catch (e){
       emit(MedicFetchingErrorState());

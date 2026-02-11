@@ -149,18 +149,69 @@ class ApiService {
   Future<void> updateFluraDateFromSet(Map<String, String> dateMap) async{
     print('Заупскаю цикл для обновления выбранных дат');
     final token = await getToken();
+    if(token == null){
+      print('Токен отсутствует');
+      return;
+    }
     try {
       await Future.forEach(
           dateMap.entries, (MapEntry<String, String> entry) async {
         final uniqueId = entry.key;
         print('Обновляю дату для $uniqueId');
         final selectedDate = entry.value;
-        await updateFluraDate(selectedDate, uniqueId, token!);
+        await updateFluraDateDio(selectedDate, uniqueId, token!);
       });
     } catch(e){
-      print(e);
+      print('Ошибка при патче в updateFluraDateFromSet: ${e.toString()}');
     }
   }
+
+  Future<void> updateFluraDateDio(String selectedDate, String uniqueId, String token) async {
+    try{
+      print('Пробую патчить дату для ID: $uniqueId');
+      Response response = await dio.patch(
+        '/api/fluorography/$uniqueId',
+        data: {
+          'date': selectedDate
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token'
+          },
+          validateStatus: (status){
+            return status != null && status < 600;
+          }
+        ),
+
+      );
+      print('Закончил патчить');
+      if(response.statusCode == 200){
+        final data = response.data;
+        print('Post patched: $data');
+      }
+      else if(response.statusCode == 401){
+        print('Failed to patch: Not authorized (${response.statusCode})');
+      }
+      else if(response.statusCode == 404){
+        print('Failed to patch: Page not found (${response.statusCode})');
+      }
+      else if(response.statusCode == 502){
+        print('Failed to patch: The server was unable to process the request (${response.statusCode})');
+      }
+      else{
+        print('Failed to patch post: ${response.data} (${response.statusCode})');
+      }
+    }
+    catch (e) {
+      print('Catch: Error while patching date: $e');
+      if(e is DioException){
+        print('Ошибка в Dio: $e');
+      }
+    }
+  }
+
+
+/*
   Future<void> updateFluraDate(String selectedDate, String uniqueId, String token) async {
     final url = Uri.parse('https://flura.tomtit-tomsk.ru/api/fluorography/$uniqueId');
     // String selectedDate = '2025-11-21';
@@ -187,5 +238,6 @@ class ApiService {
     } catch (e) {
       print('Error while patching: $e');
     }
-  }
+  }*/
+
 }

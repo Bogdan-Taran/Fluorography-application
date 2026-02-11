@@ -5,11 +5,14 @@ abstract class MedicEvent {
   const MedicEvent();
 }
 
+// api
 class MedicInitialEvent extends MedicEvent{}
 class MedicFetchEvent extends MedicEvent{}
 
+// authentication
 class MedicLogoutEvent extends MedicEvent{}
 
+//date change
 class MedicOpenDatePickerEvent extends MedicEvent{}
 class MedicCloseDatePickerEvent extends MedicEvent{}
 class MedicSelectDateEvent extends MedicEvent{
@@ -19,6 +22,7 @@ class MedicSelectDateEvent extends MedicEvent{
   });
 }
 
+//search
 class OnTapTextFieldEvent extends MedicEvent{}
 class SearchChangedMedicEvent extends MedicEvent{
   final String query;

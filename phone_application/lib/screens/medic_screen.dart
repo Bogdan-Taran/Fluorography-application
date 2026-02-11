@@ -94,6 +94,7 @@ class _MedicScreen extends State<MedicScreen> {
     final appBarHeight = MediaQuery.of(context).size.height * 0.13;
     final blueColor = Color(0xff98BFF3);
 
+
     return ColorfulSafeArea(
       color: Colors.white,
       child: Scaffold(
@@ -532,6 +533,7 @@ class _MedicScreen extends State<MedicScreen> {
                           listener: (context, state) {
                             switch (state.runtimeType) {
                               case SuccessfullyPatchedSetDatesState:
+                                print('Экран: состояние SuccessfullyPatchedSetDatesState');
                                 // здесь подставляются tempDates из главного State
                                 final datesState =
                                     state as SuccessfullyPatchedSetDatesState;
@@ -550,8 +552,10 @@ class _MedicScreen extends State<MedicScreen> {
                         builder: (context, medicState) {
                           switch (medicState.runtimeType) {
                             case MedicFetchingLoadingState:
+                              print('Экран: состояние MedicFetchingLoadingState');
                               return Center(child: _buildersScreen.buildLoading());
                             case MedicFetchingErrorState:
+                              print('Экран: состояние MedicFetchingErrorState');
                               return Center(child: Text('Произошла ошибка'));
                             case MedicLoadedCommunitySuccessfulState:
                               print('Экран: состояние MedicLoadedCommunitySuccessfulState',);
@@ -569,17 +573,20 @@ class _MedicScreen extends State<MedicScreen> {
                                     successfulState.medicEntireCommunity,
                               );*/
                             case MedicSearchState:
+                              print('Экран: состояние MedicSearchState');
                               return SizedBox(
                                 height: MediaQuery.of(context).size.height * 1,
                                 width: MediaQuery.of(context).size.width * 1,
                               );
                             case MedicNoDataState:
+                              print('Экран: состояние MedicNoDataState');
                               return Center(
                                 child: Text(
                                   'Экран: Ничего не нашлось по вашему заросу',
                                 ),
                               );
                             case MedicFilteredState:
+
                               final successfulState =
                                   medicState as MedicFilteredState;
                               print('Экран: MedicFilteredState');
@@ -594,6 +601,7 @@ class _MedicScreen extends State<MedicScreen> {
                                 medicEntireCommunity: allCommunity,
                               );
                             default:
+                              print('Экран: состояние default');
                               return Container(
                                 padding: EdgeInsetsGeometry.symmetric(
                                   horizontal: 15,

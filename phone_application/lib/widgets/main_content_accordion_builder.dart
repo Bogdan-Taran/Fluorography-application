@@ -156,7 +156,6 @@ class MedicConstructorAccordionBuildWidget extends StatelessWidget {
                     final uniqueStudentId = '${student.id}';
                     return OneRowBuildAccordionSectionContent(
                       student: student,
-                      // uniqueId: uniqueStudentId,
                       uniqueId: uniqueStudentId,
                       uniqueEditingSectionId: uniqueGroupSectionId,
                     );
@@ -221,6 +220,7 @@ class CuratorConstructorAccordionBuildWidget extends StatelessWidget {
       sectionClosingHapticFeedback: SectionHapticFeedback.light,
       headerBorderRadius: 16,
       children: groups!.map((groupData) {
+        bool isEditing = false;
         final String uniqueGroupSectionId = 'id_group_${groupData.groupNumber}';
         return AccordionSection(
           isOpen: false,
@@ -231,7 +231,7 @@ class CuratorConstructorAccordionBuildWidget extends StatelessWidget {
             count: groupData.students.length,
             groupNumber: groupData.groupNumber,
           ),
-          contentHorizontalPadding: 16,
+          contentHorizontalPadding: 12,
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -242,23 +242,24 @@ class CuratorConstructorAccordionBuildWidget extends StatelessWidget {
                 )
               else
                 Column(
-                  children: groupData.students.map((student) {
-                    // final uniqueStudentId = 'student_${student.id}_${student.lastname}';
-                    final uniqueStudentId = '${student.id}';
-                    return OneRowBuildAccordionSectionContent(
-                      student: student,
-                      uniqueId: uniqueStudentId,
-                      uniqueEditingSectionId: uniqueGroupSectionId,
-                    );
-                  }).toList(),
+                  children: [
+                    ...groupData.students.map((student) {
+                      // final uniqueStudentId = 'student_${student.id}_${student.lastname}';
+                      final uniqueStudentId = '${student.id}';
+                      return OneRowBuildAccordionSectionContent(
+                        student: student,
+                        uniqueId: uniqueStudentId,
+                        uniqueEditingSectionId: uniqueGroupSectionId,
+                      );
+                    }),
+                    BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
+                        builder: (context, state){
+                          isEditing = state.editingStates[uniqueGroupSectionId] ?? false;
+                          return EditRowWithButtons(uniqueId: uniqueGroupSectionId, isEditing: isEditing, key: key,);
+                        }
+                    )
+                  ]
                 ),
-              SizedBox(height: 15),
-              groupData.students.isEmpty
-                  ? SizedBox(height: 0)
-                  : ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Редактировать'),
-                    ),
             ],
           ),
         );

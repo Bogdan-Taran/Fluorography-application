@@ -15,8 +15,8 @@ class BuildersScreen {
   Widget buildLoading() {
     return Center(
       child: LoadingAnimationWidget.halfTriangleDot(
-        color: Colors.white,
-        size: 24,
+        color: Color(0xff98BFF3),
+        size: 50,
       ),
     );
   }

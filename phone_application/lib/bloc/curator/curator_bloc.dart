@@ -56,7 +56,7 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
   }
 
   FutureOr<void> searchChangedCuratorEvent(SearchChangedCuratorEvent event, Emitter<CuratorState> emit) {
-  //   прописать логику
+  //  TODO: прописать логику
   }
 
   FutureOr<void> onTapTextFieldEvent(OnTapTextFieldEvent event, Emitter<CuratorState> emit) {

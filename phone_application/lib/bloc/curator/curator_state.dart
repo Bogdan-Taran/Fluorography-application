@@ -10,6 +10,11 @@ final class CuratorInitial extends CuratorState {}
 
 class CuratorFetchingLoadingState extends CuratorState{}
 class CuratorFetchingErrorState extends CuratorState{}
+class CuratorLoadedCommunitySuccessfulState extends CuratorState{
+  final List<SingleGroupWithStudentsModel> studentsList;
+  CuratorLoadedCommunitySuccessfulState({required this.studentsList});
+}
+
 
 
 class CuratorLoadedGroupsSuccessfulState extends CuratorState {

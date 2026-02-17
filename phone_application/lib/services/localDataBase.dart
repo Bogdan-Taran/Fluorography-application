@@ -168,7 +168,7 @@ class CheckerCacheService {
     }
     print('Пробую обратиться к api');
     try {
-      final data = await _ApiServiceGetCommunityMembers.getGroupsForAdmin();
+      final data = await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
       print('Данные из api получены');
       final jsonString = jsonEncode(data.map((e) => e.toJson()).toList());
       print('Сохраняю в кэш');
@@ -180,7 +180,7 @@ class CheckerCacheService {
     }
     print('Давай по новой, миша, всё хуйня - запрос к api');
     final dataFromApi =
-    await _ApiServiceGetCommunityMembers.getGroupsForAdmin();
+    await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
     return dataFromApi;
   }
 }

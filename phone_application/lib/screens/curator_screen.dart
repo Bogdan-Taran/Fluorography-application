@@ -29,7 +29,7 @@ class _CuratorScreen extends State<CuratorScreen> {
 
   @override
   void initState() {
-    (context).read<CuratorBloc>().add(CuratorInitialEvent());
+    (context).read<CuratorBloc>().add(CuratorFetchEvent());
     futureGroupsMethod = _ApiServiceGetCommunityMembers.getStudentsWithFluraDio().then((
         data,
         ) {

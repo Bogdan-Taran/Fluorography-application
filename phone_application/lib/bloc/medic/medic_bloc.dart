@@ -56,16 +56,6 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     emit(MedicFetchingLoadingState());
     List<StaffAndStudentsModel> allCommunity = await _ApiServiceGetCommunityMembers.getAllComuintyForMedic();
     print('Bloc Medic: Студенты и сотрудники успешно получны');
-    //
-    // final allStaff = allCommunity.expand((e) => e.staffList).toList();
-    // if(allStaff.isNotEmpty){
-    //   displayItem.add(StaffSection(title: 'Сотрудники', count: allStaff.length, staffList: allStaff));
-    // }
-    // for(var item in allCommunity){
-    //   for(var group in item.studentsList){
-    //     displayItem.add(GroupSection(title: 'Группа', count: group.students.length, groupNumber: group.groupNumber, students: group.students));
-    //   }
-    // }
     emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: allCommunity));
   }
 

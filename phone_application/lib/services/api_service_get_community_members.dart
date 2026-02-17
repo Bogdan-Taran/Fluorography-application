@@ -214,7 +214,7 @@ class ApiServiceGetCommunityMembers {
     }
   }
 
-
+/*
   Future<List<SingleGroupWithStudentsModel>> getGroupsForAdmin() async {
     List<SingleGroupWithStudentsModel> finalListAllGroupsForAdmin = [];
     try {
@@ -224,7 +224,7 @@ class ApiServiceGetCommunityMembers {
       print('Произошла ошибка при попытке получить группы для админа');
     }
     return finalListAllGroupsForAdmin;
-  }
+  }*/
 
   Future<List<SingleGroupWithStudentsModel>> getAllGroupsIteration() async {
     final groups = await getGroups();

@@ -23,6 +23,7 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
     on<CuratorLogoutEvent> (curatorLogoutEvent);
     on<SearchChangedCuratorEvent>(searchChangedCuratorEvent);
     on<OnTapTextFieldEvent>(onTapTextFieldEvent);
+    on<CuratorFetchEvent>(curatorFetchEvent);
   }
 
   FutureOr<void> curatorInitialEvent(
@@ -61,5 +62,11 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
 
   FutureOr<void> onTapTextFieldEvent(OnTapTextFieldEvent event, Emitter<CuratorState> emit) {
     emit(CuratorSearchState());
+  }
+
+  FutureOr<void> curatorFetchEvent(CuratorFetchEvent event, Emitter<CuratorState> emit) async{
+    emit(CuratorFetchingLoadingState());
+    List<SingleGroupWithStudentsModel> studentsList = await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
+    emit(CuratorLoadedGroupsSuccessfulState(curatorGroups: studentsList));
   }
 }

@@ -8,6 +8,8 @@ import 'package:project_fluorography/bloc/admin/admin_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/widgets/main_content_accordion_builder.dart';
+import '../models/single_group_with_students_model.dart';
+import '../services/api_service_get_community_members.dart';
 import '../services/builders_screen.dart';
 import '../services/shared_pref_service.dart';
 import '../styles.dart';
@@ -22,11 +24,14 @@ class AdminScreen extends StatefulWidget {
 }
 
 class _AdminScreen extends State<AdminScreen> {
-
+  late final Future<List<SingleGroupWithStudentsModel>> futureGroupsMethod;
   final searchController = TextEditingController();
+  ApiServiceGetCommunityMembers _ApiServiceGetCommunityMembers = ApiServiceGetCommunityMembers();
+  List<SingleGroupWithStudentsModel> adminGroups = [];
+
   @override
   void initState() {
-    (context).read<AdminBloc>().add(AdminInitialEvent());
+    (context).read<AdminBloc>().add(AdminFetchEvent());
     super.initState();
   }
   @override

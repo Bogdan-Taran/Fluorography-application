@@ -214,30 +214,6 @@ class ApiServiceGetCommunityMembers {
     }
   }
 
-  Future<List<SingleGroupWithStudentsModel>> getGroupsForCurator() async {
-    List<String>? curatorGroups;
-    final List<SingleGroupWithStudentsModel> finalListAllGroupsForCurator = [];
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      curatorGroups = prefs.getStringList('groups')!;
-    } catch (e) {
-      throw ('В памяти не сохранено ни одно группы куратора');
-    }
-    for (final group in curatorGroups) {
-      try {
-        final students = await getStudentsListByGroupNumber(group);
-        finalListAllGroupsForCurator.add(
-          SingleGroupWithStudentsModel(groupNumber: group, students: students),
-        );
-      } catch (e) {
-        print('Ошибка при загрузке студентов группы $group');
-        finalListAllGroupsForCurator.add(
-          SingleGroupWithStudentsModel.initial(group),
-        );
-      }
-    }
-    return finalListAllGroupsForCurator;
-  }
 
   Future<List<SingleGroupWithStudentsModel>> getGroupsForAdmin() async {
     List<SingleGroupWithStudentsModel> finalListAllGroupsForAdmin = [];

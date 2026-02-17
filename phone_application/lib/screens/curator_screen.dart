@@ -22,15 +22,15 @@ class CuratorScreen extends StatefulWidget {
 }
 
 class _CuratorScreen extends State<CuratorScreen> {
-  final searchController = TextEditingController();
   late final Future<List<SingleGroupWithStudentsModel>> futureGroupsMethod;
+  final searchController = TextEditingController();
   ApiServiceGetCommunityMembers _ApiServiceGetCommunityMembers = ApiServiceGetCommunityMembers();
   List<SingleGroupWithStudentsModel> curatorGroups = [];
 
   @override
   void initState() {
     (context).read<CuratorBloc>().add(CuratorInitialEvent());
-    futureGroupsMethod = _ApiServiceGetCommunityMembers.getGroupsForCurator().then((
+    futureGroupsMethod = _ApiServiceGetCommunityMembers.getStudentsWithFluraDio().then((
         data,
         ) {
       curatorGroups = data;

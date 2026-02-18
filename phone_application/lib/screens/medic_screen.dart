@@ -477,7 +477,6 @@ class _MedicScreen extends State<MedicScreen> {
                                 break;
 
                               case AuthenticationLogOutState:
-                                //   TODO: попробовать добавить mounted
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -554,7 +553,6 @@ class _MedicScreen extends State<MedicScreen> {
                         ),
                       ],
 
-                      // child: Text('Лягушка')
                       child: BlocBuilder<MedicBloc, MedicState>(
                         builder: (context, medicState) {
                           switch (medicState.runtimeType) {

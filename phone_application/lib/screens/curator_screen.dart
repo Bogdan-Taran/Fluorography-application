@@ -3,11 +3,13 @@ import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/bloc/curator/curator_bloc.dart';
 import 'package:project_fluorography/models/single_group_with_students_model.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import '../bloc/search/search_bloc.dart';
+import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../main.dart';
 import '../services/api_service_get_community_members.dart';
 import '../services/builders_screen.dart';
@@ -208,8 +210,8 @@ class _CuratorScreen extends State<CuratorScreen> {
                     keyboardType: TextInputType.text,
                     onTapOutside: (event) {
                       FocusManager.instance.primaryFocus?.unfocus();
-                      // context.read<MedicBloc>().add(
-                      //     OnTapOutsideTextFieldMedicEvent()
+                      // context.read<CuratorBloc>().add(
+                      //     OnTapOutsideTextFieldCuratorEvent()
                       // );
                     },
                     enableSuggestions: false,
@@ -263,240 +265,280 @@ class _CuratorScreen extends State<CuratorScreen> {
               ),
             ),
             SingleChildScrollView(
-
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                child: MultiBlocListener(
-                  listeners: [
-                    BlocListener<AuthenticationBloc, AuthenticationState>(
-                      listener: (context, state) {
-                        switch (state.runtimeType) {
-                          case HasAcceptedLogOutState:
-                            print('Отработало сосотояния выхода');
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text('Подтверждение выхода'),
-                                  content: SingleChildScrollView(
-                                    child: ListBody(
-                                      children: const <Widget>[
-                                        Text('Вы уверены что хотите выйти?'),
+                padding: EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+                child: Column(
+                  children: [
+                    MultiBlocListener(
+                      listeners: [
+                        BlocListener<CuratorBloc, CuratorState>(
+                          listener: (context, state) {
+                            switch (state.runtimeType) {
+                              case CuratorLogoutSuccessfulState:
+                                break;
+                              case CuratorFetchingLoadingState:
+                                _buildersScreen.buildLoading();
+                                break;
+                            }
+                          },
+                        ),
+                        BlocListener<AuthenticationBloc, AuthenticationState>(
+                          listener: (context, state) {
+                            switch (state.runtimeType) {
+                              case HasAcceptedLogOutState:
+                                print('Отработало сосотояния выхода');
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text('Подтверждение выхода'),
+                                      content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: const <Widget>[
+                                            Text('Вы уверены что хотите выйти?'),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        // no
+                                        ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                WidgetStateProperty.resolveWith<Color>((
+                                                  Set<WidgetState> states,
+                                                ) {
+                                                  if (states.contains(
+                                                    WidgetState.disabled,
+                                                  )) {
+                                                    return const Color(0xffD5D6D7);
+                                                  }
+                                                  if (states.contains(
+                                                    WidgetState.pressed,
+                                                  )) {
+                                                    return const Color(0xFFE4E4E4);
+                                                  }
+                                                  if (states.contains(
+                                                    WidgetState.hovered,
+                                                  )) {
+                                                    return const Color(0xFFBADEFF);
+                                                  }
+                                                  return const Color(0xffffffff);
+                                                }),
+                                            foregroundColor: WidgetStateProperty.all(
+                                              const Color(0xffffffff),
+                                            ),
+                                            minimumSize: WidgetStateProperty.all(
+                                              Size(
+                                                MediaQuery.of(context).size.width * 0.1,
+                                                35,
+                                              ),
+                                            ),
+                                            shape: WidgetStateProperty.all(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            print('Экран: Нажата кнопка отмены');
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text(
+                                            'Отмена',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Color(0xff98BFF3),
+                                              fontWeight: FontWeight.w600,
+                                              fontFamily: 'Geologica',
+                                            ),
+                                          ),
+                                        ),
+                                        //yes
+                                        ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                WidgetStateProperty.resolveWith<Color>((
+                                                  Set<WidgetState> states,
+                                                ) {
+                                                  if (states.contains(
+                                                    WidgetState.disabled,
+                                                  )) {
+                                                    return const Color(0xffD5D6D7);
+                                                  }
+                                                  if (states.contains(
+                                                    WidgetState.pressed,
+                                                  )) {
+                                                    return const Color(0xFF72A7EB);
+                                                  }
+                                                  if (states.contains(
+                                                    WidgetState.hovered,
+                                                  )) {
+                                                    return const Color(0xFFBADEFF);
+                                                  }
+                                                  return const Color(0xff98BFF3);
+                                                }),
+                                            foregroundColor: WidgetStateProperty.all(
+                                              const Color(0xffffffff),
+                                            ),
+                                            minimumSize: WidgetStateProperty.all(
+                                              Size(
+                                                MediaQuery.of(context).size.width * 0.1,
+                                                35,
+                                              ),
+                                            ),
+                                            shape: WidgetStateProperty.all(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            context.read<AuthenticationBloc>().add(
+                                              SignOutAcceptEvent(),
+                                            );
+                                          },
+                                          child: const Text(
+                                            'Да',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Color(0xffffffff),
+                                              fontWeight: FontWeight.w600,
+                                              fontFamily: 'Geologica',
+                                            ),
+                                          ),
+                                        ),
                                       ],
-                                    ),
+                                    );
+                                  },
+                                );
+                                break;
+                    
+                              case AuthenticationLogOutState:
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AuthChecker(),
                                   ),
-                                  actions: <Widget>[
-                                    // no
-                                    ElevatedButton(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStateProperty.resolveWith<Color>((
-                                              Set<WidgetState> states,
-                                            ) {
-                                              if (states.contains(
-                                                WidgetState.disabled,
-                                              )) {
-                                                return const Color(0xffD5D6D7);
-                                              }
-                                              if (states.contains(
-                                                WidgetState.pressed,
-                                              )) {
-                                                return const Color(0xFFE4E4E4);
-                                              }
-                                              if (states.contains(
-                                                WidgetState.hovered,
-                                              )) {
-                                                return const Color(0xFFBADEFF);
-                                              }
-                                              return const Color(0xffffffff);
-                                            }),
-                                        foregroundColor: WidgetStateProperty.all(
-                                          const Color(0xffffffff),
-                                        ),
-                                        minimumSize: WidgetStateProperty.all(
-                                          Size(
-                                            MediaQuery.of(context).size.width * 0.1,
-                                            35,
-                                          ),
-                                        ),
-                                        shape: WidgetStateProperty.all(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                        ),
+                                );
+                                context.read<CuratorBloc>().add(CuratorLogoutEvent());
+                                break;
+                              case AuthenticationLoadingState:
+                                print('Экран: Загрузка AuthenticationLoadingState');
+                                _buildersScreen.buildLoading();
+                                break;
+                              case AuthenticationLogOutErrorState:
+                                showDialog(
+                                  context: context,
+                                  builder: (dialogContext) {
+                                    return AlertDialog(
+                                      title: Text("Ошибка"),
+                                      content: Text(
+                                        'Произошла ошибка при попытке выйти',
                                       ),
-                                      onPressed: () {
-                                        print('Экран: Нажата кнопка отмены');
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text(
-                                        'Отмена',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Color(0xff98BFF3),
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: 'Geologica',
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(dialogContext).pop(),
+                                          child: Text("OK"),
                                         ),
-                                      ),
-                                    ),
-                                    //yes
-                                    ElevatedButton(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStateProperty.resolveWith<Color>((
-                                              Set<WidgetState> states,
-                                            ) {
-                                              if (states.contains(
-                                                WidgetState.disabled,
-                                              )) {
-                                                return const Color(0xffD5D6D7);
-                                              }
-                                              if (states.contains(
-                                                WidgetState.pressed,
-                                              )) {
-                                                return const Color(0xFF72A7EB);
-                                              }
-                                              if (states.contains(
-                                                WidgetState.hovered,
-                                              )) {
-                                                return const Color(0xFFBADEFF);
-                                              }
-                                              return const Color(0xff98BFF3);
-                                            }),
-                                        foregroundColor: WidgetStateProperty.all(
-                                          const Color(0xffffffff),
-                                        ),
-                                        minimumSize: WidgetStateProperty.all(
-                                          Size(
-                                            MediaQuery.of(context).size.width * 0.1,
-                                            35,
-                                          ),
-                                        ),
-                                        shape: WidgetStateProperty.all(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        context.read<AuthenticationBloc>().add(
-                                          SignOutAcceptEvent(),
-                                        );
-                                      },
-                                      child: const Text(
-                                        'Да',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Color(0xffffffff),
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: 'Geologica',
-                                        ),
-                                      ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                break;
+                            }
+                          },
+                        ),
+                        BlocListener<
+                            WorkingWithFluorographyBloc,
+                            WorkingWithFluorographyState
+                        >(
+                          listener: (context, state) {
+                            switch (state.runtimeType) {
+                              case SuccessfullyPatchedSetDatesState:
+                                print(
+                                  'Экран: состояние SuccessfullyPatchedSetDatesState',
+                                );
+                                final datesState =
+                                state as SuccessfullyPatchedSetDatesState;
+                                showPopMessage(
+                                  context,
+                                  'Успешнаое сохранение',
+                                  true,
+                                );
+                                context.read<CuratorBloc>().add(
+                                  CuratorFetchedNewDateSetEvent(
+                                    newDateSet: datesState.newDateSet,
+                                  ),
+                                );
+                                break;
+                              case FailToPatchDatesState:
+                                showPopMessage(
+                                  context,
+                                  'Ошибка при сохранении',
+                                  false,
+                                );
+                            }
+                          },
+                        ),
+                      ],
+                      child: BlocBuilder<CuratorBloc, CuratorState>(
+                        builder: (context, state) {
+                          switch (state.runtimeType) {
+                            case CuratorFetchingLoadingState:
+                              return Center(child: _buildersScreen.buildLoading());
+                            case CuratorFetchingErrorState:
+                              return Center(child: Text('Произошла ошибка'));
+                            case CuratorLoadedGroupsSuccessfulState:
+                              print('Экран: состояние CuratorLoadedGroupsSuccessfulState',);
+                              final successState =
+                                  state as CuratorLoadedGroupsSuccessfulState;
+                              return CuratorConstructorAccordionBuildWidget(
+                                groups: successState.curatorGroups,
+                              );
+                            case CuratorSearchState:
+                              print('Экран: состояние CuratorSearchState');
+                              return SizedBox();
+                            case CuratorNoDataState:
+                              print('Экран: состояние CuratorNoDataState');
+                              return Center(
+                                child: Text(
+                                  'Ничего не нашлось по вашему заросу',
+                                ),
+                              );
+                            case CuratorFilteredState:
+                              final successfulState =
+                              state as CuratorFilteredState;
+                              print('Экран: CuratorFilteredState');
+                              print(successfulState.filteredStudents);
+                              return CuratorConstructorAccordionBuildWidget(groups: successfulState.filteredStudents);
+                            case CuratorUsualState:
+                              print('Экран: состояние CuratorUsualState');
+                              return CuratorConstructorAccordionBuildWidget(groups: curatorGroups);
+                              
+                              
+                            default:
+                              return Container(
+                                padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+                                width: MediaQuery.of(context).size.width * 1,
+                                height: MediaQuery.of(context).size.height * 0.8,
+                                decoration: BoxDecoration(color: Colors.transparent),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'У вас отстутствуют группы кураторства',
+                                      style: TextStyle(fontSize: 18),
                                     ),
                                   ],
-                                );
-                              },
-                            );
-                            break;
-
-                          case AuthenticationLogOutState:
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AuthChecker(),
-                              ),
-                            );
-                            context.read<CuratorBloc>().add(CuratorLogoutEvent());
-                            break;
-                          case AuthenticationLoadingState:
-                            print('Экран: Загрузка AuthenticationLoadingState');
-                            _buildersScreen.buildLoading();
-                            break;
-                          case AuthenticationLogOutErrorState:
-                            showDialog(
-                              context: context,
-                              builder: (dialogContext) {
-                                return AlertDialog(
-                                  title: Text("Ошибка"),
-                                  content: Text(
-                                    'Произошла ошибка при попытке выйти',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(dialogContext).pop(),
-                                      child: Text("OK"),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                            break;
-                        }
-                      },
-                    ),
-                    BlocListener<CuratorBloc, CuratorState>(
-                      listener: (context, state) {
-                        switch (state.runtimeType) {
-                          // TODO: убрать все logout
-                          // case CuratorFetchingLoadingState:
-                          //   print('Загрузка');
-                          //   _buildersScreen.buildLoading();
-                          //   break;
-                        }
-                      },
+                                ),
+                              );
+                          }
+                        },
+                      ),
                     ),
                   ],
-                  child: BlocBuilder<CuratorBloc, CuratorState>(
-                    builder: (context, state) {
-                      switch (state.runtimeType) {
-                        case CuratorFetchingLoadingState:
-                          return Center(child: _buildersScreen.buildLoading());
-                        case CuratorFetchingErrorState:
-                          return Center(child: Text('Произошла ошибка'));
-                        case CuratorLoadedGroupsSuccessfulState:
-                          print('Экран: состояние CuratorLoadedGroupsSuccessfulState',);
-                          final successState =
-                              state as CuratorLoadedGroupsSuccessfulState;
-                          return CuratorConstructorAccordionBuildWidget(
-                            groups: successState.curatorGroups,
-                          );
-                          /*
-                          return MainContentAccordionBuilder(
-                            context,
-                            role: 'curator',
-                            groups: successState.curatorGroups,
-                          );*/
-                        /*
-                          case SearchUpdatedState
-                          BlocBuilder<SearchBloc, SearchState>(
-                            builder: (context, state){
-                              switch(state.runtimeType){
-                                case SearchLoadingState:
-                              }
-                            }
-                          )*/
-
-                        default:
-                          return Container(
-                            padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-                            width: MediaQuery.of(context).size.width * 1,
-                            height: MediaQuery.of(context).size.height * 0.8,
-                            decoration: BoxDecoration(color: Colors.transparent),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'У вас отстутствуют группы кураторства',
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                              ],
-                            ),
-                          );
-                      }
-                    },
-                  ),
                 ),
               ),
             ),

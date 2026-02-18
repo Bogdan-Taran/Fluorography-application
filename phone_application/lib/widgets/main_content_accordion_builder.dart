@@ -267,3 +267,80 @@ class CuratorConstructorAccordionBuildWidget extends StatelessWidget {
     );
   }
 }
+
+class AdminConstructorAccordionBuildWidget extends StatelessWidget {
+  final List<SingleGroupWithStudentsModel>? groups;
+
+  const AdminConstructorAccordionBuildWidget({
+    super.key,
+    required this.groups,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const lightBlueColor = Color(0xffD4EAFF);
+    const whiteColor = Colors.white;
+    return Accordion(
+      headerBorderColor: lightBlueColor,
+      headerBorderColorOpened: lightBlueColor,
+      headerBorderWidth: 1,
+      headerBackgroundColorOpened: Colors.transparent,
+      headerBackgroundColor: whiteColor,
+      rightIcon: SvgPicture.asset(
+        'assets/images/icon_expand_down.svg',
+        height: 14,
+        width: 6,
+      ),
+      contentBackgroundColor: whiteColor,
+      contentBorderColor: lightBlueColor,
+      contentBorderWidth: 1,
+      scaleWhenAnimating: true,
+      openAndCloseAnimation: true,
+      disableScrolling: true,
+      headerPadding: const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
+      sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
+      sectionClosingHapticFeedback: SectionHapticFeedback.light,
+      headerBorderRadius: 16,
+      children: groups!.map((groupData) {
+        bool isEditing = false;
+        final String uniqueGroupSectionId = 'id_group_${groupData.groupNumber}';
+        return AccordionSection(
+          isOpen: false,
+          paddingBetweenClosedSections: 10,
+          paddingBetweenOpenSections: 10,
+          header: HeaderAccordionSectionWidgetBuild(
+            title: 'Группа',
+            count: groupData.students.length,
+            groupNumber: groupData.groupNumber,
+          ),
+          contentHorizontalPadding: 12,
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (groupData.students.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text('В этой группе нет студентов'),
+                )
+              else
+                Column(
+                  children: [
+                    ...groupData.students.map((student) {
+                      // final uniqueStudentId = 'student_${student.id}_${student.lastname}';
+                      final uniqueStudentId = '${student.id}';
+                      return OneRowBuildAccordionSectionContent(
+                        student: student,
+                        uniqueId: uniqueStudentId,
+                        uniqueEditingSectionId: uniqueGroupSectionId,
+                      );
+                    }),
+
+                  ]
+                ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+}

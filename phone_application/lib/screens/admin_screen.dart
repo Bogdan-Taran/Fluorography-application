@@ -9,6 +9,7 @@ import 'package:project_fluorography/bloc/admin/admin_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/widgets/main_content_accordion_builder.dart';
+import '../main.dart';
 import '../models/single_group_with_students_model.dart';
 import '../services/api_service_get_community_members.dart';
 import '../services/builders_screen.dart';
@@ -28,7 +29,7 @@ class _AdminScreen extends State<AdminScreen> {
   late final Future<List<SingleGroupWithStudentsModel>> futureGroupsMethod;
   final searchController = TextEditingController();
   ApiServiceGetCommunityMembers _ApiServiceGetCommunityMembers =
-      ApiServiceGetCommunityMembers();
+  ApiServiceGetCommunityMembers();
   List<SingleGroupWithStudentsModel> adminGroups = [];
   CheckerCacheService _CheckerCacheService = CheckerCacheService();
 
@@ -36,12 +37,11 @@ class _AdminScreen extends State<AdminScreen> {
   void initState() {
     super.initState();
     (context).read<AdminBloc>().add(AdminFetchEvent());
-    futureGroupsMethod = _CheckerCacheService.getGroupsAdminWithCache().then((
-      data,
-    ) {
-      adminGroups = data;
-      return data;
-    });
+    futureGroupsMethod =
+        _CheckerCacheService.getGroupsAdminWithCache().then((data,) {
+          adminGroups = data;
+          return data;
+        });
     searchController.addListener(onSearchChanged);
   }
 
@@ -63,9 +63,8 @@ class _AdminScreen extends State<AdminScreen> {
   }
 
   List<SingleGroupWithStudentsModel> filterCommunity(
-    List<SingleGroupWithStudentsModel> students,
-    String query,
-  ) {
+      List<SingleGroupWithStudentsModel> students,
+      String query,) {
     return students;
   }
 
@@ -74,7 +73,10 @@ class _AdminScreen extends State<AdminScreen> {
   @override
   Widget build(BuildContext context) {
     BuildersScreen _buildersScreen = BuildersScreen();
-    final appBarHeight = MediaQuery.of(context).size.height * 0.13;
+    final appBarHeight = MediaQuery
+        .of(context)
+        .size
+        .height * 0.13;
 
     return ColorfulSafeArea(
       color: Colors.white,
@@ -112,8 +114,7 @@ class _AdminScreen extends State<AdminScreen> {
                         style: ButtonStyle(
                           backgroundColor:
                           WidgetStateProperty.resolveWith<Color>((
-                              Set<WidgetState> states,
-                              ) {
+                              Set<WidgetState> states,) {
                             if (states.contains(WidgetState.disabled)) {
                               return const Color(0xffD5D6D7);
                             }
@@ -129,7 +130,10 @@ class _AdminScreen extends State<AdminScreen> {
                             const Color(0xffffffff),
                           ),
                           minimumSize: WidgetStateProperty.all(
-                            Size(MediaQuery.of(context).size.width * 0.1, 35),
+                            Size(MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.1, 35),
                           ),
                           shape: WidgetStateProperty.all(
                             RoundedRectangleBorder(
@@ -163,10 +167,10 @@ class _AdminScreen extends State<AdminScreen> {
                     onChanged: (query) {
                       print('Экран, query: $query');
                       if (query.length >= 3) {
-                        context.read<CuratorBloc>().add(
-                          SearchChangedCuratorEvent(
+                        context.read<AdminBloc>().add(
+                          SearchChangedAdminEvent(
                               query: searchController.text.toLowerCase(),
-                              groups: curatorGroups
+                              groups: adminGroups
                           ),
                         );
                       }
@@ -202,7 +206,10 @@ class _AdminScreen extends State<AdminScreen> {
                       ),
                       hintText: 'Поиск',
                       hintStyle: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.016,
+                        fontSize: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.016,
                         color: Color(0xff98BFF3),
                         fontWeight: FontWeight.w500,
                       ),
@@ -225,77 +232,314 @@ class _AdminScreen extends State<AdminScreen> {
           toolbarHeight: appBarHeight,
           elevation: 0,
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-            child: MultiBlocListener(
-              listeners: [
-                BlocListener<AuthenticationBloc, AuthenticationState>(
-                  listener: (context, state) {
-                    switch (state.runtimeType) {
-                      case AuthenticationLogOutState:
-                        print('Отработало сосотояния выхода');
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => SignInScreen(),
-                          ),
-                        );
-                        break;
-                      case AuthenticationLoadingState:
-                        print('Загрузка');
-                        _buildersScreen.buildLoading();
-                        break;
-                    }
-                  },
+        body: Stack(
+          children: [
+            SizedBox(
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height,
+              child: IgnorePointer(
+                child: // Декорации
+                Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment(1, -1),
+                      child: SvgPicture.asset(
+                        'assets/images/vectorRight.svg',
+                        semanticsLabel: 'Top SVG Image',
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment(1, 0.5),
+                      child: SvgPicture.asset(
+                        'assets/images/vectorLine.svg',
+                        semanticsLabel: 'Top SVG Image',
+                        fit: BoxFit.fill,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 1,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      // alignment: Alignment(1, 0.7),
+                      child: SvgPicture.asset(
+                        'assets/images/vectorBottom.svg',
+                        fit: BoxFit.fitWidth,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 1,
+                      ),
+                    ),
+                  ],
                 ),
-                BlocListener<AdminBloc, AdminState>(
-                  listener: (context, state) {
-                    switch (state.runtimeType) {
-                      case AdminFetchingLoadingState:
-                        print('Загрузка');
-                        _buildersScreen.buildLoading();
-                        break;
-                    }
-                  },
-                ),
-              ],
-              child: BlocBuilder<AdminBloc, AdminState>(
-                builder: (context, state) {
-                  switch (state.runtimeType) {
-                    case AdminFetchingLoadingState:
-                      return Center(child: _buildersScreen.buildLoading());
-                    case AdminFetchingErrorState():
-                      return Center(child: Text('Ошибка при загрузке'));
-                    case AdminLoadedGroupsSuccessfulState:
-                      final succeessState =
-                          state as AdminLoadedGroupsSuccessfulState;
-                      return MainContentAccordionBuilder(
-                        context,
-                        role: 'admin',
-                        groups: succeessState.adminGroups,
-                      );
-                    default:
-                      return Container(
-                        padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-                        width: MediaQuery.of(context).size.width * 1,
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        decoration: BoxDecoration(color: Colors.transparent),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Отсутствуют группы для просмотра',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ],
-                        ),
-                      );
-                  }
-                },
               ),
             ),
-          ),
+            SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+                child: Column(
+                  children: [
+                    MultiBlocListener(
+                      listeners: [
+                      BlocListener<AdminBloc, AdminState > (
+                    listener: (context, state) {
+                      switch (state.runtimeType) {
+                        case AdminLogoutSuccessfulState:
+                          break;
+                        case AdminFetchingLoadingState:
+                          _buildersScreen.buildLoading();
+                          break;
+                      }
+                    },
+                    ),
+                      BlocListener<AuthenticationBloc, AuthenticationState>(
+                        listener: (context, state) {
+                          switch (state.runtimeType) {
+                            case HasAcceptedLogOutState:
+                              print('Отработало сосотояния выхода');
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('Подтверждение выхода'),
+                                    content: SingleChildScrollView(
+                                      child: ListBody(
+                                        children: const <Widget>[
+                                          Text('Вы уверены что хотите выйти?'),
+                                        ],
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      // no
+                                      ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                          WidgetStateProperty.resolveWith<Color>((
+                                              Set<WidgetState> states,
+                                              ) {
+                                            if (states.contains(
+                                              WidgetState.disabled,
+                                            )) {
+                                              return const Color(0xffD5D6D7);
+                                            }
+                                            if (states.contains(
+                                              WidgetState.pressed,
+                                            )) {
+                                              return const Color(0xFFE4E4E4);
+                                            }
+                                            if (states.contains(
+                                              WidgetState.hovered,
+                                            )) {
+                                              return const Color(0xFFBADEFF);
+                                            }
+                                            return const Color(0xffffffff);
+                                          }),
+                                          foregroundColor: WidgetStateProperty.all(
+                                            const Color(0xffffffff),
+                                          ),
+                                          minimumSize: WidgetStateProperty.all(
+                                            Size(
+                                              MediaQuery.of(context).size.width * 0.1,
+                                              35,
+                                            ),
+                                          ),
+                                          shape: WidgetStateProperty.all(
+                                            RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          print('Экран: Нажата кнопка отмены');
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text(
+                                          'Отмена',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff98BFF3),
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: 'Geologica',
+                                          ),
+                                        ),
+                                      ),
+                                      //yes
+                                      ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                          WidgetStateProperty.resolveWith<Color>((
+                                              Set<WidgetState> states,
+                                              ) {
+                                            if (states.contains(
+                                              WidgetState.disabled,
+                                            )) {
+                                              return const Color(0xffD5D6D7);
+                                            }
+                                            if (states.contains(
+                                              WidgetState.pressed,
+                                            )) {
+                                              return const Color(0xFF72A7EB);
+                                            }
+                                            if (states.contains(
+                                              WidgetState.hovered,
+                                            )) {
+                                              return const Color(0xFFBADEFF);
+                                            }
+                                            return const Color(0xff98BFF3);
+                                          }),
+                                          foregroundColor: WidgetStateProperty.all(
+                                            const Color(0xffffffff),
+                                          ),
+                                          minimumSize: WidgetStateProperty.all(
+                                            Size(
+                                              MediaQuery.of(context).size.width * 0.1,
+                                              35,
+                                            ),
+                                          ),
+                                          shape: WidgetStateProperty.all(
+                                            RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          context.read<AuthenticationBloc>().add(
+                                            SignOutAcceptEvent(),
+                                          );
+                                        },
+                                        child: const Text(
+                                          'Да',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xffffffff),
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: 'Geologica',
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              break;
+
+                            case AuthenticationLogOutState:
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AuthChecker(),
+                                ),
+                              );
+                              context.read<AdminBloc>().add(AdminLogoutEvent());
+                              break;
+                            case AuthenticationLoadingState:
+                              print('Экран: Загрузка AuthenticationLoadingState');
+                              _buildersScreen.buildLoading();
+                              break;
+                            case AuthenticationLogOutErrorState:
+                              showDialog(
+                                context: context,
+                                builder: (dialogContext) {
+                                  return AlertDialog(
+                                    title: Text("Ошибка"),
+                                    content: Text(
+                                      'Произошла ошибка при попытке выйти',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(dialogContext).pop(),
+                                        child: Text("OK"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              break;
+                          }
+                        },
+                      ),
+                      ],
+
+                      child: BlocBuilder<AdminBloc, AdminState>(
+                        builder: (context, state) {
+                          switch (state.runtimeType) {
+                            case AdminFetchingLoadingState:
+                              return Center(
+                                  child: _buildersScreen.buildLoading());
+                            case AdminFetchingErrorState:
+                              return Center(child: Text('Произошла ошибка'));
+                            case AdminLoadedGroupsSuccessfulState:
+                              print(
+                                'Экран: состояние AdminLoadedGroupsSuccessfulState',);
+                              final successState =
+                              state as AdminLoadedGroupsSuccessfulState;
+                              return AdminConstructorAccordionBuildWidget(
+                                groups: successState.adminGroups,
+                              );
+                            case AdminSearchState:
+                              return SizedBox();
+                            case AdminNoDataState:
+                              return Center(
+                                child: Text(
+                                  'Ничего не нашлось по вашему заросу',
+                                ),
+                              );
+                            case AdminFilteredState:
+                              final successfulState =
+                              state as AdminFilteredState;
+                              print('Экран: AdminFilteredState');
+                              print(successfulState.filteredStudents);
+                              return AdminConstructorAccordionBuildWidget(groups: successfulState.filteredStudents);
+                            case AdminUsualState:
+                              print('Экран: состояние AdminUsualState');
+                              return AdminConstructorAccordionBuildWidget(groups: adminGroups);
+
+
+
+                            default:
+                              return Container(
+                                padding: EdgeInsetsGeometry.symmetric(
+                                    horizontal: 15),
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 1,
+                                height: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height * 0.8,
+                                decoration: BoxDecoration(
+                                    color: Colors.transparent),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Отсутствуют группы с флюорографией',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ],
+                                ),
+                              );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

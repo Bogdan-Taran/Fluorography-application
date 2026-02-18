@@ -28,12 +28,11 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     // on<MedicInitialEvent>(medicInitialEvent);
     on<MedicLogoutEvent>(medicLogoutEvent);
     on<MedicOpenDatePickerEvent>(medicOpenDatePickerEvent);
-    // on<MedicSelectDateEvent>(medicSelectDateEvent);
     on<MedicCloseDatePickerEvent>(medicCloseDatePickerEvent);
     on<MedicFetchedNewDateSetEvent>(medicFetchedNewDateSetEvent);
     on<OnTapTextFieldEvent>(onTapTextFieldEvent);
     on<SearchChangedMedicEvent>(searchChangedMedicEvent);
-    on<OnTapOutsideTextFieldMedicEvent>(onTapOutsideTextFieldMedicEvent);
+    // on<OnTapOutsideTextFieldMedicEvent>(onTapOutsideTextFieldMedicEvent);
 
 }/*
   FutureOr<void> medicInitialEvent(MedicInitialEvent event, Emitter<MedicState> emit) async{
@@ -69,8 +68,8 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     catch (e){
       print('error while logout');
       print(e.toString());
+      emit(MedicLogoutErrorState());
     }
-    emit(MedicLogoutErrorState());
   }
 
   FutureOr<void> medicOpenDatePickerEvent(MedicOpenDatePickerEvent event, Emitter<MedicState> emit) {
@@ -188,9 +187,9 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     }
   }
 
-  FutureOr<void> onTapOutsideTextFieldMedicEvent(OnTapOutsideTextFieldMedicEvent event, Emitter<MedicState> emit) {
-    emit(MedicUsualState());
-  }
+  // FutureOr<void> onTapOutsideTextFieldMedicEvent(OnTapOutsideTextFieldMedicEvent event, Emitter<MedicState> emit) {
+  //   emit(MedicUsualState());
+  // }
 
 
 }

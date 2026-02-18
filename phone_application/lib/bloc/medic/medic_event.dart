@@ -29,7 +29,7 @@ class SearchChangedMedicEvent extends MedicEvent{
   final List<StaffAndStudentsModel>? entireGroups;
   SearchChangedMedicEvent({required this.query, this.entireGroups});
 }
-class OnTapOutsideTextFieldMedicEvent extends MedicEvent{}
+// class OnTapOutsideTextFieldMedicEvent extends MedicEvent{}
 
 // local cache storage
 class MedicFetchedNewDateSetEvent extends MedicEvent{

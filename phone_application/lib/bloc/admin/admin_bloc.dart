@@ -16,7 +16,9 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   AdminBloc() : super(AdminInitial()) {
     // on<AdminInitialEvent>(adminInitialEvent);
     on<AdminFetchEvent>(adminFetchEvent);
+    on<AdminLogoutEvent>(adminLogoutEvent);
     on<OnTapTextFieldEvent>(onTapTextFieldEvent);
+    on<SearchChangedAdminEvent>(searchChangedAdminEvent);
   }
 
   FutureOr<void> adminInitialEvent(AdminInitialEvent event, Emitter<AdminState> emit) async{
@@ -40,5 +42,38 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
 
   FutureOr<void> onTapTextFieldEvent(OnTapTextFieldEvent event, Emitter<AdminState> emit) {
     emit(AdminSearchState());
+  }
+
+  FutureOr<void> adminLogoutEvent(AdminLogoutEvent event, Emitter<AdminState> emit) {
+    emit(AdminFetchingLoadingState());
+    try{
+      emit(AdminLogoutSuccessfulState());
+    }catch(e){
+      print('Возникла ошибка при попытке выхода');
+      emit(AdminLogoutErrorState());
+    }
+  }
+  
+  FutureOr<void> searchChangedAdminEvent(SearchChangedAdminEvent event, Emitter<AdminState> emit) async{
+    List<SingleGroupWithStudentsModel>? studentsGroup = event.groups;
+    if(studentsGroup == null || event.query.isEmpty){
+      emit(AdminNoDataState());
+      return;
+    }
+
+    final query = event.query.toLowerCase().trim();
+    final filteredGroups = <SingleGroupWithStudentsModel>[];
+    for(final group in studentsGroup){
+      final matchingStudents = group.students.where((student) => student.searchKey.contains(query)).toList();
+      if(matchingStudents.isNotEmpty){
+        filteredGroups.add(SingleGroupWithStudentsModel(groupNumber: group.groupNumber, students: matchingStudents));
+      }
+    }
+    if(filteredGroups.isEmpty){
+      emit(AdminNoDataState());
+    } else{
+      emit(AdminFilteredState(filteredStudents: filteredGroups));
+    }
+    
   }
 }

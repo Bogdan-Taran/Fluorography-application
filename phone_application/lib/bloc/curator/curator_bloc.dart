@@ -22,8 +22,11 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
     // on<CuratorInitialEvent>(curatorInitialEvent);
     on<CuratorFetchEvent>(curatorFetchEvent);
     on<CuratorLogoutEvent> (curatorLogoutEvent);
-    on<SearchChangedCuratorEvent>(searchChangedCuratorEvent);
+    on<CuratorOpenDatePickerEvent>(curatorOpenDatePickerEvent);
+    on<CuratorCloseDatePickerEvent>(curatorCloseDatePickerEvent);
+    on<CuratorFetchedNewDateSetEvent>(curatorFetchedNewDateSetEvent);
     on<OnTapTextFieldEvent>(onTapTextFieldEvent);
+    on<SearchChangedCuratorEvent>(searchChangedCuratorEvent);
   }
 
   FutureOr<void> curatorInitialEvent(
@@ -52,12 +55,30 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
       emit(CuratorLogoutSuccessfulState());
     } catch(e) {
       print('There is appeared an Error while LogOut Curator: ${e.toString()}');
+      emit(CuratorLogoutErrorState());
     }
-    emit(CuratorLogoutErrorState());
   }
 
-  FutureOr<void> searchChangedCuratorEvent(SearchChangedCuratorEvent event, Emitter<CuratorState> emit) {
-  //  TODO: прописать логику
+  FutureOr<void> searchChangedCuratorEvent(SearchChangedCuratorEvent event, Emitter<CuratorState> emit) async{
+    List<SingleGroupWithStudentsModel>? studentsGroup = event.groups;
+    if(studentsGroup == null || event.query.isEmpty){
+      emit(CuratorNoDataState());
+      return;
+    }
+
+    final query = event.query.toLowerCase().trim();
+    final filteredGroups = <SingleGroupWithStudentsModel>[];
+    for(final group in studentsGroup){
+      final matchingStudents = group.students.where((student) => student.searchKey.contains(query)).toList();
+      if(matchingStudents.isNotEmpty){
+        filteredGroups.add(SingleGroupWithStudentsModel(groupNumber: group.groupNumber, students: matchingStudents));
+      }
+    }
+    if(filteredGroups.isEmpty){
+      emit(CuratorNoDataState());
+    } else{
+      emit(CuratorFilteredState(filteredStudents: filteredGroups));
+    }
   }
 
   FutureOr<void> onTapTextFieldEvent(OnTapTextFieldEvent event, Emitter<CuratorState> emit) {
@@ -68,5 +89,34 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
     emit(CuratorFetchingLoadingState());
     List<SingleGroupWithStudentsModel> studentsList = await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
     emit(CuratorLoadedGroupsSuccessfulState(curatorGroups: studentsList));
+  }
+
+  FutureOr<void> curatorOpenDatePickerEvent(CuratorOpenDatePickerEvent event, Emitter<CuratorState> emit) {
+    emit(CuratorOpenDatePickerState());
+  }
+
+  FutureOr<void> curatorCloseDatePickerEvent(CuratorCloseDatePickerEvent event, Emitter<CuratorState> emit) {
+    emit(CuratorCloseDatePickerState());
+  }
+
+  FutureOr<void> curatorFetchedNewDateSetEvent(CuratorFetchedNewDateSetEvent event, Emitter<CuratorState> emit) async {
+    List<SingleGroupWithStudentsModel> studentsList;
+    try{
+      studentsList = await _CheckerCacheService.getGroupsCuratorWithCache();
+      final updatedStudentsList = studentsList.map((group){
+        final updatedStudents = group.students.map((student){
+          final newDate = event.newDateSet[student.id.toString()];
+          if(newDate != null){
+            return student.copyWith(fluorography: newDate);
+          }
+          return student;
+        }).toList();
+        return group.copyWith(students: updatedStudents);
+      }).toList();
+      emit(CuratorLoadedGroupsSuccessfulState(curatorGroups: updatedStudentsList));
+    } catch(e){
+      emit(CuratorFetchingErrorState());
+    }
+
   }
 }

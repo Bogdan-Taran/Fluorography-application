@@ -11,6 +11,7 @@ import '../bloc/search/search_bloc.dart';
 import '../main.dart';
 import '../services/api_service_get_community_members.dart';
 import '../services/builders_screen.dart';
+import '../services/localDataBase.dart';
 import '../widgets/main_content_accordion_builder.dart';
 import '../widgets/screens_widgets.dart';
 
@@ -26,23 +27,45 @@ class _CuratorScreen extends State<CuratorScreen> {
   final searchController = TextEditingController();
   ApiServiceGetCommunityMembers _ApiServiceGetCommunityMembers = ApiServiceGetCommunityMembers();
   List<SingleGroupWithStudentsModel> curatorGroups = [];
-
+  CheckerCacheService _CheckerCacheService = CheckerCacheService();
   @override
   void initState() {
+    super.initState();
     (context).read<CuratorBloc>().add(CuratorFetchEvent());
-    futureGroupsMethod = _ApiServiceGetCommunityMembers.getStudentsWithFluraDio().then((
+    futureGroupsMethod = _CheckerCacheService.getGroupsCuratorWithCache().then((
         data,
         ) {
       curatorGroups = data;
       return data;
     });
-    super.initState();
+    searchController.addListener(onSearchChanged);
   }
 
   @override
   void dispose() {
+    searchController.removeListener(onSearchChanged);
     searchController.dispose();
     super.dispose();
+  }
+
+  void onSearchChanged() {
+    final query = searchController.text.trim().toLowerCase();
+    if (query.isEmpty) {
+      updateFilteredCommunity(curatorGroups);
+    } else if (query.length >= 3) {
+      final filtered = filterCommunity(curatorGroups, query);
+      updateFilteredCommunity(filtered);
+    }
+  }
+
+  List<SingleGroupWithStudentsModel> filterCommunity(
+      List<SingleGroupWithStudentsModel> students,
+      String query,
+      ) {
+    return students;
+  }
+
+  void updateFilteredCommunity(List<SingleGroupWithStudentsModel> students) {
   }
 
   @override

@@ -68,11 +68,6 @@ class _MedicScreen extends State<MedicScreen> {
   }
 
   void updateFilteredCommunity(List<StaffAndStudentsModel> community) {
-    // if(mounted){
-    //       setState(() {
-    //         _filteredGroups = groups;
-    //       });
-    //     }
   }
 
   @override

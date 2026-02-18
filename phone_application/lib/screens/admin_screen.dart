@@ -11,6 +11,7 @@ import 'package:project_fluorography/widgets/main_content_accordion_builder.dart
 import '../models/single_group_with_students_model.dart';
 import '../services/api_service_get_community_members.dart';
 import '../services/builders_screen.dart';
+import '../services/localDataBase.dart';
 import '../services/shared_pref_service.dart';
 import '../styles.dart';
 import '../widgets/screens_widgets.dart';
@@ -28,16 +29,44 @@ class _AdminScreen extends State<AdminScreen> {
   final searchController = TextEditingController();
   ApiServiceGetCommunityMembers _ApiServiceGetCommunityMembers = ApiServiceGetCommunityMembers();
   List<SingleGroupWithStudentsModel> adminGroups = [];
+  CheckerCacheService _CheckerCacheService = CheckerCacheService();
 
   @override
   void initState() {
-    (context).read<AdminBloc>().add(AdminFetchEvent());
     super.initState();
+    (context).read<AdminBloc>().add(AdminFetchEvent());
+    futureGroupsMethod = _CheckerCacheService.getGroupsAdminWithCache().then((
+        data,
+        ) {
+      adminGroups = data;
+      return data;
+    });
+    searchController.addListener(onSearchChanged);
   }
   @override
   void dispose(){
+    searchController.removeListener(onSearchChanged);
     searchController.dispose();
     super.dispose();
+  }
+
+  void onSearchChanged() {
+    final query = searchController.text.trim().toLowerCase();
+    if (query.isEmpty) {
+      updateFilteredCommunity(adminGroups);
+    } else if (query.length >= 3) {
+      final filtered = filterCommunity(adminGroups, query);
+      updateFilteredCommunity(filtered);
+    }
+  }
+
+  List<SingleGroupWithStudentsModel> filterCommunity(
+      List<SingleGroupWithStudentsModel> students,
+      String query,
+      ) {
+    return students;
+  }
+  void updateFilteredCommunity(List<SingleGroupWithStudentsModel> students) {
   }
 
   @override

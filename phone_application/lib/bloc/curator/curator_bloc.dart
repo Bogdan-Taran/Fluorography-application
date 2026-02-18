@@ -19,11 +19,11 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
   CheckerCacheService _CheckerCacheService = CheckerCacheService();
 
   CuratorBloc() : super(CuratorInitial()) {
-    on<CuratorInitialEvent>(curatorInitialEvent);
+    // on<CuratorInitialEvent>(curatorInitialEvent);
+    on<CuratorFetchEvent>(curatorFetchEvent);
     on<CuratorLogoutEvent> (curatorLogoutEvent);
     on<SearchChangedCuratorEvent>(searchChangedCuratorEvent);
     on<OnTapTextFieldEvent>(onTapTextFieldEvent);
-    on<CuratorFetchEvent>(curatorFetchEvent);
   }
 
   FutureOr<void> curatorInitialEvent(

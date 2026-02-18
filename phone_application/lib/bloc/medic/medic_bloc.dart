@@ -24,6 +24,7 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
   CheckerCacheService _CheckerCacheService = CheckerCacheService();
 
   MedicBloc() : super(MedicInitial()) {
+    on<MedicFetchEvent>(medicFetchEvent);
     // on<MedicInitialEvent>(medicInitialEvent);
     on<MedicLogoutEvent>(medicLogoutEvent);
     on<MedicOpenDatePickerEvent>(medicOpenDatePickerEvent);
@@ -33,7 +34,6 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
     on<OnTapTextFieldEvent>(onTapTextFieldEvent);
     on<SearchChangedMedicEvent>(searchChangedMedicEvent);
     on<OnTapOutsideTextFieldMedicEvent>(onTapOutsideTextFieldMedicEvent);
-    on<MedicFetchEvent>(medicFetchEvent);
 
 }/*
   FutureOr<void> medicInitialEvent(MedicInitialEvent event, Emitter<MedicState> emit) async{
@@ -55,7 +55,6 @@ class MedicBloc extends Bloc<MedicEvent, MedicState> {
   FutureOr<void> medicFetchEvent(MedicFetchEvent event, Emitter<MedicState> emit) async {
     emit(MedicFetchingLoadingState());
     List<StaffAndStudentsModel> allCommunity = await _ApiServiceGetCommunityMembers.getAllComuintyForMedic();
-    print('Bloc Medic: Студенты и сотрудники успешно получны');
     emit(MedicLoadedCommunitySuccessfulState(medicEntireCommunity: allCommunity));
   }
 

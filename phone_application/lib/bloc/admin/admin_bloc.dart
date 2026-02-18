@@ -14,7 +14,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   CheckerCacheService _CheckerCacheService = CheckerCacheService();
   ApiServiceGetCommunityMembers _ApiServiceGetCommunityMembers = ApiServiceGetCommunityMembers();
   AdminBloc() : super(AdminInitial()) {
-    on<AdminInitialEvent>(adminInitialEvent);
+    // on<AdminInitialEvent>(adminInitialEvent);
     on<AdminFetchEvent>(adminFetchEvent);
     on<OnTapTextFieldEvent>(onTapTextFieldEvent);
   }

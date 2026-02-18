@@ -189,6 +189,19 @@ class _AdminScreen extends State<AdminScreen> {
                           color: const Color(0xff98BFF3),
                         ),
                       ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          searchController.clear();
+                          context.read<AdminBloc>().add(AdminFetchEvent());
+                          //context.read<MedicBloc>().add(OnTapTextFieldEvent());
+                        },
+                        icon: Icon(
+                          Icons.clear,
+                          color: searchController.text.isEmpty
+                              ? Colors.transparent
+                              : const Color(0xff98BFF3),
+                        ),
+                      ),
                       enabled: true,
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16.0),

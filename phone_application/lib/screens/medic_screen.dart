@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart';
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/bloc/search/search_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
@@ -390,6 +391,7 @@ class _MedicScreen extends State<MedicScreen> {
                                             print(
                                               'Экран: Нажата кнопка отмены',
                                             );
+                                            context.read<AuthenticationBloc>().add(SignOutCancelEvent());
                                             Navigator.of(context).pop();
                                           },
                                           child: const Text(

@@ -40,6 +40,7 @@ class AuthenticationLogOutState extends AuthenticationState{
 }
 
 class HasAcceptedLogOutState extends AuthenticationState{}
+class OnCancelLogOutState extends AuthenticationState{}
 class AuthenticationLogOutErrorState extends AuthenticationState{}
 
 

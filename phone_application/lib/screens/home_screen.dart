@@ -56,6 +56,7 @@ class HomeScreen extends StatelessWidget {
                 providers: [
                   BlocProvider(create: (context) => AdminBloc(),),
                   BlocProvider(create: (context) => AuthenticationBloc(),),
+                  BlocProvider(create: (context) => WorkingWithFluorographyBloc(),),
                 ],
                 child: AdminScreen(),
               );

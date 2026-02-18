@@ -18,6 +18,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<IsAuthenticatedCheckEvent>(isAuthenticatedCheckEvent);
     on<SignOutEvent>(signOutEvent);
     on<SignOutAcceptEvent>(signOutAcceptEvent);
+    on<SignOutCancelEvent>(signOutCancelEvent);
 
     on<SignInUserEvent>((event, emit) async {
       emit(AuthenticationLoadingState());
@@ -46,6 +47,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     emit(HasAcceptedLogOutState());
   }
   FutureOr<void> signOutAcceptEvent(SignOutAcceptEvent event, Emitter<AuthenticationState> emit) async{
+    //TODO убрал async на время тестов
     emit(AuthenticationLoadingState());
     try{
       await authService.signOutUser();
@@ -57,5 +59,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       print(e.toString());
     }
     emit(AuthenticationLogOutErrorState());
+  }
+
+  FutureOr<void> signOutCancelEvent(SignOutCancelEvent event, Emitter<AuthenticationState> emit) {
+    emit(OnCancelLogOutState());
   }
 }

@@ -6,3 +6,5 @@ abstract class AdminEvent {}
 class AdminInitialEvent extends AdminEvent{}
 class AdminFetchEvent extends AdminEvent{}
 
+
+class OnTapTextFieldEvent extends AdminEvent{}

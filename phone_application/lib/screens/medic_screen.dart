@@ -87,8 +87,6 @@ class _MedicScreen extends State<MedicScreen> {
   Widget build(BuildContext context) {
     BuildersScreen _buildersScreen = BuildersScreen();
     final appBarHeight = MediaQuery.of(context).size.height * 0.13;
-    final blueColor = Color(0xff98BFF3);
-    PopUpMessage _PopUpMessage;
 
     return ColorfulSafeArea(
       color: Colors.white,

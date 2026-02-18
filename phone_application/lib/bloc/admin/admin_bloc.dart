@@ -16,6 +16,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   AdminBloc() : super(AdminInitial()) {
     on<AdminInitialEvent>(adminInitialEvent);
     on<AdminFetchEvent>(adminFetchEvent);
+    on<OnTapTextFieldEvent>(onTapTextFieldEvent);
   }
 
   FutureOr<void> adminInitialEvent(AdminInitialEvent event, Emitter<AdminState> emit) async{
@@ -35,5 +36,9 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     emit(AdminFetchingLoadingState());
     List<SingleGroupWithStudentsModel> studentsList = await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
     emit(AdminLoadedGroupsSuccessfulState(adminGroups: studentsList));
+  }
+
+  FutureOr<void> onTapTextFieldEvent(OnTapTextFieldEvent event, Emitter<AdminState> emit) {
+    emit(AdminSearchState());
   }
 }

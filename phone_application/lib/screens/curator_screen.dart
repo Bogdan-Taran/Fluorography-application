@@ -72,7 +72,6 @@ class _CuratorScreen extends State<CuratorScreen> {
   Widget build(BuildContext context) {
     BuildersScreen _buildersScreen = BuildersScreen();
     final appBarHeight = MediaQuery.of(context).size.height * 0.13;
-    final blueColor = Color(0xff98BFF3);
 
     return ColorfulSafeArea(
       color: Colors.white,

@@ -7,7 +7,10 @@ abstract class MedicActionState extends MedicState{}
 
 // api, fetch
 final class MedicInitial extends MedicState {}
-class MedicFetchingErrorState extends MedicState{}
+class MedicFetchingErrorState extends MedicState{
+  final String? message;
+  MedicFetchingErrorState({this.message});
+}
 class MedicFetchingLoadingState extends MedicState{}
 class MedicLoadedCommunitySuccessfulState extends MedicState{
   final List<StaffAndStudentsModel> medicEntireCommunity;
@@ -28,7 +31,10 @@ class MedicUsualState extends MedicState{}
 
 // authentication
 class MedicLogoutSuccessfulState extends MedicState{}
-class MedicLogoutErrorState extends MedicState{}
+class MedicLogoutErrorState extends MedicState{
+  final String? message;
+  MedicLogoutErrorState({this.message});
+}
 
 //select dates
 class MedicOpenDatePickerState extends MedicState{}

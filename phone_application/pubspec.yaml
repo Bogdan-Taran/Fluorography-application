@@ -37,9 +37,10 @@ dependencies:
   equatable: ^2.0.5
   liquid_container: ^1.0.4
   bottom_picker: ^4.1.0
-  path_provider: ^2.0.0
+  path_provider: ^2.1.5
   sqflite: ^2.0.0
   intl: ^0.17.0
+
 
 
 
@@ -70,6 +71,12 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
   json_serializable: ^6.11.2
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/logo_flura.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

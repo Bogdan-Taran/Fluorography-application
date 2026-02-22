@@ -61,6 +61,7 @@ class HomeScreen extends StatelessWidget {
                 child: AdminScreen(),
               );
             } else if (role == 'medic') {
+              print('Ваша роль медик');
               return MultiBlocProvider(
                 providers: [
                   BlocProvider(create: (context) => MedicBloc(),),
@@ -76,6 +77,7 @@ class HomeScreen extends StatelessWidget {
               );
             }
             else{
+              print('У вас неизвестная роль');
               return Center(
                 child: Text(
                   'Неизвестная роль: $role'

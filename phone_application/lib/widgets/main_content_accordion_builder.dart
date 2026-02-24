@@ -252,13 +252,21 @@ class CuratorConstructorAccordionBuildWidget extends StatelessWidget {
                         uniqueEditingSectionId: uniqueGroupSectionId,
                       );
                     }),
-                    BlocBuilder<WorkingWithFluorographyBloc, WorkingWithFluorographyState>(
-                        builder: (context, state){
-                          isEditing = state.editingStates[uniqueGroupSectionId] ?? false;
-                          return EditRowWithButtons(uniqueId: uniqueGroupSectionId, isEditing: isEditing, key: key,);
-                        }
-                    )
-                  ]
+                    BlocBuilder<
+                      WorkingWithFluorographyBloc,
+                      WorkingWithFluorographyState
+                    >(
+                      builder: (context, state) {
+                        isEditing =
+                            state.editingStates[uniqueGroupSectionId] ?? false;
+                        return EditRowWithButtons(
+                          uniqueId: uniqueGroupSectionId,
+                          isEditing: isEditing,
+                          key: key,
+                        );
+                      },
+                    ),
+                  ],
                 ),
             ],
           ),
@@ -271,10 +279,7 @@ class CuratorConstructorAccordionBuildWidget extends StatelessWidget {
 class AdminConstructorAccordionBuildWidget extends StatelessWidget {
   final List<SingleGroupWithStudentsModel>? groups;
 
-  const AdminConstructorAccordionBuildWidget({
-    super.key,
-    required this.groups,
-  });
+  const AdminConstructorAccordionBuildWidget({super.key, required this.groups});
 
   @override
   Widget build(BuildContext context) {
@@ -334,8 +339,7 @@ class AdminConstructorAccordionBuildWidget extends StatelessWidget {
                         uniqueEditingSectionId: uniqueGroupSectionId,
                       );
                     }),
-
-                  ]
+                  ],
                 ),
             ],
           ),

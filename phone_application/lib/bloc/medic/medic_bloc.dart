@@ -12,7 +12,6 @@ import '../../services/api_service.dart';
 import '../../services/api_service_get_community_members.dart';
 import '../../services/auth_service.dart';
 import '../../services/localDataBase.dart';
-import '../../widgets/main_content_accordion_builder_light.dart';
 
 part 'medic_event.dart';
 part 'medic_state.dart';

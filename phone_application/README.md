@@ -1,16 +1,17 @@
-# project_fluorography
+Description for starting application in Android Studio.
+Ready application (apk) you can download on path "\phone_application\build\app\outputs\apk\release\<... .apk>"
+Before start project, make sure that you installed Flutter, Dart, Android SDK.
 
-A new Flutter project.
+Download project and open it. To download all dependencies, plugins and packages, enter in terminal:
+```bash
+flutter pub get
+```
 
-## Getting Started
+Connect your device and select it.
+And RUN 'main.dart' with button. Or enter in terminal:
+```bash
+flutter run
+```
+It will launch application on device in debug mode.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+To determinate any process press CTRL + C, then 'Y'

@@ -73,8 +73,26 @@ class ApiServiceGetCommunityMembers {
         '/api/students',
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
+      print("Тип response.data: ${response.data.runtimeType}");
+      print("Содержимое response.data: ${response.data}");
       if (response.statusCode == 200) {
-        final List<dynamic> jsonDataList = response.data;
+        List<dynamic> jsonDataList;
+        if(response.data is List){
+          jsonDataList = response.data;
+        }
+        else if(response.data is Map && response.data['data'] is List){
+          jsonDataList = response.data['data'];
+        }
+        else if(response.data is Map && response.data['students'] is List){
+          jsonDataList = response.data['students'];
+        }
+        else if (response.data is Map){
+          jsonDataList = [response.data];
+        }else{
+          print('Пришёл неизвестный формат данных');
+          return [];
+        }
+
         final List<StudentData> students = jsonDataList
             .whereType<Map<String, dynamic>>()
             .map((json) => StudentData.fromJson(json))
@@ -92,7 +110,6 @@ class ApiServiceGetCommunityMembers {
 
       } else if (response.statusCode == 401) {
         print('401 - Ошибка авторизации');
-        final List<dynamic> jsonError = response.data;
         return [];
       } else {
         print('Произошла неизвестная ошибка при получении студентов');

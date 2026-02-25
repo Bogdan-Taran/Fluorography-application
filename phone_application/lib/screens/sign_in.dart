@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:project_fluorography/styles.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
 import 'home_screen.dart';
-
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -239,7 +239,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.02),
-
                         BlocConsumer<AuthenticationBloc, AuthenticationState>(
                           listener: (context, state) {
                             switch (state.runtimeType) {
@@ -252,15 +251,15 @@ class _SignInScreenState extends State<SignInScreen> {
                                   ),
                                 );
                               case AuthenticationFailureState:
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return const AlertDialog(
-                                      content: Text(
-                                        'Ошибка авторизации',
-                                      ),
-                                    );
-                                  },
+                                final errorMessage = state as AuthenticationFailureState;
+                                Fluttertoast.showToast(
+                                    msg: errorMessage.errorMessage,
+                                    toastLength: Toast.LENGTH_LONG,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0
                                 );
                             }
                           },
@@ -340,6 +339,35 @@ class _SignInScreenState extends State<SignInScreen> {
                             );
                           },
                         ),
+                        BlocListener<InternetConnectCubit, InternetConnectState>(
+                            listener: (context, state){
+                              switch(state.type){
+                                case InternetTypes.connected:
+                                  Fluttertoast.showToast(
+                                    msg: 'Есть интернет-соединение',
+                                    backgroundColor: const Color(0xff78ef81),
+                                    fontSize: 16,
+                                    gravity: ToastGravity.CENTER,
+                                    textColor: const Color(0xffffffff),
+                                  );
+                                case InternetTypes.offline:
+                                  Fluttertoast.showToast(
+                                    msg: 'Отсутствует интернет-соединение',
+                                    backgroundColor: const Color(0xffed6969),
+                                    fontSize: 16,
+                                    gravity: ToastGravity.CENTER,
+                                    textColor: const Color(0xffffffff),
+                                  );
+                                case InternetTypes.unknown:
+                                  Fluttertoast.showToast(
+                                    msg: 'Об интернет-соединении неизвестно',
+                                    backgroundColor: const Color(0xff98BFF3),
+                                    fontSize: 16,
+                                    gravity: ToastGravity.CENTER,
+                                    textColor: const Color(0xffffffff),
+                                  );
+                              }
+                            }),
                       ],
                     ),
                   ),

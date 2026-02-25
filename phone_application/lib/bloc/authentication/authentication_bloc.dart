@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:project_fluorography/services/auth_service.dart';
+import 'package:talker/talker.dart';
 
 import '../../models/user_model.dart';
 import '../../services/localDataBase.dart';
@@ -12,6 +13,7 @@ part 'authentication_state.dart';
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final AuthService authService = AuthService();
   CacheService _CacheService = CacheService();
+  final talker = Talker();
 
   AuthenticationBloc() : super(AuthenticationInitialState()) {
     on<AuthenticationEvent>((event, emit) {});
@@ -20,22 +22,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<SignOutAcceptEvent>(signOutAcceptEvent);
     on<SignOutCancelEvent>(signOutCancelEvent);
 
-    on<SignInUserEvent>((event, emit) async {
-      emit(AuthenticationLoadingState());
-      try{
-        final UserData? user = await authService.signInUser(event.login, event.password);
-        if (user != null){
-          emit(AuthenticationSuccessAfterLoginState(user));
-        }
-        else{
-          emit(const AuthenticationFailureState(errorMessage: 'Login user falied'));
-        }
-      }
-      catch (e) {
-        print(e.toString());
-      }
-      // emit(AuthenticationLoadingState());
-    });
+    on<SignInUserEvent>(signInUserEvent);
+
   }
   FutureOr<void> isAuthenticatedCheckEvent(IsAuthenticatedCheckEvent event, Emitter<AuthenticationState> emit) async{
     emit(AuthenticationLoadingState());
@@ -63,5 +51,28 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   FutureOr<void> signOutCancelEvent(SignOutCancelEvent event, Emitter<AuthenticationState> emit) {
     emit(OnCancelLogOutState());
+  }
+
+  FutureOr<void> signInUserEvent(SignInUserEvent event, Emitter<AuthenticationState> emit) async{
+    emit(AuthenticationLoadingState());
+    try{
+      final resultLogin = await authService.signInUser(event.login, event.password);
+      resultLogin.fold(
+          (error){
+            talker.error('AuthBloc: Возникла ошибка при попытке залогиниться: ${error['data']}');
+            emit(AuthenticationFailureState(
+                errorMessage: error['data'],
+              statusCode: error['statusCode']
+            ));
+          },
+          (user){
+            emit(AuthenticationSuccessAfterLoginState(user!));
+          }
+      );
+    }
+    catch (e) {
+      print(e.toString());
+    }
+    // emit(AuthenticationLoadingState());
   }
 }

@@ -1,7 +1,9 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
+import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/bloc/navigation/navigation_bloc.dart';
 import 'package:project_fluorography/screens/home_screen.dart';
@@ -94,7 +96,8 @@ class _AuthCheckerState extends State<AuthChecker> {
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                     builder: (BuildContext context) =>
-                        SignInScreen()
+                    BlocProvider(create: (context) => InternetConnectCubit(connectivity: Connectivity()),
+        child: SignInScreen())
                        // HomeScreen()
                 ));
           case AuthorizedState:

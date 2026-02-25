@@ -60,6 +60,7 @@ class HomeScreen extends StatelessWidget {
                   BlocProvider(create: (context) => AdminBloc(),),
                   BlocProvider(create: (context) => AuthenticationBloc(),),
                   BlocProvider(create: (context) => WorkingWithFluorographyBloc(),),
+                  BlocProvider(create: (_) => InternetConnectCubit(connectivity: Connectivity()),)
                 ],
                 child: AdminScreen(),
               );
@@ -75,6 +76,7 @@ class HomeScreen extends StatelessWidget {
                 */
                   BlocProvider(create: (context) => SearchBloc(),),
                   BlocProvider(create: (context) => WorkingWithFluorographyBloc(),),
+                  BlocProvider(create: (_) => InternetConnectCubit(connectivity: Connectivity()),)
                 ],
                 child: MedicScreen(),
               );

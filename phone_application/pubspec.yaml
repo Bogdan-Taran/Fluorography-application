@@ -61,6 +61,7 @@ dependencies:
   dartz: ^0.10.1
   connectivity_plus: ^7.0.0
   fluttertoast: ^9.0.0
+  talker: ^5.1.14
 
 
 dev_dependencies:

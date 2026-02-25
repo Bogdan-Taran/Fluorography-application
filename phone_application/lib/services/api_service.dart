@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
+import 'package:talker/talker.dart';
 
 class ApiService {
   final String _baseUrl = 'https://flura.tomtit-tomsk.ru';
+  final talker = Talker();
   final dio = Dio(
     BaseOptions(
       baseUrl: 'https://flura.tomtit-tomsk.ru',
@@ -16,7 +19,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> loginUserDio(String login, String password) async{
       try{
-        print('ApiService: Пробую логиниться');
+        talker.info('ApiService: Пробую логиниться');
         Response response = await dio.post(
             '/api/login',
             data: {
@@ -24,49 +27,135 @@ class ApiService {
               'password': password,
             }
         );
+        talker.log('Ответ от сервера: ${response.statusCode}');
         if(response.statusCode == 200){
           final parsedJson = response.data;
-          print('ApiService: запрос успешен, parsedJson: $parsedJson');
+          talker.log('ApiService: запрос успешен, parsedJson: $parsedJson');
           final String token = parsedJson['token'];
           await _saveToken(token);
           print('Токен получен: $token');
-          return {'success': true, 'data': parsedJson};
+          return {
+            'success': true,
+            'data': parsedJson,
+            'statusCode': 200,
+          };
+        }
+        else if(
+            response.statusCode == 500 ||
+            response.statusCode == 501 ||
+            response.statusCode == 502 ||
+            response.statusCode == 503){
+          talker.error('ApiService: запрос loginUserDio ошибка, '
+              'код ошибки:${response.statusCode}, данные: ${response.data}');
+          return{
+            'success': false,
+            'data': response.data['message'],
+            'statusCode': response.statusCode
+          };
         }
         else{
           final errorData = response.data;
-          print('ApiService: запрос неудача, errorData: $errorData');
-          return {'success': false, 'error': errorData};
+          talker.error('ApiService: запрос неудача, errorData: $errorData');
+          return {
+            'success': false,
+            'data': errorData,
+            'statusCode': response.statusCode,
+          };
         }
+      } on DioException catch(error, stackTrace){
+        if(
+            error.response?.statusCode == 500 ||
+            error.response?.statusCode == 501 ||
+            error.response?.statusCode == 502 ||
+            error.response?.statusCode == 503
+        ){
+          talker.error('ApiService: Возникло исключение в loginUserDio: ${error.message}');
+          return {
+            'success': false,
+            'data': 'Ошибка сервера при попытке логина: ${error.response?.statusCode}',
+            'statusCode': error.response?.statusCode,
+          };
+        }
+        else if(error.response?.statusCode == 401){
+          return{
+            'success': false,
+            'data': 'Ошибка авторизации: проверьте логин и пароль',
+            'statusCode': error.response?.statusCode,
+          };
+        }
+        rethrow;
       } catch (e){
-        return {'success': false, 'error': 'Ошибка при попытке логина: $e'};
+        talker.error('ApiService: Возникло исключение в loginUserDio: $e');
+        talker.handle(e);
+        return {
+          'success': false,
+          'data': 'Ошибка сервера при попытке логина',
+          'statusCode': 500,
+        };
       }
   }
 
   Future<Map<String, dynamic>> getProtectedDataDio() async{
-    final token = await getToken();
-    if (token == null) {
-      return {'success': false, 'error': 'User not authenticated'};
-    }
-    Response response = await dio.get(
-      '/api/profile',
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token'
-        },
-      )
-    );
-    if(response.statusCode == 200){
-      final data = response.data;
-      return {'success': true, 'data': data};
-    }
-    else if (response.statusCode == 401){
-      await removeToken();
-      return {'success': false, 'error': 'Authentication failed'};
-    }
-    else{
-      print('THERE HAPPEND an unexpected - not 200');
-      final errorData = response.data;
-      return {'success': false, 'error': errorData};
+    try {
+      final token = await getToken();
+      if (token == null) {
+        return {
+          'statusCode': 401,
+          'success': false,
+          'data': 'Пользователь не авторизован'
+        };
+      }
+      Response response = await dio.get(
+          '/api/profile',
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token'
+            },
+          )
+      );
+      if (response.statusCode == 200) {
+        final data = response.data;
+        talker.log('Запрос на получение данных пользователя успешен');
+        return {
+          'statusCode': 200,
+          'success': true,
+          'data': data
+        };
+      }
+      else if (response.statusCode == 401) {
+        await removeToken();
+        return {
+          'success': false,
+          'data': response.data,
+          'statusCode': 401,
+        };
+      }
+      else if (
+      response.statusCode == 500 ||
+          response.statusCode == 501 ||
+          response.statusCode == 502 ||
+          response.statusCode == 503) {
+        return {
+          'success': false,
+          'data': response.data,
+          'statusCode': response.statusCode
+        };
+      }
+      else {
+        final errorData = response.data;
+        return {
+          'success': false,
+          'data': errorData,
+          'statusCode': 401,
+        };
+      }
+    } catch(e){
+      talker.handle(e.toString());
+      return {
+        'success': false,
+        'data': e,
+        'statusCode': 0,
+      };
     }
   }
 

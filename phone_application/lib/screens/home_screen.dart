@@ -1,9 +1,11 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/bloc/app_startup/app_startup_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/bloc/curator/curator_bloc.dart';
+import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/screens/curator_screen.dart';
 import 'package:project_fluorography/screens/medic_screen.dart';
@@ -46,8 +48,9 @@ class HomeScreen extends StatelessWidget {
                   // BlocProvider(create: (context) => AuthenticationBloc(),),
                   BlocProvider(create: (context) => SearchBloc(),),
                   BlocProvider(create: (context) => WorkingWithFluorographyBloc(),),
+                  BlocProvider(create: (_) => InternetConnectCubit(connectivity: Connectivity()),)
                 ],
-                child: CuratorScreen(),
+                child: const CuratorScreen(),
               );
             }
             else if (role == 'admin') {

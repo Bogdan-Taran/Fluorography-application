@@ -17,7 +17,7 @@ plugins {
 android {
     namespace = "com.example.project_fluorography"
 //    compileSdk = flutter.compileSdkVersion
-    compileSdk = 35
+    compileSdk = 36
 //    ndkVersion = flutter.ndkVersion
     ndkVersion = "27.0.12077973"
 //    ndkVersion = "23.1.7779620"

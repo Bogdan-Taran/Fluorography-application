@@ -1,11 +1,14 @@
 import 'dart:core';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/bloc/curator/curator_bloc.dart';
+import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
 import 'package:project_fluorography/models/single_group_with_students_model.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import '../bloc/search/search_bloc.dart';
@@ -499,6 +502,35 @@ class _CuratorScreen extends State<CuratorScreen> {
                               }
                             },
                           ),
+                          BlocListener<InternetConnectCubit, InternetConnectState>(
+                              listener: (context, state) {
+                                switch(state.type){
+                                  case InternetTypes.connected:
+                                    Fluttertoast.showToast(
+                                      msg: 'Есть интернет-соединение',
+                                      backgroundColor: const Color(0xff78ef81),
+                                      fontSize: 16,
+                                      gravity: ToastGravity.CENTER,
+                                      textColor: const Color(0xffffffff),
+                                    );
+                                    case InternetTypes.offline:
+                                    Fluttertoast.showToast(
+                                      msg: 'Отсутствует интернет-соединение',
+                                      backgroundColor: const Color(0xffed6969),
+                                      fontSize: 16,
+                                      gravity: ToastGravity.CENTER,
+                                      textColor: const Color(0xffffffff),
+                                    );
+                                    case InternetTypes.unknown:
+                                    Fluttertoast.showToast(
+                                      msg: 'Об интернет-соединении неизвестно',
+                                      backgroundColor: const Color(0xff98BFF3),
+                                      fontSize: 16,
+                                      gravity: ToastGravity.CENTER,
+                                      textColor: const Color(0xffffffff),
+                                    );
+                                }
+                              })
                         ],
                         child: BlocBuilder<CuratorBloc, CuratorState>(
                           builder: (context, state) {

@@ -60,6 +60,7 @@ dependencies:
   dio: ^5.9.1
   dartz: ^0.10.1
   connectivity_plus: ^7.0.0
+  fluttertoast: ^9.0.0
 
 
 dev_dependencies:

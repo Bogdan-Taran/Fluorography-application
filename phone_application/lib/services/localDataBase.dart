@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-
+import 'package:dartz/dartz.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:project_fluorography/models/single_group_with_students_model.dart';
 import 'package:sqflite/sqflite.dart';
@@ -91,21 +91,28 @@ class CheckerCacheService {
       }
     }
     print('Пробую обратиться к api');
-    try {
+
       final data = await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
       print('Данные из api получены');
-      final jsonString = jsonEncode(data.map((e) => e.toJson()).toList());
-      print('Сохраняю в кэш');
-      await _cache.saveToCache(cacheId, jsonString);
-      print('Возвращаю данные');
-      return data;
-    } catch (e) {
-      print('Ошибка при попытке запросить данные из api и сохранить их в кэш');
-    }
-    print('Давай по новой, миша, всё хуйня - запрос к api');
-    final dataFromApi =
-        await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
-    return dataFromApi;
+      return data.fold(
+              (error) {
+                print('Ошибка: ${error['data']}');
+                if(error['statusCode'] == 401){
+                  throw Exception('Ошибка авторизации: ${error['data']}');
+                }
+                return <SingleGroupWithStudentsModel>[];
+              },
+              (students) {
+        final jsonString = jsonEncode(students.map((e) => e.toJson()).toList());
+        print('Сохраняю в кэш');
+        _cache.saveToCache(cacheId, jsonString).catchError((e){
+          print('Ошибка при сохранении данных в кэш');
+        });
+        print('Возвращаю данные');
+        return students;
+      });
+
+
   }
 
 
@@ -146,7 +153,7 @@ class CheckerCacheService {
     return dataFromApi;
   }
 
-
+  /*
   Future<List<SingleGroupWithStudentsModel>> getGroupsAdminWithCache() async {
     // const cacheId = 'groups_admin_data';
     const cacheId = 'groups_data';
@@ -182,5 +189,5 @@ class CheckerCacheService {
     final dataFromApi =
     await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
     return dataFromApi;
-  }
+  }*/
 }

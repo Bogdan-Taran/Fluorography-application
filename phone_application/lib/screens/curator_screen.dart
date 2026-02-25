@@ -506,14 +506,19 @@ class _CuratorScreen extends State<CuratorScreen> {
                               case CuratorFetchingLoadingState:
                                 return Center(child: _buildersScreen.buildLoading());
                               case CuratorFetchingErrorState:
-                                return Center(child: Text('Произошла ошибка'));
+                                final errorState = state as CuratorFetchingErrorState;
+                                return Center(child: Text('${errorState.message}'));
                               case CuratorLoadedGroupsSuccessfulState:
                                 print('Экран: состояние CuratorLoadedGroupsSuccessfulState',);
                                 final successState =
                                     state as CuratorLoadedGroupsSuccessfulState;
-                                return CuratorConstructorAccordionBuildWidget(
+                                if(successState.curatorGroups.contains('message')){
+                                  return Text('Нет групп кураторства');
+                                }
+                                else {return CuratorConstructorAccordionBuildWidget(
                                   groups: successState.curatorGroups,
                                 );
+                                }
                               case CuratorSearchState:
                                 print('Экран: состояние CuratorSearchState');
                                 return SizedBox();

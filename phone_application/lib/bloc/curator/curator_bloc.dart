@@ -87,8 +87,19 @@ class CuratorBloc extends Bloc<CuratorEvent, CuratorState> {
 
   FutureOr<void> curatorFetchEvent(CuratorFetchEvent event, Emitter<CuratorState> emit) async{
     emit(CuratorFetchingLoadingState());
-    List<SingleGroupWithStudentsModel> studentsList = await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
-    emit(CuratorLoadedGroupsSuccessfulState(curatorGroups: studentsList));
+    // List<SingleGroupWithStudentsModel> studentsList = await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
+    final data = await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
+    data.fold(
+        (error){
+          print('CuratorBloc: ошибка при получении студентов');
+          emit(CuratorFetchingErrorState(message: error['data']));
+        },
+        (students){
+          print('CuratorBloc: успех при получении студентов');
+          List<SingleGroupWithStudentsModel> studentsList = students;
+          emit(CuratorLoadedGroupsSuccessfulState(curatorGroups: studentsList));
+        }
+    );
   }
 
   FutureOr<void> curatorOpenDatePickerEvent(CuratorOpenDatePickerEvent event, Emitter<CuratorState> emit) {

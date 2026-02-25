@@ -37,8 +37,14 @@ class _AdminScreen extends State<AdminScreen> {
   void initState() {
     super.initState();
     (context).read<AdminBloc>().add(AdminFetchEvent());
+    //todo временное решение - меняю на приём кураторских групп
     futureGroupsMethod =
+    /*
         _CheckerCacheService.getGroupsAdminWithCache().then((data,) {
+          adminGroups = data;
+          return data;
+        });*/
+    _CheckerCacheService.getGroupsCuratorWithCache().then((data,) {
           adminGroups = data;
           return data;
         });

@@ -24,7 +24,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   FutureOr<void> adminInitialEvent(AdminInitialEvent event, Emitter<AdminState> emit) async{
     emit(AdminFetchingLoadingState());
     List<SingleGroupWithStudentsModel> adminGroups;
-
+    /*
     try{
       adminGroups = await _CheckerCacheService.getGroupsAdminWithCache();
       emit(AdminLoadedGroupsSuccessfulState(adminGroups: adminGroups));
@@ -32,12 +32,14 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       emit(AdminFetchingErrorState());
       print('Не удалось получить группы для админа');
     }
+     */
   }
 
   FutureOr<void> adminFetchEvent(AdminFetchEvent event, Emitter<AdminState> emit) async {
     emit(AdminFetchingLoadingState());
+    /*
     List<SingleGroupWithStudentsModel> studentsList = await _ApiServiceGetCommunityMembers.getStudentsWithFluraDio();
-    emit(AdminLoadedGroupsSuccessfulState(adminGroups: studentsList));
+    emit(AdminLoadedGroupsSuccessfulState(adminGroups: studentsList));*/
   }
 
   FutureOr<void> onTapTextFieldEvent(OnTapTextFieldEvent event, Emitter<AdminState> emit) {

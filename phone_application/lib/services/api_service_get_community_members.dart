@@ -11,6 +11,7 @@ import 'package:project_fluorography/services/api_service.dart';
 import 'package:project_fluorography/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
+import 'package:dartz/dartz.dart';
 
 class ApiServiceGetCommunityMembers {
   final String _baseUrl = 'https://flura.tomtit-tomsk.ru';
@@ -66,61 +67,8 @@ class ApiServiceGetCommunityMembers {
     }
   }
 
-  Future<List<SingleGroupWithStudentsModel>> getStudentsWithFluraDio() async {
-    final token = await getToken();
-    try {
-      Response response = await dio.get(
-        '/api/students',
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
-      );
-      print("Тип response.data: ${response.data.runtimeType}");
-      print("Содержимое response.data: ${response.data}");
-      if (response.statusCode == 200) {
-        List<dynamic> jsonDataList;
-        if(response.data is List){
-          jsonDataList = response.data;
-        }
-        else if(response.data is Map && response.data['data'] is List){
-          jsonDataList = response.data['data'];
-        }
-        else if(response.data is Map && response.data['students'] is List){
-          jsonDataList = response.data['students'];
-        }
-        else if (response.data is Map){
-          jsonDataList = [response.data];
-        }else{
-          print('Пришёл неизвестный формат данных');
-          return [];
-        }
 
-        final List<StudentData> students = jsonDataList
-            .whereType<Map<String, dynamic>>()
-            .map((json) => StudentData.fromJson(json))
-            .toList();
-        final groupedMap = <String, List<StudentData>>{};
-        for(var student in students){
-          String groupNumber = student.group;
-          if(!groupedMap.containsKey(groupNumber)){
-            groupedMap[groupNumber] = [];
-          }
-          groupedMap[groupNumber]?.add(student);
-        }
-        final List<SingleGroupWithStudentsModel> finalListAllGroups = groupedMap.entries.map((entry) => SingleGroupWithStudentsModel(groupNumber: entry.key, students: entry.value)).toList();
-        return finalListAllGroups;
 
-      } else if (response.statusCode == 401) {
-        print('401 - Ошибка авторизации');
-        return [];
-      } else {
-        print('Произошла неизвестная ошибка при получении студентов');
-        print(response.statusCode);
-        return [];
-      }
-    } catch (e) {
-      print(e);
-      return [];
-    }
-  }
 
   Future<List<StaffModel>> getStaff() async {
     final token = await getToken();
@@ -190,6 +138,7 @@ class ApiServiceGetCommunityMembers {
     }
   }
 
+  /*
   Future<List<StudentData>> getStudentsListByGroupNumber(String group) async {
     // print('Начинаю получение студентов');
     final token = await getToken();
@@ -229,7 +178,7 @@ class ApiServiceGetCommunityMembers {
           .map((json) => StudentData.fromJson(json))
           .toList();
     }
-  }
+  }*/
 
 /*
   Future<List<SingleGroupWithStudentsModel>> getGroupsForAdmin() async {
@@ -243,6 +192,7 @@ class ApiServiceGetCommunityMembers {
     return finalListAllGroupsForAdmin;
   }*/
 
+/*
   Future<List<SingleGroupWithStudentsModel>> getAllGroupsIteration() async {
     final groups = await getGroups();
     final List<SingleGroupWithStudentsModel> finalListAllGroups = [];
@@ -264,7 +214,7 @@ class ApiServiceGetCommunityMembers {
       }
     }
     return finalListAllGroups;
-  }
+  }*/
 
   Future<List<StaffAndStudentsModel>> getAllComuintyForMedic() async {
     final List<StaffAndStudentsModel> finalListAllCommunityForMedic = [];
@@ -276,12 +226,17 @@ class ApiServiceGetCommunityMembers {
       // staffList = await getStaff();
       // print(staffList.toString());
       print('Получаю студентов');
-      studentsList = await getStudentsWithFluraDio();
-      // studentsList = await getAllGroupsIteration();
-      // print(studentsList.toString());
-      finalListAllCommunityForMedic.add(
-        StaffAndStudentsModel(staffList: staffList, studentsList: studentsList),
+      final resultStudents = await getStudentsWithFluraDio();
+      resultStudents.fold(
+              (error) => print('Ошибка: ${error['data']}'),
+              (students) {
+          print('Студенты получены: ${students.length}');
+          finalListAllCommunityForMedic.add(
+            StaffAndStudentsModel(staffList: staffList, studentsList: students),
+          );
+        }
       );
+
       // print(finalListAllCommunityForMedic);
     } catch (e) {
       log(e.toString());
@@ -290,4 +245,106 @@ class ApiServiceGetCommunityMembers {
     }
     return finalListAllCommunityForMedic;
   }
+
+  Future<Either<Map<String, dynamic>, List<SingleGroupWithStudentsModel>>> getStudentsWithFluraDio() async {
+    try {
+      final token = await getToken();
+      if(token == null) {
+        return Left({'statusCode': 401, 'data': 'Токен отсутствует'});
+      }
+      Response response;
+      try{
+        response = await dio.get(
+        '/api/students',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+      } catch(e){
+        return Left({
+          'statusCode': e is DioError ? e.response?.statusCode ?? 0 : 0,
+          'data': e.toString(),
+        });
+      }
+      print("Тип response.data: ${response.data.runtimeType}");
+      print("Содержимое response.data: ${response.data}");
+
+      if (response.data is Map && response.data.containsKey('message')){
+        return Left({
+          'statusCode': response.statusCode ?? 200,
+          'data': response.data['message'],
+        });
+      }
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonDataList;
+
+        if(response.data is List){
+          jsonDataList = response.data;
+        }
+        else if(response.data is Map && response.data['data'] is List){
+          jsonDataList = response.data['data'];
+        }
+        else if(response.data is Map && response.data['students'] is List){
+          jsonDataList = response.data['students'];
+        }
+        else if (response.data is Map){
+          jsonDataList = [response.data];
+        }else{
+          print('Пришёл неизвестный формат данных');
+          return Left({'statusCode': 500, 'data': 'Ошибка сервера: ${response.statusCode}'});
+        }
+        if(jsonDataList.isEmpty){
+          return Left({
+            'statusCode': 200,
+            'data': 'Список студентов пуст'
+          });
+        }
+        try {
+          final List<StudentData> students = jsonDataList
+              .whereType<Map<String, dynamic>>()
+              .map((json) => StudentData.fromJson(json))
+              .toList();
+          if (students.isEmpty) {
+            return Left({
+              'statusCode': 200,
+              'data': 'Не удалось преобразовать список студентов'
+            });
+          }
+          final groupedMap = <String, List<StudentData>>{};
+          for (var student in students) {
+            String groupNumber = student.group;
+            if (!groupedMap.containsKey(groupNumber)) {
+              groupedMap[groupNumber] = [];
+            }
+            groupedMap[groupNumber]?.add(student);
+          }
+          final List<
+              SingleGroupWithStudentsModel> finalListAllGroups = groupedMap
+              .entries.map((entry) =>
+              SingleGroupWithStudentsModel(
+                  groupNumber: entry.key, students: entry.value)).toList();
+          return Right(finalListAllGroups);
+        }catch(e){
+          return Left({
+          'statusCode': 200,
+            'data': 'Ошибка преобразования данных: ${e.toString()}'
+          });
+        }
+      }
+      else if (response.statusCode == 401) {
+        print('401 - Ошибка авторизации');
+        return Left({'statusCode': 401, 'data': 'Ошибка авторизации'});
+      } else {
+        print('Произошла неизвестная ошибка при получении студентов');
+        print(response.statusCode);
+        return Left({'statusCode': 500, 'data': 'Произошла неизвестная ошибка при получении студентов'});
+      }
+
+    } catch (e) {
+      print(e);
+      return Left({'statusCode': 0, 'data': 'Произошла ошибка: $e'});
+    }
+  }
 }
+
+
+

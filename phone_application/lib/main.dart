@@ -17,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'bloc/curator/curator_bloc.dart';
 import 'bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   //установка только портретной ориентации
@@ -25,10 +24,12 @@ void main() {
     DeviceOrientation.portraitUp,
     // DeviceOrientation.portraitDown,
   ]);
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarBrightness: Brightness.light
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.light,
+    ),
+  );
 
   runApp(MyApp());
 }
@@ -55,10 +56,9 @@ class MyApp extends StatelessWidget {
                   appBarTheme: AppBarTheme(
                     systemOverlayStyle: SystemUiOverlayStyle(
                       statusBarColor: Colors.transparent,
-                      statusBarBrightness: Brightness.light
-                    )
-
-                  )
+                      statusBarBrightness: Brightness.light,
+                    ),
+                  ),
                 ),
                 home: AuthChecker(),
                 // home: MedicScreen(),
@@ -88,29 +88,32 @@ class _AuthCheckerState extends State<AuthChecker> {
   Widget build(BuildContext context) {
     BuildersScreen _BuildersScreen = BuildersScreen();
     return BlocListener<AuthenticationBloc, AuthenticationState>(
-      listener: (context, state){
-        switch(state.runtimeType){
+      listener: (context, state) {
+        switch (state.runtimeType) {
           case AuthenticationLoadingState:
             _BuildersScreen.buildLoading();
           case NotAuthenticatedState:
             Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                    BlocProvider(create: (context) => InternetConnectCubit(connectivity: Connectivity()),
-        child: SignInScreen())
-                       // HomeScreen()
-                ));
+              MaterialPageRoute(
+                builder: (BuildContext context) => BlocProvider(
+                  create: (context) =>
+                      InternetConnectCubit(connectivity: Connectivity()),
+                  child: SignInScreen(),
+                ),
+                // HomeScreen()
+              ),
+            );
           case AuthorizedState:
             Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        HomeScreen()));
+              MaterialPageRoute(
+                builder: (BuildContext context) => HomeScreen(),
+              ),
+            );
           default:
             _BuildersScreen.buildLoading();
         }
       },
-      child: SizedBox(height: 0,),
+      child: SizedBox(height: 0),
     );
-
   }
 }

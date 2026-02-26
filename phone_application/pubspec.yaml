@@ -62,6 +62,7 @@ dependencies:
   connectivity_plus: ^7.0.0
   fluttertoast: ^9.0.0
   talker: ^5.1.14
+  dart_style: ^3.1.2
 
 
 dev_dependencies:

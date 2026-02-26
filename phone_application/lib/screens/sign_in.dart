@@ -20,6 +20,8 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final loginController = TextEditingController();
   final passwordController = TextEditingController();
+  bool _validateLogin = false;
+  bool _validatePassword = false;
 
   @override
   void dispose() {
@@ -40,7 +42,7 @@ class _SignInScreenState extends State<SignInScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         return false;
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -48,8 +50,8 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Scaffold(
           backgroundColor: Color(0xFFFFFFFF),
           body: BlocListener<InternetConnectCubit, InternetConnectState>(
-            listener: (context, state){
-              switch(state.type){
+            listener: (context, state) {
+              switch (state.type) {
                 case InternetTypes.connected:
                   Fluttertoast.showToast(
                     msg: 'Есть интернет-соединение',
@@ -199,6 +201,22 @@ class _SignInScreenState extends State<SignInScreen> {
                                     width: 2,
                                   ),
                                 ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                    color: Color(0xffeb7272),
+                                    width: 2,
+                                  ),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                    color: Color(0xffeb7272),
+                                    width: 2,
+                                  ),
+                                ),
+                                errorText: _validateLogin ? 'Обязательное поле' : null,
+
 
                                 hintText: 'Логин',
                                 hintStyle: TextStyle(
@@ -209,13 +227,16 @@ class _SignInScreenState extends State<SignInScreen> {
                                 contentPadding:
                                     AppSizes.loginAndPasswordFieldPadding,
                               ),
-
                               keyboardType: TextInputType.text,
                               enabled: true,
                               maxLines: 1,
                               onTapOutside: (event) {
                                 FocusManager.instance.primaryFocus?.unfocus();
                               },
+                              onChanged: (text) => setState(() {
+                                _validateLogin = loginController.text.isEmpty;
+                              }),
+
                             ),
                           ),
                           SizedBox(
@@ -229,6 +250,10 @@ class _SignInScreenState extends State<SignInScreen> {
                               cursorColor: Color(0xff72A7EB),
                               cursorHeight: 17,
                               cursorWidth: 1.2,
+
+                              onChanged: (text) => setState(() {
+                                _validatePassword = passwordController.text.isEmpty;
+                              }),
                               decoration: InputDecoration(
                                 enabled: true,
                                 enabledBorder: OutlineInputBorder(
@@ -245,6 +270,21 @@ class _SignInScreenState extends State<SignInScreen> {
                                     width: 2,
                                   ),
                                 ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                    color: Color(0xffeb7272),
+                                    width: 2,
+                                  ),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                    color: Color(0xffeb7272),
+                                    width: 2,
+                                  ),
+                                ),
+                                errorText: _validatePassword ? 'Обязательное поле' : null,
                                 hintText: 'Пароль',
                                 hintStyle: TextStyle(
                                   fontSize: AppSizes.fontSizeSmall,
@@ -280,15 +320,16 @@ class _SignInScreenState extends State<SignInScreen> {
                                     ),
                                   );
                                 case AuthenticationFailureState:
-                                  final errorMessage = state as AuthenticationFailureState;
+                                  final errorMessage =
+                                      state as AuthenticationFailureState;
                                   Fluttertoast.showToast(
-                                      msg: errorMessage.errorMessage,
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.red,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0
+                                    msg: errorMessage.errorMessage,
+                                    toastLength: Toast.LENGTH_LONG,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
                                   );
                               }
                             },
@@ -297,11 +338,18 @@ class _SignInScreenState extends State<SignInScreen> {
                                 padding: EdgeInsets.symmetric(horizontal: 35),
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    context.read<AuthenticationBloc>().add(SignInUserEvent(
-                                      loginController.text.trim(),
-                                      passwordController.text.trim(),
-                                    ));
-
+                                    setState(() {
+                                      _validateLogin = loginController.text.isEmpty;
+                                      _validatePassword = passwordController.text.isEmpty;
+                                    });
+                                    if(!_validateLogin && !_validatePassword){
+                                      context.read<AuthenticationBloc>().add(
+                                        SignInUserEvent(
+                                          loginController.text.trim(),
+                                          passwordController.text.trim(),
+                                        ),
+                                      );
+                                    }
                                   },
                                   style: ButtonStyle(
                                     elevation:
@@ -368,8 +416,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               );
                             },
                           ),
-
-
                         ],
                       ),
                     ),

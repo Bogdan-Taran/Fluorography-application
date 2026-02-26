@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:project_fluorography/models/user_model.dart';
@@ -66,7 +67,30 @@ class AuthService {
           'data': loginResult['data']
         });
       }
-    } catch (e) {
+    } on DioException catch(error, stackTrace){
+      if(
+      error.response?.statusCode == 500 ||
+          error.response?.statusCode == 501 ||
+          error.response?.statusCode == 502 ||
+          error.response?.statusCode == 503
+      ){
+        talker.error('ApiService: Возникло исключение в loginUserDio: ${error.message}');
+        return Left({
+          'success': false,
+          'data': 'Ошибка сервера при попытке логина: ${error.response?.statusCode}',
+          'statusCode': error.response?.statusCode,
+        });
+      }
+      else if(error.response?.statusCode == 401){
+        return Left({
+          'success': false,
+          'data': 'Ошибка авторизации: проверьте логин и пароль',
+          'statusCode': error.response?.statusCode,
+        });
+      }
+      rethrow;
+    }
+    catch (e) {
       talker.handle('AuthService: Возникла ошибка при попытке залогиниться: ${e.toString()}');
       return Left({
         'statusCode': 0,

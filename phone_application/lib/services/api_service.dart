@@ -11,7 +11,7 @@ class ApiService {
   final dio = Dio(
     BaseOptions(
       baseUrl: 'https://flura.tomtit-tomsk.ru',
-      connectTimeout: Duration(seconds: 5),
+      connectTimeout: Duration(seconds: 8),
       receiveTimeout: Duration(seconds: 10),
       headers: {'Content-Type': 'application/json'},
     )
@@ -81,6 +81,21 @@ class ApiService {
             'success': false,
             'data': 'Ошибка авторизации: проверьте логин и пароль',
             'statusCode': error.response?.statusCode,
+          };
+        }
+        else if (error.type == DioExceptionType.connectionTimeout) {
+          talker.error('ApiService: Возникло исключение в loginUserDio: connectionTimeout');
+          return {
+            'success': false,
+            'data': 'Время ожидания вышло, попробуйте ещё раз',
+            'statusCode': 0,
+          };
+        } else if (error.type == DioExceptionType.connectionError) {
+          talker.error('ApiService: Возникло исключение в loginUserDio: нет интернет-соединения');
+          return {
+            'success': false,
+            'data': 'Отсутствует интернет-соединение',
+            'statusCode': 0,
           };
         }
         rethrow;

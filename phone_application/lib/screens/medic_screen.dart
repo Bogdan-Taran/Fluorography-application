@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/bloc/search/search_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import '../bloc/authentication/authentication_bloc.dart';
+import '../bloc/internet_connect/interner_connect_cubit.dart';
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../main.dart';
 import '../models/staff_and_students_model.dart';
@@ -557,6 +559,35 @@ class _MedicScreen extends State<MedicScreen> {
                               }
                             },
                           ),
+                          BlocListener<InternetConnectCubit, InternetConnectState>(
+                              listener: (context, state) {
+                                switch(state.type){
+                                  case InternetTypes.connected:
+                                    Fluttertoast.showToast(
+                                      msg: 'Есть интернет-соединение',
+                                      backgroundColor: const Color(0xff78ef81),
+                                      fontSize: 16,
+                                      gravity: ToastGravity.CENTER,
+                                      textColor: const Color(0xffffffff),
+                                    );
+                                  case InternetTypes.offline:
+                                    Fluttertoast.showToast(
+                                      msg: 'Отсутствует интернет-соединение',
+                                      backgroundColor: const Color(0xffed6969),
+                                      fontSize: 16,
+                                      gravity: ToastGravity.CENTER,
+                                      textColor: const Color(0xffffffff),
+                                    );
+                                  case InternetTypes.unknown:
+                                    Fluttertoast.showToast(
+                                      msg: 'Об интернет-соединении неизвестно',
+                                      backgroundColor: const Color(0xff98BFF3),
+                                      fontSize: 16,
+                                      gravity: ToastGravity.CENTER,
+                                      textColor: const Color(0xffffffff),
+                                    );
+                                }
+                              })
                         ],
 
                         child: BlocBuilder<MedicBloc, MedicState>(

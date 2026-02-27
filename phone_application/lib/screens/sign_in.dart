@@ -350,7 +350,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                             passwordController.text.trim(),
                                           ),
                                         );
-
                                     }
                                   },
                                   style: ButtonStyle(

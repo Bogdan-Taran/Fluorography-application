@@ -334,21 +334,23 @@ class _SignInScreenState extends State<SignInScreen> {
                               }
                             },
                             builder: (context, state) {
+                              final _isLoading = state is AuthenticationLoadingState;
                               return Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 35),
                                 child: ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: _isLoading ? null : () {
                                     setState(() {
                                       _validateLogin = loginController.text.isEmpty;
                                       _validatePassword = passwordController.text.isEmpty;
                                     });
                                     if(!_validateLogin && !_validatePassword){
-                                      context.read<AuthenticationBloc>().add(
-                                        SignInUserEvent(
-                                          loginController.text.trim(),
-                                          passwordController.text.trim(),
-                                        ),
-                                      );
+                                        context.read<AuthenticationBloc>().add(
+                                          SignInUserEvent(
+                                            loginController.text.trim(),
+                                            passwordController.text.trim(),
+                                          ),
+                                        );
+
                                     }
                                   },
                                   style: ButtonStyle(

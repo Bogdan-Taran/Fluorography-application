@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -83,7 +84,8 @@ class ApiService {
             'statusCode': error.response?.statusCode,
           };
         }
-        else if (error.type == DioExceptionType.connectionTimeout) {
+        else if (error.type == DioExceptionType.connectionTimeout ||
+            error.type == DioExceptionType.receiveTimeout) {
           talker.error('ApiService: Возникло исключение в loginUserDio: connectionTimeout');
           return {
             'success': false,
@@ -98,7 +100,22 @@ class ApiService {
             'statusCode': 0,
           };
         }
-        rethrow;
+        else if (error.type is HandshakeException) {
+          talker.error('ApiService: Возникло исключение в loginUserDio: ошибка рукопожатия');
+          return {
+            'success': false,
+            'data': 'Ошибка соединения с сервером.',
+            'statusCode': 0,
+          };
+          }
+        else{
+          talker.error('ApiService: Возникло исключение в loginUserDio: $error');
+          return {
+            'success': false,
+            'data': 'Ошибка сервера при попытке логина',
+            'statusCode': 500,
+          };
+        }
       } catch (e){
         talker.error('ApiService: Возникло исключение в loginUserDio: $e');
         talker.handle(e);

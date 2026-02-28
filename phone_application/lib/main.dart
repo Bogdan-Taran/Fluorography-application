@@ -4,18 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
-import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
-import 'package:project_fluorography/bloc/navigation/navigation_bloc.dart';
 import 'package:project_fluorography/screens/home_screen.dart';
-import 'package:project_fluorography/screens/medic_screen.dart';
+import 'package:project_fluorography/screens/reference/reference_screen.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
-import 'package:project_fluorography/services/auth_service.dart';
 import 'package:project_fluorography/services/builders_screen.dart';
-import 'package:project_fluorography/services/shared_pref_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'bloc/curator/curator_bloc.dart';
-import 'bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,7 +69,6 @@ class AuthChecker extends StatefulWidget {
   @override
   _AuthCheckerState createState() => _AuthCheckerState();
 }
-
 class _AuthCheckerState extends State<AuthChecker> {
   @override
   void initState() {
@@ -92,6 +84,7 @@ class _AuthCheckerState extends State<AuthChecker> {
         switch (state.runtimeType) {
           case AuthenticationLoadingState:
             _BuildersScreen.buildLoading();
+            /*
           case NotAuthenticatedState:
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
@@ -99,6 +92,17 @@ class _AuthCheckerState extends State<AuthChecker> {
                   create: (context) =>
                       InternetConnectCubit(connectivity: Connectivity()),
                   child: SignInScreen(),
+                ),
+                // HomeScreen()
+              ),
+            );*/
+          case NotAuthenticatedState:
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (BuildContext context) => BlocProvider(
+                  create: (context) =>
+                      InternetConnectCubit(connectivity: Connectivity()),
+                  child: ReferenceScreen(),
                 ),
                 // HomeScreen()
               ),

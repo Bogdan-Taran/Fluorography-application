@@ -23,8 +23,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyles _textStyles = TextStyles();
-    UserSharedPreferences _userSharedPreferences = UserSharedPreferences();
     BuildersScreen _buildersScreen = BuildersScreen();
 
 

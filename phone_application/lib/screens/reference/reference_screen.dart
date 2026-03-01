@@ -9,6 +9,7 @@ import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import '../../styles.dart';
+import 'package:roundcheckbox/roundcheckbox.dart';
 
 class ReferenceScreen extends StatefulWidget {
   const ReferenceScreen({super.key});
@@ -19,7 +20,9 @@ class ReferenceScreen extends StatefulWidget {
 
 class _ReferenceScreen extends State<ReferenceScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
-  final List<String> referenceType = ['Справка 1','Справка 2','Справка 3','Справка 4'];
+  final List<String> referenceType = ['Справка об обучении','Справка для пенсионного фонда','Справка в военный комиссариат'];
+  bool? agreePersonalData = false;
+  bool showErrorCheckbox = false;
 
   @override
   void initState() {
@@ -262,11 +265,12 @@ class _ReferenceScreen extends State<ReferenceScreen> {
                                     name:
                                         'firstName', // Unique key for this field
                                     validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.required(),
+                                      FormBuilderValidators.required(errorText: 'Пожалуйста, введите имя'),
                                     ]),
                                     decoration: InputDecoration(
                                       enabled: true,
                                       hintText: 'Имя',
+                                      isDense: true,
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
@@ -326,11 +330,12 @@ class _ReferenceScreen extends State<ReferenceScreen> {
                                     name:
                                     'lastName', // Unique key for this field
                                     validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.required(),
+                                      FormBuilderValidators.required(errorText: 'Пожалуйста, введите фамилию'),
                                     ]),
                                     decoration: InputDecoration(
                                       enabled: true,
                                       hintText: 'Фамилия',
+                                      isDense: true,
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
@@ -393,6 +398,7 @@ class _ReferenceScreen extends State<ReferenceScreen> {
                                     decoration: InputDecoration(
                                       enabled: true,
                                       hintText: 'Отчество (необязательно)',
+                                      isDense: true,
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
@@ -453,11 +459,12 @@ class _ReferenceScreen extends State<ReferenceScreen> {
                                     name:
                                     'groupNumber', // Unique key for this field
                                     validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.required(),
+                                      FormBuilderValidators.required(errorText: 'Пожалуйста, введите номер группы'),
                                     ]),
                                     decoration: InputDecoration(
                                       enabled: true,
                                       hintText: 'Номер группы',
+                                      isDense: true,
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
@@ -517,6 +524,7 @@ class _ReferenceScreen extends State<ReferenceScreen> {
                                     'phoneNumber', // Unique key for this field
                                     decoration: InputDecoration(
                                       enabled: true,
+                                      isDense: true,
                                       hintText: 'Номер телефона (необязательно)',
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
@@ -577,10 +585,11 @@ class _ReferenceScreen extends State<ReferenceScreen> {
                                     name:
                                     'numberOfReferences', // Unique key for this field
                                     validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.required(),
+                                      FormBuilderValidators.required(errorText: 'Пожалуйста, укажите количество справок'),
                                     ]),
                                     decoration: InputDecoration(
                                       enabled: true,
+                                      isDense: true,
                                       hintText: 'Количество справок',
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
@@ -663,8 +672,9 @@ class _ReferenceScreen extends State<ReferenceScreen> {
                                     dropdownColor: AppSizes.whiteColorMain,
                                     decoration: InputDecoration(
                                       enabled: true,
-                                      contentPadding: AppSizes
-                                          .contentPaddingTextFieldSymmetric,
+                                      isDense: true,
+                                      contentPadding: AppSizes.contentPaddingTextFieldSymmetric,
+                                      // contentPadding: EdgeInsetsGeometry.zero,
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius:
                                         AppSizes.inputBorderRadius,
@@ -702,26 +712,151 @@ class _ReferenceScreen extends State<ReferenceScreen> {
                                       return DropdownMenuItem<String>(
                                         value: refT,
                                         child: Container(
-                                          padding: AppSizes.contentPaddingTextFieldSymmetric,
+                                          width: screenWidth * 1,
+                                          padding: AppSizes.contentPaddingDropdownItemLeft,
                                           decoration: BoxDecoration(
                                             color: AppSizes.blueColorAdditional,
                                             borderRadius: AppSizes.inputBorderRadius,
                                           ),
                                           child: Text(
                                             refT,
+                                            overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               color: AppSizes.blackColorMain,
-                                              fontSize: AppSizes.fontSizeMedium,
+                                              fontSize: AppSizes.fontSizeSmall,
                                               fontFamily: 'Geologica'
                                             ),
                                           ),
                                         ),
                                       );
                                     }).toList(),
-
-
                                   ),
 
+                                  SizedBox(height: screenHeight * 0.02),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Я соглашаюсь на обработку\nперсональных данных',
+                                        style: TextStyle(
+                                          color: showErrorCheckbox ? AppSizes.errorRedColorMain : AppSizes.blueColorAdditional,
+                                          fontSize: AppSizes.fontSizeMediumMini,
+                                          height: 1.3
+                                        ),
+                                      ),
+
+                                      RoundCheckBox(
+                                        onTap: (selected) {
+                                          setState(() {
+                                            agreePersonalData = !agreePersonalData!;
+                                          });
+                                          if(selected == true){
+                                            setState(() {
+                                              showErrorCheckbox = false;
+                                            });
+                                          }
+                                        },
+                                        checkedWidget: Icon(
+                                            Icons.check,
+                                            color: AppSizes.whiteColorMain
+                                        ),
+                                        uncheckedWidget: Icon(
+                                            Icons.check,
+                                            color: showErrorCheckbox ? AppSizes.errorRedColorMain : AppSizes.blueColorAdditional
+                                        ),
+                                        animationDuration: Duration(
+                                          milliseconds: 50
+                                        ),
+                                        size: 30,
+                                        border: Border.all(
+                                          width: 1,
+                                          color: showErrorCheckbox ? AppSizes.errorRedColorMain : AppSizes.blueColorAdditional
+                                        ),
+                                        uncheckedColor: AppSizes.whiteColorMain,
+                                        checkedColor:  AppSizes.blueColorAdditional,
+                                        isChecked: agreePersonalData,
+                                      ),
+                                    ],
+                                  ),
+
+                                  SizedBox(
+                                    height: screenHeight * 0.02,
+                                  ),
+                                  SizedBox(
+                                    height: 50,
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                        elevation:
+                                        WidgetStateProperty.resolveWith<double>(
+                                              (Set<WidgetState> states) => 0,
+                                        ),
+                                        backgroundColor:
+                                        WidgetStateProperty.resolveWith<Color>((
+                                            Set<WidgetState> states,
+                                            ) {
+                                          if (states.contains(
+                                            WidgetState.disabled,
+                                          )) {
+                                            return Color(0xffD5D6D7);
+                                          }
+                                          if (states.contains(
+                                            WidgetState.pressed,
+                                          )) {
+                                            return Color(0xFF72A7EB);
+                                          }
+                                          if (states.contains(
+                                            WidgetState.hovered,
+                                          )) {
+                                            return Color(0xFFBADEFF);
+                                          }
+                                          return AppSizes.blueColorAdditional;
+                                        }),
+                                        foregroundColor:
+                                        WidgetStateProperty.resolveWith<Color>((
+                                            Set<WidgetState> states,
+                                            ) {
+                                          if (states.contains(
+                                            WidgetState.disabled,
+                                          )) {
+                                            return Color(0xFF888888);
+                                          }
+                                          return Color(0xffffffff);
+                                        }),
+                                        minimumSize: WidgetStateProperty.all(
+                                          Size(screenWidth * 1, 40),
+                                        ),
+                                        shape: WidgetStateProperty.all(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Отправить',
+                                        style: TextStyle(
+                                          fontSize: AppSizes.fontSizeMedium,
+                                          // fontSize: screenWidth * AppSizes.fontSizeMedium,
+                                          color: Color(0xffffffff),
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Geologica',
+                                        ),
+                                      ),
+
+                                      onPressed: (){
+                                        _formKey.currentState?.saveAndValidate();
+                                        if(agreePersonalData != true){
+                                          setState(() {
+                                            showErrorCheckbox = true;
+                                          });
+                                        }
+                                      },
+
+                                    ),
+                                  ),
+
+                                  SizedBox(
+                                    height: screenHeight * 0.05,
+                                  )
 
                                 ],
                               ),

@@ -66,6 +66,7 @@ dependencies:
   dart_style: ^3.1.2
   form_builder_validators: 11.2.0
   flutter_form_builder: ^10.1.0
+  roundcheckbox: ^2.0.5
 
 
 

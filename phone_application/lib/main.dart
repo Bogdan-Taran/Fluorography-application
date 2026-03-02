@@ -8,6 +8,7 @@ import 'package:project_fluorography/screens/home_screen.dart';
 import 'package:project_fluorography/screens/reference/reference_screen.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/builders_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
 void main() {
@@ -24,7 +25,9 @@ void main() {
     ),
   );
 
-  runApp(MyApp());
+  runApp(
+      const ProviderScope(child: MyApp())
+  );
 }
 
 class MyApp extends StatelessWidget {

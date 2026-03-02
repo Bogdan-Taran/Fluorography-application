@@ -10,15 +10,18 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import '../../styles.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+// part 'reference_screen.g.dart';
 
-class ReferenceScreen extends StatefulWidget {
+class ReferenceScreen extends ConsumerStatefulWidget {
   const ReferenceScreen({super.key});
 
   @override
-  State<ReferenceScreen> createState() => _ReferenceScreen();
+  ConsumerState<ReferenceScreen> createState() => _ReferenceScreen();
 }
 
-class _ReferenceScreen extends State<ReferenceScreen> {
+class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   final List<String> referenceType = ['Справка об обучении','Справка для пенсионного фонда','Справка в военный комиссариат'];
   bool? agreePersonalData = false;
@@ -874,4 +877,10 @@ class _ReferenceScreen extends State<ReferenceScreen> {
       ),
     );
   }
+}
+
+
+@riverpod
+String example(Ref ref){
+  return 'Hello world';
 }

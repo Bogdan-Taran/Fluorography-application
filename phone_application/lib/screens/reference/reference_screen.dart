@@ -43,8 +43,9 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final exampleText = ref.watch(exampleProvider);
 
+    final exampleText = ref.watch(exampleProvider);
+    final exampleValueRef = ref.watch(exampleClassRivProvider);
     return WillPopScope(
       onWillPop: () async {
         return true;
@@ -243,7 +244,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                   Center(
                                     child: Text(
                                       // 'Подача заявки',
-                                      exampleText,
+                                      exampleValueRef,
                                       style: TextStyle(
                                         fontSize: AppSizes.fontSizeTitle,
                                         color: AppSizes.blackColorMain,
@@ -854,6 +855,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                             showErrorCheckbox = true;
                                           });
                                         }
+                                        ref.read(exampleClassRivProvider.notifier).update('Не подача заявки пепе');
                                       },
 
                                     ),
@@ -883,5 +885,15 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
 
 @riverpod
 String example(Ref ref){
-  return 'Hello world';
+  return 'Подача заявки пепе';
+}
+
+@riverpod
+class ExampleClassRiv extends _$ExampleClassRiv {
+  @override
+  String build() => 'Подача заявки да';
+
+  void update(String value){
+    state = value;
+  }
 }

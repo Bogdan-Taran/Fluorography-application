@@ -12,7 +12,7 @@ import '../../styles.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-// part 'reference_screen.g.dart';
+part 'reference_screen.g.dart';
 
 class ReferenceScreen extends ConsumerStatefulWidget {
   const ReferenceScreen({super.key});
@@ -43,6 +43,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final exampleText = ref.watch(exampleProvider);
 
     return WillPopScope(
       onWillPop: () async {
@@ -241,7 +242,8 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                   SizedBox(height: screenHeight * 0.04),
                                   Center(
                                     child: Text(
-                                      'Подача заявки',
+                                      // 'Подача заявки',
+                                      exampleText,
                                       style: TextStyle(
                                         fontSize: AppSizes.fontSizeTitle,
                                         color: AppSizes.blackColorMain,
@@ -878,7 +880,6 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
     );
   }
 }
-
 
 @riverpod
 String example(Ref ref){

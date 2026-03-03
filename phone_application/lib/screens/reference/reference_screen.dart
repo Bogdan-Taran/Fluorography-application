@@ -12,7 +12,7 @@ import '../../styles.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-part 'reference_screen.g.dart';
+
 
 class ReferenceScreen extends ConsumerStatefulWidget {
   const ReferenceScreen({super.key});
@@ -44,8 +44,6 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final exampleText = ref.watch(exampleProvider);
-    final exampleValueRef = ref.watch(exampleClassRivProvider);
     return WillPopScope(
       onWillPop: () async {
         return true;
@@ -243,8 +241,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                   SizedBox(height: screenHeight * 0.04),
                                   Center(
                                     child: Text(
-                                      // 'Подача заявки',
-                                      exampleValueRef,
+                                      'Подача заявки',
                                       style: TextStyle(
                                         fontSize: AppSizes.fontSizeTitle,
                                         color: AppSizes.blackColorMain,
@@ -855,7 +852,6 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                             showErrorCheckbox = true;
                                           });
                                         }
-                                        ref.read(exampleClassRivProvider.notifier).update('Не подача заявки пепе');
                                       },
 
                                     ),
@@ -880,20 +876,5 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
         ),
       ),
     );
-  }
-}
-
-@riverpod
-String example(Ref ref){
-  return 'Подача заявки пепе';
-}
-
-@riverpod
-class ExampleClassRiv extends _$ExampleClassRiv {
-  @override
-  String build() => 'Подача заявки да';
-
-  void update(String value){
-    state = value;
   }
 }

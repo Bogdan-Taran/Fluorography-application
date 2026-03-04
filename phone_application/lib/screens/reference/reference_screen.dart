@@ -5,13 +5,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
+import 'package:project_fluorography/models/post_reference_model/post_reference_model.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:project_fluorography/services/api_reference/request_api_reference_provider.dart';
+import 'package:project_fluorography/services/api_reference/request_reference_repository.dart';
+import 'package:talker/talker.dart';
 import '../../styles.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../services/api_reference/request_api_reference_provider.dart';
+
 
 
 class ReferenceScreen extends ConsumerStatefulWidget {
@@ -23,9 +29,14 @@ class ReferenceScreen extends ConsumerStatefulWidget {
 
 class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
-  final List<String> referenceType = ['Справка об обучении','Справка для пенсионного фонда','Справка в военный комиссариат'];
+  final Map<int, String> referenceType = {
+    1: 'Справка об обучении',
+    2: 'Справка для пенсионного фонда',
+    3: 'Справка в военный комиссариат'
+  };
   bool? agreePersonalData = false;
   bool showErrorCheckbox = false;
+  final talker = Talker();
 
   @override
   void initState() {
@@ -43,6 +54,8 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final apiProvider = ref.watch(requestApiReferenceProvider);
+    final requestRepository = ref.watch(requestRepositoryProvider);
 
     return WillPopScope(
       onWillPop: () async {
@@ -711,9 +724,9 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         ),
                                       ),
                                     ),
-                                    items: referenceType.map((refT) {
+                                    items: referenceType.entries.map((entry){
                                       return DropdownMenuItem<String>(
-                                        value: refT,
+                                        value: entry.key.toString(),
                                         child: Container(
                                           width: screenWidth * 1,
                                           padding: AppSizes.contentPaddingDropdownItemLeft,
@@ -722,7 +735,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                             borderRadius: AppSizes.inputBorderRadius,
                                           ),
                                           child: Text(
-                                            refT,
+                                            entry.value,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               color: AppSizes.blackColorMain,
@@ -845,13 +858,36 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         ),
                                       ),
 
-                                      onPressed: (){
-                                        _formKey.currentState?.saveAndValidate();
+                                      onPressed: () async{
+                                        talker.info('Reference screen: нажата кнопка SUBMIT');
                                         if(agreePersonalData != true){
                                           setState(() {
                                             showErrorCheckbox = true;
                                           });
+                                          return;
                                         }
+
+                                        if(_formKey.currentState!.saveAndValidate() && agreePersonalData!){
+                                          debugPrint(_formKey.currentState?.value.toString());
+                                          final formData = _formKey.currentState!.value;
+                                          final referenceData = PostReferenceModel(
+                                              firstname: formData['firstName'],
+                                              lastname: formData['lastName'],
+                                              patronymic: formData['patronymic'],
+                                              group: formData['groupNumber'],
+                                              type_id: int.parse(formData['referenceType']),
+                                              phone: formData['phoneNumber'],
+                                              quantity: int.parse(formData['numberOfReferences']),
+                                          );
+                                          try{
+                                            final response = await requestRepository.fetchApplication(referenceData);
+                                            talker.info('Reference_screen: Запрос отправлен');
+                                          }catch(e){
+                                            talker.handle(e);
+                                          }
+                                        }
+
+                                        //print(response.statusCode);
                                       },
 
                                     ),

@@ -1,22 +1,25 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_fluorography/services/api_reference/api_references_provider.dart';
+import 'package:talker/talker.dart';
 
-final exampleApiReferenceProvider = Provider<ExampleApiReferenceProvider>((ref) {
+final requestApiReferenceProvider = Provider<RequestApiReferenceProvider>((ref) {
   final dio = ref.read(dioProvider);
-  return ExampleApiReferenceProvider(dio);
+  return RequestApiReferenceProvider(dio);
 });
 
-class ExampleApiReferenceProvider {
+class RequestApiReferenceProvider {
   final Dio _dio;
+  final talker = Talker();
 
-  ExampleApiReferenceProvider(this._dio);
+  RequestApiReferenceProvider(this._dio);
 
   Future<Response> getRequest(String endpoint) async {
     try {
       final response = await _dio.get(endpoint);
       return response;
-    } catch (e) {
+    }
+    catch (e) {
       throw Exception('Failed to load data');
     }
   }
@@ -25,7 +28,9 @@ class ExampleApiReferenceProvider {
     try {
       final response = await _dio.post(endpoint, data: data);
       return response;
-    } catch (e) {
+    }
+    catch (e) {
+      talker.handle(e);
       throw Exception('Failed to post data');
     }
   }

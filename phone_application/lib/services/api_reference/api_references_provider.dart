@@ -11,14 +11,15 @@ final tokenProvider = FutureProvider<String?>((ref) async {
   return await apiService.getToken();
 });
 
+// предоставляет базу Dio во всём приложении
 final dioProvider = Provider<Dio>((ref) {
   final apiService = ref.read(apiServiceProvider);
 
   final dio = Dio(
     BaseOptions(
       baseUrl: 'https://flura.tomtit-tomsk.ru',
-      connectTimeout: Duration(seconds: 5),
-      receiveTimeout: Duration(seconds: 8),
+      connectTimeout: Duration(seconds: 2),
+      receiveTimeout: Duration(seconds: 5),
       headers: {
         'Content-Type': 'application/json',
         //if(tokenAsyncValue != 'null') 'Authorization': 'Bearer $tokenAsyncValue',

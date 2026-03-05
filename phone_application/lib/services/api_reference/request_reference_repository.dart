@@ -1,10 +1,10 @@
-
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_fluorography/models/get_reference_model/get_reference_model.dart';
 import 'package:project_fluorography/models/post_reference_model/post_reference_model.dart';
 import 'package:project_fluorography/services/api_reference/request_api_reference_provider.dart';
+import 'package:talker/talker.dart';
 
+//репозиторий - прослойка, связующая api-поставщика и модель данных
 final requestRepositoryProvider = Provider<RequestRepository>((ref){
   final apiProvider = ref.read(requestApiReferenceProvider);
   return RequestRepository(apiProvider);
@@ -13,13 +13,14 @@ final requestRepositoryProvider = Provider<RequestRepository>((ref){
 class RequestRepository {
   final RequestApiReferenceProvider _apiProvider;
   RequestRepository(this._apiProvider);
+  final talker = Talker();
 
   Future<GetReferenceModel> getAllApplications() async{
     try{
       final response = await _apiProvider.getRequest('/api/applications');
       return GetReferenceModel.fromJson(response.data);
     } catch(e){
-      throw Exception('Failed to load references data');
+      throw Exception('Ошибка при загрузке справок');
     }
   }
 
@@ -31,8 +32,8 @@ class RequestRepository {
           '/api/applications',
           referenceModel.toJson()
       );
-    } catch (e){
-      throw Exception('Failed to post request on creating application');
+    } catch (error, stackTrace){
+      throw Exception(error);
     }
   }
 }

@@ -57,10 +57,11 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final apiProvider = ref.watch(requestApiReferenceProvider);
-    final requestRepository = ref.watch(requestRepositoryProvider);
-    final requestController = ref.watch(requestReferenceControllerProvider.future);
     BuildersScreen _buildersScreen = BuildersScreen();
+
+
+
+
 
     return WillPopScope(
       onWillPop: () async {
@@ -898,12 +899,18 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                               quantity: int.parse(formData['numberOfReferences']),
                                           );
                                           try{
-                                            final response = await requestRepository.fetchApplication(referenceData);
+                                            // final response = await requestRepository.fetchApplication(referenceData);
+                                            //здесь контроллер
+                                            ref.read(requestReferenceControllerProvider.notifier).PostReferenceRequest(referenceData);
                                             talker.info('Reference_screen: Запрос отправлен');
                                           }catch(e){
                                             talker.handle(e);
                                           }
+
+
                                         }
+
+
 
                                         //print(response.statusCode);
                                       },
@@ -942,10 +949,10 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       children: [
                                         createReference.when(
                                             data: (value){
-                                              return SizedBox();
+                                              return Text('Успешно');
                                             },
-                                            error: (error, stack) => SizedBox(),
-                                            loading: () => SizedBox()
+                                            error: (error, stack) => Text('Ошибка: $error'),
+                                            loading: () => Text('Загрузка'),
                                         )
                                       ],
                                     );

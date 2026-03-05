@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PostReferenceModel {
 
- String get firstname; String get lastname; String get patronymic; String get group; int get type_id; String get phone; int get quantity;
+ String get firstname; String get lastname;@JsonKey(includeIfNull: false) String? get patronymic; String get group; int get type_id;@JsonKey(includeIfNull: false) String? get phone; int get quantity;
 /// Create a copy of PostReferenceModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $PostReferenceModelCopyWith<$Res>  {
   factory $PostReferenceModelCopyWith(PostReferenceModel value, $Res Function(PostReferenceModel) _then) = _$PostReferenceModelCopyWithImpl;
 @useResult
 $Res call({
- String firstname, String lastname, String patronymic, String group, int type_id, String phone, int quantity
+ String firstname, String lastname,@JsonKey(includeIfNull: false) String? patronymic, String group, int type_id,@JsonKey(includeIfNull: false) String? phone, int quantity
 });
 
 
@@ -65,15 +65,15 @@ class _$PostReferenceModelCopyWithImpl<$Res>
 
 /// Create a copy of PostReferenceModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? firstname = null,Object? lastname = null,Object? patronymic = null,Object? group = null,Object? type_id = null,Object? phone = null,Object? quantity = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? firstname = null,Object? lastname = null,Object? patronymic = freezed,Object? group = null,Object? type_id = null,Object? phone = freezed,Object? quantity = null,}) {
   return _then(_self.copyWith(
 firstname: null == firstname ? _self.firstname : firstname // ignore: cast_nullable_to_non_nullable
 as String,lastname: null == lastname ? _self.lastname : lastname // ignore: cast_nullable_to_non_nullable
-as String,patronymic: null == patronymic ? _self.patronymic : patronymic // ignore: cast_nullable_to_non_nullable
-as String,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
+as String,patronymic: freezed == patronymic ? _self.patronymic : patronymic // ignore: cast_nullable_to_non_nullable
+as String?,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
 as String,type_id: null == type_id ? _self.type_id : type_id // ignore: cast_nullable_to_non_nullable
-as int,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
-as String,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
+as int,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String?,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String firstname,  String lastname,  String patronymic,  String group,  int type_id,  String phone,  int quantity)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String firstname,  String lastname, @JsonKey(includeIfNull: false)  String? patronymic,  String group,  int type_id, @JsonKey(includeIfNull: false)  String? phone,  int quantity)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PostReferenceModel() when $default != null:
 return $default(_that.firstname,_that.lastname,_that.patronymic,_that.group,_that.type_id,_that.phone,_that.quantity);case _:
@@ -180,7 +180,7 @@ return $default(_that.firstname,_that.lastname,_that.patronymic,_that.group,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String firstname,  String lastname,  String patronymic,  String group,  int type_id,  String phone,  int quantity)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String firstname,  String lastname, @JsonKey(includeIfNull: false)  String? patronymic,  String group,  int type_id, @JsonKey(includeIfNull: false)  String? phone,  int quantity)  $default,) {final _that = this;
 switch (_that) {
 case _PostReferenceModel():
 return $default(_that.firstname,_that.lastname,_that.patronymic,_that.group,_that.type_id,_that.phone,_that.quantity);case _:
@@ -200,7 +200,7 @@ return $default(_that.firstname,_that.lastname,_that.patronymic,_that.group,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String firstname,  String lastname,  String patronymic,  String group,  int type_id,  String phone,  int quantity)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String firstname,  String lastname, @JsonKey(includeIfNull: false)  String? patronymic,  String group,  int type_id, @JsonKey(includeIfNull: false)  String? phone,  int quantity)?  $default,) {final _that = this;
 switch (_that) {
 case _PostReferenceModel() when $default != null:
 return $default(_that.firstname,_that.lastname,_that.patronymic,_that.group,_that.type_id,_that.phone,_that.quantity);case _:
@@ -215,15 +215,15 @@ return $default(_that.firstname,_that.lastname,_that.patronymic,_that.group,_tha
 @JsonSerializable()
 
 class _PostReferenceModel implements PostReferenceModel {
-   _PostReferenceModel({required this.firstname, required this.lastname, required this.patronymic, required this.group, required this.type_id, required this.phone, required this.quantity});
+   _PostReferenceModel({required this.firstname, required this.lastname, @JsonKey(includeIfNull: false) this.patronymic, required this.group, required this.type_id, @JsonKey(includeIfNull: false) this.phone, required this.quantity});
   factory _PostReferenceModel.fromJson(Map<String, dynamic> json) => _$PostReferenceModelFromJson(json);
 
 @override final  String firstname;
 @override final  String lastname;
-@override final  String patronymic;
+@override@JsonKey(includeIfNull: false) final  String? patronymic;
 @override final  String group;
 @override final  int type_id;
-@override final  String phone;
+@override@JsonKey(includeIfNull: false) final  String? phone;
 @override final  int quantity;
 
 /// Create a copy of PostReferenceModel
@@ -259,7 +259,7 @@ abstract mixin class _$PostReferenceModelCopyWith<$Res> implements $PostReferenc
   factory _$PostReferenceModelCopyWith(_PostReferenceModel value, $Res Function(_PostReferenceModel) _then) = __$PostReferenceModelCopyWithImpl;
 @override @useResult
 $Res call({
- String firstname, String lastname, String patronymic, String group, int type_id, String phone, int quantity
+ String firstname, String lastname,@JsonKey(includeIfNull: false) String? patronymic, String group, int type_id,@JsonKey(includeIfNull: false) String? phone, int quantity
 });
 
 
@@ -276,15 +276,15 @@ class __$PostReferenceModelCopyWithImpl<$Res>
 
 /// Create a copy of PostReferenceModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? firstname = null,Object? lastname = null,Object? patronymic = null,Object? group = null,Object? type_id = null,Object? phone = null,Object? quantity = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? firstname = null,Object? lastname = null,Object? patronymic = freezed,Object? group = null,Object? type_id = null,Object? phone = freezed,Object? quantity = null,}) {
   return _then(_PostReferenceModel(
 firstname: null == firstname ? _self.firstname : firstname // ignore: cast_nullable_to_non_nullable
 as String,lastname: null == lastname ? _self.lastname : lastname // ignore: cast_nullable_to_non_nullable
-as String,patronymic: null == patronymic ? _self.patronymic : patronymic // ignore: cast_nullable_to_non_nullable
-as String,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
+as String,patronymic: freezed == patronymic ? _self.patronymic : patronymic // ignore: cast_nullable_to_non_nullable
+as String?,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
 as String,type_id: null == type_id ? _self.type_id : type_id // ignore: cast_nullable_to_non_nullable
-as int,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
-as String,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
+as int,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String?,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

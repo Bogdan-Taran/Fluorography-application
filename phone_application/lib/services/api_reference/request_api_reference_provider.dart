@@ -29,11 +29,14 @@ class RequestApiReferenceProvider {
       final response = await _dio.post(endpoint, data: data);
       return response;
     } on DioException catch(error){
-      talker.error('Dio ошибка: ${error}, StatusCode: ${error.response?.statusCode},');
+      talker.error('Dio ошибка: ${error}');
+      talker.debug('StatusCode: ${error.response?.statusCode}');
+
+
       switch(error.response?.statusCode){
         case 422:
           talker.log('Ошибка 422');
-          talker.log('${error.response?.data['message']}');
+          talker.log('${error.response!.data['message']}');
           /*
           * Либо неверно заполнено фио (не та группа, нет отчества, не совпадают ФИ
           * Либо уже запрашивал данную справку

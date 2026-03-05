@@ -891,10 +891,10 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                           final referenceData = PostReferenceModel(
                                               firstname: formData['firstName'],
                                               lastname: formData['lastName'],
-                                              patronymic: formData['patronymic'],
+                                              patronymic: formData['patronymic']?.isNotEmpty == true ? formData['patronymic'] : null,
                                               group: formData['groupNumber'],
                                               type_id: int.parse(formData['referenceType']),
-                                              phone: formData['phoneNumber'],
+                                              phone: formData['phoneNumber']?.isNotEmpty == true ? formData['phoneNumber'] : null,
                                               quantity: int.parse(formData['numberOfReferences']),
                                           );
                                           try{

@@ -6,10 +6,10 @@ abstract class PostReferenceModel with _$PostReferenceModel {
   factory PostReferenceModel({
     required String firstname,
     required String lastname,
-    required String patronymic,
+    @JsonKey(includeIfNull: false) String? patronymic,
     required String group,
     required int type_id,
-    required String phone,
+    @JsonKey(includeIfNull: false) String? phone,
     required int quantity,
   }) = _PostReferenceModel;
   factory PostReferenceModel.fromJson(Map<String, dynamic> json) =>

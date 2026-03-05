@@ -10,12 +10,15 @@ import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:project_fluorography/services/api_reference/request_api_reference_provider.dart';
+import 'package:project_fluorography/services/api_reference/request_reference_controller.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_repository.dart';
 import 'package:talker/talker.dart';
+import '../../services/builders_screen.dart';
 import '../../styles.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/api_reference/request_api_reference_provider.dart';
 
 
@@ -56,6 +59,8 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final apiProvider = ref.watch(requestApiReferenceProvider);
     final requestRepository = ref.watch(requestRepositoryProvider);
+    final requestController = ref.watch(requestReferenceControllerProvider.future);
+    BuildersScreen _buildersScreen = BuildersScreen();
 
     return WillPopScope(
       onWillPop: () async {
@@ -287,6 +292,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       enabled: true,
                                       hintText: 'Имя',
                                       isDense: true,
+                                      errorMaxLines: 3,
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
@@ -352,6 +358,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       enabled: true,
                                       hintText: 'Фамилия',
                                       isDense: true,
+                                      errorMaxLines: 3,
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
@@ -413,8 +420,9 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                     'patronymic', // Unique key for this field
                                     decoration: InputDecoration(
                                       enabled: true,
-                                      hintText: 'Отчество (необязательно)',
+                                      hintText: 'Отчество (если есть)',
                                       isDense: true,
+                                      errorMaxLines: 3,
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
@@ -481,6 +489,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       enabled: true,
                                       hintText: 'Номер группы',
                                       isDense: true,
+                                      errorMaxLines: 3,
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
@@ -538,9 +547,13 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                   FormBuilderTextField(
                                     name:
                                     'phoneNumber', // Unique key for this field
+                                    validator: FormBuilderValidators.compose([
+                                      FormBuilderValidators.phoneNumber(regex: RegExp(r'^\d{11}$'), errorText: 'Неверный формат номера телефона', checkNullOrEmpty: false)
+                                    ]),
                                     decoration: InputDecoration(
                                       enabled: true,
                                       isDense: true,
+                                      errorMaxLines: 3,
                                       hintText: 'Номер телефона (необязательно)',
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
@@ -601,11 +614,14 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                     name:
                                     'numberOfReferences', // Unique key for this field
                                     validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.required(errorText: 'Пожалуйста, укажите количество справок'),
+                                      FormBuilderValidators.required(errorText: 'Не заполнены обязательные поля. Пожалуйста, введите данные.'),
+                                      FormBuilderValidators.notZeroNumber(errorText: 'Количество справок должно быть не меньше 1'),
+                                      FormBuilderValidators.max(2, errorText: 'Количество справок не должно превышать 2')
                                     ]),
                                     decoration: InputDecoration(
                                       enabled: true,
                                       isDense: true,
+                                      errorMaxLines: 3,
                                       hintText: 'Количество справок',
                                       contentPadding: AppSizes
                                           .contentPaddingTextFieldSymmetric,
@@ -689,6 +705,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                     decoration: InputDecoration(
                                       enabled: true,
                                       isDense: true,
+                                      errorMaxLines: 3,
                                       contentPadding: AppSizes.contentPaddingTextFieldSymmetric,
                                       // contentPadding: EdgeInsetsGeometry.zero,
                                       enabledBorder: OutlineInputBorder(
@@ -860,6 +877,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
 
                                       onPressed: () async{
                                         talker.info('Reference screen: нажата кнопка SUBMIT');
+                                        _formKey.currentState?.validate();
                                         if(agreePersonalData != true){
                                           setState(() {
                                             showErrorCheckbox = true;
@@ -892,6 +910,46 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
 
                                     ),
                                   ),
+
+                                  Consumer(builder: (context, ref, child) {
+                                    final createReference = ref.watch(requestReferenceControllerProvider);
+
+                                    ref.listen(requestReferenceControllerProvider, (previous, next){
+                                      next.when(
+                                          data: (value){
+                                            Fluttertoast.showToast(
+                                              msg: 'Запрос успешно отправлен',
+                                              backgroundColor: AppSizes.successGreenColor,
+                                              fontSize: 16,
+                                              gravity: ToastGravity.CENTER,
+                                              textColor: AppSizes.whiteColorMain,
+                                            );
+                                          },
+                                          error: (error, stack){
+                                            Fluttertoast.showToast(
+                                              msg: 'Ошибка: $error',
+                                              backgroundColor: AppSizes.errorRedColorMain,
+                                              fontSize: 16,
+                                              gravity: ToastGravity.CENTER,
+                                              textColor: AppSizes.whiteColorMain,
+                                            );
+                                          },
+                                          loading: () => _buildersScreen.buildLoading()
+                                      );
+                                    });
+                                    return Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        createReference.when(
+                                            data: (value){
+                                              return SizedBox();
+                                            },
+                                            error: (error, stack) => SizedBox(),
+                                            loading: () => SizedBox()
+                                        )
+                                      ],
+                                    );
+                                  }),
 
                                   SizedBox(
                                     height: screenHeight * 0.05,

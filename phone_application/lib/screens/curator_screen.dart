@@ -8,6 +8,7 @@ import 'package:project_fluorography/bloc/authentication/authentication_bloc.dar
 import 'package:project_fluorography/bloc/curator/curator_bloc.dart';
 import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
 import 'package:project_fluorography/models/single_group_with_students_model.dart';
+import 'package:project_fluorography/styles.dart';
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../main.dart';
 import '../services/api_service_get_community_members.dart';
@@ -503,26 +504,26 @@ class _CuratorScreen extends State<CuratorScreen> {
                                   case InternetTypes.connected:
                                     Fluttertoast.showToast(
                                       msg: 'Есть интернет-соединение',
-                                      backgroundColor: const Color(0xff78ef81),
+                                      backgroundColor: AppSizes.successGreenColor,
                                       fontSize: 16,
                                       gravity: ToastGravity.CENTER,
-                                      textColor: const Color(0xffffffff),
+                                      textColor: AppSizes.whiteColorMain,
                                     );
                                     case InternetTypes.offline:
                                     Fluttertoast.showToast(
                                       msg: 'Отсутствует интернет-соединение',
-                                      backgroundColor: const Color(0xffed6969),
+                                      backgroundColor: AppSizes.errorRedColorMain,
                                       fontSize: 16,
                                       gravity: ToastGravity.CENTER,
-                                      textColor: const Color(0xffffffff),
+                                      textColor: AppSizes.whiteColorMain,
                                     );
                                     case InternetTypes.unknown:
                                     Fluttertoast.showToast(
                                       msg: 'Об интернет-соединении неизвестно',
-                                      backgroundColor: const Color(0xff98BFF3),
+                                      backgroundColor: AppSizes.hoverBlueColorMain,
                                       fontSize: 16,
                                       gravity: ToastGravity.CENTER,
-                                      textColor: const Color(0xffffffff),
+                                      textColor: AppSizes.whiteColorMain,
                                     );
                                 }
                               })

@@ -28,10 +28,22 @@ class RequestApiReferenceProvider {
     try {
       final response = await _dio.post(endpoint, data: data);
       return response;
-    }
-    catch (e) {
-      talker.handle(e);
-      throw Exception('Failed to post data');
+    } on DioException catch(error){
+      talker.error('Dio ошибка: ${error}, StatusCode: ${error.response?.statusCode},');
+      switch(error.response?.statusCode){
+        case 422:
+          talker.log('Ошибка 422');
+          talker.log('${error.response?.data['message']}');
+          /*
+          * Либо неверно заполнено фио (не та группа, нет отчества, не совпадают ФИ
+          * Либо уже запрашивал данную справку
+          * */
+        case 500:
+          talker.error('Ошибка сервера');
+        case 302:
+          talker.error('Ошибка 302');
+      }
+      return error.response?.data;
     }
   }
 }

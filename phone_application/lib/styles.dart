@@ -21,6 +21,7 @@ class AppSizes {
   static const Color hoverBlueColorMain =   Color(0xffBADEFF);
   static const Color disableBlueColorMain = Color(0xffD5D6D7);
   static const Color errorRedColorMain =    Color(0xffD04848);
+  static const Color successGreenColor =    Color(0xff78ef81);
 
   //Paddings
   static const double contentPaddingTextFieldVertical = 40;

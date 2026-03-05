@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../api_service.dart';
 
@@ -7,19 +6,15 @@ final apiServiceProvider = Provider<ApiService>((ref) {
   return ApiService();
 });
 
-final tokenProvider = FutureProvider<String>((ref) async {
+final tokenProvider = FutureProvider<String?>((ref) async {
   final apiService = ref.watch(apiServiceProvider);
-  String? token = await apiService.getToken();
-  if (token != null) {
-    return token;
-  } else {
-    return 'null';
-  }
+  return await apiService.getToken();
 });
 
-final dioProvider = Provider<Dio>((ref)  {
-  // final tokenAsyncValue = ref.watch(tokenProvider.future);
-  return Dio(
+final dioProvider = Provider<Dio>((ref) {
+  final apiService = ref.read(apiServiceProvider);
+
+  final dio = Dio(
     BaseOptions(
       baseUrl: 'https://flura.tomtit-tomsk.ru',
       connectTimeout: Duration(seconds: 5),
@@ -30,4 +25,32 @@ final dioProvider = Provider<Dio>((ref)  {
       },
     ),
   );
+
+  dio.interceptors.add(
+    InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        final token = await apiService.getToken();
+        if (token != null && token.isNotEmpty) {
+          options.headers['Authorization'] = 'Bearer $token';
+        }
+        return handler.next(options);
+      },
+    ),
+  );
+  return dio;
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

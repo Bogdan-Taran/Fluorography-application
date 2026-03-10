@@ -60,6 +60,9 @@ class UserSharedPreferences{
       case 'student':
         return 'student';
         break;
+        case 'secretary':
+        return 'secretary';
+        break;
       case null:
         return 'undefined1';
         break;

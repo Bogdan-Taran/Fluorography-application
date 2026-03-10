@@ -202,6 +202,7 @@ class _ItemWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                if (item.icon != null)
                 IconTheme(
                   data: IconThemeData(
                     size: iconSize,
@@ -211,7 +212,7 @@ class _ItemWidget extends StatelessWidget {
                             ? item.activeColor
                             : item.inactiveColor,
                   ),
-                  child: item.icon,
+                  child: item.icon!,
                 ),
                 if (showInactiveTitle)
                   Flexible(
@@ -263,8 +264,8 @@ class _ItemWidget extends StatelessWidget {
 /// The [BottomNavyBar.items] definition.
 class BottomNavyBarItem {
   BottomNavyBarItem({
-    required this.icon,
-    // this.icon,
+    // required this.icon,
+    this.icon,
     required this.title,
     this.activeColor = Colors.blue,
     this.textAlign,
@@ -275,7 +276,7 @@ class BottomNavyBarItem {
   });
 
   /// Defines this item's icon which is placed in the right side of the [title].
-  final Widget icon;
+  final Widget? icon;
 
   /// Defines this item's title which placed in the left side of the [icon].
   final Widget title;

@@ -14,6 +14,8 @@ class ConverterServices {
       userRole = 'admin';
     } else if (userRoles.contains(5)) {
       userRole = 'curator';
+    } else if (userRoles.contains(6)) {
+      userRole = 'secretary';
     } else {
       userRole = 'undefined';
     }

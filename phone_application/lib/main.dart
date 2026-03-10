@@ -57,8 +57,8 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                 ),
-                //home: AuthChecker(),
-                home: SecretaryScreen(),
+                 home: AuthChecker(),
+                //home: SecretaryScreen(),
               ),
             );
           },
@@ -88,7 +88,7 @@ class _AuthCheckerState extends State<AuthChecker> {
         switch (state.runtimeType) {
           case AuthenticationLoadingState:
             _BuildersScreen.buildLoading();
-            /*
+
           case NotAuthenticatedState:
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
@@ -99,7 +99,7 @@ class _AuthCheckerState extends State<AuthChecker> {
                 ),
                 // HomeScreen()
               ),
-            );*/
+            );/*
           case NotAuthenticatedState:
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
@@ -110,7 +110,7 @@ class _AuthCheckerState extends State<AuthChecker> {
                 ),
                 // HomeScreen()
               ),
-            );
+            );*/
           case AuthorizedState:
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(

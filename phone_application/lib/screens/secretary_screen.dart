@@ -69,14 +69,12 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
             selectedIndex: _currentIndex,
             items: [
               BottomNavyBarItem(
-                icon: Icon(Icons.flutter_dash),
                 title: Text('Флюорография'),
                 activeColor: AppStyle.blueColorAdditional,
                 inactiveColor: AppStyle.blueColorAdditional,
-
+                  textAlign: TextAlign.center
               ),
               BottomNavyBarItem(
-                icon: Icon(Icons.settings_applications),
                 title: Text('Справки'),
                 activeColor: AppStyle.blueColorAdditional,
                 inactiveColor: AppStyle.blueColorAdditional,

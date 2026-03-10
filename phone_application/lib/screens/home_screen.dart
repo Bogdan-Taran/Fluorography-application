@@ -9,6 +9,7 @@ import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubi
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/screens/curator_screen.dart';
 import 'package:project_fluorography/screens/medic_screen.dart';
+import 'package:project_fluorography/screens/secretary_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/admin/admin_bloc.dart';
 import '../bloc/search/search_bloc.dart';
@@ -79,11 +80,22 @@ class HomeScreen extends StatelessWidget {
                 child: MedicScreen(),
               );
             }
+            else if (role == 'secretary') {
+              print('Ваша роль секретарь');
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(create: (context) => SearchBloc(),),
+                  BlocProvider(create: (context) => WorkingWithFluorographyBloc(),),
+                  BlocProvider(create: (_) => InternetConnectCubit(connectivity: Connectivity()),)
+                ],
+                child: SecretaryScreen(),
+              );
+            }
             else{
               print('У вас неизвестная роль');
               return Center(
                 child: Text(
-                  'Неизвестная роль: $role'
+                  'Лягушка Неизвестная роль: $role'
                 ),
               );
             }

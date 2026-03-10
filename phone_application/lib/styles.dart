@@ -17,6 +17,7 @@ class AppStyle {
   static const Color grayColorMain =        Color(0xff999A9B);
   static const Color whiteColorMain =       Color(0xffffffff);
   static const Color blueColorAdditional =  Color(0xff4AABDB);
+  static const Color blueColorBorder =      Color(0xff0188FD);
   static const Color defaultBlueColorMain = Color(0xff98BFF3);
   static const Color activeBlueColorMain =  Color(0xff72A7EB);
   static const Color hoverBlueColorMain =   Color(0xffBADEFF);

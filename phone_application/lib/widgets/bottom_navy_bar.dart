@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_fluorography/styles.dart';
 
 /// A beautiful and animated bottom navigation that paints a rounded shape
 /// around its [items] to provide a wonderful look.
@@ -100,7 +101,9 @@ class BottomNavyBar extends StatelessWidget {
         (Theme.of(context).bottomAppBarTheme.color ?? Colors.white);
 
     return Container(
+      padding: EdgeInsets.zero,
       margin: margin,
+
       decoration: BoxDecoration(
         color: bgColor,
         boxShadow: [
@@ -113,12 +116,16 @@ class BottomNavyBar extends StatelessWidget {
             ),
         ],
         borderRadius: borderRadius,
+        border: Border.all(
+          color: AppStyle.blueColorBorder,
+          width: 1,
+        )
       ),
       child: SafeArea(
         child: Container(
           width: containerWidth,
           height: containerHeight,
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+
           child: Row(
             mainAxisAlignment: mainAxisAlignment,
             children: items.map((item) {
@@ -175,16 +182,15 @@ class _ItemWidget extends StatelessWidget {
       container: true,
       selected: isSelected,
       child: AnimatedContainer(
-        /*
         width: (showInactiveTitle)
-            ? ((isSelected) ?
-                   MediaQuery.of(context).size.width * 0.3
-                  : MediaQuery.of(context).size.width * 0.2)
+            ? ((isSelected)
+            ? MediaQuery.of(context).size.width * 0.4
+            : MediaQuery.of(context).size.width * 0.2)
             : ((isSelected)
-                  ? MediaQuery.of(context).size.width * 0.3
-                  : MediaQuery.of(context).size.width * 0.3),
+            ? MediaQuery.of(context).size.width * 0.3
+            : MediaQuery.of(context).size.width * 0.1),
 
-         */
+
         height: double.maxFinite,
         duration: animationDuration,
         curve: curve,
@@ -206,10 +212,10 @@ class _ItemWidget extends StatelessWidget {
                 : ((isSelected)
                       ? MediaQuery.of(context).size.width * 0.3
                       : MediaQuery.of(context).size.width * 0.1),
-            padding: EdgeInsets.symmetric(horizontal: 4),
+            padding: EdgeInsets.zero,
             child: Row(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
+              // mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 if (item.icon != null)
@@ -230,7 +236,8 @@ class _ItemWidget extends StatelessWidget {
                       padding: itemPadding,
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
-                          color: item.activeTextColor ?? item.activeColor,
+                          color: isSelected ? item.inactiveTextColor : item.activeTextColor,
+                          // color: item.inactiveColor,
                           fontWeight: FontWeight.bold,
                         ),
                         maxLines: 1,
@@ -246,7 +253,7 @@ class _ItemWidget extends StatelessWidget {
                       padding: itemPadding,
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
-                          color: item.activeColor,
+                          color: isSelected ? item.inactiveTextColor : item.activeTextColor,
                           fontWeight: FontWeight.bold,
                         ),
                         maxLines: 1,
@@ -278,7 +285,9 @@ class BottomNavyBarItem {
     this.textAlign,
     this.inactiveColor,
     this.activeTextColor,
+    this.inactiveTextColor,
     this.activeBackgroundColor,
+    this.inactiveBackgroundColor,
     this.tooltipText,
   });
 
@@ -304,11 +313,13 @@ class BottomNavyBarItem {
   ///
   /// Will fallback to [activeColor] when null
   final Color? activeTextColor;
+  final Color? inactiveTextColor;
 
   /// The [BottomNavyBarItem] background color when active.
   ///
   /// Will fallback to [activeColor] with opacity 0.2 when null
   final Color? activeBackgroundColor;
+  final Color? inactiveBackgroundColor;
 
   /// Will show a tooltip for the item if provided.
   final String? tooltipText;

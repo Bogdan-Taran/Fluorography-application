@@ -7,7 +7,6 @@ import 'package:project_fluorography/styles.dart';
 import '../services/builders_screen.dart';
 import '../widgets/bottom_navy_bar.dart';
 
-
 class SecretaryScreen extends ConsumerStatefulWidget {
   const SecretaryScreen({super.key});
 
@@ -60,10 +59,16 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
             // backgroundColor: Colors.transparent,
             containerHeight: screenHeight * 0.06,
             containerWidth: screenWidth * 0.8,
-            margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.2, vertical: screenHeight* 0.01),
+            itemCornerRadius: 20,
+            margin: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.2,
+              vertical: screenHeight * 0.01,
+            ),
             mainAxisAlignment: MainAxisAlignment.center,
             borderRadius: BorderRadius.circular(20),
             showInactiveTitle: true,
+
+
             onItemSelected: (index) {
               setState(() {
                 _currentIndex = index;
@@ -75,15 +80,22 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
             items: [
               BottomNavyBarItem(
                 title: Text('Флюорография'),
-                activeColor: AppStyle.blueColorAdditional,
+                activeBackgroundColor: AppStyle.blueColorAdditional,
+                activeColor: AppStyle.whiteColorMain,
                 inactiveColor: AppStyle.blueColorAdditional,
-                  textAlign: TextAlign.center
+                inactiveTextColor: AppStyle.whiteColorMain,
+                activeTextColor: AppStyle.blueColorAdditional,
+                textAlign: TextAlign.center,
+
               ),
               BottomNavyBarItem(
                 title: Text('Справки'),
-                activeColor: AppStyle.blueColorAdditional,
+                activeBackgroundColor: AppStyle.blueColorAdditional,
+                activeColor: AppStyle.whiteColorMain,
                 inactiveColor: AppStyle.blueColorAdditional,
-                textAlign: TextAlign.center
+                inactiveTextColor: AppStyle.whiteColorMain,
+                activeTextColor: AppStyle.blueColorAdditional,
+                textAlign: TextAlign.end,
               ),
             ],
           ),
@@ -108,8 +120,6 @@ class _SecretaryScreenFluorography extends ConsumerState {
   }
 }
 
-
-
 class SecretaryScreenReference extends ConsumerStatefulWidget {
   const SecretaryScreenReference({super.key});
 
@@ -117,52 +127,27 @@ class SecretaryScreenReference extends ConsumerStatefulWidget {
   _SecretaryScreenReference createState() => _SecretaryScreenReference();
 }
 
-class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> {
+class _SecretaryScreenReference
+    extends ConsumerState<SecretaryScreenReference> {
   @override
   Widget build(BuildContext context) {
     final controllerProvider = ref.watch(fetchStudentApplicationProvider);
     return Scaffold(
-        body: controllerProvider.when(
-            data: (application) => ListView.builder(
-                itemCount: application.length,
-                itemBuilder: (context, index) {
-                  final item = application[index];
-                  return ListTile(
-                    title: Text(item.firstname),
-                    subtitle: Text(item.phone.toString()),
-                  );
-                }
-            ),
-            error: (error, stackStrace) => Center(
-              child: Column(
-                children: [
-                  Text('Ошибка: $error')
-    ],
-    ),
-    ),
-            loading: () => const Center(child: CircularProgressIndicator(),)
-        )
+      body: controllerProvider.when(
+        data: (application) => ListView.builder(
+          itemCount: application.length,
+          itemBuilder: (context, index) {
+            final item = application[index];
+            return ListTile(
+              title: Text(item.firstname),
+              subtitle: Text(item.phone.toString()),
+            );
+          },
+        ),
+        error: (error, stackStrace) =>
+            Center(child: Column(children: [Text('Ошибка: $error')])),
+        loading: () => const Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

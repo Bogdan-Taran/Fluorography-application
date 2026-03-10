@@ -9,6 +9,7 @@ import 'package:project_fluorography/models/post_reference_model/post_reference_
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:project_fluorography/services/api_reference/api_references_provider.dart';
 import 'package:project_fluorography/services/api_reference/request_api_reference_provider.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_controller.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_repository.dart';
@@ -58,7 +59,6 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     BuildersScreen _buildersScreen = BuildersScreen();
-
 
 
 
@@ -171,15 +171,15 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                     Set<WidgetState> states,
                                   ) {
                                     if (states.contains(WidgetState.disabled)) {
-                                      return AppSizes.disableBlueColorMain;
+                                      return AppStyle.disableBlueColorMain;
                                     }
                                     if (states.contains(WidgetState.pressed)) {
-                                      return AppSizes.activeBlueColorMain;
+                                      return AppStyle.activeBlueColorMain;
                                     }
                                     if (states.contains(WidgetState.hovered)) {
-                                      return AppSizes.hoverBlueColorMain;
+                                      return AppStyle.hoverBlueColorMain;
                                     }
-                                    return AppSizes.blueColorAdditional;
+                                    return AppStyle.blueColorAdditional;
                                   }),
                               foregroundColor:
                                   WidgetStateProperty.resolveWith<Color>((
@@ -205,7 +205,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                               children: [
                                 SvgPicture.asset(
                                   'assets/icon/door_icon.svg',
-                                  color: AppSizes.whiteColorMain,
+                                  color: AppStyle.whiteColorMain,
                                   height: 13,
                                   width: 13,
                                 ),
@@ -213,7 +213,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                 Text(
                                   'Войти в аккаунт',
                                   style: TextStyle(
-                                    fontSize: AppSizes.fontSizeMedium,
+                                    fontSize: AppStyle.fontSizeMedium,
                                     // fontSize: screenWidth * AppSizes.fontSizeMedium,
                                     color: Color(0xffffffff),
                                     fontWeight: FontWeight.w600,
@@ -225,7 +225,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                           ),
                           SizedBox(height: 10),
                           Container(
-                            padding: AppSizes.outsideInputPaddingHorizontal,
+                            padding: AppStyle.outsideInputPaddingHorizontal,
                             decoration: BoxDecoration(
                               color: Color(0xFFFFFFFF),
                               borderRadius: BorderRadius.all(
@@ -259,11 +259,12 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                 children: [
                                   SizedBox(height: screenHeight * 0.04),
                                   Center(
+
                                     child: Text(
                                       'Подача заявки',
                                       style: TextStyle(
-                                        fontSize: AppSizes.fontSizeTitle,
-                                        color: AppSizes.blackColorMain,
+                                        fontSize: AppStyle.fontSizeTitle,
+                                        color: AppStyle.blackColorMain,
                                         fontWeight: FontWeight.w400,
                                         fontFamily: 'Geologica',
                                       ),
@@ -274,8 +275,8 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                     child: Text(
                                       'Пожалуйста учтите, что вам необходимо\nввести ФИО в точности как в паспорте',
                                       style: TextStyle(
-                                        fontSize: AppSizes.fontSizeExtraSmall,
-                                        color: AppSizes.grayColorMain,
+                                        fontSize: AppStyle.fontSizeExtraSmall,
+                                        color: AppStyle.grayColorMain,
                                         fontWeight: FontWeight.w400,
                                         fontFamily: 'Geologica',
                                       ),
@@ -294,44 +295,44 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       hintText: 'Имя',
                                       isDense: true,
                                       errorMaxLines: 3,
-                                      contentPadding: AppSizes
+                                      contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppSizes.fontSizeSmall,
-                                        color: AppSizes.grayColorMain,
-                                        fontWeight: AppSizes.inputFontWeight,
+                                        fontSize: AppStyle.fontSizeSmall,
+                                        color: AppStyle.grayColorMain,
+                                        fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
                                       ),
 
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius:
-                                            AppSizes.inputBorderRadius,
+                                            AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional,
                                           width: 1.0,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius:
-                                            AppSizes.inputBorderRadius,
+                                            AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.activeBlueColorMain,
+                                          color: AppStyle.activeBlueColorMain,
                                           width: 1.0,
                                         ),
                                       ),
                                       errorBorder: OutlineInputBorder(
                                         borderRadius:
-                                            AppSizes.inputBorderRadius,
+                                            AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
                                       focusedErrorBorder: OutlineInputBorder(
                                         borderRadius:
-                                            AppSizes.inputBorderRadius,
+                                            AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
@@ -360,44 +361,44 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       hintText: 'Фамилия',
                                       isDense: true,
                                       errorMaxLines: 3,
-                                      contentPadding: AppSizes
+                                      contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppSizes.fontSizeSmall,
-                                        color: AppSizes.grayColorMain,
-                                        fontWeight: AppSizes.inputFontWeight,
+                                        fontSize: AppStyle.fontSizeSmall,
+                                        color: AppStyle.grayColorMain,
+                                        fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
                                       ),
 
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional,
                                           width: 1.0,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.activeBlueColorMain,
+                                          color: AppStyle.activeBlueColorMain,
                                           width: 1.0,
                                         ),
                                       ),
                                       errorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
                                       focusedErrorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
@@ -424,44 +425,44 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       hintText: 'Отчество (если есть)',
                                       isDense: true,
                                       errorMaxLines: 3,
-                                      contentPadding: AppSizes
+                                      contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppSizes.fontSizeSmall,
-                                        color: AppSizes.grayColorMain,
-                                        fontWeight: AppSizes.inputFontWeight,
+                                        fontSize: AppStyle.fontSizeSmall,
+                                        color: AppStyle.grayColorMain,
+                                        fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
                                       ),
 
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional,
                                           width: 1.0,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.activeBlueColorMain,
+                                          color: AppStyle.activeBlueColorMain,
                                           width: 1.0,
                                         ),
                                       ),
                                       errorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
                                       focusedErrorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
@@ -491,44 +492,44 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       hintText: 'Номер группы',
                                       isDense: true,
                                       errorMaxLines: 3,
-                                      contentPadding: AppSizes
+                                      contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppSizes.fontSizeSmall,
-                                        color: AppSizes.grayColorMain,
-                                        fontWeight: AppSizes.inputFontWeight,
+                                        fontSize: AppStyle.fontSizeSmall,
+                                        color: AppStyle.grayColorMain,
+                                        fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
                                       ),
 
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional,
                                           width: 1.0,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.activeBlueColorMain,
+                                          color: AppStyle.activeBlueColorMain,
                                           width: 1.0,
                                         ),
                                       ),
                                       errorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
                                       focusedErrorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
@@ -556,44 +557,44 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       isDense: true,
                                       errorMaxLines: 3,
                                       hintText: 'Номер телефона (необязательно)',
-                                      contentPadding: AppSizes
+                                      contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppSizes.fontSizeSmall,
-                                        color: AppSizes.grayColorMain,
-                                        fontWeight: AppSizes.inputFontWeight,
+                                        fontSize: AppStyle.fontSizeSmall,
+                                        color: AppStyle.grayColorMain,
+                                        fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
                                       ),
 
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional,
                                           width: 1.0,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.activeBlueColorMain,
+                                          color: AppStyle.activeBlueColorMain,
                                           width: 1.0,
                                         ),
                                       ),
                                       errorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
                                       focusedErrorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
@@ -624,44 +625,44 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       isDense: true,
                                       errorMaxLines: 3,
                                       hintText: 'Количество справок',
-                                      contentPadding: AppSizes
+                                      contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppSizes.fontSizeSmall,
-                                        color: AppSizes.grayColorMain,
-                                        fontWeight: AppSizes.inputFontWeight,
+                                        fontSize: AppStyle.fontSizeSmall,
+                                        color: AppStyle.grayColorMain,
+                                        fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
                                       ),
 
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional,
                                           width: 1.0,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.activeBlueColorMain,
+                                          color: AppStyle.activeBlueColorMain,
                                           width: 1.0,
                                         ),
                                       ),
                                       errorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
                                       focusedErrorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
@@ -688,56 +689,56 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                     hint: Text(
                                         'Вид справки',
                                         style: TextStyle(
-                                          fontSize: AppSizes.fontSizeSmall,
-                                          color: AppSizes.grayColorMain,
-                                          fontWeight: AppSizes.inputFontWeight,
+                                          fontSize: AppStyle.fontSizeSmall,
+                                          color: AppStyle.grayColorMain,
+                                          fontWeight: AppStyle.inputFontWeight,
                                           // fontFamily: 'Geologica',
                                         ),
 
                                     ),
                                     icon: SvgPicture.asset(
                                       'assets/images/icon_expand_down.svg',
-                                      color: AppSizes.blueColorAdditional,
+                                      color: AppStyle.blueColorAdditional,
                                       height: 10,
                                       width: 10,
                                     ),
 
-                                    dropdownColor: AppSizes.whiteColorMain,
+                                    dropdownColor: AppStyle.whiteColorMain,
                                     decoration: InputDecoration(
                                       enabled: true,
                                       isDense: true,
                                       errorMaxLines: 3,
-                                      contentPadding: AppSizes.contentPaddingTextFieldSymmetric,
+                                      contentPadding: AppStyle.contentPaddingTextFieldSymmetric,
                                       // contentPadding: EdgeInsetsGeometry.zero,
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional,
                                           width: 1.0,
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.activeBlueColorMain,
+                                          color: AppStyle.activeBlueColorMain,
                                           width: 1.0,
                                         ),
                                       ),
                                       errorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
                                       focusedErrorBorder: OutlineInputBorder(
                                         borderRadius:
-                                        AppSizes.inputBorderRadius,
+                                        AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppSizes.errorRedColorMain,
+                                          color: AppStyle.errorRedColorMain,
                                           width: 1,
                                         ),
                                       ),
@@ -747,17 +748,17 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         value: entry.key.toString(),
                                         child: Container(
                                           width: screenWidth * 1,
-                                          padding: AppSizes.contentPaddingDropdownItemLeft,
+                                          padding: AppStyle.contentPaddingDropdownItemLeft,
                                           decoration: BoxDecoration(
-                                            color: AppSizes.blueColorAdditional,
-                                            borderRadius: AppSizes.inputBorderRadius,
+                                            color: AppStyle.blueColorAdditional,
+                                            borderRadius: AppStyle.inputBorderRadius,
                                           ),
                                           child: Text(
                                             entry.value,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
-                                              color: AppSizes.blackColorMain,
-                                              fontSize: AppSizes.fontSizeSmall,
+                                              color: AppStyle.blackColorMain,
+                                              fontSize: AppStyle.fontSizeSmall,
                                               fontFamily: 'Geologica'
                                             ),
                                           ),
@@ -773,8 +774,8 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       Text(
                                         'Я соглашаюсь на обработку\nперсональных данных',
                                         style: TextStyle(
-                                          color: showErrorCheckbox ? AppSizes.errorRedColorMain : AppSizes.blueColorAdditional,
-                                          fontSize: AppSizes.fontSizeMediumMini,
+                                          color: showErrorCheckbox ? AppStyle.errorRedColorMain : AppStyle.blueColorAdditional,
+                                          fontSize: AppStyle.fontSizeMediumMini,
                                           height: 1.3
                                         ),
                                       ),
@@ -792,11 +793,11 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         },
                                         checkedWidget: Icon(
                                             Icons.check,
-                                            color: AppSizes.whiteColorMain
+                                            color: AppStyle.whiteColorMain
                                         ),
                                         uncheckedWidget: Icon(
                                             Icons.check,
-                                            color: showErrorCheckbox ? AppSizes.errorRedColorMain : AppSizes.blueColorAdditional
+                                            color: showErrorCheckbox ? AppStyle.errorRedColorMain : AppStyle.blueColorAdditional
                                         ),
                                         animationDuration: Duration(
                                           milliseconds: 50
@@ -804,10 +805,10 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         size: 30,
                                         border: Border.all(
                                           width: 1,
-                                          color: showErrorCheckbox ? AppSizes.errorRedColorMain : AppSizes.blueColorAdditional
+                                          color: showErrorCheckbox ? AppStyle.errorRedColorMain : AppStyle.blueColorAdditional
                                         ),
-                                        uncheckedColor: AppSizes.whiteColorMain,
-                                        checkedColor:  AppSizes.blueColorAdditional,
+                                        uncheckedColor: AppStyle.whiteColorMain,
+                                        checkedColor:  AppStyle.blueColorAdditional,
                                         isChecked: agreePersonalData,
                                       ),
                                     ],
@@ -843,7 +844,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                           )) {
                                             return Color(0xFFBADEFF);
                                           }
-                                          return AppSizes.blueColorAdditional;
+                                          return AppStyle.blueColorAdditional;
                                         }),
                                         foregroundColor:
                                         WidgetStateProperty.resolveWith<Color>((
@@ -868,7 +869,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       child: Text(
                                         'Отправить',
                                         style: TextStyle(
-                                          fontSize: AppSizes.fontSizeMedium,
+                                          fontSize: AppStyle.fontSizeMedium,
                                           // fontSize: screenWidth * AppSizes.fontSizeMedium,
                                           color: Color(0xffffffff),
                                           fontWeight: FontWeight.w600,
@@ -901,8 +902,8 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                           try{
                                             // final response = await requestRepository.fetchApplication(referenceData);
                                             //здесь контроллер
-                                            ref.read(requestReferenceControllerProvider.notifier).PostReferenceRequest(referenceData);
-                                            talker.info('Reference_screen: Запрос отправлен');
+                                            //ref.read(requestReferenceControllerProvider.notifier).PostReferenceRequest(referenceData);
+                                            //talker.info('Reference_screen: Запрос отправлен');
                                           }catch(e){
                                             talker.handle(e);
                                           }
@@ -917,7 +918,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
 
                                     ),
                                   ),
-
+                                  /*
                                   Consumer(builder: (context, ref, child) {
                                     final createReference = ref.watch(requestReferenceControllerProvider);
 
@@ -956,7 +957,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         )
                                       ],
                                     );
-                                  }),
+                                  }),*/
 
                                   SizedBox(
                                     height: screenHeight * 0.05,

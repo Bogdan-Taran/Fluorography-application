@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:sizer/sizer.dart';
 
 
-class AppSizes {
+class AppStyle {
   //Размеры шрифтов
   static const double fontSizeTitle =       24;
   static const double fontSizeLarge =       18;
@@ -36,6 +37,10 @@ class AppSizes {
     left: 16,
   );
 
+  Color testStyle(){
+    return grayColorMain;
+  }
+
   //Borders
   static final BorderRadius inputBorderRadius = BorderRadius.circular(30.0);
 
@@ -49,7 +54,7 @@ class AppSizes {
 class TextStyles{
   TextStyle textStyleTitle(BuildContext context){
     return TextStyle(
-      fontSize: AppSizes.fontSizeTitle,
+      fontSize: AppStyle.fontSizeTitle,
       color: Color(0xff26292B),
       fontWeight: FontWeight.w400,
       fontFamily: 'Geologica',

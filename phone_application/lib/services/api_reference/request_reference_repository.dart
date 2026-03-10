@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_fluorography/models/get_reference_model/get_reference_model.dart';
 import 'package:project_fluorography/models/post_reference_model/post_reference_model.dart';
 import 'package:project_fluorography/services/api_reference/request_api_reference_provider.dart';
 import 'package:talker/talker.dart';
 
+/*
 //репозиторий - прослойка, связующая api-поставщика и модель данных
 final requestRepositoryProvider = Provider<RequestRepository>((ref){
   final apiProvider = ref.read(requestApiReferenceProvider);
@@ -37,12 +39,28 @@ class RequestRepository {
     }
   }
 }
+*/
 
 
-// String firstname,
-//     String lastname,
-// String patronymic,
-//     String group,
-// int type_id,
-//     String phone,
-// int quantity,
+
+
+
+final apiProvider = Provider<RequestRepositoryMine>((ref) {
+  final apiProvider = ref.read(apiProviderMine);
+  return RequestRepositoryMine(apiProvider);
+});
+class RequestRepositoryMine{
+  final ApiProviderMine _apiProviderMine;
+  RequestRepositoryMine(this._apiProviderMine);
+  final talker = Talker();
+
+  Future<GetReferenceModel> getAllStudentsApplications() async {
+    try{
+      final response = await _apiProviderMine.getRequest('/api/applications/1125');
+      return response;
+    } on DioException catch(error){
+      talker.handle('Ошибка в репозитории: $error');
+      throw('Ошибка при получении справок студента');
+    }
+  }
+}

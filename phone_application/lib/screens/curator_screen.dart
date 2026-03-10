@@ -504,26 +504,26 @@ class _CuratorScreen extends State<CuratorScreen> {
                                   case InternetTypes.connected:
                                     Fluttertoast.showToast(
                                       msg: 'Есть интернет-соединение',
-                                      backgroundColor: AppSizes.successGreenColor,
+                                      backgroundColor: AppStyle.successGreenColor,
                                       fontSize: 16,
                                       gravity: ToastGravity.CENTER,
-                                      textColor: AppSizes.whiteColorMain,
+                                      textColor: AppStyle.whiteColorMain,
                                     );
                                     case InternetTypes.offline:
                                     Fluttertoast.showToast(
                                       msg: 'Отсутствует интернет-соединение',
-                                      backgroundColor: AppSizes.errorRedColorMain,
+                                      backgroundColor: AppStyle.errorRedColorMain,
                                       fontSize: 16,
                                       gravity: ToastGravity.CENTER,
-                                      textColor: AppSizes.whiteColorMain,
+                                      textColor: AppStyle.whiteColorMain,
                                     );
                                     case InternetTypes.unknown:
                                     Fluttertoast.showToast(
                                       msg: 'Об интернет-соединении неизвестно',
-                                      backgroundColor: AppSizes.hoverBlueColorMain,
+                                      backgroundColor: AppStyle.hoverBlueColorMain,
                                       fontSize: 16,
                                       gravity: ToastGravity.CENTER,
-                                      textColor: AppSizes.whiteColorMain,
+                                      textColor: AppStyle.whiteColorMain,
                                     );
                                 }
                               })

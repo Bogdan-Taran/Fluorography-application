@@ -3,8 +3,10 @@ import 'package:project_fluorography/models/post_reference_model/post_reference_
 import 'package:project_fluorography/services/api_reference/request_reference_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-part 'request_reference_controller.g.dart';
+//part 'request_reference_controller.g.dart';
 //контроллер для управления состояниями - некая прослойка-посредник между UI и всеми предыдущими иерархиями провайдеров
+
+/*
 @riverpod
 class RequestReferenceController extends _$RequestReferenceController {
   RequestRepository get _repository => ref.read(requestRepositoryProvider);
@@ -23,3 +25,4 @@ class RequestReferenceController extends _$RequestReferenceController {
     await _repository.fetchApplication(postModel);
   }
 }
+ */

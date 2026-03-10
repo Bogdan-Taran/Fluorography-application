@@ -6,6 +6,7 @@ import 'package:project_fluorography/bloc/authentication/authentication_bloc.dar
 import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
 import 'package:project_fluorography/screens/home_screen.dart';
 import 'package:project_fluorography/screens/reference/reference_screen.dart';
+import 'package:project_fluorography/screens/secretary_screen.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/builders_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,8 +57,8 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                 ),
-                home: AuthChecker(),
-                // home: MedicScreen(),
+                //home: AuthChecker(),
+                home: SecretaryScreen(),
               ),
             );
           },

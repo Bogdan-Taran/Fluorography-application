@@ -1,15 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_fluorography/models/get_reference_model/get_reference_model.dart';
+import 'package:project_fluorography/models/post_reference_model/post_reference_model.dart';
 import 'package:project_fluorography/services/api_reference/api_references_provider.dart';
 import 'package:talker/talker.dart';
 
+/*
 //предоставляет базовые Api запросы по шаблону
 final requestApiReferenceProvider = Provider<RequestApiReferenceProvider>((ref) {
   final dio = ref.read(dioProvider);
   return RequestApiReferenceProvider(dio);
 });
 
-class RequestApiReferenceProvider {
+class RequestApiReferenceProvider {w=
   final Dio _dio;
   final talker = Talker();
 
@@ -25,10 +28,10 @@ class RequestApiReferenceProvider {
     }
   }
 
-  Future<Response> postRequest(String endpoint, Map<String, dynamic> data) async {
+  Future<PostReferenceModel> postRequest(String endpoint, Map<String, dynamic> data) async {
     try {
       final response = await _dio.post(endpoint, data: data);
-      return response;
+      return PostReferenceModel.fromJson(response.data);
     } on DioException catch(error){
       talker.error('Dio ошибка: ${error}, StatusCode: ${error.response?.statusCode},');
       switch(error.response?.statusCode){
@@ -41,6 +44,38 @@ class RequestApiReferenceProvider {
           talker.error('Ошибка 302');
       }
       return error.response?.data;
+    }
+  }
+}*/
+
+
+final apiProviderMine = Provider<ApiProviderMine>((ref) {
+  final dio = ref.watch(dioProviderMine);
+  return ApiProviderMine(dio);
+} );
+
+class ApiProviderMine{
+  final Dio _dio;
+  ApiProviderMine(this._dio);
+  final talker = Talker();
+
+  Future<GetReferenceModel> getRequest(String path) async{
+    try{
+      final response = await _dio.get(path);
+      return response.data;
+    } on DioException catch(error){
+      talker.handle(error);
+      throw('Возникла ошибка при попытке запросить данные');
+    }
+  }
+
+  Future<PostReferenceModel> postRequest(String path, Map<String, dynamic> data) async{
+    try{
+      final response = await _dio.post(path, data: data);
+      return response.data;
+    } on DioException catch(error){
+      talker.handle(error);
+      throw('Произошла ошибка при отправке данных');
     }
   }
 }

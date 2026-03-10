@@ -163,7 +163,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           child: Text(
                             'Авторизация',
                             style: TextStyle(
-                              fontSize: AppSizes.fontSizeTitle,
+                              fontSize: AppStyle.fontSizeTitle,
                               // fontSize: screenWidth * AppSizes.fontSizeTitle,
                               color: Color(0xff26292B),
                               fontWeight: FontWeight.w400,
@@ -182,8 +182,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: Text(
                               'Вход происходит через сетевой город',
                               style: TextStyle(
-                                fontSize: AppSizes.fontSizeExtraSmall,
-                                color: AppSizes.grayColorMain,
+                                fontSize: AppStyle.fontSizeExtraSmall,
+                                color: AppStyle.grayColorMain,
                                 fontWeight: FontWeight.w300,
                                 fontFamily: 'Geologica',
                               ),
@@ -217,14 +217,14 @@ class _SignInScreenState extends State<SignInScreen> {
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: BorderSide(
-                                  color: AppSizes.errorRedColorMain,
+                                  color: AppStyle.errorRedColorMain,
                                   width: 2,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: BorderSide(
-                                  color: AppSizes.errorRedColorMain,
+                                  color: AppStyle.errorRedColorMain,
                                   width: 2,
                                 ),
                               ),
@@ -233,12 +233,12 @@ class _SignInScreenState extends State<SignInScreen> {
 
                               hintText: 'Логин',
                               hintStyle: TextStyle(
-                                fontSize: AppSizes.fontSizeSmall,
-                                color: AppSizes.grayColorMain,
+                                fontSize: AppStyle.fontSizeSmall,
+                                color: AppStyle.grayColorMain,
                                 fontWeight: FontWeight.w500,
                               ),
                               contentPadding:
-                                  AppSizes.loginAndPasswordFieldPadding,
+                                  AppStyle.loginAndPasswordFieldPadding,
                             ),
                             keyboardType: TextInputType.text,
                             enabled: true,
@@ -286,27 +286,27 @@ class _SignInScreenState extends State<SignInScreen> {
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: BorderSide(
-                                  color: AppSizes.errorRedColorMain,
+                                  color: AppStyle.errorRedColorMain,
                                   width: 2,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: BorderSide(
-                                  color: AppSizes.errorRedColorMain,
+                                  color: AppStyle.errorRedColorMain,
                                   width: 2,
                                 ),
                               ),
                               errorText: _validatePassword ? 'Обязательное поле' : null,
                               hintText: 'Пароль',
                               hintStyle: TextStyle(
-                                fontSize: AppSizes.fontSizeSmall,
-                                color: AppSizes.grayColorMain,
+                                fontSize: AppStyle.fontSizeSmall,
+                                color: AppStyle.grayColorMain,
                                 fontWeight: FontWeight.w500,
                               ),
 
                               contentPadding:
-                                  AppSizes.loginAndPasswordFieldPadding,
+                                  AppStyle.loginAndPasswordFieldPadding,
                             ),
                             keyboardType: TextInputType.text,
                             // maxLength: 25,
@@ -419,7 +419,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     : Text(
                                         'Войти',
                                         style: TextStyle(
-                                          fontSize: AppSizes.fontSizeMedium,
+                                          fontSize: AppStyle.fontSizeMedium,
                                           // fontSize: screenWidth * AppSizes.fontSizeMedium,
                                           color: Color(0xffffffff),
                                           fontWeight: FontWeight.w600,

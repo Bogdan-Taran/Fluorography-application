@@ -114,8 +114,10 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('authToken');
     if (token != null) {
+      talker.log('Auth_servide: токен есть');
       return true;
     } else {
+      talker.log('Auth_servide: токена нет');
       return false;
     }
   }

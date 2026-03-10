@@ -15,6 +15,8 @@ class BottomNavyBar extends StatelessWidget {
     this.shadowColor = Colors.black12,
     this.itemCornerRadius = 50,
     this.containerHeight = 70,
+    this.containerWidth = 120,
+    this.margin = const EdgeInsets.all(0),
     this.blurRadius = 2,
     this.spreadRadius = 0,
     this.borderRadius,
@@ -26,8 +28,8 @@ class BottomNavyBar extends StatelessWidget {
     required this.items,
     required this.onItemSelected,
     this.curve = Curves.linear,
-  })  : assert(items.length >= 2 && items.length <= 5),
-        super(key: key);
+  }) : assert(items.length >= 2 && items.length <= 5),
+       super(key: key);
 
   /// The selected item is index. Changing this property will change and animate
   /// the item being selected. Defaults to zero.
@@ -65,6 +67,9 @@ class BottomNavyBar extends StatelessWidget {
 
   /// Defines the bottom navigation bar height. Defaults to 56.
   final double containerHeight;
+  final double containerWidth;
+
+  final EdgeInsets margin;
 
   /// Used to configure the blurRadius of the [BoxShadow]. Defaults to 2.
   final double blurRadius;
@@ -90,10 +95,12 @@ class BottomNavyBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = backgroundColor ??
+    final bgColor =
+        backgroundColor ??
         (Theme.of(context).bottomAppBarTheme.color ?? Colors.white);
 
     return Container(
+      margin: margin,
       decoration: BoxDecoration(
         color: bgColor,
         boxShadow: [
@@ -109,7 +116,7 @@ class BottomNavyBar extends StatelessWidget {
       ),
       child: SafeArea(
         child: Container(
-          width: double.infinity,
+          width: containerWidth,
           height: containerHeight,
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
           child: Row(
@@ -168,20 +175,23 @@ class _ItemWidget extends StatelessWidget {
       container: true,
       selected: isSelected,
       child: AnimatedContainer(
+        /*
         width: (showInactiveTitle)
-            ? ((isSelected)
-                ? MediaQuery.of(context).size.width * 0.25
-                : MediaQuery.of(context).size.width * 0.2)
+            ? ((isSelected) ?
+                   MediaQuery.of(context).size.width * 0.3
+                  : MediaQuery.of(context).size.width * 0.2)
             : ((isSelected)
-                ? MediaQuery.of(context).size.width * 0.3
-                : MediaQuery.of(context).size.width * 0.1),
+                  ? MediaQuery.of(context).size.width * 0.3
+                  : MediaQuery.of(context).size.width * 0.3),
+
+         */
         height: double.maxFinite,
         duration: animationDuration,
         curve: curve,
         decoration: BoxDecoration(
           color: isSelected
               ? (item.activeBackgroundColor ??
-                  item.activeColor.withOpacity(0.2))
+                    item.activeColor.withOpacity(0.2))
               : backgroundColor,
           borderRadius: BorderRadius.circular(itemCornerRadius),
         ),
@@ -191,11 +201,11 @@ class _ItemWidget extends StatelessWidget {
           child: Container(
             width: (showInactiveTitle)
                 ? ((isSelected)
-                ? MediaQuery.of(context).size.width * 0.4
-                : MediaQuery.of(context).size.width * 0.2)
+                      ? MediaQuery.of(context).size.width * 0.4
+                      : MediaQuery.of(context).size.width * 0.2)
                 : ((isSelected)
-                ? MediaQuery.of(context).size.width * 0.3
-                : MediaQuery.of(context).size.width * 0.1),
+                      ? MediaQuery.of(context).size.width * 0.3
+                      : MediaQuery.of(context).size.width * 0.1),
             padding: EdgeInsets.symmetric(horizontal: 4),
             child: Row(
               mainAxisSize: MainAxisSize.max,
@@ -203,17 +213,17 @@ class _ItemWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 if (item.icon != null)
-                IconTheme(
-                  data: IconThemeData(
-                    size: iconSize,
-                    color: isSelected
-                        ? item.activeColor.withOpacity(1)
-                        : item.inactiveColor == null
-                            ? item.activeColor
-                            : item.inactiveColor,
+                  IconTheme(
+                    data: IconThemeData(
+                      size: iconSize,
+                      color: isSelected
+                          ? item.activeColor.withOpacity(1)
+                          : item.inactiveColor == null
+                          ? item.activeColor
+                          : item.inactiveColor,
+                    ),
+                    child: item.icon!,
                   ),
-                  child: item.icon!,
-                ),
                 if (showInactiveTitle)
                   Flexible(
                     child: Container(
@@ -254,10 +264,7 @@ class _ItemWidget extends StatelessWidget {
     );
     return item.tooltipText == null
         ? semantic
-        : Tooltip(
-      message: item.tooltipText!,
-      child: semantic,
-    );
+        : Tooltip(message: item.tooltipText!, child: semantic);
   }
 }
 
@@ -302,6 +309,7 @@ class BottomNavyBarItem {
   ///
   /// Will fallback to [activeColor] with opacity 0.2 when null
   final Color? activeBackgroundColor;
+
   /// Will show a tooltip for the item if provided.
   final String? tooltipText;
 }

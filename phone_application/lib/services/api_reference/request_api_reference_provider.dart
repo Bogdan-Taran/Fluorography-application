@@ -59,10 +59,12 @@ class ApiProviderMine{
   ApiProviderMine(this._dio);
   final talker = Talker();
 
-  Future<GetReferenceModel> getRequest(String path) async{
+  Future<List<dynamic>> getRequest(String path) async{
     try{
       final response = await _dio.get(path);
-      return response.data;
+      final dataJson = response.data as List<dynamic>;
+      talker.log('ApiProvider: Данные получены: $dataJson');
+      return dataJson;
     } on DioException catch(error){
       talker.handle(error);
       throw('Возникла ошибка при попытке запросить данные');

@@ -1,0 +1,291 @@
+{
+  "info": {
+    "name": "Flura",
+    "description": null,
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Справки",
+      "item": [
+        {
+          "name": "Заявка на получение новой заявки",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/api/applications",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "applications"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstname\":\"Maye\",\n    \"lastname\":\"Bartoletti\",\n    \"patronymic\":\"Mueller\",\n    \"group\": \"1\",\n    \"type_id\": 2,\n    \"phone\": \"+7 999 234 2301\",\n    \"quantity\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Обновление статуса заявки",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/api/applications/{{application_id}}",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{application_id}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status_id\":2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Список заявок",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+              }
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/api/applications",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "applications"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Все справки студента",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+              }
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/api/applications/{{user_id}}",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{user_id}}"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Флюра",
+      "item": []
+    },
+    {
+      "name": "Пользователь",
+      "item": [
+        {
+          "name": "Логин",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/api/login",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"login\": \"user\",\n    \"password\": \"57020594\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Профиль",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+              }
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/api/profile",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "profile"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Список групп",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+              }
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/api/groups",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "groups"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Уведомления",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+              }
+            },
+            "description": "",
+            "url": {
+              "raw": "{{host}}/api/notifications",
+              "protocol": "",
+              "host": [
+                "{{host}}"
+              ],
+              "path": [
+                "api",
+                "notifications"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "host",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "application_id",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

@@ -8,17 +8,17 @@ part of 'get_reference_model.dart';
 
 _GetReferenceModel _$GetReferenceModelFromJson(Map<String, dynamic> json) =>
     _GetReferenceModel(
-      id: (json['id'] as num).toInt(),
-      userId: (json['userId'] as num).toInt(),
-      firstname: json['firstname'] as String,
-      lastname: json['lastname'] as String,
-      patronymic: json['patronymic'] as String,
-      group: json['group'] as String,
-      typeId: (json['typeId'] as num).toInt(),
-      statusId: (json['statusId'] as num).toInt(),
-      quantity: (json['quantity'] as num).toInt(),
-      date: json['date'] as String,
-      phone: json['phone'] as String,
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      userId: (json['userId'] as num?)?.toInt() ?? 0,
+      firstname: json['firstname'] as String? ?? 'Имя не указано',
+      lastname: json['lastname'] as String? ?? 'Фамилия не указана',
+      patronymic: json['patronymic'] as String? ?? 'Отчество не указано',
+      group: json['group'] as String? ?? 'Группа не указана',
+      typeId: (json['typeId'] as num?)?.toInt() ?? 0,
+      statusId: (json['statusId'] as num?)?.toInt() ?? 0,
+      quantity: (json['quantity'] as num?)?.toInt() ?? 0,
+      date: json['date'] as String? ?? '00.00.0000',
+      phone: json['phone'] as String? ?? 'Не указан',
     );
 
 Map<String, dynamic> _$GetReferenceModelToJson(_GetReferenceModel instance) =>

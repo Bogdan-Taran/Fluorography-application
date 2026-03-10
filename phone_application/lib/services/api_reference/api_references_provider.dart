@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:talker/talker.dart';
 import '../../styles.dart';
 import '../api_service.dart';
 
@@ -11,10 +12,14 @@ final apiServiceProvider = Provider<ApiService>((ref) {
 });
 
 //провайдер к токену
-final tokenProvider = FutureProvider<String?>((ref) async {
-  final apiService = ref.watch(apiServiceProvider);
-  return await apiService.getToken();
+final tokenProvider = FutureProvider<String>((ref) async {
+  final talker = Talker();
+  final apiService = ref.read(apiServiceProvider);
+  final token = await apiService.getToken();
+  talker.log('TokenProvider: токен получен: $token');
+  return token!;
 });
+
 
 
 /*
@@ -46,6 +51,7 @@ final dioProvider = Provider<Dio>((ref) {
 
 
 final dioProviderMine = Provider<Dio> ((ref) {
+  final talker = Talker();
   final dio = Dio(
     BaseOptions(
       baseUrl: 'https://flura.tomtit-tomsk.ru',
@@ -59,10 +65,24 @@ final dioProviderMine = Provider<Dio> ((ref) {
   );
   dio.interceptors.add(
     InterceptorsWrapper(
-      onRequest: (options, handler) {
-        final token = ref.watch(tokenProvider);
-        options.headers['Authorization'] = token;
+      onRequest: (options, handler) async{
+        try {
+          final token = await ref.read(tokenProvider.future);
+          talker.log('Interceptor: Токен: $token');
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+        }catch(e){
+          talker.handle('Ошибка при получении токена: $e');
+        }
         return handler.next(options);
+      },
+      onError: (DioException e, handler){
+        if(e.response?.statusCode == 401){
+          talker.log('DioProvider: Ошибка 401');
+          // ref.read(apiServiceProvider).removeToken();
+        }
+        return handler.next(e);
       }
     )
   );

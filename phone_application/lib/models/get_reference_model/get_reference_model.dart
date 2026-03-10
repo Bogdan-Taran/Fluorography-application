@@ -5,17 +5,17 @@ part 'get_reference_model.g.dart';
 @freezed
 abstract class GetReferenceModel with _$GetReferenceModel {
   factory GetReferenceModel({
-    required int id,
-    required int userId,
-    required String firstname,
-    required String lastname,
-    required String patronymic,
-    required String group,
-    required int typeId,
-    required int statusId,
-    required int quantity,
-    required String date,
-    required String phone,
+    @Default(0) int id,
+    @Default(0) int userId,
+    @Default('Имя не указано') String firstname,
+    @Default('Фамилия не указана') String lastname,
+    @Default('Отчество не указано') String patronymic,
+    @Default('Группа не указана') String group,
+    @Default(0) int typeId,
+    @Default(0) int statusId,
+    @Default(0) int quantity,
+    @Default('00.00.0000') String date,
+    @Default('Не указан') String phone,
   }) = _GetReferenceModel;
   factory GetReferenceModel.fromJson(Map<String, dynamic> json) => _$GetReferenceModelFromJson(json);
 }

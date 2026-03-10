@@ -2,6 +2,7 @@ import 'dart:core';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_fluorography/services/api_reference/request_reference_controller.dart';
 import 'package:project_fluorography/styles.dart';
 import '../services/builders_screen.dart';
 import '../widgets/bottom_navy_bar.dart';
@@ -32,6 +33,8 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return WillPopScope(
       onWillPop: () async {
         return false;
@@ -39,7 +42,7 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
       child: ColorfulSafeArea(
         color: Colors.white,
         child: Scaffold(
-          backgroundColor: Color(0xffffffff),
+          backgroundColor: AppStyle.whiteColorMain,
           resizeToAvoidBottomInset: true,
           body: PageView(
             controller: _pageController,
@@ -54,10 +57,12 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
             ],
           ),
           bottomNavigationBar: BottomNavyBar(
-            backgroundColor: Colors.transparent,
-            showElevation: false,
-            shadowColor: Colors.transparent,
+            // backgroundColor: Colors.transparent,
+            containerHeight: screenHeight * 0.06,
+            containerWidth: screenWidth * 0.8,
+            margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.2, vertical: screenHeight* 0.01),
             mainAxisAlignment: MainAxisAlignment.center,
+            borderRadius: BorderRadius.circular(20),
             showInactiveTitle: true,
             onItemSelected: (index) {
               setState(() {
@@ -103,6 +108,8 @@ class _SecretaryScreenFluorography extends ConsumerState {
   }
 }
 
+
+
 class SecretaryScreenReference extends ConsumerStatefulWidget {
   const SecretaryScreenReference({super.key});
 
@@ -110,9 +117,52 @@ class SecretaryScreenReference extends ConsumerStatefulWidget {
   _SecretaryScreenReference createState() => _SecretaryScreenReference();
 }
 
-class _SecretaryScreenReference extends ConsumerState {
+class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text('Справки')));
+    final controllerProvider = ref.watch(fetchStudentApplicationProvider);
+    return Scaffold(
+        body: controllerProvider.when(
+            data: (application) => ListView.builder(
+                itemCount: application.length,
+                itemBuilder: (context, index) {
+                  final item = application[index];
+                  return ListTile(
+                    title: Text(item.firstname),
+                    subtitle: Text(item.phone.toString()),
+                  );
+                }
+            ),
+            error: (error, stackStrace) => Center(
+              child: Column(
+                children: [
+                  Text('Ошибка: $error')
+    ],
+    ),
+    ),
+            loading: () => const Center(child: CircularProgressIndicator(),)
+        )
+    );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -219,20 +219,20 @@ return $default(_that.id,_that.userId,_that.firstname,_that.lastname,_that.patro
 @JsonSerializable()
 
 class _GetReferenceModel implements GetReferenceModel {
-   _GetReferenceModel({required this.id, required this.userId, required this.firstname, required this.lastname, required this.patronymic, required this.group, required this.typeId, required this.statusId, required this.quantity, required this.date, required this.phone});
+   _GetReferenceModel({this.id = 0, this.userId = 0, this.firstname = 'Имя не указано', this.lastname = 'Фамилия не указана', this.patronymic = 'Отчество не указано', this.group = 'Группа не указана', this.typeId = 0, this.statusId = 0, this.quantity = 0, this.date = '00.00.0000', this.phone = 'Не указан'});
   factory _GetReferenceModel.fromJson(Map<String, dynamic> json) => _$GetReferenceModelFromJson(json);
 
-@override final  int id;
-@override final  int userId;
-@override final  String firstname;
-@override final  String lastname;
-@override final  String patronymic;
-@override final  String group;
-@override final  int typeId;
-@override final  int statusId;
-@override final  int quantity;
-@override final  String date;
-@override final  String phone;
+@override@JsonKey() final  int id;
+@override@JsonKey() final  int userId;
+@override@JsonKey() final  String firstname;
+@override@JsonKey() final  String lastname;
+@override@JsonKey() final  String patronymic;
+@override@JsonKey() final  String group;
+@override@JsonKey() final  int typeId;
+@override@JsonKey() final  int statusId;
+@override@JsonKey() final  int quantity;
+@override@JsonKey() final  String date;
+@override@JsonKey() final  String phone;
 
 /// Create a copy of GetReferenceModel
 /// with the given fields replaced by the non-null parameter values.

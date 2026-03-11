@@ -15,6 +15,7 @@ class BottomNavyBar extends StatelessWidget {
     this.backgroundColor,
     this.shadowColor = Colors.black12,
     this.itemCornerRadius = 50,
+    this.itemBorderColor = Colors.white,
     this.containerHeight = 70,
     this.containerWidth = 120,
     this.margin = const EdgeInsets.all(0),
@@ -65,6 +66,7 @@ class BottomNavyBar extends StatelessWidget {
 
   /// The [items] corner radius, if not set, it defaults to 50.
   final double itemCornerRadius;
+  final Color itemBorderColor;
 
   /// Defines the bottom navigation bar height. Defaults to 56.
   final double containerHeight;
@@ -142,6 +144,7 @@ class BottomNavyBar extends StatelessWidget {
                   itemPadding: itemPadding,
                   curve: curve,
                   showInactiveTitle: showInactiveTitle,
+                  itemBorderColor: itemBorderColor,
                 ),
               );
             }).toList(),
@@ -158,6 +161,7 @@ class _ItemWidget extends StatelessWidget {
   final BottomNavyBarItem item;
   final Color backgroundColor;
   final double itemCornerRadius;
+  final Color itemBorderColor;
   final Duration animationDuration;
   final EdgeInsets itemPadding;
   final Curve curve;
@@ -170,6 +174,7 @@ class _ItemWidget extends StatelessWidget {
     required this.item,
     required this.backgroundColor,
     required this.itemCornerRadius,
+    required this.itemBorderColor,
     required this.animationDuration,
     required this.itemPadding,
     required this.showInactiveTitle,
@@ -200,11 +205,16 @@ class _ItemWidget extends StatelessWidget {
                     item.activeColor.withOpacity(0.2))
               : backgroundColor,
           borderRadius: BorderRadius.circular(itemCornerRadius),
+          border: Border.all(
+            color: itemBorderColor,
+            width: 1
+          )
         ),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: NeverScrollableScrollPhysics(),
           child: Container(
+
             width: (showInactiveTitle)
                 ? ((isSelected)
                       ? MediaQuery.of(context).size.width * 0.4
@@ -233,6 +243,7 @@ class _ItemWidget extends StatelessWidget {
                 if (showInactiveTitle)
                   Flexible(
                     child: Container(
+
                       padding: itemPadding,
                       child: DefaultTextStyle.merge(
                         style: TextStyle(

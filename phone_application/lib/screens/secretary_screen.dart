@@ -2,6 +2,7 @@ import 'dart:core';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_controller.dart';
 import 'package:project_fluorography/styles.dart';
 import '../services/builders_screen.dart';
@@ -34,6 +35,9 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final buttonSize = screenWidth * 0.047;
+    final iconSize = screenWidth * 0.05;
+
     return WillPopScope(
       onWillPop: () async {
         return false;
@@ -55,49 +59,88 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
               SecretaryScreenReference(),
             ],
           ),
-          bottomNavigationBar: BottomNavyBar(
-            // backgroundColor: Colors.transparent,
-            containerHeight: screenHeight * 0.06,
-            containerWidth: screenWidth * 0.8,
-            itemCornerRadius: 20,
-            margin: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.2,
-              vertical: screenHeight * 0.01,
+          bottomNavigationBar: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              children: [
+                ElevatedButton(
+                    onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: EdgeInsets.all(buttonSize),
+                    backgroundColor: AppStyle.blueColorAdditional,
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/icon/door_icon.svg',
+                    colorFilter: const ColorFilter.mode(
+                      AppStyle.whiteColorMain,
+                      BlendMode.srcIn,
+                    ),
+                    width: iconSize,
+                  ),
+                ),
+                BottomNavyBar(
+                  // backgroundColor: Colors.transparent,
+                  containerHeight: screenHeight * 0.06,
+                  containerWidth: screenWidth * 0.6,
+                  itemCornerRadius: 20,
+                  margin: EdgeInsets.symmetric(
+                    vertical: screenHeight * 0.01,
+                    horizontal: screenHeight * 0.005
+                  ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  borderRadius: BorderRadius.circular(20),
+                  showInactiveTitle: true,
+                  itemBorderColor: AppStyle.whiteColorMain,
+                  onItemSelected: (index) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                    _pageController.jumpToPage(_currentIndex);
+                  },
+
+                  selectedIndex: _currentIndex,
+                  items: [
+                    BottomNavyBarItem(
+                      title: Text('Флюорография'),
+                      activeBackgroundColor: AppStyle.blueColorAdditional,
+                      activeColor: AppStyle.whiteColorMain,
+                      inactiveColor: AppStyle.blueColorAdditional,
+                      inactiveTextColor: AppStyle.whiteColorMain,
+                      activeTextColor: AppStyle.blueColorAdditional,
+                      textAlign: TextAlign.center,
+
+                    ),
+                    BottomNavyBarItem(
+                      title: Text('Справки'),
+                      activeBackgroundColor: AppStyle.blueColorAdditional,
+                      activeColor: AppStyle.whiteColorMain,
+                      inactiveColor: AppStyle.blueColorAdditional,
+                      inactiveTextColor: AppStyle.whiteColorMain,
+                      activeTextColor: AppStyle.blueColorAdditional,
+                      textAlign: TextAlign.end,
+                    ),
+                  ],
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: EdgeInsets.all(buttonSize),
+                    backgroundColor: AppStyle.blueColorAdditional,
+                  ),
+                  child: SvgPicture.asset(
+                  'assets/icon/notification_white_icon.svg',
+                  colorFilter: const ColorFilter.mode(
+                    AppStyle.whiteColorMain,
+                    BlendMode.srcIn,
+                  ),
+                  width: iconSize,
+                ),
+                ),
+              ],
             ),
-            mainAxisAlignment: MainAxisAlignment.center,
-            borderRadius: BorderRadius.circular(20),
-            showInactiveTitle: true,
-
-
-            onItemSelected: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-              _pageController.jumpToPage(_currentIndex);
-            },
-
-            selectedIndex: _currentIndex,
-            items: [
-              BottomNavyBarItem(
-                title: Text('Флюорография'),
-                activeBackgroundColor: AppStyle.blueColorAdditional,
-                activeColor: AppStyle.whiteColorMain,
-                inactiveColor: AppStyle.blueColorAdditional,
-                inactiveTextColor: AppStyle.whiteColorMain,
-                activeTextColor: AppStyle.blueColorAdditional,
-                textAlign: TextAlign.center,
-
-              ),
-              BottomNavyBarItem(
-                title: Text('Справки'),
-                activeBackgroundColor: AppStyle.blueColorAdditional,
-                activeColor: AppStyle.whiteColorMain,
-                inactiveColor: AppStyle.blueColorAdditional,
-                inactiveTextColor: AppStyle.whiteColorMain,
-                activeTextColor: AppStyle.blueColorAdditional,
-                textAlign: TextAlign.end,
-              ),
-            ],
           ),
         ),
       ),

@@ -238,6 +238,7 @@ class _SecretaryScreenReference
                       trailing: Text('Статус: ${student.statusId.toString()}'),
                       onTap: (){},
                     );
+
                   }).toList(),
                 );
               },

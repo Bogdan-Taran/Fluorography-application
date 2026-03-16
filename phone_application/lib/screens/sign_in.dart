@@ -6,7 +6,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
 import '../styles.dart';
-import 'home_screen.dart';
+import 'redirect_screen.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 
 class SignInScreen extends StatefulWidget {

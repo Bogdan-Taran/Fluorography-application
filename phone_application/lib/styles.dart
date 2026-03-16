@@ -21,6 +21,7 @@ class AppStyle {
   static const Color defaultBlueColorMain = Color(0xff98BFF3);
   static const Color activeBlueColorMain =  Color(0xff72A7EB);
   static const Color hoverBlueColorMain =   Color(0xffBADEFF);
+  static const Color collapsedBlueColor =   Color(0xffD4EAFF);
   static const Color disableBlueColorMain = Color(0xffD5D6D7);
   static const Color errorRedColorMain =    Color(0xffD04848);
   static const Color successGreenColor =    Color(0xff78ef81);

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
-import 'package:project_fluorography/screens/home_screen.dart';
+import 'package:project_fluorography/screens/redirect_screen.dart';
 import 'package:project_fluorography/screens/reference/reference_screen.dart';
 import 'package:project_fluorography/screens/secretary_screen.dart';
 import 'package:project_fluorography/screens/sign_in.dart';

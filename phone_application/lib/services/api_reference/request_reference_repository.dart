@@ -15,11 +15,6 @@ RequestRepositoryMine requestRepositoryMine(Ref ref){
   return RequestRepositoryMine(apiProvider);
 }
 
-/*final apiProvider = Provider<RequestRepositoryMine>((ref) {
-  final apiProvider = ref.read(apiProviderMine);
-  return RequestRepositoryMine(apiProvider);
-});*/
-
 class RequestRepositoryMine{
   final ApiProviderMine _apiProviderMine;
   RequestRepositoryMine(this._apiProviderMine);
@@ -37,5 +32,19 @@ class RequestRepositoryMine{
       talker.handle('Ошибка в репозитории: $error');
       throw('Ошибка при получении справок студента');
     }
+  }
+
+  Future<List<GetReferenceModel>> getEntireListApplications() async{
+    try {
+      final response = await _apiProviderMine.getRequest('/api/applications');
+      final List<dynamic> rawData = response;
+      final List<GetReferenceModel> dataList = rawData.map((json) => GetReferenceModel.fromJson(json as Map<String, dynamic>)).toList();
+      talker.log('RepoProvider(getEntireListApplications): Данные успешно переконвертированы в List: $dataList');
+      return dataList;
+    } on DioException catch(error){
+      talker.handle('Ошибка в репозитории: $error');
+      throw('Ошибка при получении полного списка справок');
+    }
+
   }
 }

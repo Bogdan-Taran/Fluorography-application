@@ -15,7 +15,14 @@ class _NotificationScreen extends ConsumerState<NotificationScreen> {
     return ColorfulSafeArea(
       color: Colors.white,
       child: Scaffold(
-        body: Text('Notification'),
+        body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: Column(
+              children: [
+                Text('Здесь будут уведомления'),
+              ]
+            )
+        )
       )
     );
   }

@@ -13,6 +13,26 @@ Future<List<GetReferenceModel>> fetchStudentApplication(Ref ref){
   return repositoryProvider.getOneStudentApplications();
 }
 
+@riverpod
+Future<List<GetReferenceModel>> fetchEntireListApplications(Ref ref){
+  final repositoryProvider = ref.watch(requestRepositoryMineProvider);
+  return repositoryProvider.getEntireListApplications();
+}
+
+final groupedApplicationsByGroup = Provider<AsyncValue<Map<String, List<GetReferenceModel>>>>((ref){
+  final rawApplications = ref.watch(fetchEntireListApplicationsProvider);
+  return rawApplications.whenData((list){
+    final Map<String, List<GetReferenceModel>> groupedApplications = {};
+    for(var item in list){
+      if(!groupedApplications.containsKey(item.group)){
+        groupedApplications[item.group] = [];
+      }
+      groupedApplications[item.group]!.add(item);
+    }
+    return groupedApplications;
+  });
+});
+
 
 
 

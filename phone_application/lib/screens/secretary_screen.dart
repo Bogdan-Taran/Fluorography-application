@@ -1,12 +1,18 @@
 import 'dart:core';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_controller.dart';
 import 'package:project_fluorography/styles.dart';
+import '../bloc/authentication/authentication_bloc.dart';
+import '../main.dart';
+import '../models/get_reference_model/get_reference_model.dart';
 import '../services/builders_screen.dart';
 import '../widgets/bottom_navy_bar.dart';
+import '../widgets/expansion_tile.dart' as expansion_tile;
+import 'notification_screen.dart';
 
 class SecretaryScreen extends ConsumerStatefulWidget {
   const SecretaryScreen({super.key});
@@ -57,6 +63,7 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
             children: [
               SecretaryScreenFluorography(),
               SecretaryScreenReference(),
+              NotificationScreen(),
             ],
           ),
           bottomNavigationBar: Padding(
@@ -64,7 +71,17 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
             child: Row(
               children: [
                 ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<AuthenticationBloc>().add(
+                        SignOutEvent(),
+                      );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AuthChecker(),
+                        ),
+                      );
+                    },
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
                     padding: EdgeInsets.all(buttonSize),
@@ -109,7 +126,6 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
                       inactiveTextColor: AppStyle.whiteColorMain,
                       activeTextColor: AppStyle.blueColorAdditional,
                       textAlign: TextAlign.center,
-
                     ),
                     BottomNavyBarItem(
                       title: Text('Справки'),
@@ -124,6 +140,7 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    _pageController.jumpToPage(2);
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
@@ -148,6 +165,7 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
   }
 }
 
+// Флюорография секретерь
 class SecretaryScreenFluorography extends ConsumerStatefulWidget {
   const SecretaryScreenFluorography({super.key});
 
@@ -163,6 +181,11 @@ class _SecretaryScreenFluorography extends ConsumerState {
   }
 }
 
+
+
+
+
+// Справки секретерь
 class SecretaryScreenReference extends ConsumerStatefulWidget {
   const SecretaryScreenReference({super.key});
 
@@ -174,23 +197,56 @@ class _SecretaryScreenReference
     extends ConsumerState<SecretaryScreenReference> {
   @override
   Widget build(BuildContext context) {
-    final controllerProvider = ref.watch(fetchStudentApplicationProvider);
+    final groupedData = ref.watch(groupedApplicationsByGroup);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      body: controllerProvider.when(
-        data: (application) => ListView.builder(
-          itemCount: application.length,
-          itemBuilder: (context, index) {
-            final item = application[index];
-            return ListTile(
-              title: Text(item.firstname),
-              subtitle: Text(item.phone.toString()),
+      backgroundColor: AppStyle.whiteColorMain,
+      body: Padding(
+        padding: EdgeInsets.all(screenWidth * 0.05),
+        child: groupedData.when(
+          data: (data) {
+            final groups = data.keys.toList();
+            if(groups.isEmpty) return const Center(child: Text('Нет справок'));
+            return ListView.builder(
+              itemCount: groups.length,
+              itemBuilder: (context, index){
+                final groupName = groups[index];
+                final students = data[groupName]!;
+                return expansion_tile.ExpansionTile(
+                  title: Text('Группа $groupName'),
+                  collapsedShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(
+                      color: AppStyle.collapsedBlueColor,
+                      width: 1
+                    )
+                  ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide(
+                          color: AppStyle.collapsedBlueColor,
+                          width: 1
+                      )
+                  ),
+                  children: students.map((student) {
+                    return ListTile(
+                      contentPadding: EdgeInsetsGeometry.symmetric(vertical: screenHeight * 0.05),
+                      title: Text('Студент ${student.firstname} ${student.lastname}'),
+                      subtitle: Text('Телефон: ${student.phone}'),
+                      trailing: Text('Статус: ${student.statusId.toString()}'),
+                      onTap: (){},
+                    );
+                  }).toList(),
+                );
+              },
             );
           },
+          error: (error, stackTrace) => Center(child: Text('Ошибка: $error')),
+          loading: () => const Center(child: CircularProgressIndicator())
         ),
-        error: (error, stackStrace) =>
-            Center(child: Column(children: [Text('Ошибка: $error')])),
-        loading: () => const Center(child: CircularProgressIndicator()),
-      ),
+      )
     );
   }
 }

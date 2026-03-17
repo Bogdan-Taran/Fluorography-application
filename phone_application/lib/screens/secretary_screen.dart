@@ -195,6 +195,7 @@ class SecretaryScreenReference extends ConsumerStatefulWidget {
 
 class _SecretaryScreenReference
     extends ConsumerState<SecretaryScreenReference> {
+  final Map<int, bool> _isExpandedTile = {};
   @override
   Widget build(BuildContext context) {
     final groupedData = ref.watch(groupedApplicationsByGroup);
@@ -215,7 +216,42 @@ class _SecretaryScreenReference
                 final groupName = groups[index];
                 final students = data[groupName]!;
                 return expansion_tile.ExpansionTile(
-                  title: Text('Группа $groupName'),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                          'Группа $groupName',
+                          style: TextStyle(
+                            color: AppStyle.blueColorTextTitle,
+                            fontSize: AppStyle.fontSizeMedium,
+                            fontWeight: FontWeight.w500,
+                          ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppStyle.redColorTag,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${students.length}',
+                              style: TextStyle(
+                                color: AppStyle.whiteColorMain,
+                                fontSize: AppStyle.fontSizeSmall,
+                              )
+                            ),
+                            SvgPicture.asset(
+                              'assets/images/people_icon.svg',
+                              color: AppStyle.whiteColorMain,
+                            )
+                          ]
+                        ),
+                      )
+                    ],
+                  ),
                   collapsedShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: BorderSide(
@@ -230,9 +266,19 @@ class _SecretaryScreenReference
                           width: 1
                       )
                   ),
+                  trailing: SvgPicture.asset(
+                    _isExpandedTile[index] == true
+                        ? 'assets/images/icon_expand_down2.svg'
+                        : 'assets/images/icon_expand_right.svg',
+                  ),
+                  onExpansionChanged: (bool expanded){
+                    setState(() {
+                      _isExpandedTile[index] = expanded;
+                    });
+                  },
                   children: students.map((student) {
                     return ListTile(
-                      contentPadding: EdgeInsetsGeometry.symmetric(vertical: screenHeight * 0.05),
+                      contentPadding: EdgeInsetsGeometry.symmetric(vertical: screenHeight * 0.0015),
                       title: Text('Студент ${student.firstname} ${student.lastname}'),
                       subtitle: Text('Телефон: ${student.phone}'),
                       trailing: Text('Статус: ${student.statusId.toString()}'),

@@ -45,6 +45,11 @@ class RequestRepositoryMine{
       talker.handle('Ошибка в репозитории: $error');
       throw('Ошибка при получении полного списка справок');
     }
+  }
 
+  Future<Map<String, dynamic>> updateReferenceStatus() async{
+    try {
+      final response = await _apiProviderMine.patchRequest('/api/applications/1125', {'status_id': 2});
+    }
   }
 }

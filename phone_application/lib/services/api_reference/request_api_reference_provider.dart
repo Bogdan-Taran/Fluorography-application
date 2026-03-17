@@ -62,9 +62,20 @@ class ApiProviderMine{
   Future<List<dynamic>> getRequest(String path) async{
     try{
       final response = await _dio.get(path);
-      final dataJson = response.data as List<dynamic>;
-      talker.log('ApiProvider: Данные получены: $dataJson');
-      return dataJson;
+      talker.log('ApiProvider: response отправлен и получен: ${response.data}');
+      final data = response.data;
+      if(data is Map<String, dynamic>){
+        if(data.containsKey('message')){
+          final message = data['message'];
+          talker.warning('ApiProvider: message получен: $message');
+          return [];
+        }
+      }
+      if(data is List<dynamic>){
+        talker.log('ApiProvider: Данные получены: $data');
+        return data;
+      }
+      throw Exception('Ошибка при получении данных');
     } on DioException catch(error){
       talker.handle(error);
       throw('Возникла ошибка при попытке запросить данные');
@@ -78,6 +89,20 @@ class ApiProviderMine{
     } on DioException catch(error){
       talker.handle(error);
       throw('Произошла ошибка при отправке данных');
+    }
+  }
+
+  Future<Map<String, dynamic>> patchRequest(String path, Map<String, dynamic> data) async {
+    try {
+      final response = await _dio.patch(path, data: data);
+      talker.log('ApiProvider: Данные успешно обновлены: $response');
+      if(response.data is Map<String, dynamic>){
+        return response.data;
+      }
+      return {'success': 'true'};
+    } on DioException catch(error) {
+      talker.handle(error);
+      throw('ApiProvider: Произошла ошибка при обновлении данных');
     }
   }
 }

@@ -213,7 +213,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                 Text(
                                   'Войти в аккаунт',
                                   style: TextStyle(
-                                    fontSize: AppStyle.fontSizeMedium,
+                                    fontSize: AppStyle.fontSizeMedium_16,
                                     // fontSize: screenWidth * AppSizes.fontSizeMedium,
                                     color: Color(0xffffffff),
                                     fontWeight: FontWeight.w600,
@@ -298,7 +298,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall,
+                                        fontSize: AppStyle.fontSizeSmall_12,
                                         color: AppStyle.grayColorMain,
                                         fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
@@ -364,7 +364,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall,
+                                        fontSize: AppStyle.fontSizeSmall_12,
                                         color: AppStyle.grayColorMain,
                                         fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
@@ -428,7 +428,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall,
+                                        fontSize: AppStyle.fontSizeSmall_12,
                                         color: AppStyle.grayColorMain,
                                         fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
@@ -495,7 +495,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall,
+                                        fontSize: AppStyle.fontSizeSmall_12,
                                         color: AppStyle.grayColorMain,
                                         fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
@@ -560,7 +560,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall,
+                                        fontSize: AppStyle.fontSizeSmall_12,
                                         color: AppStyle.grayColorMain,
                                         fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
@@ -628,7 +628,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       contentPadding: AppStyle
                                           .contentPaddingTextFieldSymmetric,
                                       hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall,
+                                        fontSize: AppStyle.fontSizeSmall_12,
                                         color: AppStyle.grayColorMain,
                                         fontWeight: AppStyle.inputFontWeight,
                                         // fontFamily: 'Geologica',
@@ -689,7 +689,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                     hint: Text(
                                         'Вид справки',
                                         style: TextStyle(
-                                          fontSize: AppStyle.fontSizeSmall,
+                                          fontSize: AppStyle.fontSizeSmall_12,
                                           color: AppStyle.grayColorMain,
                                           fontWeight: AppStyle.inputFontWeight,
                                           // fontFamily: 'Geologica',
@@ -758,7 +758,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               color: AppStyle.blackColorMain,
-                                              fontSize: AppStyle.fontSizeSmall,
+                                              fontSize: AppStyle.fontSizeSmall_12,
                                               fontFamily: 'Geologica'
                                             ),
                                           ),
@@ -775,7 +775,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         'Я соглашаюсь на обработку\nперсональных данных',
                                         style: TextStyle(
                                           color: showErrorCheckbox ? AppStyle.errorRedColorMain : AppStyle.blueColorAdditional,
-                                          fontSize: AppStyle.fontSizeMediumMini,
+                                          fontSize: AppStyle.fontSizeMediumMini_14,
                                           height: 1.3
                                         ),
                                       ),
@@ -869,7 +869,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       child: Text(
                                         'Отправить',
                                         style: TextStyle(
-                                          fontSize: AppStyle.fontSizeMedium,
+                                          fontSize: AppStyle.fontSizeMedium_16,
                                           // fontSize: screenWidth * AppSizes.fontSizeMedium,
                                           color: Color(0xffffffff),
                                           fontWeight: FontWeight.w600,

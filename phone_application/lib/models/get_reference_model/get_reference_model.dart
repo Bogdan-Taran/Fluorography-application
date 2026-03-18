@@ -36,4 +36,11 @@ extension StatusId on int {
       3: AppStyle.redColorTag,
     }[this] ?? AppStyle.yellowProcessColor;
   }
+  String get applicationTypeName{
+    return{
+      1: 'Справка об обучении',
+      2: 'Справка для пенсионного фонда',
+      3: 'Справка в военный комиссариат'
+    }[this] ?? 'Неизвестная справка';
+  }
 }

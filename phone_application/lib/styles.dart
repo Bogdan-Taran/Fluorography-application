@@ -5,13 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AppStyle {
   //Размеры шрифтов
-  static const double fontSizeTitle =       24;
-  static const double fontSizeExtraLarge =  20;
-  static const double fontSizeLarge =       18;
-  static const double fontSizeMedium =      16;
-  static const double fontSizeMediumMini =  14;
-  static const double fontSizeSmall =       12;
-  static const double fontSizeExtraSmall =  10;
+  static const double fontSizeTitle =           24;
+  static const double fontSizeExtraLarge =      20;
+  static const double fontSizeLarge =           18;
+  static const double fontSizeMedium_16 =       16;
+  static const double fontSizeMediumMini_14 =   14;
+  static const double fontSizeSmall_12 =        12;
+  static const double fontSizeExtraSmall =      10;
 
   //Цвета
   static const Color blackColorMain =       Color(0xff26292B);

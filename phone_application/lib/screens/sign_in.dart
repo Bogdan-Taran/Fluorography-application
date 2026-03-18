@@ -233,7 +233,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                               hintText: 'Логин',
                               hintStyle: TextStyle(
-                                fontSize: AppStyle.fontSizeSmall,
+                                fontSize: AppStyle.fontSizeSmall_12,
                                 color: AppStyle.grayColorMain,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -300,7 +300,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               errorText: _validatePassword ? 'Обязательное поле' : null,
                               hintText: 'Пароль',
                               hintStyle: TextStyle(
-                                fontSize: AppStyle.fontSizeSmall,
+                                fontSize: AppStyle.fontSizeSmall_12,
                                 color: AppStyle.grayColorMain,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -419,7 +419,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     : Text(
                                         'Войти',
                                         style: TextStyle(
-                                          fontSize: AppStyle.fontSizeMedium,
+                                          fontSize: AppStyle.fontSizeMedium_16,
                                           // fontSize: screenWidth * AppSizes.fontSizeMedium,
                                           color: Color(0xffffffff),
                                           fontWeight: FontWeight.w600,

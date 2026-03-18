@@ -252,7 +252,7 @@ class _SecretaryScreenReference
                           'Группа $groupName',
                           style: TextStyle(
                             color: AppStyle.blueColorTextTitle,
-                            fontSize: AppStyle.fontSizeMedium,
+                            fontSize: AppStyle.fontSizeMedium_16,
                             fontWeight: FontWeight.w500,
                           ),
                       ),
@@ -274,7 +274,7 @@ class _SecretaryScreenReference
                               '${students.length}',
                               style: TextStyle(
                                 color: AppStyle.whiteColorMain,
-                                fontSize: AppStyle.fontSizeSmall,
+                                fontSize: AppStyle.fontSizeSmall_12,
                               )
                             ),
                             SvgPicture.asset(
@@ -350,13 +350,84 @@ class _SecretaryScreenReference
                                           ],
                                         ),
                                       ),
-                                      content: Column(
-                                        children: [
-                                          ListTile(
-                                            title: Text('${student.lastname} ${student.firstname} ${student.patronymic}'),
-                                            subtitle: Text('группа ${student.group}, ${student.phone}'),
-                                          )
-                                        ],
+                                      content: SizedBox(
+                                        width: double.maxFinite,
+                                        height: screenHeight * 0.4,
+                                        child: Column(
+                                          children: [
+                                            ListTile(
+                                              title: Text('${student.lastname} ${student.firstname} ${student.patronymic}'),
+                                              subtitle: Text('группа ${student.group}, ${student.phone}'),
+                                            ),
+                                            SingleChildScrollView(
+                                              child: Consumer(
+                                                  builder: (context, ref, child){
+                                                    final historyDataAsync = ref.watch(fetchStudentApplications(student.user_id));
+                                                    return historyDataAsync.when(
+                                                        data: (data){
+                                                          if(data.isEmpty){
+                                                            return Text(
+                                                                'У этого студента нет истории заявок',
+                                                                style: TextStyle(
+                                                                  color: AppStyle.blackColorMain,
+                                                                  fontSize: AppStyle.fontSizeSmall_12
+                                                                ),
+                                                            );
+                                                          }
+                                                          return ListView.builder(
+                                                              itemCount: data.length,
+                                                              itemBuilder: (context, index){
+                                                                final item = data[index];
+                                                                return ListTile(
+                                                                  title: Text(
+                                                                      item.type_id.applicationTypeName,
+                                                                      style: TextStyle(
+                                                                        color: AppStyle.blackColorMain,
+                                                                        fontSize: AppStyle.fontSizeMedium_16,
+                                                                        fontWeight: FontWeight.w500
+                                                                      )
+                                                                  ),
+                                                                  subtitle: Text(
+                                                                    item.date,
+                                                                      style: TextStyle(
+                                                                          color: AppStyle.blueColorTextTitle,
+                                                                          fontSize: AppStyle.fontSizeMediumMini_14,
+                                                                          fontWeight: FontWeight.w500
+                                                                      )
+                                                                  ),
+                                                                  trailing: Container(
+                                                                    padding: EdgeInsetsGeometry.symmetric(vertical: 10, horizontal: 5),
+                                                                    decoration: BoxDecoration(
+                                                                      color: item.status_id.statusColor
+                                                                    ),
+                                                                    child: Text(
+                                                                      item.status_id.statusName,
+                                                                      style: TextStyle(
+                                                                          color: AppStyle.whiteColorMain,
+                                                                          fontSize: AppStyle.fontSizeSmall_12,
+                                                                          fontWeight: FontWeight.w500
+                                                                      )
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }
+                                                          );
+                                                        },
+                                                        error: (error, stack) => Center(
+                                                            child: Text('Ошибка загрузки: $error')
+                                                        ),
+                                                        loading: () => Center(
+                                                          child: LoadingAnimationWidget.halfTriangleDot(
+                                                            color: Colors.white,
+                                                            size: 50,
+                                                          ),
+                                                        )
+                                                    );
+                                                  }
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     );
                                   }

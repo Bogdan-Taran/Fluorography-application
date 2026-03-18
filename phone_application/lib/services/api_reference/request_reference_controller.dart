@@ -13,7 +13,7 @@ Future<List<GetReferenceModel>> fetchStudentApplication(Ref ref) {
   return repositoryProvider.getOneStudentApplications(user_id: user_id);
 }*/
 
-final fetchStudentApplicationProvider = FutureProvider.family<List<GetReferenceModel>, int> ((ref, user_id) {
+final fetchStudentApplications = FutureProvider.family<List<GetReferenceModel>, int> ((ref, user_id) {
   final repositoryProvider = ref.watch(requestRepositoryMineProvider);
   return repositoryProvider.getOneStudentApplications(user_id: user_id);
 });

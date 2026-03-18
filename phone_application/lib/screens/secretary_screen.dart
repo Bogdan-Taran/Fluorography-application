@@ -322,41 +322,47 @@ class _SecretaryScreenReference
                       )
                           : SizedBox(),
                       onTap: () async{
-                        final studentData = ref.read(fetchStudentApplicationProvider)
-                        showDialog(
-                            context: context,
-                            builder: (context){
-                              return AlertDialog(
-                                title: Container(
-                                  width: screenWidth * 0.02,
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color: AppStyle.collapsedBlueColor,
-                                        width: 1
-                                      )
-                                    )
-                                  ),
-                                  child: Text(
-                                      'История справок',
-                                      style: TextStyle(
-                                        fontSize: AppStyle.fontSizeExtraLarge,
-                                        fontWeight: FontWeight.w500,
-                                        color: AppStyle.blackColorMain,
+                        final studentData = ref.read(fetchStudentApplicationProvider).when(
+                            data: (data){
+                              showDialog(
+                                  context: context,
+                                  builder: (context){
+                                    return AlertDialog(
+                                      title: Container(
+                                        width: screenWidth * 0.02,
+                                        decoration: BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(
+                                                    color: AppStyle.collapsedBlueColor,
+                                                    width: 1
+                                                )
+                                            )
+                                        ),
+                                        child: Text(
+                                          'История справок',
+                                          style: TextStyle(
+                                            fontSize: AppStyle.fontSizeExtraLarge,
+                                            fontWeight: FontWeight.w500,
+                                            color: AppStyle.blackColorMain,
+                                          ),
+                                        ),
                                       ),
-                                  ),
-                                ),
-                                content: Column(
-                                  children: [
-                                    ListTile(
-                                      title: Text('${student.lastname} ${student.firstname} ${student.patronymic}'),
-                                      subtitle: Text('группа ${student.group}, ${student.phone}'),
-                                    )
-                                  ],
-                                ),
+                                      content: Column(
+                                        children: [
+                                          ListTile(
+                                            title: Text('${student.lastname} ${student.firstname} ${student.patronymic}'),
+                                            subtitle: Text('группа ${student.group}, ${student.phone}'),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
                               );
-                            }
+                            },
+                            error: error,
+                            loading: loading
                         );
+
 
 
 

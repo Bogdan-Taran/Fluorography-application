@@ -7,11 +7,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 //контроллер для управления состояниями - некая прослойка-посредник между UI и всеми предыдущими иерархиями провайдеров
 part 'request_reference_controller.g.dart';
 
-@riverpod
-Future<List<GetReferenceModel>> fetchStudentApplication(Ref ref, int user_id) {
+/*@riverpod
+Future<List<GetReferenceModel>> fetchStudentApplication(Ref ref) {
   final repositoryProvider = ref.watch(requestRepositoryMineProvider);
   return repositoryProvider.getOneStudentApplications(user_id: user_id);
-}
+}*/
+
+final fetchStudentApplicationProvider = FutureProvider.family<List<GetReferenceModel>, int> ((ref, user_id) {
+  final repositoryProvider = ref.watch(requestRepositoryMineProvider);
+  return repositoryProvider.getOneStudentApplications(user_id: user_id);
+});
 
 @riverpod
 Future<List<GetReferenceModel>> fetchEntireListApplications(Ref ref) {

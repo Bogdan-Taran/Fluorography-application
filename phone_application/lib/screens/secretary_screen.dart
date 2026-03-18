@@ -322,8 +322,6 @@ class _SecretaryScreenReference
                       )
                           : SizedBox(),
                       onTap: () async{
-                        final studentData = ref.read(fetchStudentApplicationProvider).when(
-                            data: (data){
                               showDialog(
                                   context: context,
                                   builder: (context){
@@ -338,13 +336,18 @@ class _SecretaryScreenReference
                                                 )
                                             )
                                         ),
-                                        child: Text(
-                                          'История справок',
-                                          style: TextStyle(
-                                            fontSize: AppStyle.fontSizeExtraLarge,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppStyle.blackColorMain,
-                                          ),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              'История справок',
+                                              style: TextStyle(
+                                                fontSize: AppStyle.fontSizeExtraLarge,
+                                                fontWeight: FontWeight.w500,
+                                                color: AppStyle.blackColorMain,
+                                              ),
+                                            ),
+                                            Divider()
+                                          ],
                                         ),
                                       ),
                                       content: Column(
@@ -358,23 +361,11 @@ class _SecretaryScreenReference
                                     );
                                   }
                               );
-                            },
-                            error: error,
-                            loading: loading
-                        );
-
-
-
-
-
-
 
                         /*await ref.read(updateReferenceStatusControllerProvider.notifier).updateStatus(
                             applicationId: student.id,
                             statusId: 2
                         );*/
-
-
                       },
                     );
                   }).toList(),

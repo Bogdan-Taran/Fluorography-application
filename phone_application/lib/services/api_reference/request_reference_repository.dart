@@ -20,9 +20,9 @@ class RequestRepositoryMine{
   RequestRepositoryMine(this._apiProviderMine);
   final talker = Talker();
 
-  Future<List<GetReferenceModel>> getOneStudentApplications() async {
+  Future<List<GetReferenceModel>> getOneStudentApplications({required int user_id}) async {
     try{
-      final response = await _apiProviderMine.getRequest('/api/applications/1125');
+      final response = await _apiProviderMine.getRequest('/api/applications/$user_id');
       talker.log('RepoProvider: Данные получены, но не приведены к List: $response');
       final List<dynamic> rawData = response;
       final List<GetReferenceModel> dataList = rawData.map((json) => GetReferenceModel.fromJson(json as Map<String, dynamic>)).toList();

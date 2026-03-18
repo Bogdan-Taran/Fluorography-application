@@ -322,6 +322,7 @@ class _SecretaryScreenReference
                       )
                           : SizedBox(),
                       onTap: () async{
+                        final studentData = ref.read(fetchStudentApplicationProvider)
                         showDialog(
                             context: context,
                             builder: (context){
@@ -350,23 +351,6 @@ class _SecretaryScreenReference
                                     ListTile(
                                       title: Text('${student.lastname} ${student.firstname} ${student.patronymic}'),
                                       subtitle: Text('группа ${student.group}, ${student.phone}'),
-                                      trailing: Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                                        decoration: BoxDecoration(
-                                          color: student.status_id.statusColor,
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Text(
-                                            student.status_id.statusName,
-                                            style: TextStyle(
-                                              color: AppStyle.whiteColorMain,
-                                              fontSize: AppStyle.fontSizeSmall,
-                                            )
-                                        ),
-                                      )
-
-
-
                                     )
                                   ],
                                 ),

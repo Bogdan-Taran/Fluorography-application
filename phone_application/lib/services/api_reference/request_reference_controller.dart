@@ -8,9 +8,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'request_reference_controller.g.dart';
 
 @riverpod
-Future<List<GetReferenceModel>> fetchStudentApplication(Ref ref) {
+Future<List<GetReferenceModel>> fetchStudentApplication(Ref ref, int user_id) {
   final repositoryProvider = ref.watch(requestRepositoryMineProvider);
-  return repositoryProvider.getOneStudentApplications();
+  return repositoryProvider.getOneStudentApplications(user_id: user_id);
 }
 
 @riverpod

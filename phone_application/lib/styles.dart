@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class AppStyle {
   //Размеры шрифтов
   static const double fontSizeTitle =       24;
+  static const double fontSizeExtraLarge =  20;
   static const double fontSizeLarge =       18;
   static const double fontSizeMedium =      16;
   static const double fontSizeMediumMini =  14;
@@ -27,6 +28,8 @@ class AppStyle {
   static const Color errorRedColorMain =    Color(0xffD04848);
   static const Color redColorTag =          Color(0xffee2023);
   static const Color successGreenColor =    Color(0xff78ef81);
+  static const Color statusReadyGreenColor= Color(0xff18CC00);
+  static const Color yellowProcessColor =   Color(0xffFDA827);
 
   //Paddings
   static const double contentPaddingTextFieldVertical = 40;

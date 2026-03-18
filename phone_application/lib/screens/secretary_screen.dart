@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_controller.dart';
 import 'package:project_fluorography/styles.dart';
 import '../bloc/authentication/authentication_bloc.dart';
 import '../main.dart';
 import '../models/get_reference_model/get_reference_model.dart';
 import '../services/builders_screen.dart';
+import '../services/converters_service.dart';
 import '../widgets/bottom_navy_bar.dart';
 import '../widgets/expansion_tile.dart' as expansion_tile;
 import 'notification_screen.dart';
+import 'package:project_fluorography/models/get_reference_model/get_reference_model.dart';
 
 class SecretaryScreen extends ConsumerStatefulWidget {
   const SecretaryScreen({super.key});
@@ -43,6 +46,7 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final buttonSize = screenWidth * 0.047;
     final iconSize = screenWidth * 0.05;
+    ConverterServices _ConverterServices = ConverterServices();
 
     return WillPopScope(
       onWillPop: () async {
@@ -201,6 +205,29 @@ class _SecretaryScreenReference
     final groupedData = ref.watch(groupedApplicationsByGroup);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final BuildersScreen _BuildersScreen = BuildersScreen();
+    ref.listen<AsyncValue<void>>(updateReferenceStatusControllerProvider, (previous, next) {
+      next.whenOrNull(
+        error: (error, stack) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('Ошибка'),
+              content: Text(error.toString()),
+            ),
+          );
+        },
+        data: (_){
+          showDialog(
+              context: context,
+              builder: (context)=> AlertDialog(
+                title: Text('Успешно'),
+                content: Text('Статус успешно изменен'),
+              )
+          );
+        }
+      );
+    });
 
     return Scaffold(
       backgroundColor: AppStyle.whiteColorMain,
@@ -215,6 +242,8 @@ class _SecretaryScreenReference
               itemBuilder: (context, index){
                 final groupName = groups[index];
                 final students = data[groupName]!;
+
+                final bool groupHasActiveReferences = students.any((s) => s.status_id == 1);
                 return expansion_tile.ExpansionTile(
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -229,8 +258,13 @@ class _SecretaryScreenReference
                       ),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                        decoration: BoxDecoration(
+                        decoration: groupHasActiveReferences
+                        ? BoxDecoration(
                           color: AppStyle.redColorTag,
+                          borderRadius: BorderRadius.circular(10),
+                        )
+                        : BoxDecoration(
+                          color: AppStyle.blueColorAdditional,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Row(
@@ -281,8 +315,77 @@ class _SecretaryScreenReference
                       contentPadding: EdgeInsetsGeometry.symmetric(vertical: screenHeight * 0.0015),
                       title: Text('Студент ${student.firstname} ${student.lastname}'),
                       subtitle: Text('Телефон: ${student.phone}'),
-                      trailing: Text('Статус: ${student.statusId.toString()}'),
-                      onTap: (){},
+                      trailing:  (student.status_id == 1)
+                          ? SvgPicture.asset(
+                        'assets/icon/reference_warn.svg',
+                        width: screenWidth * 0.05,
+                      )
+                          : SizedBox(),
+                      onTap: () async{
+                        showDialog(
+                            context: context,
+                            builder: (context){
+                              return AlertDialog(
+                                title: Container(
+                                  width: screenWidth * 0.02,
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: AppStyle.collapsedBlueColor,
+                                        width: 1
+                                      )
+                                    )
+                                  ),
+                                  child: Text(
+                                      'История справок',
+                                      style: TextStyle(
+                                        fontSize: AppStyle.fontSizeExtraLarge,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppStyle.blackColorMain,
+                                      ),
+                                  ),
+                                ),
+                                content: Column(
+                                  children: [
+                                    ListTile(
+                                      title: Text('${student.lastname} ${student.firstname} ${student.patronymic}'),
+                                      subtitle: Text('группа ${student.group}, ${student.phone}'),
+                                      trailing: Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: student.status_id.statusColor,
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Text(
+                                            student.status_id.statusName,
+                                            style: TextStyle(
+                                              color: AppStyle.whiteColorMain,
+                                              fontSize: AppStyle.fontSizeSmall,
+                                            )
+                                        ),
+                                      )
+
+
+
+                                    )
+                                  ],
+                                ),
+                              );
+                            }
+                        );
+
+
+
+
+
+
+                        /*await ref.read(updateReferenceStatusControllerProvider.notifier).updateStatus(
+                            applicationId: student.id,
+                            statusId: 2
+                        );*/
+
+
+                      },
                     );
                   }).toList(),
                 );

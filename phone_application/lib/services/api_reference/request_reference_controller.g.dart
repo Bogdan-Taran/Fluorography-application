@@ -93,3 +93,49 @@ final class FetchEntireListApplicationsProvider
 
 String _$fetchEntireListApplicationsHash() =>
     r'bdca3f33c70f368aa8658aaeb2f6733448344236';
+
+@ProviderFor(UpdateReferenceStatusController)
+final updateReferenceStatusControllerProvider =
+    UpdateReferenceStatusControllerProvider._();
+
+final class UpdateReferenceStatusControllerProvider
+    extends $AsyncNotifierProvider<UpdateReferenceStatusController, void> {
+  UpdateReferenceStatusControllerProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'updateReferenceStatusControllerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$updateReferenceStatusControllerHash();
+
+  @$internal
+  @override
+  UpdateReferenceStatusController create() => UpdateReferenceStatusController();
+}
+
+String _$updateReferenceStatusControllerHash() =>
+    r'729f7233bc334f2433a8ab8f6ce6f994ee2deabd';
+
+abstract class _$UpdateReferenceStatusController extends $AsyncNotifier<void> {
+  FutureOr<void> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<void>, void>,
+              AsyncValue<void>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}

@@ -47,9 +47,20 @@ class RequestRepositoryMine{
     }
   }
 
-  Future<Map<String, dynamic>> updateReferenceStatus() async{
+  Future<Map<String, dynamic>> updateReferenceStatus(
+      {required int status_id, required int application_id}) async{
     try {
-      final response = await _apiProviderMine.patchRequest('/api/applications/1125', {'status_id': 2});
+      final response = await _apiProviderMine.patchRequest(
+          '/api/applications/$application_id',
+          {
+            'status_id': 2,
+          }
+      );
+      talker.log('RepoProvider(updateReferenceStatus): Данные успешно обновлены: $response');
+      return response;
+    } on DioException catch(error){
+      talker.handle('Ошибка в репозитории: $error');
+      throw('Ошибка при обновлении статуса заявки');
     }
   }
 }

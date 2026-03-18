@@ -12,11 +12,11 @@ import 'converters_service.dart';
 class BuildersScreen {
   ConverterServices _ConverterServices = ConverterServices();
 
-  Widget buildLoading() {
+  Widget buildLoading({double size = 50}) {
     return Center(
       child: LoadingAnimationWidget.halfTriangleDot(
         color: Color(0xff98BFF3),
-        size: 50,
+        size: size,
       ),
     );
   }

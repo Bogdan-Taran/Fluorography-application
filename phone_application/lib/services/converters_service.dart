@@ -1,6 +1,8 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
+import 'package:project_fluorography/styles.dart';
 
 class ConverterServices {
   Future<String?> convertUserRoleFormListToNormalName(UserData) async {
@@ -22,49 +24,52 @@ class ConverterServices {
     return userRole;
   }
 
-  String convertDatePicker(DateTime date){
+  String convertDatePicker(DateTime date) {
     String rawDateString = date.toString();
     String dateString = rawDateString.split(' ')[0];
     return dateString;
   }
 
-  String convertInputId(String uniqueId){
+  String convertInputId(String uniqueId) {
     return uniqueId.split('_')[1];
   }
 
-
   String formatFluraDate(String? date) {
-    /*
-    if(date != null && date.trim().isEmpty) return 'Нет даты';
-    try{
-      final dt = DateTime.parse(date!);
-      return DateFormat('dd.MM.yyyy').format(dt);
-    } catch(e){
-      return 'Неверный формат';
-    }
-
-     */
-
     if (date == null) {
       print('Нет даты');
       return 'Нет даты';
     }
-    try{
-      //final dt = DateFormat('dd.MM.yyyy').format(DateTime.parse(date));
+    try {
       final dt = date;
       print('Есть дата: $dt');
       return dt;
-      // final dateTime = DateTime.parse(date);
-      // final String convertedTime =
-      //     '${dateTime.day.toString().padLeft(2, '0')}'
-      //     '.${dateTime.month.toString().padLeft(2, '0')}'
-      //     '.${dateTime.year}';
-      // return convertedTime;
-    } catch (e){
-      //print('Неверный формат даты $date');
+    } catch (e) {
       return 'Catch - нет даты';
     }
-
   }
 
+  String getStatusText(int statusId) {
+    switch (statusId) {
+      case 1:
+        return 'В процессе';
+      case 2:
+        return 'Готова';
+      case 3:
+        return 'Дубликат';
+      default:
+        return 'Неизвестно';
+    }
+  }
+  Color getStatusColor(int statusId) {
+    switch (statusId) {
+      case 1:
+        return AppStyle.yellowProcessColor;
+        case 2:
+        return AppStyle.statusReadyGreenColor;
+      case 3:
+        return AppStyle.redColorTag;
+      default:
+        return AppStyle.yellowProcessColor;
+    }
+  }
 }

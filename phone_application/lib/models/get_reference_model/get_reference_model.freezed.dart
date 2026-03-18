@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GetReferenceModel {
 
- int get id; int get userId; String get firstname; String get lastname; String get patronymic; String get group; int get typeId; int get statusId; int get quantity; String get date; String get phone;
+ int get id; int get user_id; String get firstname; String get lastname; String get patronymic; String get group; int get type_id; int get status_id; int get quantity; String get date; String get phone;
 /// Create a copy of GetReferenceModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $GetReferenceModelCopyWith<GetReferenceModel> get copyWith => _$GetReferenceMode
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetReferenceModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.firstname, firstname) || other.firstname == firstname)&&(identical(other.lastname, lastname) || other.lastname == lastname)&&(identical(other.patronymic, patronymic) || other.patronymic == patronymic)&&(identical(other.group, group) || other.group == group)&&(identical(other.typeId, typeId) || other.typeId == typeId)&&(identical(other.statusId, statusId) || other.statusId == statusId)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.date, date) || other.date == date)&&(identical(other.phone, phone) || other.phone == phone));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetReferenceModel&&(identical(other.id, id) || other.id == id)&&(identical(other.user_id, user_id) || other.user_id == user_id)&&(identical(other.firstname, firstname) || other.firstname == firstname)&&(identical(other.lastname, lastname) || other.lastname == lastname)&&(identical(other.patronymic, patronymic) || other.patronymic == patronymic)&&(identical(other.group, group) || other.group == group)&&(identical(other.type_id, type_id) || other.type_id == type_id)&&(identical(other.status_id, status_id) || other.status_id == status_id)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.date, date) || other.date == date)&&(identical(other.phone, phone) || other.phone == phone));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,firstname,lastname,patronymic,group,typeId,statusId,quantity,date,phone);
+int get hashCode => Object.hash(runtimeType,id,user_id,firstname,lastname,patronymic,group,type_id,status_id,quantity,date,phone);
 
 @override
 String toString() {
-  return 'GetReferenceModel(id: $id, userId: $userId, firstname: $firstname, lastname: $lastname, patronymic: $patronymic, group: $group, typeId: $typeId, statusId: $statusId, quantity: $quantity, date: $date, phone: $phone)';
+  return 'GetReferenceModel(id: $id, user_id: $user_id, firstname: $firstname, lastname: $lastname, patronymic: $patronymic, group: $group, type_id: $type_id, status_id: $status_id, quantity: $quantity, date: $date, phone: $phone)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $GetReferenceModelCopyWith<$Res>  {
   factory $GetReferenceModelCopyWith(GetReferenceModel value, $Res Function(GetReferenceModel) _then) = _$GetReferenceModelCopyWithImpl;
 @useResult
 $Res call({
- int id, int userId, String firstname, String lastname, String patronymic, String group, int typeId, int statusId, int quantity, String date, String phone
+ int id, int user_id, String firstname, String lastname, String patronymic, String group, int type_id, int status_id, int quantity, String date, String phone
 });
 
 
@@ -65,16 +65,16 @@ class _$GetReferenceModelCopyWithImpl<$Res>
 
 /// Create a copy of GetReferenceModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? firstname = null,Object? lastname = null,Object? patronymic = null,Object? group = null,Object? typeId = null,Object? statusId = null,Object? quantity = null,Object? date = null,Object? phone = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? user_id = null,Object? firstname = null,Object? lastname = null,Object? patronymic = null,Object? group = null,Object? type_id = null,Object? status_id = null,Object? quantity = null,Object? date = null,Object? phone = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int,user_id: null == user_id ? _self.user_id : user_id // ignore: cast_nullable_to_non_nullable
 as int,firstname: null == firstname ? _self.firstname : firstname // ignore: cast_nullable_to_non_nullable
 as String,lastname: null == lastname ? _self.lastname : lastname // ignore: cast_nullable_to_non_nullable
 as String,patronymic: null == patronymic ? _self.patronymic : patronymic // ignore: cast_nullable_to_non_nullable
 as String,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
-as String,typeId: null == typeId ? _self.typeId : typeId // ignore: cast_nullable_to_non_nullable
-as int,statusId: null == statusId ? _self.statusId : statusId // ignore: cast_nullable_to_non_nullable
+as String,type_id: null == type_id ? _self.type_id : type_id // ignore: cast_nullable_to_non_nullable
+as int,status_id: null == status_id ? _self.status_id : status_id // ignore: cast_nullable_to_non_nullable
 as int,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
@@ -163,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int userId,  String firstname,  String lastname,  String patronymic,  String group,  int typeId,  int statusId,  int quantity,  String date,  String phone)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int user_id,  String firstname,  String lastname,  String patronymic,  String group,  int type_id,  int status_id,  int quantity,  String date,  String phone)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GetReferenceModel() when $default != null:
-return $default(_that.id,_that.userId,_that.firstname,_that.lastname,_that.patronymic,_that.group,_that.typeId,_that.statusId,_that.quantity,_that.date,_that.phone);case _:
+return $default(_that.id,_that.user_id,_that.firstname,_that.lastname,_that.patronymic,_that.group,_that.type_id,_that.status_id,_that.quantity,_that.date,_that.phone);case _:
   return orElse();
 
 }
@@ -184,10 +184,10 @@ return $default(_that.id,_that.userId,_that.firstname,_that.lastname,_that.patro
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int userId,  String firstname,  String lastname,  String patronymic,  String group,  int typeId,  int statusId,  int quantity,  String date,  String phone)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int user_id,  String firstname,  String lastname,  String patronymic,  String group,  int type_id,  int status_id,  int quantity,  String date,  String phone)  $default,) {final _that = this;
 switch (_that) {
 case _GetReferenceModel():
-return $default(_that.id,_that.userId,_that.firstname,_that.lastname,_that.patronymic,_that.group,_that.typeId,_that.statusId,_that.quantity,_that.date,_that.phone);case _:
+return $default(_that.id,_that.user_id,_that.firstname,_that.lastname,_that.patronymic,_that.group,_that.type_id,_that.status_id,_that.quantity,_that.date,_that.phone);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +204,10 @@ return $default(_that.id,_that.userId,_that.firstname,_that.lastname,_that.patro
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int userId,  String firstname,  String lastname,  String patronymic,  String group,  int typeId,  int statusId,  int quantity,  String date,  String phone)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int user_id,  String firstname,  String lastname,  String patronymic,  String group,  int type_id,  int status_id,  int quantity,  String date,  String phone)?  $default,) {final _that = this;
 switch (_that) {
 case _GetReferenceModel() when $default != null:
-return $default(_that.id,_that.userId,_that.firstname,_that.lastname,_that.patronymic,_that.group,_that.typeId,_that.statusId,_that.quantity,_that.date,_that.phone);case _:
+return $default(_that.id,_that.user_id,_that.firstname,_that.lastname,_that.patronymic,_that.group,_that.type_id,_that.status_id,_that.quantity,_that.date,_that.phone);case _:
   return null;
 
 }
@@ -219,17 +219,17 @@ return $default(_that.id,_that.userId,_that.firstname,_that.lastname,_that.patro
 @JsonSerializable()
 
 class _GetReferenceModel implements GetReferenceModel {
-   _GetReferenceModel({this.id = 0, this.userId = 0, this.firstname = 'Имя не указано', this.lastname = 'Фамилия не указана', this.patronymic = 'Отчество не указано', this.group = 'Группа не указана', this.typeId = 0, this.statusId = 0, this.quantity = 0, this.date = '00.00.0000', this.phone = 'Не указан'});
+   _GetReferenceModel({this.id = 0, this.user_id = 0, this.firstname = 'Имя не указано', this.lastname = 'Фамилия не указана', this.patronymic = 'Отчество не указано', this.group = 'Группа не указана', this.type_id = 0, this.status_id = 0, this.quantity = 0, this.date = '00.00.0000', this.phone = 'Не указан'});
   factory _GetReferenceModel.fromJson(Map<String, dynamic> json) => _$GetReferenceModelFromJson(json);
 
 @override@JsonKey() final  int id;
-@override@JsonKey() final  int userId;
+@override@JsonKey() final  int user_id;
 @override@JsonKey() final  String firstname;
 @override@JsonKey() final  String lastname;
 @override@JsonKey() final  String patronymic;
 @override@JsonKey() final  String group;
-@override@JsonKey() final  int typeId;
-@override@JsonKey() final  int statusId;
+@override@JsonKey() final  int type_id;
+@override@JsonKey() final  int status_id;
 @override@JsonKey() final  int quantity;
 @override@JsonKey() final  String date;
 @override@JsonKey() final  String phone;
@@ -247,16 +247,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetReferenceModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.firstname, firstname) || other.firstname == firstname)&&(identical(other.lastname, lastname) || other.lastname == lastname)&&(identical(other.patronymic, patronymic) || other.patronymic == patronymic)&&(identical(other.group, group) || other.group == group)&&(identical(other.typeId, typeId) || other.typeId == typeId)&&(identical(other.statusId, statusId) || other.statusId == statusId)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.date, date) || other.date == date)&&(identical(other.phone, phone) || other.phone == phone));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetReferenceModel&&(identical(other.id, id) || other.id == id)&&(identical(other.user_id, user_id) || other.user_id == user_id)&&(identical(other.firstname, firstname) || other.firstname == firstname)&&(identical(other.lastname, lastname) || other.lastname == lastname)&&(identical(other.patronymic, patronymic) || other.patronymic == patronymic)&&(identical(other.group, group) || other.group == group)&&(identical(other.type_id, type_id) || other.type_id == type_id)&&(identical(other.status_id, status_id) || other.status_id == status_id)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.date, date) || other.date == date)&&(identical(other.phone, phone) || other.phone == phone));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,firstname,lastname,patronymic,group,typeId,statusId,quantity,date,phone);
+int get hashCode => Object.hash(runtimeType,id,user_id,firstname,lastname,patronymic,group,type_id,status_id,quantity,date,phone);
 
 @override
 String toString() {
-  return 'GetReferenceModel(id: $id, userId: $userId, firstname: $firstname, lastname: $lastname, patronymic: $patronymic, group: $group, typeId: $typeId, statusId: $statusId, quantity: $quantity, date: $date, phone: $phone)';
+  return 'GetReferenceModel(id: $id, user_id: $user_id, firstname: $firstname, lastname: $lastname, patronymic: $patronymic, group: $group, type_id: $type_id, status_id: $status_id, quantity: $quantity, date: $date, phone: $phone)';
 }
 
 
@@ -267,7 +267,7 @@ abstract mixin class _$GetReferenceModelCopyWith<$Res> implements $GetReferenceM
   factory _$GetReferenceModelCopyWith(_GetReferenceModel value, $Res Function(_GetReferenceModel) _then) = __$GetReferenceModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int userId, String firstname, String lastname, String patronymic, String group, int typeId, int statusId, int quantity, String date, String phone
+ int id, int user_id, String firstname, String lastname, String patronymic, String group, int type_id, int status_id, int quantity, String date, String phone
 });
 
 
@@ -284,16 +284,16 @@ class __$GetReferenceModelCopyWithImpl<$Res>
 
 /// Create a copy of GetReferenceModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? firstname = null,Object? lastname = null,Object? patronymic = null,Object? group = null,Object? typeId = null,Object? statusId = null,Object? quantity = null,Object? date = null,Object? phone = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? user_id = null,Object? firstname = null,Object? lastname = null,Object? patronymic = null,Object? group = null,Object? type_id = null,Object? status_id = null,Object? quantity = null,Object? date = null,Object? phone = null,}) {
   return _then(_GetReferenceModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int,user_id: null == user_id ? _self.user_id : user_id // ignore: cast_nullable_to_non_nullable
 as int,firstname: null == firstname ? _self.firstname : firstname // ignore: cast_nullable_to_non_nullable
 as String,lastname: null == lastname ? _self.lastname : lastname // ignore: cast_nullable_to_non_nullable
 as String,patronymic: null == patronymic ? _self.patronymic : patronymic // ignore: cast_nullable_to_non_nullable
 as String,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
-as String,typeId: null == typeId ? _self.typeId : typeId // ignore: cast_nullable_to_non_nullable
-as int,statusId: null == statusId ? _self.statusId : statusId // ignore: cast_nullable_to_non_nullable
+as String,type_id: null == type_id ? _self.type_id : type_id // ignore: cast_nullable_to_non_nullable
+as int,status_id: null == status_id ? _self.status_id : status_id // ignore: cast_nullable_to_non_nullable
 as int,quantity: null == quantity ? _self.quantity : quantity // ignore: cast_nullable_to_non_nullable
 as int,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable

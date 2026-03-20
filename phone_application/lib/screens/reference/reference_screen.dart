@@ -179,7 +179,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                     if (states.contains(WidgetState.hovered)) {
                                       return AppStyle.hoverBlueColorMain;
                                     }
-                                    return AppStyle.blueColorAdditional;
+                                    return AppStyle.blueColorAdditional4AABDB;
                                   }),
                               foregroundColor:
                                   WidgetStateProperty.resolveWith<Color>((
@@ -308,7 +308,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         borderRadius:
                                             AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional4AABDB,
                                           width: 1.0,
                                         ),
                                       ),
@@ -374,7 +374,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         borderRadius:
                                         AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional4AABDB,
                                           width: 1.0,
                                         ),
                                       ),
@@ -438,7 +438,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         borderRadius:
                                         AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional4AABDB,
                                           width: 1.0,
                                         ),
                                       ),
@@ -505,7 +505,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         borderRadius:
                                         AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional4AABDB,
                                           width: 1.0,
                                         ),
                                       ),
@@ -570,7 +570,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         borderRadius:
                                         AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional4AABDB,
                                           width: 1.0,
                                         ),
                                       ),
@@ -638,7 +638,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         borderRadius:
                                         AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional4AABDB,
                                           width: 1.0,
                                         ),
                                       ),
@@ -698,7 +698,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                     ),
                                     icon: SvgPicture.asset(
                                       'assets/images/icon_expand_down.svg',
-                                      color: AppStyle.blueColorAdditional,
+                                      color: AppStyle.blueColorAdditional4AABDB,
                                       height: 10,
                                       width: 10,
                                     ),
@@ -714,7 +714,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         borderRadius:
                                         AppStyle.inputBorderRadius,
                                         borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional,
+                                          color: AppStyle.blueColorAdditional4AABDB,
                                           width: 1.0,
                                         ),
                                       ),
@@ -750,7 +750,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                           width: screenWidth * 1,
                                           padding: AppStyle.contentPaddingDropdownItemLeft,
                                           decoration: BoxDecoration(
-                                            color: AppStyle.blueColorAdditional,
+                                            color: AppStyle.blueColorAdditional4AABDB,
                                             borderRadius: AppStyle.inputBorderRadius,
                                           ),
                                           child: Text(
@@ -774,7 +774,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                       Text(
                                         'Я соглашаюсь на обработку\nперсональных данных',
                                         style: TextStyle(
-                                          color: showErrorCheckbox ? AppStyle.errorRedColorMain : AppStyle.blueColorAdditional,
+                                          color: showErrorCheckbox ? AppStyle.errorRedColorMain : AppStyle.blueColorAdditional4AABDB,
                                           fontSize: AppStyle.fontSizeMediumMini_14,
                                           height: 1.3
                                         ),
@@ -797,7 +797,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         ),
                                         uncheckedWidget: Icon(
                                             Icons.check,
-                                            color: showErrorCheckbox ? AppStyle.errorRedColorMain : AppStyle.blueColorAdditional
+                                            color: showErrorCheckbox ? AppStyle.errorRedColorMain : AppStyle.blueColorAdditional4AABDB
                                         ),
                                         animationDuration: Duration(
                                           milliseconds: 50
@@ -805,10 +805,10 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                         size: 30,
                                         border: Border.all(
                                           width: 1,
-                                          color: showErrorCheckbox ? AppStyle.errorRedColorMain : AppStyle.blueColorAdditional
+                                          color: showErrorCheckbox ? AppStyle.errorRedColorMain : AppStyle.blueColorAdditional4AABDB
                                         ),
                                         uncheckedColor: AppStyle.whiteColorMain,
-                                        checkedColor:  AppStyle.blueColorAdditional,
+                                        checkedColor:  AppStyle.blueColorAdditional4AABDB,
                                         isChecked: agreePersonalData,
                                       ),
                                     ],
@@ -844,7 +844,7 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                           )) {
                                             return Color(0xFFBADEFF);
                                           }
-                                          return AppStyle.blueColorAdditional;
+                                          return AppStyle.blueColorAdditional4AABDB;
                                         }),
                                         foregroundColor:
                                         WidgetStateProperty.resolveWith<Color>((

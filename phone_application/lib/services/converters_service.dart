@@ -65,7 +65,7 @@ class ConverterServices {
       case 1:
         return AppStyle.yellowProcessColor;
         case 2:
-        return AppStyle.statusReadyGreenColor;
+        return AppStyle.statusReadyGreenColor18CC00;
       case 3:
         return AppStyle.redColorTag;
       default:

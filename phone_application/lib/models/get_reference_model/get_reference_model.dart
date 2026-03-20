@@ -32,7 +32,7 @@ extension StatusId on int {
   Color get statusColor{
     return{
       1: AppStyle.yellowProcessColor,
-      2: AppStyle.statusReadyGreenColor,
+      2: AppStyle.statusReadyGreenColor18CC00,
       3: AppStyle.redColorTag,
     }[this] ?? AppStyle.yellowProcessColor;
   }

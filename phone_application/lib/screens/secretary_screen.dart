@@ -89,7 +89,7 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
                     padding: EdgeInsets.all(buttonSize),
-                    backgroundColor: AppStyle.blueColorAdditional,
+                    backgroundColor: AppStyle.blueColorAdditional4AABDB,
                   ),
                   child: SvgPicture.asset(
                     'assets/icon/door_icon.svg',
@@ -124,20 +124,20 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
                   items: [
                     BottomNavyBarItem(
                       title: Text('Флюорография'),
-                      activeBackgroundColor: AppStyle.blueColorAdditional,
+                      activeBackgroundColor: AppStyle.blueColorAdditional4AABDB,
                       activeColor: AppStyle.whiteColorMain,
-                      inactiveColor: AppStyle.blueColorAdditional,
+                      inactiveColor: AppStyle.blueColorAdditional4AABDB,
                       inactiveTextColor: AppStyle.whiteColorMain,
-                      activeTextColor: AppStyle.blueColorAdditional,
+                      activeTextColor: AppStyle.blueColorAdditional4AABDB,
                       textAlign: TextAlign.center,
                     ),
                     BottomNavyBarItem(
                       title: Text('Справки'),
-                      activeBackgroundColor: AppStyle.blueColorAdditional,
+                      activeBackgroundColor: AppStyle.blueColorAdditional4AABDB,
                       activeColor: AppStyle.whiteColorMain,
-                      inactiveColor: AppStyle.blueColorAdditional,
+                      inactiveColor: AppStyle.blueColorAdditional4AABDB,
                       inactiveTextColor: AppStyle.whiteColorMain,
-                      activeTextColor: AppStyle.blueColorAdditional,
+                      activeTextColor: AppStyle.blueColorAdditional4AABDB,
                       textAlign: TextAlign.end,
                     ),
                   ],
@@ -149,7 +149,7 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
                     padding: EdgeInsets.all(buttonSize),
-                    backgroundColor: AppStyle.blueColorAdditional,
+                    backgroundColor: AppStyle.blueColorAdditional4AABDB,
                   ),
                   child: SvgPicture.asset(
                   'assets/icon/notification_white_icon.svg',
@@ -264,7 +264,7 @@ class _SecretaryScreenReference
                           borderRadius: BorderRadius.circular(10),
                         )
                         : BoxDecoration(
-                          color: AppStyle.blueColorAdditional,
+                          color: AppStyle.blueColorAdditional4AABDB,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Row(
@@ -289,14 +289,14 @@ class _SecretaryScreenReference
                   collapsedShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: BorderSide(
-                      color: AppStyle.collapsedBlueColor,
+                      color: AppStyle.collapsedBlueColorD4EAFF,
                       width: 1
                     )
                   ),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       side: BorderSide(
-                          color: AppStyle.collapsedBlueColor,
+                          color: AppStyle.collapsedBlueColorD4EAFF,
                           width: 1
                       )
                   ),
@@ -344,38 +344,63 @@ class _SecretaryScreenReference
                                         backgroundColor: Colors.transparent,
                                         contentPadding: EdgeInsets.zero,
                                         titlePadding: EdgeInsets.zero,
-                                        title: Container(
-                                          decoration: BoxDecoration(
-                                              border: Border(
-                                                  bottom: BorderSide(
-                                                      color: AppStyle.blueColorAdditional,
-                                                      width: 1
+                                        title: Stack(
+                                          children: [
+                                            Container(
+                                              width: double.maxFinite,
+                                              decoration: BoxDecoration(
+                                                  border: Border(
+                                                      bottom: BorderSide(
+                                                          color: AppStyle.collapsedBlueColorD4EAFF,
+                                                          width: 1
+                                                      ),
                                                   ),
+                                                color: const Color(0xffffffff),
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(50),
+                                                  topRight: Radius.circular(50),
+                                                )
                                               ),
-                                            color: const Color(0xffffffff),
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(50),
-                                              topRight: Radius.circular(50),
-                                            )
-                                          ),
-                                          padding: EdgeInsets.only(bottom: 10, top: 32),
-                                          // width: screenWidth * 0.02,
-                                          child: Text(
-                                            'История справок',
-                                            style: TextStyle(
-                                              fontSize: AppStyle.fontSizeExtraLarge,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppStyle.blackColorMain,
+                                              padding: EdgeInsets.only(bottom: 10, top: 32, left: 32),
+                                              // width: screenWidth * 0.02,
+                                              child: Text(
+                                                'История справок',
+                                                style: TextStyle(
+                                                  fontSize: AppStyle.fontSizeExtraLarge,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: AppStyle.blackColorMain,
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                            Positioned(
+                                              right: 20,
+                                              top: 20,
+                                              child: IconButton(
+                                                onPressed: () => Navigator.pop(context),
+                                                icon: Icon(
+                                                  Icons.close,
+                                                  color: AppStyle.blueColorAdditional4AABDB,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                         content: Container(
                                           decoration: BoxDecoration(
-                                            color: Color(0xffFDFDFD)
+                                            color: Color(0xffFDFDFD),
+                                              borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(50),
+                                            bottomRight: Radius.circular(50),
+                                          )
+                                          ),
+                                          padding: EdgeInsetsGeometry.only(
+                                            left: 32,
+                                            right: 32,
+                                            bottom: 32
                                           ),
                                           child: SizedBox(
                                             width: double.maxFinite,
-                                            height: screenHeight * 0.5,
+                                            height: screenHeight * 0.3,
                                             child: Column(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
@@ -405,41 +430,54 @@ class _SecretaryScreenReference
                                                                     );
                                                                   }
                                                                   return ListView.builder(
+                                                                      padding: EdgeInsets.zero,
                                                                       itemCount: data.length,
                                                                       itemBuilder: (context, index){
                                                                         final item = data[index];
-                                                                        return ListTile(
-                                                                          title: Text(
-                                                                              item.type_id.applicationTypeName,
-                                                                              style: TextStyle(
-                                                                                color: AppStyle.blackColorMain,
-                                                                                fontSize: AppStyle.fontSizeMedium_16,
-                                                                                fontWeight: FontWeight.w500
+                                                                        return Container(
+                                                                          decoration: BoxDecoration(
+                                                                            border: Border(
+                                                                              bottom: BorderSide(
+                                                                                color: AppStyle.collapsedBlueColorD4EAFF,
+                                                                                width: 1
                                                                               )
+                                                                            )
                                                                           ),
-                                                                          subtitle: Text(
-                                                                            item.date,
-                                                                              style: TextStyle(
-                                                                                  color: AppStyle.blueColorTextTitle,
+                                                                          child: ListTile(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            title: Text(
+                                                                                item.type_id.applicationTypeName,
+                                                                                style: TextStyle(
+                                                                                  color: AppStyle.blackColorMain,
                                                                                   fontSize: AppStyle.fontSizeMediumMini_14,
                                                                                   fontWeight: FontWeight.w500
-                                                                              )
-                                                                          ),
-                                                                          trailing: Container(
-                                                                            padding: EdgeInsetsGeometry.symmetric(vertical: 10, horizontal: 5),
-                                                                            decoration: BoxDecoration(
-                                                                              color: item.status_id.statusColor
+                                                                                )
                                                                             ),
-                                                                            child: Text(
-                                                                              item.status_id.statusName,
-                                                                              style: TextStyle(
-                                                                                  color: AppStyle.whiteColorMain,
-                                                                                  fontSize: AppStyle.fontSizeSmall_12,
-                                                                                  fontWeight: FontWeight.w500
-                                                                              )
+                                                                            subtitle: Text(
+                                                                              item.date,
+                                                                                style: TextStyle(
+                                                                                    color: AppStyle.blueColorTextTitle,
+                                                                                    fontSize: AppStyle.fontSizeSmall_12,
+                                                                                    fontWeight: FontWeight.w500
+                                                                                )
                                                                             ),
-                                                                          ),
+                                                                            trailing: Container(
+                                                                              padding: EdgeInsetsGeometry.symmetric(vertical: 1, horizontal: 8),
+                                                                              decoration: BoxDecoration(
+                                                                                color: item.status_id.statusColor,
+                                                                                borderRadius: BorderRadius.circular(10)
+                                                                              ),
+                                                                              child: Text(
+                                                                                item.status_id.statusName,
+                                                                                style: TextStyle(
+                                                                                    color: AppStyle.whiteColorMain,
+                                                                                    fontSize: AppStyle.fontSizeSmall_12,
+                                                                                    fontWeight: FontWeight.w500
+                                                                                )
+                                                                              ),
+                                                                            ),
 
+                                                                          ),
                                                                         );
                                                                       }
                                                                   );
@@ -449,7 +487,7 @@ class _SecretaryScreenReference
                                                                 ),
                                                                 loading: () => Center(
                                                                   child: LoadingAnimationWidget.halfTriangleDot(
-                                                                    color: AppStyle.blueColorAdditional,
+                                                                    color: AppStyle.blueColorAdditional4AABDB,
                                                                     size: 50,
                                                                   ),
                                                                 )
@@ -457,10 +495,48 @@ class _SecretaryScreenReference
                                                           }
                                                       ),
                                                     ),
+                                                SizedBox(height: 15,),
+                                                ElevatedButton(
+                                                    onPressed: () {},
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                      WidgetStateProperty.resolveWith<Color>((
+                                                          Set<WidgetState> states,
+                                                          ) {
+                                                        if (states.contains(WidgetState.disabled)) {
+                                                          return AppStyle.disableBlueColorMain;
+                                                        }
+                                                        if (states.contains(WidgetState.pressed)) {
+                                                          return AppStyle.activeBlueColorMain;
+                                                        }
+                                                        if (states.contains(WidgetState.hovered)) {
+                                                          return AppStyle.hoverBlueColorMain;
+                                                        }
+                                                        return AppStyle.blueColorAdditional4AABDB;
+                                                      }),
+                                                      minimumSize: WidgetStateProperty.all(
+                                                        Size(screenWidth * 1, 40),
+                                                      ),
+                                                      shape: WidgetStateProperty.all(
+                                                        RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(30),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      'Редактировать',
+                                                      style: TextStyle(
+                                                        color: AppStyle.whiteColorMain,
+                                                        fontSize: AppStyle.fontSizeMedium_16,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                )
                                               ],
                                             ),
                                           ),
                                         ),
+                                        actions: null,
                                       );
                                     }
                                 );

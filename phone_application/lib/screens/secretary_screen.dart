@@ -336,6 +336,7 @@ class _SecretaryScreenReference
                                                 )
                                             )
                                         ),
+                                        padding: const EdgeInsets.only(bottom: 10),
                                         child: Column(
                                           children: [
                                             Text(
@@ -352,80 +353,88 @@ class _SecretaryScreenReference
                                       ),
                                       content: SizedBox(
                                         width: double.maxFinite,
-                                        height: screenHeight * 0.4,
+                                        height: screenHeight * 0.5,
                                         child: Column(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
                                             ListTile(
-                                              title: Text('${student.lastname} ${student.firstname} ${student.patronymic}'),
+                                              contentPadding: EdgeInsets.zero,
+                                              title: Text(
+                                                  '${student.lastname} ${student.firstname} ${student.patronymic}',
+                                                  style: TextStyle(
+                                                    color: AppStyle.blueColorTextTitle
+                                                  ),
+                                              ),
                                               subtitle: Text('группа ${student.group}, ${student.phone}'),
                                             ),
-                                            SingleChildScrollView(
-                                              child: Consumer(
-                                                  builder: (context, ref, child){
-                                                    final historyDataAsync = ref.watch(fetchStudentApplications(student.user_id));
-                                                    return historyDataAsync.when(
-                                                        data: (data){
-                                                          if(data.isEmpty){
-                                                            return Text(
-                                                                'У этого студента нет истории заявок',
-                                                                style: TextStyle(
-                                                                  color: AppStyle.blackColorMain,
-                                                                  fontSize: AppStyle.fontSizeSmall_12
-                                                                ),
-                                                            );
-                                                          }
-                                                          return ListView.builder(
-                                                              itemCount: data.length,
-                                                              itemBuilder: (context, index){
-                                                                final item = data[index];
-                                                                return ListTile(
-                                                                  title: Text(
-                                                                      item.type_id.applicationTypeName,
-                                                                      style: TextStyle(
-                                                                        color: AppStyle.blackColorMain,
-                                                                        fontSize: AppStyle.fontSizeMedium_16,
-                                                                        fontWeight: FontWeight.w500
-                                                                      )
-                                                                  ),
-                                                                  subtitle: Text(
-                                                                    item.date,
-                                                                      style: TextStyle(
-                                                                          color: AppStyle.blueColorTextTitle,
-                                                                          fontSize: AppStyle.fontSizeMediumMini_14,
-                                                                          fontWeight: FontWeight.w500
-                                                                      )
-                                                                  ),
-                                                                  trailing: Container(
-                                                                    padding: EdgeInsetsGeometry.symmetric(vertical: 10, horizontal: 5),
-                                                                    decoration: BoxDecoration(
-                                                                      color: item.status_id.statusColor
+                                                Expanded(
+                                                  child: Consumer(
+                                                      builder: (context, ref, child){
+                                                        final historyDataAsync = ref.watch(fetchStudentApplications(student.user_id));
+                                                        return historyDataAsync.when(
+                                                            data: (data){
+                                                              if(data.isEmpty){
+                                                                return Text(
+                                                                    'У этого студента нет истории заявок',
+                                                                    style: TextStyle(
+                                                                      color: AppStyle.blackColorMain,
+                                                                      fontSize: AppStyle.fontSizeSmall_12
                                                                     ),
-                                                                    child: Text(
-                                                                      item.status_id.statusName,
-                                                                      style: TextStyle(
-                                                                          color: AppStyle.whiteColorMain,
-                                                                          fontSize: AppStyle.fontSizeSmall_12,
-                                                                          fontWeight: FontWeight.w500
-                                                                      )
-                                                                    ),
-                                                                  ),
                                                                 );
                                                               }
-                                                          );
-                                                        },
-                                                        error: (error, stack) => Center(
-                                                            child: Text('Ошибка загрузки: $error')
-                                                        ),
-                                                        loading: () => Center(
-                                                          child: LoadingAnimationWidget.halfTriangleDot(
-                                                            color: Colors.white,
-                                                            size: 50,
-                                                          ),
-                                                        )
-                                                    );
-                                                  }
-                                              ),
-                                            )
+                                                              return ListView.builder(
+                                                                  itemCount: data.length,
+                                                                  itemBuilder: (context, index){
+                                                                    final item = data[index];
+                                                                    return ListTile(
+                                                                      title: Text(
+                                                                          item.type_id.applicationTypeName,
+                                                                          style: TextStyle(
+                                                                            color: AppStyle.blackColorMain,
+                                                                            fontSize: AppStyle.fontSizeMedium_16,
+                                                                            fontWeight: FontWeight.w500
+                                                                          )
+                                                                      ),
+                                                                      subtitle: Text(
+                                                                        item.date,
+                                                                          style: TextStyle(
+                                                                              color: AppStyle.blueColorTextTitle,
+                                                                              fontSize: AppStyle.fontSizeMediumMini_14,
+                                                                              fontWeight: FontWeight.w500
+                                                                          )
+                                                                      ),
+                                                                      trailing: Container(
+                                                                        padding: EdgeInsetsGeometry.symmetric(vertical: 10, horizontal: 5),
+                                                                        decoration: BoxDecoration(
+                                                                          color: item.status_id.statusColor
+                                                                        ),
+                                                                        child: Text(
+                                                                          item.status_id.statusName,
+                                                                          style: TextStyle(
+                                                                              color: AppStyle.whiteColorMain,
+                                                                              fontSize: AppStyle.fontSizeSmall_12,
+                                                                              fontWeight: FontWeight.w500
+                                                                          )
+                                                                        ),
+                                                                      ),
+
+                                                                    );
+                                                                  }
+                                                              );
+                                                            },
+                                                            error: (error, stack) => Center(
+                                                                child: Text('Ошибка загрузки: $error')
+                                                            ),
+                                                            loading: () => Center(
+                                                              child: LoadingAnimationWidget.halfTriangleDot(
+                                                                color: AppStyle.blueColorAdditional,
+                                                                size: 50,
+                                                              ),
+                                                            )
+                                                        );
+                                                      }
+                                                  ),
+                                                ),
                                           ],
                                         ),
                                       ),

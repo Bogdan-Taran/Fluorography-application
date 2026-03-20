@@ -311,142 +311,166 @@ class _SecretaryScreenReference
                     });
                   },
                   children: students.map((student) {
-                    return ListTile(
-                      contentPadding: EdgeInsetsGeometry.symmetric(vertical: screenHeight * 0.0015),
-                      title: Text('Студент ${student.firstname} ${student.lastname}'),
-                      subtitle: Text('Телефон: ${student.phone}'),
-                      trailing:  (student.status_id == 1)
-                          ? SvgPicture.asset(
-                        'assets/icon/reference_warn.svg',
-                        width: screenWidth * 0.05,
-                      )
-                          : SizedBox(),
-                      onTap: () async{
-                              showDialog(
-                                  context: context,
-                                  builder: (context){
-                                    return AlertDialog(
-                                      title: Container(
-                                        width: screenWidth * 0.02,
-                                        decoration: BoxDecoration(
-                                            border: Border(
-                                                bottom: BorderSide(
-                                                    color: AppStyle.collapsedBlueColor,
-                                                    width: 1
-                                                )
-                                            )
-                                        ),
-                                        padding: const EdgeInsets.only(bottom: 10),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              'История справок',
-                                              style: TextStyle(
-                                                fontSize: AppStyle.fontSizeExtraLarge,
-                                                fontWeight: FontWeight.w500,
-                                                color: AppStyle.blackColorMain,
-                                              ),
-                                            ),
-                                            Divider()
-                                          ],
-                                        ),
-                                      ),
-                                      content: SizedBox(
-                                        width: double.maxFinite,
-                                        height: screenHeight * 0.5,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            ListTile(
-                                              contentPadding: EdgeInsets.zero,
-                                              title: Text(
-                                                  '${student.lastname} ${student.firstname} ${student.patronymic}',
-                                                  style: TextStyle(
-                                                    color: AppStyle.blueColorTextTitle
+                    return Container(
+                      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Color(0x330088cc),
+                            width: 1
+                          )
+                        )
+                      ),
+                      child: ListTile(
+                        contentPadding: EdgeInsetsGeometry.symmetric(vertical: screenHeight * 0.0015),
+                        title: Text(
+                            '${student.firstname} ${student.lastname}',
+                            style: TextStyle(
+                              color: AppStyle.blackColorMain,
+                              fontSize: AppStyle.fontSizeMedium_16,
+                            ),
+                        ),
+                        trailing:  (student.status_id == 1)
+                            ? SvgPicture.asset(
+                          'assets/icon/reference_warn.svg',
+                          width: screenWidth * 0.05,
+                        )
+                            : SizedBox(),
+                        onTap: () async{
+                                showDialog(
+                                    context: context,
+                                    builder: (context){
+                                      return AlertDialog(
+                                        backgroundColor: Colors.transparent,
+                                        contentPadding: EdgeInsets.zero,
+                                        titlePadding: EdgeInsets.zero,
+                                        title: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                                  bottom: BorderSide(
+                                                      color: AppStyle.blueColorAdditional,
+                                                      width: 1
                                                   ),
                                               ),
-                                              subtitle: Text('группа ${student.group}, ${student.phone}'),
+                                            color: const Color(0xffffffff),
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(50),
+                                              topRight: Radius.circular(50),
+                                            )
+                                          ),
+                                          padding: EdgeInsets.only(bottom: 10, top: 32),
+                                          // width: screenWidth * 0.02,
+                                          child: Text(
+                                            'История справок',
+                                            style: TextStyle(
+                                              fontSize: AppStyle.fontSizeExtraLarge,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppStyle.blackColorMain,
                                             ),
-                                                Expanded(
-                                                  child: Consumer(
-                                                      builder: (context, ref, child){
-                                                        final historyDataAsync = ref.watch(fetchStudentApplications(student.user_id));
-                                                        return historyDataAsync.when(
-                                                            data: (data){
-                                                              if(data.isEmpty){
-                                                                return Text(
-                                                                    'У этого студента нет истории заявок',
-                                                                    style: TextStyle(
-                                                                      color: AppStyle.blackColorMain,
-                                                                      fontSize: AppStyle.fontSizeSmall_12
-                                                                    ),
-                                                                );
-                                                              }
-                                                              return ListView.builder(
-                                                                  itemCount: data.length,
-                                                                  itemBuilder: (context, index){
-                                                                    final item = data[index];
-                                                                    return ListTile(
-                                                                      title: Text(
-                                                                          item.type_id.applicationTypeName,
-                                                                          style: TextStyle(
-                                                                            color: AppStyle.blackColorMain,
-                                                                            fontSize: AppStyle.fontSizeMedium_16,
-                                                                            fontWeight: FontWeight.w500
-                                                                          )
-                                                                      ),
-                                                                      subtitle: Text(
-                                                                        item.date,
-                                                                          style: TextStyle(
-                                                                              color: AppStyle.blueColorTextTitle,
-                                                                              fontSize: AppStyle.fontSizeMediumMini_14,
-                                                                              fontWeight: FontWeight.w500
-                                                                          )
-                                                                      ),
-                                                                      trailing: Container(
-                                                                        padding: EdgeInsetsGeometry.symmetric(vertical: 10, horizontal: 5),
-                                                                        decoration: BoxDecoration(
-                                                                          color: item.status_id.statusColor
+                                          ),
+                                        ),
+                                        content: Container(
+                                          decoration: BoxDecoration(
+                                            color: Color(0xffFDFDFD)
+                                          ),
+                                          child: SizedBox(
+                                            width: double.maxFinite,
+                                            height: screenHeight * 0.5,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ListTile(
+                                                  contentPadding: EdgeInsets.zero,
+                                                  title: Text(
+                                                      '${student.lastname} ${student.firstname} ${student.patronymic}',
+                                                      style: TextStyle(
+                                                        color: AppStyle.blueColorTextTitle
+                                                      ),
+                                                  ),
+                                                  subtitle: Text('группа ${student.group}, ${student.phone}'),
+                                                ),
+                                                    Expanded(
+                                                      child: Consumer(
+                                                          builder: (context, ref, child){
+                                                            final historyDataAsync = ref.watch(fetchStudentApplications(student.user_id));
+                                                            return historyDataAsync.when(
+                                                                data: (data){
+                                                                  if(data.isEmpty){
+                                                                    return Text(
+                                                                        'У этого студента нет истории заявок',
+                                                                        style: TextStyle(
+                                                                          color: AppStyle.blackColorMain,
+                                                                          fontSize: AppStyle.fontSizeSmall_12
                                                                         ),
-                                                                        child: Text(
-                                                                          item.status_id.statusName,
-                                                                          style: TextStyle(
-                                                                              color: AppStyle.whiteColorMain,
-                                                                              fontSize: AppStyle.fontSizeSmall_12,
-                                                                              fontWeight: FontWeight.w500
-                                                                          )
-                                                                        ),
-                                                                      ),
-
                                                                     );
                                                                   }
-                                                              );
-                                                            },
-                                                            error: (error, stack) => Center(
-                                                                child: Text('Ошибка загрузки: $error')
-                                                            ),
-                                                            loading: () => Center(
-                                                              child: LoadingAnimationWidget.halfTriangleDot(
-                                                                color: AppStyle.blueColorAdditional,
-                                                                size: 50,
-                                                              ),
-                                                            )
-                                                        );
-                                                      }
-                                                  ),
-                                                ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }
-                              );
+                                                                  return ListView.builder(
+                                                                      itemCount: data.length,
+                                                                      itemBuilder: (context, index){
+                                                                        final item = data[index];
+                                                                        return ListTile(
+                                                                          title: Text(
+                                                                              item.type_id.applicationTypeName,
+                                                                              style: TextStyle(
+                                                                                color: AppStyle.blackColorMain,
+                                                                                fontSize: AppStyle.fontSizeMedium_16,
+                                                                                fontWeight: FontWeight.w500
+                                                                              )
+                                                                          ),
+                                                                          subtitle: Text(
+                                                                            item.date,
+                                                                              style: TextStyle(
+                                                                                  color: AppStyle.blueColorTextTitle,
+                                                                                  fontSize: AppStyle.fontSizeMediumMini_14,
+                                                                                  fontWeight: FontWeight.w500
+                                                                              )
+                                                                          ),
+                                                                          trailing: Container(
+                                                                            padding: EdgeInsetsGeometry.symmetric(vertical: 10, horizontal: 5),
+                                                                            decoration: BoxDecoration(
+                                                                              color: item.status_id.statusColor
+                                                                            ),
+                                                                            child: Text(
+                                                                              item.status_id.statusName,
+                                                                              style: TextStyle(
+                                                                                  color: AppStyle.whiteColorMain,
+                                                                                  fontSize: AppStyle.fontSizeSmall_12,
+                                                                                  fontWeight: FontWeight.w500
+                                                                              )
+                                                                            ),
+                                                                          ),
 
-                        /*await ref.read(updateReferenceStatusControllerProvider.notifier).updateStatus(
-                            applicationId: student.id,
-                            statusId: 2
-                        );*/
-                      },
+                                                                        );
+                                                                      }
+                                                                  );
+                                                                },
+                                                                error: (error, stack) => Center(
+                                                                    child: Text('Ошибка загрузки: $error')
+                                                                ),
+                                                                loading: () => Center(
+                                                                  child: LoadingAnimationWidget.halfTriangleDot(
+                                                                    color: AppStyle.blueColorAdditional,
+                                                                    size: 50,
+                                                                  ),
+                                                                )
+                                                            );
+                                                          }
+                                                      ),
+                                                    ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                );
+
+                          /*await ref.read(updateReferenceStatusControllerProvider.notifier).updateStatus(
+                              applicationId: student.id,
+                              statusId: 2
+                          );*/
+                        },
+                      ),
                     );
                   }).toList(),
                 );

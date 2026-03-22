@@ -182,7 +182,12 @@ class SecretaryScreenFluorography extends ConsumerStatefulWidget {
 class _SecretaryScreenFluorography extends ConsumerState {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text('Флюорография')));
+    return Scaffold(
+        backgroundColor: AppStyle.whiteColorMain,
+        body: Center(
+            child: Text('По Вашему запросу ничего не найдено')
+        )
+    );
   }
 }
 

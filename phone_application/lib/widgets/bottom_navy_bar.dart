@@ -103,7 +103,7 @@ class BottomNavyBar extends StatelessWidget {
         (Theme.of(context).bottomAppBarTheme.color ?? Colors.white);
 
     return Container(
-      padding: EdgeInsets.zero,
+      // padding: EdgeInsets.symmetric(horizontal: 0),
       margin: margin,
 
       decoration: BoxDecoration(
@@ -125,7 +125,6 @@ class BottomNavyBar extends StatelessWidget {
       ),
       child: SafeArea(
         child: Container(
-          width: containerWidth,
           height: containerHeight,
 
           child: Row(
@@ -187,14 +186,6 @@ class _ItemWidget extends StatelessWidget {
       container: true,
       selected: isSelected,
       child: AnimatedContainer(
-        width: (showInactiveTitle)
-            ? ((isSelected)
-            ? MediaQuery.of(context).size.width * 0.4
-            : MediaQuery.of(context).size.width * 0.2)
-            : ((isSelected)
-            ? MediaQuery.of(context).size.width * 0.3
-            : MediaQuery.of(context).size.width * 0.1),
-
 
         height: double.maxFinite,
         duration: animationDuration,
@@ -210,72 +201,43 @@ class _ItemWidget extends StatelessWidget {
             width: 1
           )
         ),
+        padding: EdgeInsets.symmetric(horizontal: 12),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: NeverScrollableScrollPhysics(),
-          child: Container(
-
-            width: (showInactiveTitle)
-                ? ((isSelected)
-                      ? MediaQuery.of(context).size.width * 0.4
-                      : MediaQuery.of(context).size.width * 0.2)
-                : ((isSelected)
-                      ? MediaQuery.of(context).size.width * 0.3
-                      : MediaQuery.of(context).size.width * 0.1),
-            padding: EdgeInsets.zero,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              // mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (item.icon != null)
-                  IconTheme(
-                    data: IconThemeData(
-                      size: iconSize,
-                      color: isSelected
-                          ? item.activeColor.withOpacity(1)
-                          : item.inactiveColor == null
-                          ? item.activeColor
-                          : item.inactiveColor,
-                    ),
-                    child: item.icon!,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            // mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (item.icon != null)
+                IconTheme(
+                  data: IconThemeData(
+                    size: iconSize,
+                    color: isSelected
+                        ? item.activeColor.withOpacity(1)
+                        : item.inactiveColor == null
+                        ? item.activeColor
+                        : item.inactiveColor,
                   ),
-                if (showInactiveTitle)
-                  Flexible(
-                    child: Container(
-
-                      padding: itemPadding,
-                      child: DefaultTextStyle.merge(
-                        style: TextStyle(
-                          color: isSelected ? item.inactiveTextColor : item.activeTextColor,
-                          // color: item.inactiveColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        textAlign: item.textAlign,
-                        // overflow: TextOverflow.ellipsis,
-                        child: item.title,
-                      ),
+                  child: item.icon!,
+                ),
+              if (showInactiveTitle || isSelected)
+                Container(
+                  padding: itemPadding,
+                  child: DefaultTextStyle.merge(
+                    style: TextStyle(
+                      color: isSelected ? item.inactiveTextColor : item.activeTextColor,
+                      // color: item.inactiveColor,
+                      fontWeight: FontWeight.bold,
                     ),
-                  )
-                else if (isSelected)
-                  Flexible(
-                    child: Container(
-                      padding: itemPadding,
-                      child: DefaultTextStyle.merge(
-                        style: TextStyle(
-                          color: isSelected ? item.inactiveTextColor : item.activeTextColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        textAlign: item.textAlign,
-                        // overflow: TextOverflow.ellipsis,
-                        child: item.title,
-                      ),
-                    ),
+                    maxLines: 1,
+                    textAlign: item.textAlign,
+                    // overflow: TextOverflow.ellipsis,
+                    child: item.title,
                   ),
-              ],
-            ),
+                )
+            ],
           ),
         ),
       ),

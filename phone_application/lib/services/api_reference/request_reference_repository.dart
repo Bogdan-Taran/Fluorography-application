@@ -63,4 +63,11 @@ class RequestRepositoryMine{
       throw('Ошибка при обновлении статуса заявки');
     }
   }
+
+  Future<Map<String, dynamic>> logoutProfile(){
+    try{
+      final token =
+    }
+  }
+
 }

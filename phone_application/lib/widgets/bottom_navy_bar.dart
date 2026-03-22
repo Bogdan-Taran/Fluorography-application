@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/styles.dart';
+
+import '../main.dart';
 
 /// A beautiful and animated bottom navigation that paints a rounded shape
 /// around its [items] to provide a wonderful look.
@@ -296,4 +299,114 @@ class BottomNavyBarItem {
 
   /// Will show a tooltip for the item if provided.
   final String? tooltipText;
+}
+
+
+
+class BottomNavBarFLura extends StatelessWidget{
+  final int currentIndex;
+  final Function(int) onItemSelected;
+  final VoidCallback onLogoutPressed;
+  final VoidCallback onNotificationPressed;
+
+  const BottomNavBarFLura({
+    Key? key,
+    required this.currentIndex,
+    required this.onItemSelected,
+    required this.onLogoutPressed,
+    required this.onNotificationPressed,
+  }) : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final buttonHeight = screenWidth * 0.045;
+    final iconSize = screenWidth * 0.04;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  onLogoutPressed();
+                  /**/
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: const CircleBorder(),
+                  padding: EdgeInsets.all(buttonHeight),
+                  backgroundColor: AppStyle.blueColorAdditional4AABDB,
+                ),
+                child: SvgPicture.asset(
+                  'assets/icon/door_icon.svg',
+                  colorFilter: const ColorFilter.mode(
+                    AppStyle.whiteColorMain,
+                    BlendMode.srcIn,
+                  ),
+                  width: iconSize,
+                ),
+              ),
+              BottomNavyBar(
+                containerHeight: screenHeight * 0.055,
+                itemCornerRadius: 20,
+                margin: EdgeInsets.symmetric(
+                    vertical: screenHeight * 0.01,
+                    horizontal: screenHeight * 0.005
+                ),
+                mainAxisAlignment: MainAxisAlignment.center,
+                borderRadius: BorderRadius.circular(20),
+                showInactiveTitle: true,
+                itemBorderColor: AppStyle.whiteColorMain,
+                onItemSelected:  onItemSelected, /*,*/
+
+                selectedIndex: currentIndex,
+                items: [
+                  BottomNavyBarItem(
+                    title: Text('Флюорография'),
+                    activeBackgroundColor: AppStyle.blueColorAdditional4AABDB,
+                    activeColor: AppStyle.whiteColorMain,
+                    inactiveColor: AppStyle.blueColorAdditional4AABDB,
+                    inactiveTextColor: AppStyle.whiteColorMain,
+                    activeTextColor: AppStyle.blueColorAdditional4AABDB,
+                    textAlign: TextAlign.center,
+                  ),
+                  BottomNavyBarItem(
+                    title: Text('Справки'),
+                    activeBackgroundColor: AppStyle.blueColorAdditional4AABDB,
+                    activeColor: AppStyle.whiteColorMain,
+                    inactiveColor: AppStyle.blueColorAdditional4AABDB,
+                    inactiveTextColor: AppStyle.whiteColorMain,
+                    activeTextColor: AppStyle.blueColorAdditional4AABDB,
+                    textAlign: TextAlign.end,
+                  ),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: onNotificationPressed,
+                style: ElevatedButton.styleFrom(
+                  shape: const CircleBorder(),
+                  padding: EdgeInsets.all(buttonHeight),
+                  backgroundColor: AppStyle.blueColorAdditional4AABDB,
+                ),
+                child: SvgPicture.asset(
+                  'assets/icon/notification_white_icon.svg',
+                  colorFilter: const ColorFilter.mode(
+                    AppStyle.whiteColorMain,
+                    BlendMode.srcIn,
+                  ),
+                  width: iconSize,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
 }

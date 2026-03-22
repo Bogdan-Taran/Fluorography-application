@@ -5,50 +5,6 @@ import 'package:project_fluorography/models/post_reference_model/post_reference_
 import 'package:project_fluorography/services/api_reference/api_references_provider.dart';
 import 'package:talker/talker.dart';
 
-/*
-//предоставляет базовые Api запросы по шаблону
-final requestApiReferenceProvider = Provider<RequestApiReferenceProvider>((ref) {
-  final dio = ref.read(dioProvider);
-  return RequestApiReferenceProvider(dio);
-});
-
-class RequestApiReferenceProvider {w=
-  final Dio _dio;
-  final talker = Talker();
-
-  RequestApiReferenceProvider(this._dio);
-
-  Future<Response> getRequest(String endpoint) async {
-    try {
-      final response = await _dio.get(endpoint);
-      return response;
-    }
-    catch (e) {
-      throw Exception('Ошибка при попытке получить данные');
-    }
-  }
-
-  Future<PostReferenceModel> postRequest(String endpoint, Map<String, dynamic> data) async {
-    try {
-      final response = await _dio.post(endpoint, data: data);
-      return PostReferenceModel.fromJson(response.data);
-    } on DioException catch(error){
-      talker.error('Dio ошибка: ${error}, StatusCode: ${error.response?.statusCode},');
-      switch(error.response?.statusCode){
-        case 422:
-          talker.log('Ошибка 422, type: ${error.type}');
-          throw Exception('Ошибка 422');
-        case 500:
-          talker.error('Ошибка сервера');
-        case 302:
-          talker.error('Ошибка 302');
-      }
-      return error.response?.data;
-    }
-  }
-}*/
-
-
 final apiProviderMine = Provider<ApiProviderMine>((ref) {
   final dio = ref.watch(dioProviderMine);
   return ApiProviderMine(dio);
@@ -59,7 +15,7 @@ class ApiProviderMine{
   ApiProviderMine(this._dio);
   final talker = Talker();
 
-  Future<List<dynamic>> getRequest(String path) async{
+  Future<dynamic> getRequest(String path) async{
     try{
       final response = await _dio.get(path);
       talker.log('ApiProvider: response отправлен и получен: ${response.data}');

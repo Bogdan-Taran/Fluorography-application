@@ -89,7 +89,7 @@ class _AuthCheckerState extends State<AuthChecker> {
           case AuthenticationLoadingState:
             _BuildersScreen.buildLoading();
 
-          case NotAuthenticatedState:
+          /*case NotAuthenticatedState:
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (BuildContext context) => BlocProvider(
@@ -99,7 +99,7 @@ class _AuthCheckerState extends State<AuthChecker> {
                 ),
                 // HomeScreen()
               ),
-            );/*
+            );*/
           case NotAuthenticatedState:
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
@@ -110,7 +110,7 @@ class _AuthCheckerState extends State<AuthChecker> {
                 ),
                 // HomeScreen()
               ),
-            );*/
+            );
           case AuthorizedState:
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(

@@ -1,22 +1,51 @@
+import 'dart:math';
+
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:project_fluorography/models/get_reference_model/get_reference_model.dart';
 import 'package:project_fluorography/models/post_reference_model/post_reference_model.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:talker/talker.dart';
 
 //контроллер для управления состояниями - некая прослойка-посредник между UI и всеми предыдущими иерархиями провайдеров
 part 'request_reference_controller.g.dart';
 
-/*@riverpod
-Future<List<GetReferenceModel>> fetchStudentApplication(Ref ref) {
-  final repositoryProvider = ref.watch(requestRepositoryMineProvider);
-  return repositoryProvider.getOneStudentApplications(user_id: user_id);
-}*/
 
 final fetchStudentApplications = FutureProvider.family<List<GetReferenceModel>, int> ((ref, user_id) {
   final repositoryProvider = ref.watch(requestRepositoryMineProvider);
   return repositoryProvider.getOneStudentApplications(user_id: user_id);
 });
+
+/*final logoutApiProvider = FutureProvider<String>((ref) {
+  final repositoryProvider = ref.read(requestRepositoryMineProvider);
+  return repositoryProvider.logoutProfile();
+});*/
+
+final authControllerProvider = StateNotifierProvider<AuthController, AsyncValue<String?>>((ref){
+  return AuthController(ref);
+});
+
+class AuthController extends StateNotifier<AsyncValue<String?>>{
+  final Ref ref;
+  AuthController(this.ref) : super(const AsyncValue.data(null));
+  final talker = Talker();
+
+  Future<void> logout() async{
+    state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(() async{
+      final result = await ref.read(requestRepositoryMineProvider).logoutProfile();
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('authToken');
+      talker.log('Controller: выход выполнен');
+      return result;
+    });
+  }
+
+
+}
 
 @riverpod
 Future<List<GetReferenceModel>> fetchEntireListApplications(Ref ref) {

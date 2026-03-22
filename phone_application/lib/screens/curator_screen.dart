@@ -595,6 +595,8 @@ class _CuratorScreen extends State<CuratorScreen> {
               ),
             ],
           ),
+
+          bottomNavigationBar: ,
         ),
       ),
     );

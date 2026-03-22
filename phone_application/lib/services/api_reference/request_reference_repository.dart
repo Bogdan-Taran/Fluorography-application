@@ -6,6 +6,8 @@ import 'package:project_fluorography/services/api_reference/request_api_referenc
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker/talker.dart';
 
+import 'api_references_provider.dart';
+
 part 'request_reference_repository.g.dart';
 
 
@@ -64,10 +66,22 @@ class RequestRepositoryMine{
     }
   }
 
-  Future<Map<String, dynamic>> logoutProfile(){
+  Future<String> logoutProfile() async{
     try{
-      final token =
+      final response = await _apiProviderMine.getRequest('/api/logout');
+      talker.log('RepoProvider(logoutProfile): запрос на выход отправлен: $response');
+      if(response is Map<String, dynamic>){
+        if(response.containsKey('message')){
+          final message = response['message'] ?? 'Успешный выход';
+          talker.warning('RepoProvider(logoutProfile): message получен: $message');
+          return message;
+        }
+      }
+      return response;
+    } on DioException catch(error){
+      talker.handle('Ошибка в репозитории: $error');
+      throw('Ошибка при попытке выйти');
     }
-  }
 
+  }
 }

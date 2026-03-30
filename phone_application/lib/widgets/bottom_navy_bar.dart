@@ -408,5 +408,5 @@ class BottomNavBarFLura extends StatelessWidget{
       ],
     );
   }
-
 }
+

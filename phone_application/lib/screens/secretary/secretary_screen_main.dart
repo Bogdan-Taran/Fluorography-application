@@ -119,6 +119,7 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
             onNotificationPressed: () {
               _pageController.jumpToPage(2);
             },
+
           ),
         ),
       ),

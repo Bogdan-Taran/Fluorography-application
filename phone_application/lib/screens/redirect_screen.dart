@@ -7,9 +7,9 @@ import 'package:project_fluorography/bloc/authentication/authentication_bloc.dar
 import 'package:project_fluorography/bloc/curator/curator_bloc.dart';
 import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
-import 'package:project_fluorography/screens/curator_screen.dart';
+import 'package:project_fluorography/screens/curator/curator_screen_main.dart';
 import 'package:project_fluorography/screens/medic_screen.dart';
-import 'package:project_fluorography/screens/secretary_screen.dart';
+import 'package:project_fluorography/screens/secretary/secretary_screen_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/admin/admin_bloc.dart';
 import '../bloc/search/search_bloc.dart';

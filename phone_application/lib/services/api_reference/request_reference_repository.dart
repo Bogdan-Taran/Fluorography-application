@@ -107,4 +107,22 @@ class RequestRepositoryMine {
       throw ('Ошибка при попытке выйти');
     }
   }
+
+
+  Future<void> postApplication({
+    required PostReferenceModel data
+  }) async {
+    try {
+      final response = await _apiProviderMine.postRequest(
+        '/api/applications',
+        data.toJson(),
+      );
+      talker.log(
+        'RepoProvider: Данные успешно отправлены: $response',
+      );
+    } on DioException catch (error) {
+      talker.handle('Ошибка в репозитории при отправке заявки: $error');
+      throw ('Ошибка при отправке заявки');
+    }
+  }
 }

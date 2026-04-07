@@ -97,3 +97,48 @@ abstract class _$UpdateReferenceStatusController extends $AsyncNotifier<void> {
     element.handleCreate(ref, build);
   }
 }
+
+@ProviderFor(PostApplicationController)
+final postApplicationControllerProvider = PostApplicationControllerProvider._();
+
+final class PostApplicationControllerProvider
+    extends $AsyncNotifierProvider<PostApplicationController, void> {
+  PostApplicationControllerProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'postApplicationControllerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$postApplicationControllerHash();
+
+  @$internal
+  @override
+  PostApplicationController create() => PostApplicationController();
+}
+
+String _$postApplicationControllerHash() =>
+    r'a5a836405deecdf3a59e41a15662794c72ad74a0';
+
+abstract class _$PostApplicationController extends $AsyncNotifier<void> {
+  FutureOr<void> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<void>, void>,
+              AsyncValue<void>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}

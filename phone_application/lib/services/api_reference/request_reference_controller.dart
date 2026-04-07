@@ -77,3 +77,20 @@ class UpdateReferenceStatusController
     });
   }
 }
+
+
+@riverpod
+class PostApplicationController extends _$PostApplicationController{
+  @override
+  FutureOr<void> build(){
+    return null;
+  }
+
+  Future<void> submitApplication(PostReferenceModel data) async{
+    final repository = ref.read(requestRepositoryMineProvider);
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async{
+      await repository.postApplication(data: data);
+    });
+  }
+}

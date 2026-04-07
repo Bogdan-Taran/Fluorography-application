@@ -900,10 +900,10 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                               quantity: int.parse(formData['numberOfReferences']),
                                           );
                                           try{
-                                            // final response = await requestRepository.fetchApplication(referenceData);
+                                            final response = await requestRepository.fetchApplication(referenceData);
                                             //здесь контроллер
-                                            //ref.read(requestReferenceControllerProvider.notifier).PostReferenceRequest(referenceData);
-                                            //talker.info('Reference_screen: Запрос отправлен');
+                                            ref.read(requestReferenceControllerProvider.notifier).PostReferenceRequest(referenceData);
+                                            talker.info('Reference_screen: Запрос отправлен');
                                           }catch(e){
                                             talker.handle(e);
                                           }

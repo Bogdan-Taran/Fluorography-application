@@ -121,7 +121,6 @@ class _CuratorScreen extends ConsumerState<CuratorScreen> {
                     },
                   )
               );
-
             },
             onNotificationPressed: () {
               _pageController.jumpToPage(2);

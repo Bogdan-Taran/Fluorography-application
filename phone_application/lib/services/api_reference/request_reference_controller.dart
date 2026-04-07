@@ -9,19 +9,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker/talker.dart';
 
-//контроллер для управления состояниями - некая прослойка-посредник между UI и всеми предыдущими иерархиями провайдеров
-part 'request_reference_controller.g.dart';
+import 'api_references_provider.dart';
 
+part 'request_reference_controller.g.dart';
 
 final fetchStudentApplications = FutureProvider.family<List<GetReferenceModel>, int> ((ref, user_id) {
   final repositoryProvider = ref.watch(requestRepositoryMineProvider);
   return repositoryProvider.getOneStudentApplications(user_id: user_id);
 });
 
-/*final logoutApiProvider = FutureProvider<String>((ref) {
-  final repositoryProvider = ref.read(requestRepositoryMineProvider);
-  return repositoryProvider.logoutProfile();
-});*/
 
 final authControllerProvider = StateNotifierProvider<AuthController, AsyncValue<String?>>((ref){
   return AuthController(ref);
@@ -36,15 +32,13 @@ class AuthController extends StateNotifier<AsyncValue<String?>>{
     state = const AsyncValue.loading();
 
     state = await AsyncValue.guard(() async{
+      await ref.read(apiServiceProvider).removeToken();
+      ref.invalidate(tokenProvider);
       final result = await ref.read(requestRepositoryMineProvider).logoutProfile();
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('authToken');
       talker.log('Controller: выход выполнен');
       return result;
     });
   }
-
-
 }
 
 @riverpod

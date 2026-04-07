@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_fluorography/main.dart';
+import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:talker/talker.dart';
 import '../../styles.dart';
 import '../api_service.dart';
@@ -12,12 +14,12 @@ final apiServiceProvider = Provider<ApiService>((ref) {
 });
 
 //провайдер к токену
-final tokenProvider = FutureProvider<String>((ref) async {
+final tokenProvider = FutureProvider<String?>((ref) async {
   final talker = Talker();
   final apiService = ref.read(apiServiceProvider);
   final token = await apiService.getToken();
   talker.log('TokenProvider: токен получен: $token');
-  return token!;
+  return token;
 });
 
 
@@ -48,10 +50,15 @@ final dioProviderMine = Provider<Dio> ((ref) {
         }
         return handler.next(options);
       },
-      onError: (DioException e, handler){
-        if(e.response?.statusCode == 401){
-          talker.log('DioProvider: Ошибка 401');
-          // ref.read(apiServiceProvider).removeToken();
+      onError: (DioException e, handler) async {
+        if(e.response?.statusCode == 401 || e.response?.statusCode == 403) {
+          talker.warning('DioProvider: Ошибка ${e.response?.statusCode}. Очистка данных и выход.');
+          await ref.read(apiServiceProvider).removeToken();
+          ref.invalidate(tokenProvider);
+          navigatorKey.currentState?.pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const SignInScreen()),
+              (route) => false
+          );
         }
         return handler.next(e);
       }

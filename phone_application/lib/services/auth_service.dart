@@ -11,10 +11,13 @@ import 'package:project_fluorography/services/shared_pref_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker/talker.dart';
 
+import 'api_reference/request_api_reference_provider.dart';
+
 class AuthService {
   final ApiService _apiService = ApiService();
   final UserSharedPreferences _userSharedPreferences = UserSharedPreferences();
   final talker = Talker();
+
 
 
   Future<Either<Map<String, dynamic>, UserData?>> signInUser(String login, String password) async {
@@ -121,7 +124,6 @@ class AuthService {
       return false;
     }
   }
-
 
 }
 

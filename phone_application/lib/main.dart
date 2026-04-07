@@ -12,6 +12,7 @@ import 'package:project_fluorography/services/builders_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   //установка только портретной ориентации
@@ -30,40 +31,34 @@ void main() {
       const ProviderScope(child: MyApp())
   );
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return OrientationBuilder(
-          builder: (context, orientation) {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider<AuthenticationBloc>(
-                  create: (context) => AuthenticationBloc(),
-                ),
-              ],
-              child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                title: 'Flura',
-                theme: ThemeData(
-                  appBarTheme: AppBarTheme(
-                    systemOverlayStyle: SystemUiOverlayStyle(
-                      statusBarColor: Colors.transparent,
-                      statusBarBrightness: Brightness.light,
-                    ),
-                  ),
-                ),
-                 home: AuthChecker(),
-                //home: SecretaryScreen(),
-              ),
-            );
-          },
-        );
-      },
+
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthenticationBloc>(
+          create: (context) => AuthenticationBloc(),
+        ),
+      ],
+      child: MaterialApp(
+        navigatorKey: navigatorKey,
+        debugShowCheckedModeBanner: false,
+        title: 'Flura',
+        theme: ThemeData(
+          appBarTheme: AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarBrightness: Brightness.light,
+            ),
+          ),
+        ),
+         home: AuthChecker(),
+        //home: SecretaryScreen(),
+      ),
     );
   }
 }
@@ -83,45 +78,47 @@ class _AuthCheckerState extends State<AuthChecker> {
   @override
   Widget build(BuildContext context) {
     BuildersScreen _BuildersScreen = BuildersScreen();
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
-      listener: (context, state) {
-        switch (state.runtimeType) {
-          case AuthenticationLoadingState:
-            _BuildersScreen.buildLoading();
+    return Scaffold(
+      body: BlocListener<AuthenticationBloc, AuthenticationState>(
+        listener: (context, state) {
+          switch (state.runtimeType) {
+            case AuthenticationLoadingState:
+              _BuildersScreen.buildLoading();
 
-          /*case NotAuthenticatedState:
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (BuildContext context) => BlocProvider(
-                  create: (context) =>
-                      InternetConnectCubit(connectivity: Connectivity()),
-                  child: SignInScreen(),
+            /*case NotAuthenticatedState:
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => BlocProvider(
+                    create: (context) =>
+                        InternetConnectCubit(connectivity: Connectivity()),
+                    child: SignInScreen(),
+                  ),
+                  // HomeScreen()
                 ),
-                // HomeScreen()
-              ),
-            );*/
-          case NotAuthenticatedState:
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (BuildContext context) => BlocProvider(
-                  create: (context) =>
-                      InternetConnectCubit(connectivity: Connectivity()),
-                  child: ReferenceScreen(),
+              );*/
+            case NotAuthenticatedState:
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => BlocProvider(
+                    create: (context) =>
+                        InternetConnectCubit(connectivity: Connectivity()),
+                    child: ReferenceScreen(),
+                  ),
+                  // HomeScreen()
                 ),
-                // HomeScreen()
-              ),
-            );
-          case AuthorizedState:
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (BuildContext context) => HomeScreen(),
-              ),
-            );
-          default:
-            _BuildersScreen.buildLoading();
-        }
-      },
-      child: SizedBox(height: 0),
+              );
+            case AuthorizedState:
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => HomeScreen(),
+                ),
+              );
+            default:
+              _BuildersScreen.buildLoading();
+          }
+        },
+        child: CircularProgressIndicator()
+      ),
     );
   }
 }

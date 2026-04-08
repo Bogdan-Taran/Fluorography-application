@@ -117,19 +117,16 @@ class RequestRepositoryMine {
         '/api/applications',
         data.toJson(),
       );
+      final responseMessage = response['message'];
       talker.log(
-        'RepoProvider: Данные успешно отправлены: $response',
+        'RepoProvider: Данные на сервер отправлены: $response',
       );
-      if(response.containsKey('message') == true){
-        return response['message'];
-      }else{
-        return response.toString();
-      }
+      return responseMessage;
     } on DioException catch (error) {
-      talker.handle('Ошибка в репозитории при отправке заявки: $error');
       if(error.response?.data.containsKey('message') == true){
-      talker.handle('Ошибка в репозитории при отправке заявки: ошибка содержит сообщение: ${error.response?.data['message']}');
-        return error.response?.data['message'];
+        final errorMessage = error.response?.data['message'];
+        talker.handle('Ошибка в репозитории при отправке заявки: ошибка содержит сообщение: $errorMessage');
+        throw errorMessage;
       }
       throw ('Ошибка при отправке заявки');
     }

@@ -1,11 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_fluorography/main.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:talker/talker.dart';
-import '../../styles.dart';
 import '../api_service.dart';
 
 //экземпляр api сервиса
@@ -22,54 +20,56 @@ final tokenProvider = FutureProvider<String?>((ref) async {
   return token;
 });
 
-
-final dioProviderMine = Provider<Dio> ((ref) {
+final dioProviderMine = Provider<Dio>((ref) {
   final talker = Talker();
   final dio = Dio(
     BaseOptions(
       baseUrl: 'https://flura.tomtit-tomsk.ru',
-      connectTimeout: Duration(seconds: 5),
-      receiveTimeout: Duration(seconds: 8),
+      connectTimeout: const Duration(seconds: 5),
+      receiveTimeout: const Duration(seconds: 8),
       headers: {
-        'Content-Type' : 'application/json',
-        'Accept' : 'application/json',
-      }
-    )
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    ),
   );
+
   dio.interceptors.add(
     InterceptorsWrapper(
-      onRequest: (options, handler) async{
+      onRequest: (options, handler) async {
         try {
           final token = await ref.read(tokenProvider.future);
-          talker.log('Interceptor: Токен: $token');
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
           }
-        }catch(e){
+        } catch (e) {
           talker.handle('Ошибка при получении токена: $e');
         }
         return handler.next(options);
       },
-        onResponse: (response, handler) {
-          response.data = {
-            'success': true,
-            'data': response.data,
-            'statusCode': response.statusCode,
-          };
-          return handler.next(response);
-        },
+      onResponse: (response, handler) {
+        // Упаковываем успешный ответ
+        response.data = {
+          'success': true,
+          'data': response.data,
+          'statusCode': response.statusCode,
+        };
+        return handler.next(response);
+      },
       onError: (DioException e, handler) async {
         talker.error('Ошибка запроса: ${e.response?.data ?? e.message}');
 
-        if(e.response?.statusCode == 401 || e.response?.statusCode == 403) {
-          talker.warning('DioProvider: Ошибка ${e.response?.statusCode}. Очистка данных и выход.');
+        if (e.response?.statusCode == 401 || e.response?.statusCode == 403) {
+          talker.warning('DioProvider: Ошибка ${e.response?.statusCode}. Выход.');
           await ref.read(apiServiceProvider).removeToken();
           ref.invalidate(tokenProvider);
           navigatorKey.currentState?.pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const SignInScreen()),
-              (route) => false
+            MaterialPageRoute(builder: (context) => const SignInScreen()),
+            (route) => false,
           );
         }
+
+        // Вместо выброса исключения возвращаем Response с флагом success: false
         return handler.resolve(
           Response(
             requestOptions: e.requestOptions,
@@ -81,23 +81,8 @@ final dioProviderMine = Provider<Dio> ((ref) {
             statusCode: e.response?.statusCode ?? 500,
           ),
         );
-      }
-    )
+      },
+    ),
   );
   return dio;
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

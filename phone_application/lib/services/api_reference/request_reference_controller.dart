@@ -82,7 +82,7 @@ class UpdateReferenceStatusController
 @riverpod
 class PostApplicationController extends _$PostApplicationController{
   @override
-  FutureOr<void> build() {
+  FutureOr<String?> build() {
     return null;
   }
 

@@ -41,13 +41,13 @@ class ApiProviderMine{
   Future<Map<String, dynamic>> postRequest(String path, Map<String, dynamic> data) async{
     try{
       final response = await _dio.post(path, data: data);
-      return response.data;
+      return response.data as Map<String, dynamic>;
     } on DioException catch(error){
-      talker.handle('request_api_reference_provider: $error');
       final responseData = error.response?.data;
+      talker.handle('request_api_reference_provider: $responseData');
       if (responseData is Map<String, dynamic> && responseData.containsKey('message')) {
         talker.info('request_api_reference_provider: Сервер вернул сообщение об ошибке: ${responseData['message']}');
-        return responseData; // ВОЗВРАЩАЕМ тело ошибки как обычный результат
+        return responseData;
       }
       throw('request_api_reference_provider: Произошла ошибка при отправке данных');
     }

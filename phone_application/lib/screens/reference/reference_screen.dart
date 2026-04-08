@@ -53,6 +53,15 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
     // TODO: implement dispose
     super.dispose();
   }
+/*
+Fluttertoast.showToast(
+          msg: 'Ошибка: ${next}',
+          backgroundColor: AppStyle.errorRedColorMain,
+          fontSize: 16,
+          gravity: ToastGravity.CENTER,
+          textColor: const Color(0xffffffff),
+        );
+ */
 
   @override
   Widget build(BuildContext context) {

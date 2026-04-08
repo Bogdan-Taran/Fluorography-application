@@ -11,6 +11,8 @@ import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/builders_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'notifications/notification_service.dart';
+
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() {
@@ -26,6 +28,10 @@ void main() {
       statusBarBrightness: Brightness.light,
     ),
   );
+
+  //init notifications
+  NotificationService().initNotification();
+
 
   runApp(
       const ProviderScope(child: MyApp())

@@ -50,7 +50,17 @@ final dioProviderMine = Provider<Dio> ((ref) {
         }
         return handler.next(options);
       },
+        onResponse: (response, handler) {
+          response.data = {
+            'success': true,
+            'data': response.data,
+            'statusCode': response.statusCode,
+          };
+          return handler.next(response);
+        },
       onError: (DioException e, handler) async {
+        talker.error('Ошибка запроса: ${e.response?.data ?? e.message}');
+
         if(e.response?.statusCode == 401 || e.response?.statusCode == 403) {
           talker.warning('DioProvider: Ошибка ${e.response?.statusCode}. Очистка данных и выход.');
           await ref.read(apiServiceProvider).removeToken();
@@ -60,7 +70,17 @@ final dioProviderMine = Provider<Dio> ((ref) {
               (route) => false
           );
         }
-        return handler.next(e);
+        return handler.resolve(
+          Response(
+            requestOptions: e.requestOptions,
+            data: {
+              'success': false,
+              'data': e.response?.data ?? e.message,
+              'statusCode': e.response?.statusCode ?? 0,
+            },
+            statusCode: e.response?.statusCode ?? 500,
+          ),
+        );
       }
     )
   );

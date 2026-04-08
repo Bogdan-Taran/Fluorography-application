@@ -109,7 +109,7 @@ class RequestRepositoryMine {
   }
 
 
-  Future<void> postApplication({
+  Future<String> postApplication({
     required PostReferenceModel data
   }) async {
     try {
@@ -120,8 +120,17 @@ class RequestRepositoryMine {
       talker.log(
         'RepoProvider: Данные успешно отправлены: $response',
       );
+      if(response.containsKey('message') == true){
+        return response['message'];
+      }else{
+        return response.toString();
+      }
     } on DioException catch (error) {
       talker.handle('Ошибка в репозитории при отправке заявки: $error');
+      if(error.response?.data.containsKey('message') == true){
+      talker.handle('Ошибка в репозитории при отправке заявки: ошибка содержит сообщение: ${error.response?.data['message']}');
+        return error.response?.data['message'];
+      }
       throw ('Ошибка при отправке заявки');
     }
   }

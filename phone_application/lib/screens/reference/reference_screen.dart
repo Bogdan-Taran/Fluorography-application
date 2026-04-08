@@ -60,7 +60,26 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     BuildersScreen _buildersScreen = BuildersScreen();
 
-
+    ref.listen<AsyncValue<void>>(postApplicationControllerProvider, (prev, next) {
+      if(next.hasError && !next.isLoading){
+        Fluttertoast.showToast(
+          msg: 'Ошибка при отправке формы',
+          backgroundColor: AppStyle.errorRedColorMain,
+          fontSize: 16,
+          gravity: ToastGravity.CENTER,
+          textColor: const Color(0xffffffff),
+        );
+      }
+      if(next.hasValue && prev?.isLoading == true){
+        Fluttertoast.showToast(
+          msg: 'Форма успешно отправлена',
+          backgroundColor: AppStyle.successGreenColor,
+          fontSize: 16,
+          gravity: ToastGravity.CENTER,
+          textColor: const Color(0xffffffff),
+        );
+      }
+    });
 
 
     return WillPopScope(
@@ -900,24 +919,17 @@ class _ReferenceScreen extends ConsumerState<ReferenceScreen> {
                                               quantity: int.parse(formData['numberOfReferences']),
                                           );
                                           try{
-                                            final response = await requestRepository.fetchApplication(referenceData);
-                                            //здесь контроллер
-                                            ref.read(requestReferenceControllerProvider.notifier).PostReferenceRequest(referenceData);
+                                            talker.log('reference_screen: модель: $referenceData');
+                                            ref.read(postApplicationControllerProvider.notifier).submitApplication(referenceData);
                                             talker.info('Reference_screen: Запрос отправлен');
                                           }catch(e){
-                                            talker.handle(e);
+                                            talker.handle('Reference_screen: ошибка в кнопке elevated button: $e');
                                           }
-
-
                                         }
-
-
-
-                                        //print(response.statusCode);
                                       },
-
                                     ),
                                   ),
+
                                   /*
                                   Consumer(builder: (context, ref, child) {
                                     final createReference = ref.watch(requestReferenceControllerProvider);

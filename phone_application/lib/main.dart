@@ -17,6 +17,9 @@ import 'notifications/notification_service.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  //init notifications
+  NotificationService().initNotification();
+
   //установка только портретной ориентации
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -29,8 +32,7 @@ void main() {
     ),
   );
 
-  //init notifications
-  NotificationService().initNotification();
+
 
 
   runApp(

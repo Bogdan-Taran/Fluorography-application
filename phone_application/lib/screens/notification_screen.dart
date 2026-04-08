@@ -1,6 +1,7 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_fluorography/notifications/notification_service.dart';
 
 class NotificationScreen extends ConsumerStatefulWidget{
   const NotificationScreen({super.key});
@@ -20,6 +21,15 @@ class _NotificationScreen extends ConsumerState<NotificationScreen> {
             child: Column(
               children: [
                 Text('Здесь будут уведомления'),
+                ElevatedButton(
+                    onPressed: () {
+                      NotificationService().showNotification(
+                        title: 'Заголовок',
+                        body:  'Тело сообщения',
+                      );
+                    },
+                    child: const Text('Отправить уведомление')
+                )
               ]
             )
         )

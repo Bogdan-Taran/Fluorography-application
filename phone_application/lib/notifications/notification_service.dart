@@ -4,10 +4,11 @@ class NotificationService{
   final notificationsPlugin = FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
+
   Future<void> initNotification() async{
     if(_isInitialized) return;
 
-    const initSettingsAndroid = AndroidInitializationSettings('@mipmap/launcher_icon');
+    const initSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const initSettingsIOS = IOSInitializationSettings(
       requestAlertPermission: true,

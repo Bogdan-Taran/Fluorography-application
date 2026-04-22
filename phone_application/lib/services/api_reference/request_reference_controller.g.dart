@@ -102,7 +102,7 @@ abstract class _$UpdateReferenceStatusController extends $AsyncNotifier<void> {
 final postApplicationControllerProvider = PostApplicationControllerProvider._();
 
 final class PostApplicationControllerProvider
-    extends $AsyncNotifierProvider<PostApplicationController, void> {
+    extends $AsyncNotifierProvider<PostApplicationController, String?> {
   PostApplicationControllerProvider._()
     : super(
         from: null,
@@ -123,19 +123,19 @@ final class PostApplicationControllerProvider
 }
 
 String _$postApplicationControllerHash() =>
-    r'a5a836405deecdf3a59e41a15662794c72ad74a0';
+    r'02c54019d864951441ea12a669ebabf4604fc32d';
 
-abstract class _$PostApplicationController extends $AsyncNotifier<void> {
-  FutureOr<void> build();
+abstract class _$PostApplicationController extends $AsyncNotifier<String?> {
+  FutureOr<String?> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final ref = this.ref as $Ref<AsyncValue<String?>, String?>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<void>, void>,
-              AsyncValue<void>,
+              AnyNotifier<AsyncValue<String?>, String?>,
+              AsyncValue<String?>,
               Object?,
               Object?
             >;

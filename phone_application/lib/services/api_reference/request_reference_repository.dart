@@ -1,24 +1,26 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_fluorography/models/get_reference_model/get_reference_model.dart';
 import 'package:project_fluorography/models/post_reference_model/post_reference_model.dart';
-import 'package:project_fluorography/services/api_reference/request_api_reference_provider.dart';
+import 'package:project_fluorography/services/api_reference/request_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker/talker.dart';
 
-import 'api_references_provider.dart';
+import 'dio_and_interceptors/dio_provider.dart';
 
 part 'request_reference_repository.g.dart';
 
 @riverpod
-RequestRepositoryMine requestRepositoryMine(Ref ref) {
+RequestRepository requestRepository(Ref ref) {
   final apiProvider = ref.read(apiProviderMine);
-  return RequestRepositoryMine(apiProvider);
+  return RequestRepository(apiProvider);
 }
-class RequestRepositoryMine {
+class RequestRepository {
   final ApiProviderMine _apiProviderMine;
 
-  RequestRepositoryMine(this._apiProviderMine);
+  RequestRepository(this._apiProviderMine);
 
   final talker = Talker();
 
@@ -117,18 +119,21 @@ class RequestRepositoryMine {
         '/api/applications',
         data.toJson(),
       );
-      final responseMessage = response['message'];
-      talker.log(
-        'RepoProvider: Данные на сервер отправлены: $response',
-      );
+      // Если postRequest вернул данные успешно, извлекаем message
+      final responseMessage = response['message']?.toString() ?? 'Заявка успешно отправлена';
+      talker.log('RepoProvider: ответ от сервера: $responseMessage');
       return responseMessage;
-    } on DioException catch (error) {
-      if(error.response?.data.containsKey('message') == true){
-        final errorMessage = error.response?.data['message'];
-        talker.handle('Ошибка в репозитории при отправке заявки: ошибка содержит сообщение: $errorMessage');
-        throw errorMessage;
+    } catch (error) {
+      talker.error('RepoProvider: Ошибка при отправке заявки: $error');
+      // Пробрасываем ошибку дальше (это может быть строка из postRequest или сообщение из DioException)
+      if (error is DioException) {
+         final serverData = error.response?.data;
+         if (serverData is Map && serverData.containsKey('message')) {
+           throw serverData['message'];
+         }
+         throw 'Ошибка сети или сервера';
       }
-      throw ('Ошибка при отправке заявки');
+      rethrow;
     }
   }
 }

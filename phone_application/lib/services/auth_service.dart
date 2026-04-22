@@ -11,7 +11,7 @@ import 'package:project_fluorography/services/shared_pref_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker/talker.dart';
 
-import 'api_reference/request_api_reference_provider.dart';
+import 'api_reference/request_provider.dart';
 
 class AuthService {
   final ApiService _apiService = ApiService();

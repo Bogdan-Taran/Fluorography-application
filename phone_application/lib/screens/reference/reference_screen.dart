@@ -9,8 +9,8 @@ import 'package:project_fluorography/models/post_reference_model/post_reference_
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:project_fluorography/services/api_reference/api_references_provider.dart';
-import 'package:project_fluorography/services/api_reference/request_api_reference_provider.dart';
+import 'package:project_fluorography/services/api_reference/dio_and_interceptors/dio_provider.dart';
+import 'package:project_fluorography/services/api_reference/request_provider.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_controller.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_repository.dart';
 import 'package:talker/talker.dart';
@@ -20,7 +20,7 @@ import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../../services/api_reference/request_api_reference_provider.dart';
+import '../../services/api_reference/request_provider.dart';
 
 
 
@@ -69,25 +69,29 @@ Fluttertoast.showToast(
     final screenHeight = MediaQuery.of(context).size.height;
     BuildersScreen _buildersScreen = BuildersScreen();
 
-    ref.listen<AsyncValue<void>>(postApplicationControllerProvider, (prev, next) {
-      if(next.hasError && !next.isLoading){
-        Fluttertoast.showToast(
-          msg: 'Ошибка при отправке формы',
-          backgroundColor: AppStyle.errorRedColorMain,
-          fontSize: 16,
-          gravity: ToastGravity.CENTER,
-          textColor: const Color(0xffffffff),
-        );
-      }
-      if(next.hasValue && prev?.isLoading == true){
-        Fluttertoast.showToast(
-          msg: 'Форма успешно отправлена',
-          backgroundColor: AppStyle.successGreenColor,
-          fontSize: 16,
-          gravity: ToastGravity.CENTER,
-          textColor: const Color(0xffffffff),
-        );
-      }
+
+    ref.listen(postApplicationControllerProvider, (prev, next) {
+      next.whenOrNull(
+        error: (error, stackTrace){
+          Fluttertoast.showToast(
+            msg: error.toString(),
+            backgroundColor: AppStyle.errorRedColorMain,
+            fontSize: 16,
+            gravity: ToastGravity.CENTER,
+            textColor: const Color(0xffffffff),
+          );
+        },
+        data: (data){
+          if(data == null) return;
+            Fluttertoast.showToast(
+              msg: data,
+              backgroundColor: AppStyle.successGreenColor,
+              fontSize: 16,
+              gravity: ToastGravity.CENTER,
+              textColor: const Color(0xffffffff),
+            );
+        }
+      );
     });
 
 

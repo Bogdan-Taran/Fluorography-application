@@ -1,20 +1,20 @@
-import 'dart:math';
-
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:project_fluorography/models/get_reference_model/get_reference_model.dart';
 import 'package:project_fluorography/models/post_reference_model/post_reference_model.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_fluorography/services/api_reference/token_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker/talker.dart';
 
-import 'api_references_provider.dart';
+import '../api_service.dart';
+import 'dio_and_interceptors/dio_provider.dart';
 
 part 'request_reference_controller.g.dart';
 
 final fetchStudentApplications = FutureProvider.family<List<GetReferenceModel>, int> ((ref, user_id) {
-  final repositoryProvider = ref.watch(requestRepositoryMineProvider);
+  final repositoryProvider = ref.watch(requestRepositoryProvider);
   return repositoryProvider.getOneStudentApplications(user_id: user_id);
 });
 
@@ -34,7 +34,7 @@ class AuthController extends StateNotifier<AsyncValue<String?>>{
     state = await AsyncValue.guard(() async{
       await ref.read(apiServiceProvider).removeToken();
       ref.invalidate(tokenProvider);
-      final result = await ref.read(requestRepositoryMineProvider).logoutProfile();
+      final result = await ref.read(requestRepositoryProvider).logoutProfile();
       talker.log('Controller: выход выполнен');
       return result;
     });
@@ -43,7 +43,7 @@ class AuthController extends StateNotifier<AsyncValue<String?>>{
 
 @riverpod
 Future<List<GetReferenceModel>> fetchEntireListApplications(Ref ref) {
-  final repositoryProvider = ref.watch(requestRepositoryMineProvider);
+  final repositoryProvider = ref.watch(requestRepositoryProvider);
   return repositoryProvider.getEntireListApplications();
 }
 
@@ -69,7 +69,7 @@ class UpdateReferenceStatusController
   FutureOr<void> build() {
   }
   Future<void> updateStatus({required int applicationId, required int statusId}) async {
-    final repository = ref.read(requestRepositoryMineProvider);
+    final repository = ref.read(requestRepositoryProvider);
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       await repository.updateReferenceStatus(status_id: statusId, application_id: applicationId);
@@ -81,16 +81,19 @@ class UpdateReferenceStatusController
 
 @riverpod
 class PostApplicationController extends _$PostApplicationController{
+  final talker = Talker();
+
   @override
   FutureOr<String?> build() {
     return null;
   }
 
   Future<void> submitApplication(PostReferenceModel data) async{
-    final repository = ref.read(requestRepositoryMineProvider);
-    state = const AsyncLoading();
+    final repository = ref.read(requestRepositoryProvider);
     state = await AsyncValue.guard(() async{
-      await repository.postApplication(data: data);
+      final response = await repository.postApplication(data: data);
+      talker.log('PostApplicationController: ответ: $response');
+      return response;
     });
   }
 }

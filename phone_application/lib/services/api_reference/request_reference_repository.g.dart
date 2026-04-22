@@ -9,50 +9,49 @@ part of 'request_reference_repository.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(requestRepositoryMine)
-final requestRepositoryMineProvider = RequestRepositoryMineProvider._();
+@ProviderFor(requestRepository)
+final requestRepositoryProvider = RequestRepositoryProvider._();
 
-final class RequestRepositoryMineProvider
+final class RequestRepositoryProvider
     extends
         $FunctionalProvider<
-          RequestRepositoryMine,
-          RequestRepositoryMine,
-          RequestRepositoryMine
+          RequestRepository,
+          RequestRepository,
+          RequestRepository
         >
-    with $Provider<RequestRepositoryMine> {
-  RequestRepositoryMineProvider._()
+    with $Provider<RequestRepository> {
+  RequestRepositoryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'requestRepositoryMineProvider',
+        name: r'requestRepositoryProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$requestRepositoryMineHash();
+  String debugGetCreateSourceHash() => _$requestRepositoryHash();
 
   @$internal
   @override
-  $ProviderElement<RequestRepositoryMine> $createElement(
+  $ProviderElement<RequestRepository> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  RequestRepositoryMine create(Ref ref) {
-    return requestRepositoryMine(ref);
+  RequestRepository create(Ref ref) {
+    return requestRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(RequestRepositoryMine value) {
+  Override overrideWithValue(RequestRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<RequestRepositoryMine>(value),
+      providerOverride: $SyncValueProvider<RequestRepository>(value),
     );
   }
 }
 
-String _$requestRepositoryMineHash() =>
-    r'991ebe736356339f08c554c93c5396f0aea4d855';
+String _$requestRepositoryHash() => r'2b4227f2e6e44bde6423f16efb9412599cf62b97';

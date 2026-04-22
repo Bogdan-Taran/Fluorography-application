@@ -2,11 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_fluorography/models/get_reference_model/get_reference_model.dart';
 import 'package:project_fluorography/models/post_reference_model/post_reference_model.dart';
-import 'package:project_fluorography/services/api_reference/api_references_provider.dart';
+import 'package:project_fluorography/services/api_reference/dio_and_interceptors/dio_provider.dart';
 import 'package:talker/talker.dart';
 
 final apiProviderMine = Provider<ApiProviderMine>((ref) {
-  final dio = ref.watch(dioProviderMine);
+  final dio = ref.watch(dioProvider);
   return ApiProviderMine(dio);
 } );
 
@@ -41,13 +41,17 @@ class ApiProviderMine{
   Future<Map<String, dynamic>> postRequest(String path, Map<String, dynamic> data) async{
     try{
       final response = await _dio.post(path, data: data);
-      return response.data as Map<String, dynamic>;
+      final responseData = response.data;
+      talker.log('ApiProvider: $responseData, ${response.statusCode}');
+      return responseData;
     } on DioException catch(error){
       final responseData = error.response?.data;
       talker.handle('request_api_reference_provider: $responseData');
+      
       if (responseData is Map<String, dynamic> && responseData.containsKey('message')) {
         talker.info('request_api_reference_provider: Сервер вернул сообщение об ошибке: ${responseData['message']}');
-        return responseData;
+        // Выбрасываем сообщение как ошибку, а не возвращаем его
+        throw responseData['message'];
       }
       throw('request_api_reference_provider: Произошла ошибка при отправке данных');
     }

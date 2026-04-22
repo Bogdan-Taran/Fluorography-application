@@ -371,26 +371,20 @@ class _SignInScreenState extends State<SignInScreen> {
                                         (Set<WidgetState> states) => 0,
                                       ),
                                   backgroundColor:
-                                      WidgetStateProperty.resolveWith<Color>((
-                                        Set<WidgetState> states,
+                                  WidgetStateProperty.resolveWith<Color>((
+                                      Set<WidgetState> states,
                                       ) {
-                                        if (states.contains(
-                                          WidgetState.disabled,
-                                        )) {
-                                          return Color(0xffD5D6D7);
-                                        }
-                                        if (states.contains(
-                                          WidgetState.pressed,
-                                        )) {
-                                          return Color(0xFF72A7EB);
-                                        }
-                                        if (states.contains(
-                                          WidgetState.hovered,
-                                        )) {
-                                          return Color(0xFFBADEFF);
-                                        }
-                                        return Color(0xff98BFF3);
-                                      }),
+                                    if (states.contains(WidgetState.disabled)) {
+                                      return AppStyle.disableBlueColorMain;
+                                    }
+                                    if (states.contains(WidgetState.pressed)) {
+                                      return AppStyle.activeBlueColorMain;
+                                    }
+                                    if (states.contains(WidgetState.hovered)) {
+                                      return AppStyle.hoverBlueColorMain;
+                                    }
+                                    return AppStyle.blueColorAdditional4AABDB;
+                                  }),
                                   foregroundColor:
                                       WidgetStateProperty.resolveWith<Color>((
                                         Set<WidgetState> states,

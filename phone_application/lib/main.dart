@@ -10,6 +10,7 @@ import 'package:project_fluorography/screens/secretary/secretary_screen_main.dar
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/services/builders_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_fluorography/styles/themes/AppInputDecoration.dart';
 
 import 'notifications/notification_service.dart';
 
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
               statusBarBrightness: Brightness.light,
             ),
           ),
+          inputDecorationTheme: AppInputDecorations.theme
         ),
          home: AuthChecker(),
         //home: SecretaryScreen(),

@@ -323,51 +323,7 @@ Fluttertoast.showToast(
                                       FormBuilderValidators.required(errorText: 'Пожалуйста, введите имя'),
                                     ]),
                                     decoration: InputDecoration(
-                                      enabled: true,
                                       hintText: 'Имя',
-                                      isDense: true,
-                                      errorMaxLines: 3,
-                                      contentPadding: AppStyle
-                                          .contentPaddingTextFieldSymmetric,
-                                      hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall_12,
-                                        color: AppStyle.grayColorMain,
-                                        fontWeight: AppStyle.inputFontWeight,
-                                        // fontFamily: 'Geologica',
-                                      ),
-
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional4AABDB,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.activeBlueColorMain,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
                                     ),
                                     keyboardType: TextInputType.text,
                                     enabled: true,
@@ -389,51 +345,7 @@ Fluttertoast.showToast(
                                       FormBuilderValidators.required(errorText: 'Пожалуйста, введите фамилию'),
                                     ]),
                                     decoration: InputDecoration(
-                                      enabled: true,
                                       hintText: 'Фамилия',
-                                      isDense: true,
-                                      errorMaxLines: 3,
-                                      contentPadding: AppStyle
-                                          .contentPaddingTextFieldSymmetric,
-                                      hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall_12,
-                                        color: AppStyle.grayColorMain,
-                                        fontWeight: AppStyle.inputFontWeight,
-                                        // fontFamily: 'Geologica',
-                                      ),
-
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional4AABDB,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.activeBlueColorMain,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
                                     ),
                                     keyboardType: TextInputType.text,
                                     enabled: true,
@@ -453,51 +365,7 @@ Fluttertoast.showToast(
                                     name:
                                     'patronymic', // Unique key for this field
                                     decoration: InputDecoration(
-                                      enabled: true,
                                       hintText: 'Отчество (если есть)',
-                                      isDense: true,
-                                      errorMaxLines: 3,
-                                      contentPadding: AppStyle
-                                          .contentPaddingTextFieldSymmetric,
-                                      hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall_12,
-                                        color: AppStyle.grayColorMain,
-                                        fontWeight: AppStyle.inputFontWeight,
-                                        // fontFamily: 'Geologica',
-                                      ),
-
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional4AABDB,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.activeBlueColorMain,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
                                     ),
                                     keyboardType: TextInputType.text,
                                     enabled: true,
@@ -520,51 +388,7 @@ Fluttertoast.showToast(
                                       FormBuilderValidators.required(errorText: 'Пожалуйста, введите номер группы'),
                                     ]),
                                     decoration: InputDecoration(
-                                      enabled: true,
                                       hintText: 'Номер группы',
-                                      isDense: true,
-                                      errorMaxLines: 3,
-                                      contentPadding: AppStyle
-                                          .contentPaddingTextFieldSymmetric,
-                                      hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall_12,
-                                        color: AppStyle.grayColorMain,
-                                        fontWeight: AppStyle.inputFontWeight,
-                                        // fontFamily: 'Geologica',
-                                      ),
-
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional4AABDB,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.activeBlueColorMain,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
                                     ),
                                     enabled: true,
                                     maxLines: 1,
@@ -585,51 +409,7 @@ Fluttertoast.showToast(
                                       FormBuilderValidators.phoneNumber(regex: RegExp(r'^\d{11}$'), errorText: 'Неверный формат номера телефона', checkNullOrEmpty: false)
                                     ]),
                                     decoration: InputDecoration(
-                                      enabled: true,
-                                      isDense: true,
-                                      errorMaxLines: 3,
                                       hintText: 'Номер телефона (необязательно)',
-                                      contentPadding: AppStyle
-                                          .contentPaddingTextFieldSymmetric,
-                                      hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall_12,
-                                        color: AppStyle.grayColorMain,
-                                        fontWeight: AppStyle.inputFontWeight,
-                                        // fontFamily: 'Geologica',
-                                      ),
-
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional4AABDB,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.activeBlueColorMain,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
                                     ),
                                     keyboardType: TextInputType.number,
                                     enabled: true,
@@ -653,51 +433,7 @@ Fluttertoast.showToast(
                                       FormBuilderValidators.max(2, errorText: 'Количество справок не должно превышать 2')
                                     ]),
                                     decoration: InputDecoration(
-                                      enabled: true,
-                                      isDense: true,
-                                      errorMaxLines: 3,
                                       hintText: 'Количество справок',
-                                      contentPadding: AppStyle
-                                          .contentPaddingTextFieldSymmetric,
-                                      hintStyle: TextStyle(
-                                        fontSize: AppStyle.fontSizeSmall_12,
-                                        color: AppStyle.grayColorMain,
-                                        fontWeight: AppStyle.inputFontWeight,
-                                        // fontFamily: 'Geologica',
-                                      ),
-
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional4AABDB,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.activeBlueColorMain,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
                                     ),
                                     keyboardType: TextInputType.number,
                                     enabled: true,
@@ -738,42 +474,6 @@ Fluttertoast.showToast(
                                     dropdownColor: AppStyle.whiteColorMain,
                                     decoration: InputDecoration(
                                       enabled: true,
-                                      isDense: true,
-                                      errorMaxLines: 3,
-                                      contentPadding: AppStyle.contentPaddingTextFieldSymmetric,
-                                      // contentPadding: EdgeInsetsGeometry.zero,
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.blueColorAdditional4AABDB,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.activeBlueColorMain,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        AppStyle.inputBorderRadius,
-                                        borderSide: BorderSide(
-                                          color: AppStyle.errorRedColorMain,
-                                          width: 1,
-                                        ),
-                                      ),
                                     ),
                                     items: referenceType.entries.map((entry){
                                       return DropdownMenuItem<String>(

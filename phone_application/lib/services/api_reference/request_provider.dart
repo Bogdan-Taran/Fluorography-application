@@ -49,11 +49,11 @@ class ApiProviderMine{
       talker.handle('request_api_reference_provider: $responseData');
       
       if (responseData is Map<String, dynamic> && responseData.containsKey('message')) {
-        talker.info('request_api_reference_provider: Сервер вернул сообщение об ошибке: ${responseData['message']}');
+        talker.info('Сервер вернул сообщение об ошибке: ${responseData['message']}');
         // Выбрасываем сообщение как ошибку, а не возвращаем его
         throw responseData['message'];
       }
-      throw('request_api_reference_provider: Произошла ошибка при отправке данных');
+      throw('Произошла ошибка при отправке данных');
     }
   }
 

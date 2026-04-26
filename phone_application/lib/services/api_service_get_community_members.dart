@@ -12,8 +12,10 @@ import 'package:project_fluorography/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
+import 'package:talker/talker.dart';
 
 class ApiServiceGetCommunityMembers {
+  final talker = Talker();
   final String _baseUrl = 'https://flura.tomtit-tomsk.ru';
   final dio = Dio(
     BaseOptions(
@@ -45,15 +47,15 @@ class ApiServiceGetCommunityMembers {
             .map((json) => StaffModel.fromJson(json))
             .toList();
       } else if (response.statusCode == 401) {
-        print('401 - Ошибка авторизации');
+        talker.warning('401 - Ошибка авторизации');
         final List<dynamic> jsonError = jsonDecode(response.data);
         return jsonError
             .whereType<Map<String, dynamic>>()
             .map((json) => StaffModel.fromJson(json))
             .toList();
       } else {
-        print('Ошибка на стороне сервера');
-        print('Произошла ошибка при получении сотрудников');
+        talker.error('');
+        talker.error('Произошла на стороне сервера при получении сотрудников');
         final List<dynamic> jsonError = jsonDecode(response.data);
         return jsonError
             .whereType<Map<String, dynamic>>()
@@ -61,7 +63,7 @@ class ApiServiceGetCommunityMembers {
             .toList();
       }
     } catch (e) {
-      print(e);
+      talker.handle(e);
       // final List<dynamic> jsonError = jsonDecode(response.data);
       return finalStaffList;
     }
@@ -128,11 +130,11 @@ class ApiServiceGetCommunityMembers {
           .toList();
       return groups;
     } else if (response.statusCode == 401) {
-      print('Ошибка 401 - надо авторизироваться');
+      talker.warning('Ошибка 401 - надо авторизироваться');
       final errorData = jsonDecode(response.body);
       return errorData;
     } else {
-      print('Произошла ошибка при получении списка групп');
+      talker.error('Произошла ошибка при получении списка групп');
       final errorData = jsonDecode(response.body);
       return errorData;
     }
@@ -221,16 +223,16 @@ class ApiServiceGetCommunityMembers {
     final List<StaffModel> staffList;
     final List<SingleGroupWithStudentsModel> studentsList;
     try {
-      print('Получаю сотрудников');
+      talker.info('Получаю сотрудников');
       staffList = await getStaffDio();
       // staffList = await getStaff();
       // print(staffList.toString());
-      print('Получаю студентов');
+      talker.info('Получаю студентов');
       final resultStudents = await getStudentsWithFluraDio();
       resultStudents.fold(
-              (error) => print('Ошибка: ${error['data']}'),
+              (error) => talker.error('Ошибка: ${error['data']}'),
               (students) {
-          print('Студенты получены: ${students.length}');
+          talker.info('Студенты получены: ${students.length}');
           finalListAllCommunityForMedic.add(
             StaffAndStudentsModel(staffList: staffList, studentsList: students),
           );
@@ -240,8 +242,8 @@ class ApiServiceGetCommunityMembers {
       // print(finalListAllCommunityForMedic);
     } catch (e) {
       log(e.toString());
-      print(e);
-      print('Ошибка при получении сотрудников или студентов');
+      talker.handle(e);
+      talker.error('Ошибка при получении сотрудников или студентов');
     }
     return finalListAllCommunityForMedic;
   }
@@ -264,8 +266,8 @@ class ApiServiceGetCommunityMembers {
           'data': e.toString(),
         });
       }
-      print("Тип response.data: ${response.data.runtimeType}");
-      print("Содержимое response.data: ${response.data}");
+      talker.debug("Тип response.data: ${response.data.runtimeType}");
+      talker.debug("Содержимое response.data: ${response.data}");
 
       if (response.data is Map && response.data.containsKey('message')){
         return Left({
@@ -289,7 +291,7 @@ class ApiServiceGetCommunityMembers {
         else if (response.data is Map){
           jsonDataList = [response.data];
         }else{
-          print('Пришёл неизвестный формат данных');
+          talker.error('Пришёл неизвестный формат данных');
           return Left({'statusCode': 500, 'data': 'Ошибка сервера: ${response.statusCode}'});
         }
         if(jsonDataList.isEmpty){
@@ -331,7 +333,7 @@ class ApiServiceGetCommunityMembers {
         }
       }
       else if (response.statusCode == 401) {
-        print('401 - Ошибка авторизации');
+        talker.warning('401 - Ошибка авторизации');
         return Left({'statusCode': 401, 'data': 'Ошибка авторизации'});
       } else {
         print('Произошла неизвестная ошибка при получении студентов');
@@ -340,7 +342,7 @@ class ApiServiceGetCommunityMembers {
       }
 
     } catch (e) {
-      print(e);
+      talker.handle(e);
       return Left({'statusCode': 0, 'data': 'Произошла ошибка: $e'});
     }
   }

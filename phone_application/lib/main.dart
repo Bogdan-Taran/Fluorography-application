@@ -52,6 +52,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthenticationBloc>(
           create: (context) => AuthenticationBloc(),
         ),
+        BlocProvider<InternetConnectCubit>(
+          create: (context) => InternetConnectCubit(connectivity: Connectivity()),
+        ),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,

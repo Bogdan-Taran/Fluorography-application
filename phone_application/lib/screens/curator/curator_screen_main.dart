@@ -107,7 +107,6 @@ class _CuratorScreen extends ConsumerState<CuratorScreen> {
               setState(() {
                 _currentIndex = index;
               });
-
               _pageController.jumpToPage(_currentIndex);
             },
             onLogoutPressed: ()  {

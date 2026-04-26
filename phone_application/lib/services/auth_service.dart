@@ -21,95 +21,54 @@ class AuthService {
 
 
   Future<Either<Map<String, dynamic>, UserData?>> signInUser(String login, String password) async {
-    try{
+    talker.info('AuthService: Начало процесса авторизации для $login');
+    try {
+      // 1. Пытаемся залогиниться
       final loginResult = await _apiService.loginUserDio(login, password);
-      talker.info('AuthService: Отправил запрос SignInUser');
-      if(loginResult['success'] == true){
-        talker.info('AuthService: запрос SignInUser успешен');
-        final hasToken = await hasAuthToken();
-        if(hasToken){
-          talker.info('AuthService: SignInUser токен имеется');
-          try {
-            final getDataResult = await _apiService.getProtectedDataDio();
-            talker.info('AuthService: отправляю запрос getProtectedDataDio');
-            if(getDataResult['success'] == true){
-              talker.info('AuthService: запрос getProtectedDataDio успешен');
-              final userData = UserData.fromJson(await getDataResult['data']);
-              //сохраняем пользователя локально
-              await _userSharedPreferences.saveUserDataIntoSharedPreferences(userData);
-              return Right(userData);
-            }
-            else{
-              talker.error('AuthService: запрос getProtectedDataDio ошибка: ${getDataResult['data']}');
-              return Left({
-                'statusCode': getDataResult['statusCode'],
-                'data': getDataResult['data'],
-              });
-            }
-          } catch (e) {
-            talker.error('There appeared an unexpected error while sign in user');
-            talker.handle(e);
-            return Left({
-              'statusCode': 0,
-              'data': e.toString(),
-            });
-          }
-        }
-        else{
-          talker.error('AuthService: отстствует токен');
-          return Left({
-            'statusCode': 401,
-            'data': 'Отсутствует токен доступа',
-          });
-        }
-      }
-      else{
-        talker.error('AuthService: запрос SignInUser ошибка: ${loginResult['data']}');
+
+      if (loginResult['success'] != true) {
+        talker.error('AuthService: Ошибка логина: ${loginResult['data']}');
         return Left({
           'statusCode': loginResult['statusCode'],
           'data': loginResult['data']
         });
       }
-    } on DioException catch(error, stackTrace){
-      if(
-      error.response?.statusCode == 500 ||
-          error.response?.statusCode == 501 ||
-          error.response?.statusCode == 502 ||
-          error.response?.statusCode == 503
-      ){
-        talker.error('ApiService: Возникло исключение в loginUserDio: ${error.message}');
+
+      // 2. Если логин успешен, сразу запрашиваем данные профиля
+      talker.info('AuthService: Логин успешен, запрашиваю данные профиля');
+      final profileResult = await _apiService.getProtectedDataDio();
+
+      if (profileResult['success'] == true) {
+        final userData = UserData.fromJson(profileResult['data']);
+
+        // 3. Сохраняем пользователя локально
+        await _userSharedPreferences.saveUserDataIntoSharedPreferences(userData);
+        talker.info('AuthService: Пользователь ${userData.firstname} успешно авторизован');
+
+        return Right(userData);
+      } else {
+        talker.error('AuthService: Ошибка получения профиля: ${profileResult['data']}');
         return Left({
-          'success': false,
-          'data': 'Ошибка сервера при попытке логина: ${error.response?.statusCode}',
-          'statusCode': error.response?.statusCode,
+          'statusCode': profileResult['statusCode'],
+          'data': profileResult['data'],
         });
       }
-      else if(error.response?.statusCode == 401){
-        return Left({
-          'success': false,
-          'data': 'Ошибка авторизации: проверьте логин и пароль',
-          'statusCode': error.response?.statusCode,
-        });
-      }
-      rethrow;
-    }
-    catch (e) {
-      talker.handle('AuthService: Возникла ошибка при попытке залогиниться: ${e.toString()}');
+    } catch (e, st) {
+      talker.handle(e, st, 'AuthService: Критическая ошибка при signInUser');
       return Left({
         'statusCode': 0,
-        'data': 'Возникла ошибка при попытке залогиниться: ${e.toString()}',
+        'data': 'Непредвиденная ошибка: $e',
       });
     }
   }
 
-  Future<void> signOutUser() async{
+  Future<void> signOutUser() async {
     final bool hasToken = await hasAuthToken();
-    if(hasToken){
-      print('Токен имеется, выхожу из системы');
-      _apiService.removeToken();
-    }
-    else{
-      print('токена не было, не могу выйти');
+    if (hasToken) {
+      talker.info('AuthService: Выход из системы, удаление токена');
+      await _apiService.removeToken();
+    } else {
+      talker.warning('AuthService: Попытка выхода при отсутствии токена');
     }
   }
 

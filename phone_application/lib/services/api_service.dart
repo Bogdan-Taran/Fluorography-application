@@ -22,113 +22,73 @@ class ApiService {
     )
   );
 
-  Future<Map<String, dynamic>> loginUserDio(String login, String password) async{
-      try{
-        talker.info('ApiService: Пробую логиниться');
-        Response response = await dio.post(
-            '/api/login',
-            data: {
-              'login': login,
-              'password': password,
-            }
-        );
-        talker.log('Ответ от сервера: ${response.statusCode}');
-        if(response.statusCode == 200){
-          final parsedJson = response.data;
-          talker.log('ApiService: запрос успешен, parsedJson: $parsedJson');
-          final String token = parsedJson['token'];
-          await _saveToken(token);
-          print('Токен получен: $token');
-          return {
-            'success': true,
-            'data': parsedJson,
-            'statusCode': 200,
-          };
+  Future<Map<String, dynamic>> loginUserDio(String login,
+      String password) async {
+    try {
+      talker.info('ApiService: Попытка входа для $login');
+      Response response = await dio.post(
+        '/api/login',
+        data: {
+          'login': login,
+          'password': password,
+        },
+      );
+
+      final parsedJson = response.data;
+      final String token = parsedJson['token'];
+      await _saveToken(token);
+
+      talker.info('ApiService: Авторизация успешна. Токен получен.');
+
+      return {
+        'success': true,
+        'data': parsedJson,
+        'statusCode': response.statusCode,
+      };
+    } on DioException catch (e) {
+      String errorMessage = 'Произошла ошибка при входе';
+      int statusCode = e.response?.statusCode ?? 0;
+
+      if (e.type == DioExceptionType.badResponse) {
+        final data = e.response?.data;
+        if (statusCode == 401) {
+          errorMessage = 'Ошибка авторизации: проверьте логин и пароль';
+        } else if (statusCode >= 500) {
+          errorMessage = 'Ошибка сервера (${statusCode}). Попробуйте позже';
+        } else if (data is Map && data.containsKey('message')) {
+          errorMessage = data['message'];
         }
-        else if(
-            response.statusCode == 500 ||
-            response.statusCode == 501 ||
-            response.statusCode == 502 ||
-            response.statusCode == 503){
-          talker.error('ApiService: запрос loginUserDio ошибка, '
-              'код ошибки:${response.statusCode}, данные: ${response.data}');
-          return{
-            'success': false,
-            'data': response.data['message'],
-            'statusCode': response.statusCode
-          };
-        }
-        else{
-          final errorData = response.data;
-          talker.error('ApiService: запрос неудача, errorData: $errorData');
-          return {
-            'success': false,
-            'data': errorData,
-            'statusCode': response.statusCode,
-          };
-        }
-      } on DioException catch(error, stackTrace){
-        if(
-            error.response?.statusCode == 500 ||
-            error.response?.statusCode == 501 ||
-            error.response?.statusCode == 502 ||
-            error.response?.statusCode == 503
-        ){
-          talker.error('ApiService: Возникло исключение в loginUserDio: ${error.message}');
-          return {
-            'success': false,
-            'data': 'Ошибка сервера при попытке логина: ${error.response?.statusCode}',
-            'statusCode': error.response?.statusCode,
-          };
-        }
-        else if(error.response?.statusCode == 401){
-          return{
-            'success': false,
-            'data': 'Ошибка авторизации: проверьте логин и пароль',
-            'statusCode': error.response?.statusCode,
-          };
-        }
-        else if (error.type == DioExceptionType.connectionTimeout ||
-            error.type == DioExceptionType.receiveTimeout) {
-          talker.error('ApiService: Возникло исключение в loginUserDio: connectionTimeout');
-          return {
-            'success': false,
-            'data': 'Время ожидания вышло, попробуйте ещё раз',
-            'statusCode': 0,
-          };
-        } else if (error.type == DioExceptionType.connectionError) {
-          talker.error('ApiService: Возникло исключение в loginUserDio: нет интернет-соединения');
-          return {
-            'success': false,
-            'data': 'Отсутствует интернет-соединение',
-            'statusCode': 0,
-          };
-        }
-        else if (error.type is HandshakeException) {
-          talker.error('ApiService: Возникло исключение в loginUserDio: ошибка рукопожатия');
-          return {
-            'success': false,
-            'data': 'Ошибка соединения с сервером.',
-            'statusCode': 0,
-          };
-          }
-        else{
-          talker.error('ApiService: Возникло исключение в loginUserDio: $error');
-          return {
-            'success': false,
-            'data': 'Ошибка сервера при попытке логина',
-            'statusCode': 500,
-          };
-        }
-      } catch (e){
-        talker.error('ApiService: Возникло исключение в loginUserDio: $e');
-        talker.handle(e);
-        return {
-          'success': false,
-          'data': 'Ошибка сервера при попытке логина',
-          'statusCode': 500,
-        };
       }
+      // Обработка проблем с сетью
+      else if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        errorMessage = 'Время ожидания истекло. Проверьте соединение';
+      } else if (e.error is HandshakeException) {
+        errorMessage = 'Ошибка безопасности (SSL). Cертификат просрочен. Это внешняя проблема.';
+      } else if (e.type == DioExceptionType.connectionError) {
+        errorMessage = 'Отсутствует интернет-соединение или сервер недоступен';
+      }
+
+      talker.error(
+          'ApiService: Ошибка loginUserDio ($statusCode): $errorMessage');
+      if (e.error is HandshakeException) {
+        talker.error('ApiService: Детали SSL: ${e.error}');
+      }
+
+      return {
+        'success': false,
+        'data': errorMessage,
+        'statusCode': statusCode,
+      };
+    } catch (e) {
+      talker.handle(e, StackTrace.current,
+          'ApiService: Непредвиденная ошибка в loginUserDio');
+      return {
+        'success': false,
+        'data': 'Внутренняя ошибка приложения',
+        'statusCode': 500,
+      };
+    }
   }
 
   Future<Map<String, dynamic>> getProtectedDataDio() async{
@@ -218,50 +178,34 @@ class ApiService {
 
   // цикл для обновления выбранных дат
   Future<Map<String, dynamic>> updateFluraDateFromSet(Map<String, String> dateMap) async{
-    print('Заупскаю цикл для обновления выбранных дат');
+    talker.info('ApiService: Запуск цикла обновления дат (кол-во: ${dateMap.length})');
     final token = await getToken();
     if(token == null){
-      print('Токен отсутствует');
-      return {'success': false, 'data': 'There isn`t a token'};
+      talker.error('ApiService: Ошибка обновления - токен отсутствует');
+      return {'success': false, 'data': 'Токен отсутствует'};
     }
     try {
       for(final entry in dateMap.entries){
         final uniqueId = entry.key;
-        print('Обновляю дату для $uniqueId');
+        talker.debug('ApiService: Обновление даты для ID: $uniqueId');
         final selectedDate = entry.value;
         final patchData = await updateFluraDateDio(selectedDate, uniqueId, token);
         if(!patchData['success']){
-      print('success: false');
+          talker.error('ApiService: Остановка цикла, ошибка на ID $uniqueId');
           return {'success': false, 'data': patchData['data']};
         }
       }
-      print('success: true');
-      return {'success': true, 'data': 'All dates updates successfully'};
-      /*
-      await Future.forEach(
-          dateMap.entries, (MapEntry<String, String> entry) async {
-        final uniqueId = entry.key;
-        print('Обновляю дату для $uniqueId');
-        final selectedDate = entry.value;
-        final patchData = await updateFluraDateDio(selectedDate, uniqueId, token);
-        if(patchData['success']){
-          return {'success': true, 'data': patchData['data']};
-        }
-        else{
-          return {'success': false, 'data': patchData['data']};
-        }
-      });
-      return {'success': false, 'data': 'Error in patching'};
-      */
-    } catch(e){
-      print('Ошибка при патче в updateFluraDateFromSet: ${e.toString()}');
-      return {'success': false, 'data': 'Catch exception'};
+      talker.info('ApiService: Все даты успешно обновлены');
+      return {'success': true, 'data': 'Все даты успешно обновлены'};
+    } catch(e, st){
+      talker.handle(e, st, 'ApiService: Исключение в updateFluraDateFromSet');
+      return {'success': false, 'data': 'Ошибка при массовом обновлении'};
     }
   }
 
   Future<Map<String, dynamic>> updateFluraDateDio(String selectedDate, String uniqueId, String token) async {
     try{
-      print('Пробую патчить дату для ID: $uniqueId');
+      talker.debug('ApiService: Отправка PATCH для $uniqueId');
       Response response = await dio.patch(
         '/api/fluorography/$uniqueId',
         data: {
@@ -271,46 +215,25 @@ class ApiService {
           headers: {
             'Authorization': 'Bearer $token'
           },
-          validateStatus: (status){
-            return status != null && status < 600;
-          }
+          validateStatus: (status) => status != null && status < 600,
         ),
-
       );
-      print('Закончил патчить');
+
       if(response.statusCode == 200){
-        final data = response.data;
-        print('Post patched: $data');
-        return {'success': true, 'data': data};
+        talker.info('ApiService: Дата для $uniqueId успешно обновлена');
+        return {'success': true, 'data': response.data};
       }
-      else if(response.statusCode == 401){
-        print('Failed to patch: Not authorized (${response.statusCode})');
-        final data = response.data;
-        return {'success': false, 'data': data};
-      }
-      else if(response.statusCode == 404){
-        print('Failed to patch: Page not found (${response.statusCode})');
-        final data = response.data;
-        return {'success': false, 'data': data};
-      }
-      else if(response.statusCode == 502){
-        print('Failed to patch: The server was unable to process the request (${response.statusCode})');
-        final data = response.data;
-        return {'success': false, 'data': data};
-      }
-      else{
-        print('Failed to patch post: ${response.data} (${response.statusCode})');
-        final data = response.data;
-        return {'success': false, 'data': data};
-      }
+      
+      talker.error('ApiService: PATCH failed [$uniqueId]: ${response.data} (Status: ${response.statusCode})');
+      return {
+        'success': false, 
+        'data': 'Ошибка при обновлении: ${response.statusCode}',
+        'statusCode': response.statusCode,
+      };
     }
-    catch (e) {
-      print('Catch: Error while patching date: $e');
-      if(e is DioException){
-        print('Ошибка в Dio: $e');
-        return {'success': false, 'data': 'Dio exception'};
-      }
-      return {'success': false, 'data': 'Catch exception'};
+    catch (e, st) {
+      talker.handle(e, st, 'ApiService: Ошибка PATCH запроса для $uniqueId');
+      return {'success': false, 'data': 'Ошибка соединения'};
     }
   }
 

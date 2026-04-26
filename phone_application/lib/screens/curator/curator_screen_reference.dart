@@ -47,7 +47,6 @@ class _CuratorScreenReference extends ConsumerState{
     final talker = Talker();
 
 
-
     ref.listen<AsyncValue<void>>(updateReferenceStatusControllerProvider, (previous, next) {
       next.whenOrNull(
           error: (error, stack) {

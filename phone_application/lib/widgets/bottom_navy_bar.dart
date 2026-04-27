@@ -106,9 +106,7 @@ class BottomNavyBar extends StatelessWidget {
         (Theme.of(context).bottomAppBarTheme.color ?? Colors.white);
 
     return Container(
-      // padding: EdgeInsets.symmetric(horizontal: 0),
       margin: margin,
-
       decoration: BoxDecoration(
         color: bgColor,
         boxShadow: [
@@ -127,26 +125,27 @@ class BottomNavyBar extends StatelessWidget {
         )
       ),
       child: SafeArea(
-        child: Container(
+        child: SizedBox(
           height: containerHeight,
-
           child: Row(
             mainAxisAlignment: mainAxisAlignment,
             children: items.map((item) {
               var index = items.indexOf(item);
-              return GestureDetector(
-                onTap: () => onItemSelected(index),
-                child: _ItemWidget(
-                  item: item,
-                  iconSize: iconSize,
-                  isSelected: index == selectedIndex,
-                  backgroundColor: bgColor,
-                  itemCornerRadius: itemCornerRadius,
-                  animationDuration: animationDuration,
-                  itemPadding: itemPadding,
-                  curve: curve,
-                  showInactiveTitle: showInactiveTitle,
-                  itemBorderColor: itemBorderColor,
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => onItemSelected(index),
+                  child: _ItemWidget(
+                    item: item,
+                    iconSize: iconSize,
+                    isSelected: index == selectedIndex,
+                    backgroundColor: bgColor,
+                    itemCornerRadius: itemCornerRadius,
+                    animationDuration: animationDuration,
+                    itemPadding: itemPadding,
+                    curve: curve,
+                    showInactiveTitle: showInactiveTitle,
+                    itemBorderColor: itemBorderColor,
+                  ),
                 ),
               );
             }).toList(),
@@ -189,7 +188,6 @@ class _ItemWidget extends StatelessWidget {
       container: true,
       selected: isSelected,
       child: AnimatedContainer(
-
         height: double.maxFinite,
         duration: animationDuration,
         curve: curve,
@@ -204,44 +202,44 @@ class _ItemWidget extends StatelessWidget {
             width: 1
           )
         ),
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          physics: NeverScrollableScrollPhysics(),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            // mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (item.icon != null)
-                IconTheme(
-                  data: IconThemeData(
-                    size: iconSize,
-                    color: isSelected
-                        ? item.activeColor.withOpacity(1)
-                        : item.inactiveColor == null
-                        ? item.activeColor
-                        : item.inactiveColor,
-                  ),
-                  child: item.icon!,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (item.icon != null)
+              IconTheme(
+                data: IconThemeData(
+                  size: iconSize,
+                  color: isSelected
+                      ? item.activeColor.withOpacity(1)
+                      : item.inactiveColor == null
+                      ? item.activeColor
+                      : item.inactiveColor,
                 ),
-              if (showInactiveTitle || isSelected)
-                Container(
+                child: item.icon!,
+              ),
+            if (showInactiveTitle || isSelected)
+              Flexible(
+                child: Container(
                   padding: itemPadding,
                   child: DefaultTextStyle.merge(
                     style: TextStyle(
                       color: isSelected ? item.inactiveTextColor : item.activeTextColor,
-                      // color: item.inactiveColor,
                       fontWeight: FontWeight.bold,
                     ),
                     maxLines: 1,
                     textAlign: item.textAlign,
-                    // overflow: TextOverflow.ellipsis,
-                    child: item.title,
+                    overflow: TextOverflow.ellipsis,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: item.title,
+                    ),
                   ),
-                )
-            ],
-          ),
+                ),
+              )
+          ],
         ),
       ),
     );
@@ -325,49 +323,46 @@ class BottomNavBarFLura extends StatelessWidget{
     final buttonHeight = screenWidth * 0.045;
     final iconSize = screenWidth * 0.04;
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  onLogoutPressed();
-                  /**/
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: EdgeInsets.all(buttonHeight),
-                  backgroundColor: AppStyle.blueColorAdditional4AABDB,
-                ),
-                child: SvgPicture.asset(
-                  'assets/icon/door_icon.svg',
-                  colorFilter: const ColorFilter.mode(
-                    AppStyle.whiteColorMain,
-                    BlendMode.srcIn,
-                  ),
-                  width: iconSize,
-                ),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: onLogoutPressed,
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                padding: EdgeInsets.all(buttonHeight),
+                backgroundColor: AppStyle.blueColorAdditional4AABDB,
               ),
-              BottomNavyBar(
+              child: SvgPicture.asset(
+                'assets/icon/door_icon.svg',
+                colorFilter: const ColorFilter.mode(
+                  AppStyle.whiteColorMain,
+                  BlendMode.srcIn,
+                ),
+                width: iconSize,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: BottomNavyBar(
                 containerHeight: screenHeight * 0.055,
                 itemCornerRadius: 20,
                 margin: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.01,
-                    horizontal: screenHeight * 0.005
+                  vertical: screenHeight * 0.01,
+                  horizontal: 0,
                 ),
                 mainAxisAlignment: MainAxisAlignment.center,
                 borderRadius: BorderRadius.circular(20),
-                showInactiveTitle: true,
+                showInactiveTitle: screenWidth > 360,
                 itemBorderColor: AppStyle.whiteColorMain,
-                onItemSelected:  onItemSelected, /*,*/
-
+                onItemSelected: onItemSelected,
                 selectedIndex: currentIndex,
                 items: [
                   BottomNavyBarItem(
-                    title: Text('Флюорография'),
+                    title: const Text('Флюорография'),
                     activeBackgroundColor: AppStyle.blueColorAdditional4AABDB,
                     activeColor: AppStyle.whiteColorMain,
                     inactiveColor: AppStyle.blueColorAdditional4AABDB,
@@ -376,36 +371,37 @@ class BottomNavBarFLura extends StatelessWidget{
                     textAlign: TextAlign.center,
                   ),
                   BottomNavyBarItem(
-                    title: Text('Справки'),
+                    title: const Text('Справки'),
                     activeBackgroundColor: AppStyle.blueColorAdditional4AABDB,
                     activeColor: AppStyle.whiteColorMain,
                     inactiveColor: AppStyle.blueColorAdditional4AABDB,
                     inactiveTextColor: AppStyle.whiteColorMain,
                     activeTextColor: AppStyle.blueColorAdditional4AABDB,
-                    textAlign: TextAlign.end,
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
-              ElevatedButton(
-                onPressed: onNotificationPressed,
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: EdgeInsets.all(buttonHeight),
-                  backgroundColor: AppStyle.blueColorAdditional4AABDB,
-                ),
-                child: SvgPicture.asset(
-                  'assets/icon/notification_white_icon.svg',
-                  colorFilter: const ColorFilter.mode(
-                    AppStyle.whiteColorMain,
-                    BlendMode.srcIn,
-                  ),
-                  width: iconSize,
-                ),
+            ),
+            const SizedBox(width: 4),
+            ElevatedButton(
+              onPressed: onNotificationPressed,
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                padding: EdgeInsets.all(buttonHeight),
+                backgroundColor: AppStyle.blueColorAdditional4AABDB,
               ),
-            ],
-          ),
+              child: SvgPicture.asset(
+                'assets/icon/notification_white_icon.svg',
+                colorFilter: const ColorFilter.mode(
+                  AppStyle.whiteColorMain,
+                  BlendMode.srcIn,
+                ),
+                width: iconSize,
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

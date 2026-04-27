@@ -14,8 +14,8 @@ final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
     BaseOptions(
       baseUrl: 'https://flura.tomtit-tomsk.ru',
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 12),
+      connectTimeout: const Duration(seconds: 5),
+      receiveTimeout: const Duration(seconds: 8),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

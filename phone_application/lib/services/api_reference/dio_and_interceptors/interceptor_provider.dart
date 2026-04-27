@@ -34,12 +34,12 @@ class RequestInterceptor extends Interceptor{
   void onError(DioException err, ErrorInterceptorHandler handler) async{
     if(err.response?.statusCode == 401){
       talker.error('InterceptorProvider: ошибка 401');
-      await ref.read(apiServiceProvider).removeToken();
-      ref.invalidate(tokenProvider);
-      navigatorKey.currentState?.pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const SignInScreen()),
-            (route) => false,
-      );
+      // await ref.read(apiServiceProvider).removeToken();
+      // ref.invalidate(tokenProvider);
+      // navigatorKey.currentState?.pushAndRemoveUntil(
+      //   MaterialPageRoute(builder: (context) => const SignInScreen()),
+      //       (route) => false,
+      // );
     }
     
     final dataError = err.response?.data;

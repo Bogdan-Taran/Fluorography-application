@@ -75,7 +75,9 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
   @override
   Widget build(BuildContext context) {
     BuildersScreen _buildersScreen = BuildersScreen();
-    final appBarHeight = MediaQuery.of(context).size.height * 0.13;
+    final screenHeight = MediaQuery.of(context).size.height;
+    // Устанавливаем адаптивную высоту с минимальным порогом
+    final appBarHeight = screenHeight * 0.16 > 140.0 ? screenHeight * 0.16 : 140.0;
 
     return WillPopScope(
       onWillPop: () async{
@@ -84,7 +86,7 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
       child: ColorfulSafeArea(
         color: Colors.white,
         child: Scaffold(
-          backgroundColor: Color(0xffffffff),
+          backgroundColor: const Color(0xffffffff),
           resizeToAvoidBottomInset: true,
           // AppBar
           appBar: AppBar(
@@ -94,8 +96,9 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
               height: appBarHeight,
               decoration: const BoxDecoration(color: Colors.white),
               child: Padding(
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -104,11 +107,12 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                           onPressed: () {},
                           splashRadius: 24,
                           padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
                           icon: SvgPicture.asset(
                             'assets/images/notification_icon.svg',
                             color: const Color(0xff98BFF3),
-                            width: 35,
-                            height: 35,
+                            width: 30,
+                            height: 30,
                           ),
                         ),
 
@@ -134,7 +138,10 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                               const Color(0xffffffff),
                             ),
                             minimumSize: WidgetStateProperty.all(
-                              Size(MediaQuery.of(context).size.width * 0.1, 35),
+                              Size(MediaQuery.of(context).size.width * 0.2, 35),
+                            ),
+                            padding: WidgetStateProperty.all(
+                              const EdgeInsets.symmetric(horizontal: 16),
                             ),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
@@ -152,7 +159,7 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                           child: const Text(
                             'Выход',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Color(0xffffffff),
                               fontWeight: FontWeight.w600,
                               fontFamily: 'Geologica',
@@ -161,7 +168,7 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     TextField(
                       onTap: () {
                         context.read<CuratorBloc>().add(OnTapTextFieldEvent());
@@ -178,7 +185,7 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                         }
                       },
                       controller: searchController,
-                      cursorColor: Color(0xff72A7EB),
+                      cursorColor: const Color(0xff72A7EB),
                       cursorHeight: 25,
                       cursorWidth: 1.5,
                       decoration: InputDecoration(
@@ -195,10 +202,10 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                           onPressed: () {
                             searchController.clear();
                             context.read<CuratorBloc>().add(CuratorFetchEvent());
-                            //context.read<CuratorBloc>().add(OnTapTextFieldEvent());
                           },
                           icon: Icon(
                             Icons.clear,
+                            size: 20,
                             color: searchController.text.isEmpty
                                 ? Colors.transparent
                                 : const Color(0xff98BFF3),
@@ -222,17 +229,14 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                         hintText: 'Поиск',
                         hintStyle: TextStyle(
                           fontSize: MediaQuery.of(context).size.height * 0.016,
-                          color: Color(0xff98BFF3),
+                          color: const Color(0xff98BFF3),
                           fontWeight: FontWeight.w500,
                         ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 30),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 30),
                       ),
                       keyboardType: TextInputType.text,
                       onTapOutside: (event) {
                         FocusManager.instance.primaryFocus?.unfocus();
-                        // context.read<CuratorBloc>().add(
-                        //     OnTapOutsideTextFieldCuratorEvent()
-                        // );
                       },
                       enableSuggestions: false,
                       autocorrect: false,

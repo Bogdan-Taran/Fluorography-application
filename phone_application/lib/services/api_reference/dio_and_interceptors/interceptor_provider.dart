@@ -17,11 +17,24 @@ class RequestInterceptor extends Interceptor{
   final talker = Talker();
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler){
-    final token = ref.read(tokenProvider);
-    if (token != null) {
-      options.headers['Authorization'] = 'Bearer $token';
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+    talker.info('Interceptor: Checking token for ${options.path}...');
+    
+    try {
+      // .future гарантирует, что мы дождемся завершения загрузки токена, 
+      // если он еще в состоянии loading.
+      final String? token = await ref.read(tokenProvider.future);
+
+      if (token != null && token.isNotEmpty) {
+        options.headers['Authorization'] = 'Bearer $token';
+        talker.info('Interceptor: Token added to headers');
+      } else {
+        talker.warning('Interceptor: Token is NULL or EMPTY, not added to headers');
+      }
+    } catch (e) {
+      talker.error('Interceptor: Error fetching token: $e');
     }
+
     super.onRequest(options, handler);
   }
 

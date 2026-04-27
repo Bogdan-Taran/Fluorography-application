@@ -14,7 +14,7 @@ part 'request_reference_repository.g.dart';
 
 @riverpod
 RequestRepository requestRepository(Ref ref) {
-  final apiProvider = ref.read(apiProviderMine);
+  final apiProvider = ref.watch(apiProviderMine);
   return RequestRepository(apiProvider);
 }
 class RequestRepository {

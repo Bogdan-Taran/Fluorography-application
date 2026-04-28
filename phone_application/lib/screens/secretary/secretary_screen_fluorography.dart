@@ -35,7 +35,18 @@ class _SecretaryScreenFluorography extends ConsumerState {
     return Scaffold(
         backgroundColor: AppStyle.whiteColorMain,
         body: Center(
-            child: Text('По Вашему запросу ничего не найдено')
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Text(
+                  'У вас нет доступа к этой странице. Вам доступна страница "справки"',
+                  style: TextStyle(
+                    color: AppStyle.blueColorTextTitle,
+                    fontSize: AppStyle.fontSizeExtraLarge,
+                    fontWeight: FontWeight.w500
+                  ),
+                textAlign: TextAlign.center,
+              ),
+            )
         )
     );
   }

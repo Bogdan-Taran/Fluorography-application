@@ -57,12 +57,31 @@ final groupedApplicationsByGroup =
       final rawApplications = ref.watch(fetchEntireListApplicationsProvider);
       return rawApplications.whenData((list) {
         final Map<String, List<GetReferenceModel>> groupedApplications = {};
+        // Временная мапа для объединения заявок по студентам внутри каждой группы.
+        // Ключ - название группы, значение - мапа (ID студента -> модель заявки).
+        final Map<String, Map<int, GetReferenceModel>> tempGrouped = {};
+
         for (var item in list) {
-          if (!groupedApplications.containsKey(item.group)) {
-            groupedApplications[item.group] = [];
+          if (!tempGrouped.containsKey(item.group)) {
+            tempGrouped[item.group] = {};
           }
-          groupedApplications[item.group]!.add(item);
+
+          final userId = item.user_id;
+          final existing = tempGrouped[item.group]![userId];
+
+          // Если студента еще нет в группе, добавляем его.
+          // Если уже есть, отдаем приоритет заявке со статусом "В процессе" (status_id == 1),
+          // чтобы в UI корректно отображался индикатор активных заявок для этого студента.
+          if (existing == null || (existing.status_id != 1 && item.status_id == 1)) {
+            tempGrouped[item.group]![userId] = item;
+          }
         }
+
+        // Преобразуем временную структуру обратно в Map<String, List<GetReferenceModel>>
+        tempGrouped.forEach((groupName, studentMap) {
+          groupedApplications[groupName] = studentMap.values.toList();
+        });
+
         return groupedApplications;
       });
     });

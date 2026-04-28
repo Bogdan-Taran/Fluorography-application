@@ -51,12 +51,17 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
     ref.listen<AsyncValue<String?>>(authControllerProvider, (previous, next) {
       next.whenOrNull(
         data: (message){
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AuthChecker(),
-            )
-          );
+          if (message != null) {
+            // Закрываем диалог перед переходом
+            Navigator.of(context, rootNavigator: true).pop();
+
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AuthChecker(),
+                )
+            );
+          }
         },
         error: (error, stack) {
           Fluttertoast.showToast(

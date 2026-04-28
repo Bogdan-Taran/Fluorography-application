@@ -96,14 +96,14 @@ class RequestRepository {
         );
         if (response is Map<String, dynamic>) {
           if (response.containsKey('message')) {
-            final message = response['message'] ?? 'Успешный выход';
+            final message = response['message']?.toString() ?? 'Успешный выход';
             talker.warning(
               'RepoProvider(logoutProfile): message получен: $message',
             );
             return message;
           }
         }
-        return response;
+        return response?.toString() ?? 'Выход выполнен';
     } on DioException catch (error) {
       talker.handle('Ошибка в репозитории: $error');
       throw ('Ошибка при попытке выйти');

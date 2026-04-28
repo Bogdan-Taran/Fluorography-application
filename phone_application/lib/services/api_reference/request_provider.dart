@@ -24,7 +24,7 @@ class ApiProviderMine{
         if(data.containsKey('message')){
           final message = data['message'];
           talker.warning('ApiProvider: message получен: $message');
-          return [];
+          return data;
         }
       }
       if(data is List<dynamic>){

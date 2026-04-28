@@ -18,7 +18,7 @@ _GetReferenceModel _$GetReferenceModelFromJson(Map<String, dynamic> json) =>
       status_id: (json['status_id'] as num?)?.toInt() ?? 0,
       quantity: (json['quantity'] as num?)?.toInt() ?? 0,
       date: json['date'] as String? ?? '00.00.0000',
-      phone: json['phone'] as String? ?? 'Не указан',
+      phone: json['phone'] as String? ?? 'Телефон не указан',
     );
 
 Map<String, dynamic> _$GetReferenceModelToJson(_GetReferenceModel instance) =>

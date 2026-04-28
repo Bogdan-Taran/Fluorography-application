@@ -389,20 +389,7 @@ class _CuratorScreenReference extends ConsumerState{
                                                                                         20,
                                                                                     width:
                                                                                         120),
-                                                                            iconStyleData:
-                                                                                const IconStyleData(
-                                                                              icon: Icon(
-                                                                                Icons
-                                                                                    .arrow_forward_ios_outlined,
-                                                                              ),
-                                                                              iconSize: 16,
-                                                                              iconEnabledColor:
-                                                                                  AppStyle
-                                                                                      .blueColorAdditional4AABDB,
-                                                                              iconDisabledColor:
-                                                                                  Colors
-                                                                                      .grey,
-                                                                            ),
+
                                                                           ),
                                                                         )),
                                                                   );
@@ -423,95 +410,7 @@ class _CuratorScreenReference extends ConsumerState{
                                                               ));
                                                     }),
                                                   ),
-                                                  SizedBox(
-                                                    height: 15,
-                                                  ),
-                                                  editStatusMode
-                                                      ? Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            ElevatedButton(
-                                                                onPressed: () {
-                                                                  setState(() {
-                                                                    editStatusMode =
-                                                                        false;
-                                                                  });
-                                                                },
-                                                                child: Text('Отменить')),
-                                                            ElevatedButton(
-                                                                onPressed: () {
-                                                                  setState(() {
-                                                                    editStatusMode =
-                                                                        false;
-                                                                  });
-                                                                },
-                                                                child: Text('Сохранить')),
-                                                          ],
-                                                        )
-                                                      : ElevatedButton(
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              editStatusMode = true;
-                                                            });
-                                                            talker.log(
-                                                                'SecretaryScreen: setstate сработал');
-                                                          },
-                                                          style: ButtonStyle(
-                                                            backgroundColor:
-                                                                WidgetStateProperty
-                                                                    .resolveWith<Color>((
-                                                              Set<WidgetState>
-                                                                  states,
-                                                            ) {
-                                                              if (states.contains(
-                                                                  WidgetState
-                                                                      .disabled)) {
-                                                                return AppStyle
-                                                                    .disableBlueColorMain;
-                                                              }
-                                                              if (states.contains(
-                                                                  WidgetState
-                                                                      .pressed)) {
-                                                                return AppStyle
-                                                                    .activeBlueColorMain;
-                                                              }
-                                                              if (states.contains(
-                                                                  WidgetState
-                                                                      .hovered)) {
-                                                                return AppStyle
-                                                                    .hoverBlueColorMain;
-                                                              }
-                                                              return AppStyle
-                                                                  .blueColorAdditional4AABDB;
-                                                            }),
-                                                            minimumSize:
-                                                                WidgetStateProperty.all(
-                                                              Size(screenWidth * 1,
-                                                                  40),
-                                                            ),
-                                                            shape:
-                                                                WidgetStateProperty.all(
-                                                              RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(30),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          child: Text(
-                                                            'Редактировать',
-                                                            style: TextStyle(
-                                                              color: AppStyle
-                                                                  .whiteColorMain,
-                                                              fontSize: AppStyle
-                                                                  .fontSizeMedium_16,
-                                                              fontWeight:
-                                                                  FontWeight.w500,
-                                                            ),
-                                                          ),
-                                                        )
+
                                                 ],
                                               ),
                                             ),

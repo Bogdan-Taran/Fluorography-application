@@ -50,7 +50,7 @@ final class FetchEntireListApplicationsProvider
 }
 
 String _$fetchEntireListApplicationsHash() =>
-    r'bdca3f33c70f368aa8658aaeb2f6733448344236';
+    r'3d5325f7b3dcd5df19e204e5e77fef7836e6271f';
 
 @ProviderFor(UpdateReferenceStatusController)
 final updateReferenceStatusControllerProvider =
@@ -78,7 +78,7 @@ final class UpdateReferenceStatusControllerProvider
 }
 
 String _$updateReferenceStatusControllerHash() =>
-    r'729f7233bc334f2433a8ab8f6ce6f994ee2deabd';
+    r'483c6a75f47db7be4952c1fef69eaeb47e7672f4';
 
 abstract class _$UpdateReferenceStatusController extends $AsyncNotifier<void> {
   FutureOr<void> build();
@@ -123,7 +123,7 @@ final class PostApplicationControllerProvider
 }
 
 String _$postApplicationControllerHash() =>
-    r'02c54019d864951441ea12a669ebabf4604fc32d';
+    r'e77ee0f3f1c5d351857acb52a21ec85c342dae06';
 
 abstract class _$PostApplicationController extends $AsyncNotifier<String?> {
   FutureOr<String?> build();

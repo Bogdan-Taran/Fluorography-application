@@ -219,7 +219,7 @@ return $default(_that.id,_that.user_id,_that.firstname,_that.lastname,_that.patr
 @JsonSerializable()
 
 class _GetReferenceModel implements GetReferenceModel {
-   _GetReferenceModel({this.id = 0, this.user_id = 0, this.firstname = 'Имя не указано', this.lastname = 'Фамилия не указана', this.patronymic = 'Отчество не указано', this.group = 'Группа не указана', this.type_id = 0, this.status_id = 0, this.quantity = 0, this.date = '00.00.0000', this.phone = 'Не указан'});
+   _GetReferenceModel({this.id = 0, this.user_id = 0, this.firstname = 'Имя не указано', this.lastname = 'Фамилия не указана', this.patronymic = 'Отчество не указано', this.group = 'Группа не указана', this.type_id = 0, this.status_id = 0, this.quantity = 0, this.date = '00.00.0000', this.phone = 'Телефон не указан'});
   factory _GetReferenceModel.fromJson(Map<String, dynamic> json) => _$GetReferenceModelFromJson(json);
 
 @override@JsonKey() final  int id;

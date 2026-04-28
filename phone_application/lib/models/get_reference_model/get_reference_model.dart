@@ -16,7 +16,7 @@ abstract class GetReferenceModel with _$GetReferenceModel {
     @Default(0) int status_id,
     @Default(0) int quantity,
     @Default('00.00.0000') String date,
-    @Default('Не указан') String phone,
+    @Default('Телефон не указан') String phone,
   }) = _GetReferenceModel;
   factory GetReferenceModel.fromJson(Map<String, dynamic> json) => _$GetReferenceModelFromJson(json);
 }

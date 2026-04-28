@@ -29,15 +29,20 @@ class AuthController extends StateNotifier<AsyncValue<String?>>{
   final talker = Talker();
 
   Future<void> logout() async{
-    state = const AsyncValue.loading();
-
-    state = await AsyncValue.guard(() async{
+    try {
+      // 1. Пытаемся уведомить сервер (пока токен еще есть)
+      await ref.read(requestRepositoryProvider).logoutProfile();
+    } catch (e) {
+      // Логируем ошибку, но не прерываем процесс выхода
+      talker.error('Ошибка при уведомлении сервера о выходе: $e');
+    } finally {
+      // 2. В любом случае очищаем локальные данные
       await ref.read(apiServiceProvider).removeToken();
       ref.invalidate(tokenProvider);
-      final result = await ref.read(requestRepositoryProvider).logoutProfile();
-      talker.log('Controller: выход выполнен');
-      return result;
-    });
+
+      // 3. Устанавливаем состояние успеха, чтобы сработал навигатор в UI
+      state = const AsyncValue.data('Выход выполнен успешно');
+    }
   }
 }
 

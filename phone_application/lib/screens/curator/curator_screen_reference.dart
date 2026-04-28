@@ -341,57 +341,24 @@ class _CuratorScreenReference extends ConsumerState{
                                                                                     AppStyle.fontSizeSmall_12,
                                                                                 fontWeight:
                                                                                     FontWeight.w500)),
-                                                                        trailing:
-                                                                            DropdownButtonHideUnderline(
-                                                                          child:
-                                                                              DropdownButton2<
-                                                                                  String>(
-                                                                            isExpanded:
-                                                                                true,
-                                                                            hint:
-                                                                                Container(
-                                                                              padding:
-                                                                                  EdgeInsetsGeometry.symmetric(
-                                                                                      vertical: 1,
-                                                                                      horizontal: 8),
-                                                                              decoration:
-                                                                                  BoxDecoration(
-                                                                                      color: item.status_id.statusColor,
-                                                                                      borderRadius: BorderRadius.circular(10)),
-                                                                              child: Text(
-                                                                                  item.status_id.statusName,
-                                                                                  style: TextStyle(
-                                                                                      color: AppStyle.whiteColorMain,
-                                                                                      fontSize: AppStyle.fontSizeSmall_12,
-                                                                                      fontWeight: FontWeight.w500)),
-                                                                            ),
-                                                                            items: itemsStatusId
-                                                                                .map((String
-                                                                                        itemStatus) =>
-                                                                                    DropdownItem<String>(
-                                                                                        value: itemStatus,
-                                                                                        height: 40,
-                                                                                        child: Container(
-                                                                                          padding: EdgeInsetsGeometry.symmetric(vertical: 1, horizontal: 8),
-                                                                                          decoration: BoxDecoration(color: AppStyle.collapsedBlueColorD4EAFF, borderRadius: BorderRadius.circular(10)),
-                                                                                          child: Text(itemStatus, style: TextStyle(color: AppStyle.whiteColorMain, fontSize: AppStyle.fontSizeSmall_12, fontWeight: FontWeight.w500)),
-                                                                                        )))
-                                                                                .toList(),
-                                                                            onChanged:
-                                                                                (value) {
-                                                                              valueListenable
-                                                                                      .value =
-                                                                                  value;
-                                                                            },
-                                                                            buttonStyleData:
-                                                                                ButtonStyleData(
-                                                                                    height:
-                                                                                        20,
-                                                                                    width:
-                                                                                        120),
-
-                                                                          ),
-                                                                        )),
+                                                                        trailing: Container(
+                                                                          padding:
+                                                                              const EdgeInsets.symmetric(
+                                                                                  vertical: 2,
+                                                                                  horizontal: 10),
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                                  color: item.status_id.statusColor,
+                                                                                  borderRadius: BorderRadius.circular(10)),
+                                                                          child: Text(
+                                                                              item.status_id.statusName,
+                                                                              style: const TextStyle(
+                                                                                  color: AppStyle.whiteColorMain,
+                                                                                  fontSize: AppStyle.fontSizeSmall_12,
+                                                                                  fontWeight: FontWeight.w500)),
+                                                                        ),
+                                                                      ),
+                                                                    
                                                                   );
                                                                 });
                                                           },

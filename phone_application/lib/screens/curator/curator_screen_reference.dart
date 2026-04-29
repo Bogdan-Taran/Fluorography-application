@@ -31,6 +31,25 @@ class CuratorScreenReference extends ConsumerStatefulWidget{
 }
 class _CuratorScreenReference extends ConsumerState{
   final Map<int, bool> _isExpandedTile = {};
+  bool _showOnlyActive = false;
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _searchFocusNode.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final groupedData = ref.watch(groupedApplicationsByGroup);
@@ -111,262 +130,338 @@ class _CuratorScreenReference extends ConsumerState{
           ),
           Padding(
             padding: EdgeInsets.all(screenWidth * 0.05),
-            child: groupedData.when(
-                data: (data) {
-                  final groups = data.keys.toList();
-                  if (groups.isEmpty) return const Center(child: Text('Нет справок'));
-                  return ListView.builder(
-                    itemCount: groups.length,
-                    itemBuilder: (context, index) {
-                      final groupName = groups[index];
-                      final students = data[groupName]!;
-
-                      final bool groupHasActiveReferences =
-                          students.any((s) => s.status_id == 1);
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 10),
-                        child: expansion_tile.ExpansionTile(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Группа $groupName',
-                                style: TextStyle(
-                                  color: AppStyle.blueColorTextTitle,
-                                  fontSize: AppStyle.fontSizeMedium_16,
-                                  fontWeight: FontWeight.w500,
-                                ),
+            child: Column(
+              children: [
+                SizedBox(height: screenHeight * 0.02),
+                // Поисковая строка
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF9F9F9),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    focusNode: _searchFocusNode,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                    decoration: InputDecoration(
+                      hintText: (_searchFocusNode.hasFocus || _searchController.text.isNotEmpty)
+                          ? ''
+                          : 'Поиск',
+                      hintStyle: TextStyle(
+                        color: AppStyle.grayColorMain,
+                        fontSize: AppStyle.fontSizeMedium_16,
+                      ),
+                      prefixIcon: (_searchFocusNode.hasFocus || _searchController.text.isNotEmpty)
+                          ? null
+                          : Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: SvgPicture.asset(
+                                'assets/images/serch_icon.svg',
+                                color: AppStyle.grayColorMain,
                               ),
-                              Container(
-                                padding:
-                                    EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                                decoration: groupHasActiveReferences
-                                    ? BoxDecoration(
-                                        color: AppStyle.redColorTag,
-                                        borderRadius: BorderRadius.circular(10),
-                                      )
-                                    : BoxDecoration(
-                                        color: AppStyle.blueColorAdditional4AABDB,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('${students.length}',
-                                          style: TextStyle(
-                                            color: AppStyle.whiteColorMain,
-                                            fontSize: AppStyle.fontSizeSmall_12,
-                                          )),
-                                      SvgPicture.asset(
-                                        'assets/images/people_icon.svg',
-                                        color: AppStyle.whiteColorMain,
-                                      )
-                                    ]),
-                              )
-                            ],
+                            ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                // Контейнер с чекбоксом
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF9F9F9),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: _showOnlyActive,
+                        activeColor: AppStyle.blueColorTextTitle,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _showOnlyActive = value ?? false;
+                          });
+                        },
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Показывать только группы с активными заявками',
+                          style: TextStyle(
+                            color: AppStyle.blackColorMain,
+                            fontSize: AppStyle.fontSizeSmall_12,
                           ),
-                          collapsedShape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(
-                                  color: AppStyle.collapsedBlueColorD4EAFF, width: 1)),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(
-                                  color: AppStyle.collapsedBlueColorD4EAFF, width: 1)),
-                          trailing: SvgPicture.asset(
-                            _isExpandedTile[index] == true
-                                ? 'assets/images/icon_expand_down2.svg'
-                                : 'assets/images/icon_expand_right.svg',
-                          ),
-                          onExpansionChanged: (bool expanded) {
-                            setState(() {
-                              _isExpandedTile[index] = expanded;
-                            });
-                          },
-                          children: students.map((student) {
-                            return Container(
-                              padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: Color(0x330088cc), width: 1))),
-                              child: ListTile(
-                                contentPadding: EdgeInsetsGeometry.symmetric(
-                                    vertical: screenHeight * 0.0015),
-                                title: Text(
-                                  '${student.firstname} ${student.lastname}',
-                                  style: TextStyle(
-                                    color: AppStyle.blackColorMain,
-                                    fontSize: AppStyle.fontSizeMedium_16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: groupedData.when(
+                    data: (data) {
+                      final groups = data.keys.toList();
+                      if (groups.isEmpty) return const Center(child: Text('Нет справок'));
+                      return ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: groups.length,
+                        itemBuilder: (context, index) {
+                          final groupName = groups[index];
+                          final students = data[groupName]!;
+
+                          final bool groupHasActiveReferences =
+                              students.any((s) => s.status_id == 1);
+                          
+                          // Если включен фильтр, пропускаем группы без активных заявок
+                          if (_showOnlyActive && !groupHasActiveReferences) {
+                            return const SizedBox.shrink();
+                          }
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: expansion_tile.ExpansionTile(
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Группа $groupName',
+                                    style: TextStyle(
+                                      color: AppStyle.blueColorTextTitle,
+                                      fontSize: AppStyle.fontSizeMedium_16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                ),
-                                trailing: (student.status_id == 1)
-                                    ? SvgPicture.asset(
-                                        'assets/icon/reference_warn.svg',
-                                        width: screenWidth * 0.05,
-                                      )
-                                    : SizedBox(),
-                                onTap: () async {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          backgroundColor: Colors.transparent,
-                                          contentPadding: EdgeInsets.zero,
-                                          titlePadding: EdgeInsets.zero,
-                                          title: Stack(
-                                            children: [
-                                              Container(
-                                                width: double.maxFinite,
-                                                decoration: BoxDecoration(
-                                                    border: Border(
-                                                      bottom: BorderSide(
-                                                          color: AppStyle
-                                                              .collapsedBlueColorD4EAFF,
-                                                          width: 1),
-                                                    ),
-                                                    color: const Color(0xffffffff),
-                                                    borderRadius: BorderRadius.only(
-                                                      topLeft: Radius.circular(50),
-                                                      topRight: Radius.circular(50),
-                                                    )),
-                                                padding: EdgeInsets.only(
-                                                    bottom: 10, top: 32, left: 32),
-                                                // width: screenWidth * 0.02,
-                                                child: Text(
-                                                  'История справок',
-                                                  style: TextStyle(
-                                                    fontSize:
-                                                        AppStyle.fontSizeExtraLarge,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: AppStyle.blackColorMain,
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                right: 20,
-                                                top: 20,
-                                                child: IconButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                  icon: Icon(
-                                                    Icons.close,
-                                                    color: AppStyle
-                                                        .blueColorAdditional4AABDB,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                    decoration: groupHasActiveReferences
+                                        ? BoxDecoration(
+                                            color: AppStyle.redColorTag,
+                                            borderRadius: BorderRadius.circular(10),
+                                          )
+                                        : BoxDecoration(
+                                            color: AppStyle.blueColorAdditional4AABDB,
+                                            borderRadius: BorderRadius.circular(10),
                                           ),
-                                          content: Container(
-                                            decoration: BoxDecoration(
-                                                color: Color(0xffFDFDFD),
-                                                borderRadius: BorderRadius.only(
-                                                  bottomLeft: Radius.circular(50),
-                                                  bottomRight: Radius.circular(50),
-                                                )),
-                                            padding: EdgeInsetsGeometry.only(
-                                                left: 32, right: 32, bottom: 32),
-                                            child: SizedBox(
-                                              width: double.maxFinite,
-                                              height: screenHeight * 0.3,
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
+                                    child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('${students.length}',
+                                              style: TextStyle(
+                                                color: AppStyle.whiteColorMain,
+                                                fontSize: AppStyle.fontSizeSmall_12,
+                                              )),
+                                          SvgPicture.asset(
+                                            'assets/images/people_icon.svg',
+                                            color: AppStyle.whiteColorMain,
+                                          )
+                                        ]),
+                                  )
+                                ],
+                              ),
+                              collapsedShape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(
+                                      color: AppStyle.collapsedBlueColorD4EAFF, width: 1)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(
+                                      color: AppStyle.collapsedBlueColorD4EAFF, width: 1)),
+                              trailing: SvgPicture.asset(
+                                _isExpandedTile[index] == true
+                                    ? 'assets/images/icon_expand_down2.svg'
+                                    : 'assets/images/icon_expand_right.svg',
+                              ),
+                              onExpansionChanged: (bool expanded) {
+                                setState(() {
+                                  _isExpandedTile[index] = expanded;
+                                });
+                              },
+                              children: students.map((student) {
+                                return Container(
+                                  padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(
+                                              color: Color(0x330088cc), width: 1))),
+                                  child: ListTile(
+                                    contentPadding: EdgeInsetsGeometry.symmetric(
+                                        vertical: screenHeight * 0.0015),
+                                    title: Text(
+                                      '${student.firstname} ${student.lastname}',
+                                      style: TextStyle(
+                                        color: AppStyle.blackColorMain,
+                                        fontSize: AppStyle.fontSizeMedium_16,
+                                      ),
+                                    ),
+                                    trailing: (student.status_id == 1)
+                                        ? SvgPicture.asset(
+                                            'assets/icon/reference_warn.svg',
+                                            width: screenWidth * 0.05,
+                                          )
+                                        : SizedBox(),
+                                    onTap: () async {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              backgroundColor: Colors.transparent,
+                                              contentPadding: EdgeInsets.zero,
+                                              titlePadding: EdgeInsets.zero,
+                                              title: Stack(
                                                 children: [
-                                                  ListTile(
-                                                    contentPadding: EdgeInsets.zero,
-                                                    title: Text(
-                                                      '${student.lastname} ${student.firstname} ${student.patronymic}',
+                                                  Container(
+                                                    width: double.maxFinite,
+                                                    decoration: BoxDecoration(
+                                                        border: Border(
+                                                          bottom: BorderSide(
+                                                              color: AppStyle
+                                                                  .collapsedBlueColorD4EAFF,
+                                                              width: 1),
+                                                        ),
+                                                        color: const Color(0xffffffff),
+                                                        borderRadius: BorderRadius.only(
+                                                          topLeft: Radius.circular(50),
+                                                          topRight: Radius.circular(50),
+                                                        )),
+                                                    padding: EdgeInsets.only(
+                                                        bottom: 10, top: 32, left: 32),
+                                                    // width: screenWidth * 0.02,
+                                                    child: Text(
+                                                      'История справок',
                                                       style: TextStyle(
-                                                          color: AppStyle
-                                                              .blueColorTextTitle),
+                                                        fontSize:
+                                                            AppStyle.fontSizeExtraLarge,
+                                                        fontWeight: FontWeight.w500,
+                                                        color: AppStyle.blackColorMain,
+                                                      ),
                                                     ),
-                                                    subtitle: Text(
-                                                        'группа ${student.group}, ${student.phone}'),
                                                   ),
-                                                  Expanded(
-                                                    child: Consumer(builder:
-                                                        (context, ref, child) {
-                                                      final historyDataAsync = ref.watch(
-                                                          fetchStudentApplications(
-                                                              student.user_id));
-                                                      return historyDataAsync.when(
-                                                          data: (data) {
-                                                            if (data.isEmpty) {
-                                                              return Text(
-                                                                'У этого студента нет истории заявок',
-                                                                style: TextStyle(
-                                                                    color: AppStyle
-                                                                        .blackColorMain,
-                                                                    fontSize: AppStyle
-                                                                        .fontSizeSmall_12),
-                                                              );
-                                                            }
-                                                            return ListView.builder(
-                                                                padding: EdgeInsets.zero,
-                                                                itemCount: data.length,
-                                                                itemBuilder:
-                                                                    (context, index) {
-                                                                  final item =
-                                                                      data[index];
-                                                                  return Container(
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                            border: Border(
-                                                                                bottom: BorderSide(
-                                                                                    color: AppStyle
-                                                                                        .collapsedBlueColorD4EAFF,
-                                                                                    width:
-                                                                                        1))),
-                                                                    child: ListTile(
-                                                                        contentPadding:
-                                                                            EdgeInsets
-                                                                                .zero,
-                                                                        title: Text(
-                                                                            item.type_id
-                                                                                .applicationTypeName,
-                                                                            style: TextStyle(
-                                                                                color: AppStyle
-                                                                                    .blackColorMain,
-                                                                                fontSize:
-                                                                                    AppStyle.fontSizeMediumMini_14,
-                                                                                fontWeight:
-                                                                                    FontWeight.w500)),
-                                                                        subtitle: Text(
-                                                                            item.date,
-                                                                            style: TextStyle(
-                                                                                color: AppStyle
-                                                                                    .blueColorTextTitle,
-                                                                                fontSize:
-                                                                                    AppStyle.fontSizeSmall_12,
-                                                                                fontWeight:
-                                                                                    FontWeight.w500)),
-                                                                        trailing: Container(
-                                                                          padding:
-                                                                              const EdgeInsets.symmetric(
-                                                                                  vertical: 2,
-                                                                                  horizontal: 10),
-                                                                          decoration:
-                                                                              BoxDecoration(
-                                                                                  color: item.status_id.statusColor,
-                                                                                  borderRadius: BorderRadius.circular(10)),
-                                                                          child: Text(
-                                                                              item.status_id.statusName,
-                                                                              style: const TextStyle(
-                                                                                  color: AppStyle.whiteColorMain,
-                                                                                  fontSize: AppStyle.fontSizeSmall_12,
-                                                                                  fontWeight: FontWeight.w500)),
-                                                                        ),
-                                                                      ),
-                                                                    
+                                                  Positioned(
+                                                    right: 20,
+                                                    top: 20,
+                                                    child: IconButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(context),
+                                                      icon: Icon(
+                                                        Icons.close,
+                                                        color: AppStyle
+                                                            .blueColorAdditional4AABDB,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              content: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Color(0xffFDFDFD),
+                                                    borderRadius: BorderRadius.only(
+                                                      bottomLeft: Radius.circular(50),
+                                                      bottomRight: Radius.circular(50),
+                                                    )),
+                                                padding: EdgeInsetsGeometry.only(
+                                                    left: 32, right: 32, bottom: 32),
+                                                child: SizedBox(
+                                                  width: double.maxFinite,
+                                                  height: screenHeight * 0.3,
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      ListTile(
+                                                        contentPadding: EdgeInsets.zero,
+                                                        title: Text(
+                                                          '${student.lastname} ${student.firstname} ${student.patronymic}',
+                                                          style: TextStyle(
+                                                              color: AppStyle
+                                                                  .blueColorTextTitle),
+                                                        ),
+                                                        subtitle: Text(
+                                                            'группа ${student.group}, ${student.phone}'),
+                                                      ),
+                                                      Expanded(
+                                                        child: Consumer(
+                                                          builder: (context, ref, child) {
+                                                            final historyDataAsync = ref.watch(
+                                                                fetchStudentApplications(
+                                                                    student.user_id));
+                                                            return historyDataAsync.when(
+                                                              data: (data) {
+                                                                if (data.isEmpty) {
+                                                                  return Text(
+                                                                    'У этого студента нет истории заявок',
+                                                                    style: TextStyle(
+                                                                        color: AppStyle
+                                                                            .blackColorMain,
+                                                                        fontSize: AppStyle
+                                                                            .fontSizeSmall_12),
                                                                   );
-                                                                });
-                                                          },
-                                                          error: (error, stack) =>
-                                                              Center(
-                                                                  child: Text(
-                                                                      'Ошибка загрузки: $error')),
-                                                          loading: () => Center(
+                                                                }
+                                                                return ListView.builder(
+                                                                    padding: EdgeInsets.zero,
+                                                                    itemCount: data.length,
+                                                                    itemBuilder:
+                                                                        (context, index) {
+                                                                      final item =
+                                                                          data[index];
+                                                                      return Container(
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                                border: Border(
+                                                                                    bottom: BorderSide(
+                                                                                        color: AppStyle
+                                                                                            .collapsedBlueColorD4EAFF,
+                                                                                        width:
+                                                                                            1))),
+                                                                        child: ListTile(
+                                                                          contentPadding:
+                                                                              EdgeInsets
+                                                                                  .zero,
+                                                                          title: Text(
+                                                                              item.type_id
+                                                                                  .applicationTypeName,
+                                                                              style: TextStyle(
+                                                                                  color: AppStyle
+                                                                                      .blackColorMain,
+                                                                                  fontSize:
+                                                                                      AppStyle.fontSizeMediumMini_14,
+                                                                                  fontWeight:
+                                                                                      FontWeight.w500)),
+                                                                          subtitle: Text(
+                                                                              item.date,
+                                                                              style: TextStyle(
+                                                                                  color: AppStyle
+                                                                                      .blueColorTextTitle,
+                                                                                  fontSize:
+                                                                                      AppStyle.fontSizeSmall_12,
+                                                                                  fontWeight:
+                                                                                      FontWeight.w500)),
+                                                                          trailing: Container(
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(
+                                                                                    vertical: 2,
+                                                                                    horizontal: 10),
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                                    color: item.status_id.statusColor,
+                                                                                    borderRadius: BorderRadius.circular(10)),
+                                                                            child: Text(
+                                                                                item.status_id.statusName,
+                                                                                style: const TextStyle(
+                                                                                    color: AppStyle.whiteColorMain,
+                                                                                    fontSize: AppStyle.fontSizeSmall_12,
+                                                                                    fontWeight: FontWeight.w500)),
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    });
+                                                              },
+                                                              error: (error, stack) =>
+                                                                  Center(
+                                                                      child: Text(
+                                                                          'Ошибка загрузки: $error')),
+                                                              loading: () => Center(
                                                                 child:
                                                                     LoadingAnimationWidget
                                                                         .halfTriangleDot(
@@ -374,33 +469,38 @@ class _CuratorScreenReference extends ConsumerState{
                                                                       .blueColorAdditional4AABDB,
                                                                   size: 50,
                                                                 ),
-                                                              ));
-                                                    }),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+
+                                                    ],
                                                   ),
-
-                                                ],
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                          actions: null,
-                                        );
-                                      });
+                                              actions: null,
+                                            );
+                                          });
 
-                                  /*await ref.read(updateReferenceStatusControllerProvider.notifier).updateStatus(
-                                applicationId: student.id,
-                                statusId: 2
-                            );*/
-                                },
-                              ),
-                            );
-                          }).toList(),
-                        ),
+                                      /*await ref.read(updateReferenceStatusControllerProvider.notifier).updateStatus(
+                                    applicationId: student.id,
+                                    statusId: 2
+                                );*/
+                                    },
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          );
+                        },
                       );
                     },
-                  );
-                },
-                error: (error, stackTrace) => Center(child: Text('Ошибка: $error')),
-                loading: () => const Center(child: CircularProgressIndicator())),
+                    error: (error, stackTrace) => Center(child: Text('Ошибка: $error')),
+                    loading: () => const Center(child: CircularProgressIndicator())),
+                ),
+              ],
+            ),
           ),
         ],
       ),

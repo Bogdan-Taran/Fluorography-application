@@ -226,7 +226,7 @@ class _ItemWidget extends StatelessWidget {
                   padding: itemPadding,
                   child: DefaultTextStyle.merge(
                     style: TextStyle(
-                      color: isSelected ? item.inactiveTextColor : item.activeTextColor,
+                      color: isSelected ? item.activeColor : (item.activeTextColor ?? item.activeColor),
                       fontWeight: FontWeight.bold,
                     ),
                     maxLines: 1,
@@ -366,7 +366,6 @@ class BottomNavBarFLura extends StatelessWidget{
                     activeBackgroundColor: AppStyle.blueColorAdditional4AABDB,
                     activeColor: AppStyle.whiteColorMain,
                     inactiveColor: AppStyle.blueColorAdditional4AABDB,
-                    inactiveTextColor: AppStyle.whiteColorMain,
                     activeTextColor: AppStyle.blueColorAdditional4AABDB,
                     textAlign: TextAlign.center,
                   ),
@@ -375,7 +374,6 @@ class BottomNavBarFLura extends StatelessWidget{
                     activeBackgroundColor: AppStyle.blueColorAdditional4AABDB,
                     activeColor: AppStyle.whiteColorMain,
                     inactiveColor: AppStyle.blueColorAdditional4AABDB,
-                    inactiveTextColor: AppStyle.whiteColorMain,
                     activeTextColor: AppStyle.blueColorAdditional4AABDB,
                     textAlign: TextAlign.center,
                   ),

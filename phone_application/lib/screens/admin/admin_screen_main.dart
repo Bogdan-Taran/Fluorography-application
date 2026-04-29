@@ -2,10 +2,13 @@ import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' as bloc;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/screens/admin/admin_screen_fluorography.dart';
 import 'package:project_fluorography/screens/admin/admin_screen_reference.dart';
 import 'package:project_fluorography/styles.dart';
+import 'package:talker/talker.dart';
+import '../../services/api_reference/request_reference_controller.dart';
 import '../../widgets/bottom_navy_bar.dart';
 import '../../widgets/show_exit_dialog.dart';
 import '../notification_screen.dart';
@@ -36,6 +39,36 @@ class _AdminMainScreen extends ConsumerState<AdminMainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final talker = Talker();
+    ref.listen<AsyncValue<String?>>(authControllerProvider, (previous, next) {
+      next.whenOrNull(
+          data: (message){
+            if (message != null) {
+              Navigator.of(context, rootNavigator: true).pop();
+
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AuthChecker(),
+                  )
+              );
+            }
+          },
+          error: (error, stack) {
+            Fluttertoast.showToast(
+              msg: 'Ошибка: $error',
+              backgroundColor: const Color(0xffed6969),
+              fontSize: 16,
+              gravity: ToastGravity.CENTER,
+              textColor: const Color(0xffffffff),
+            );
+          },
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          )
+      );
+    });
+
     return WillPopScope(
       onWillPop: () async {
         return false;
@@ -69,13 +102,13 @@ class _AdminMainScreen extends ConsumerState<AdminMainScreen> {
               _pageController.jumpToPage(_currentIndex);
             },
             onLogoutPressed: ()  {
+              talker.log('AdminScreen: logout pressed');
               showDialog(
                   context: context,
                   builder: (context) => ShowExitDialog(
                     onNoPressed: Navigator.of(context).pop,
                     onYesPressed: (){
-                      Navigator.of(context).pop();
-                      context.read<AuthenticationBloc>().add(SignOutAcceptEvent());
+                      ref.read(authControllerProvider.notifier).logout();
                     },
                   )
               );

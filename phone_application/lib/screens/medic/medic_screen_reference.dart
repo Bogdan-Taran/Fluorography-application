@@ -9,6 +9,42 @@ class MedicScreenReference extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppStyle.whiteColorMain,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        toolbarHeight: 80,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: TextField(
+            enabled: false,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: const Color(0xFFF5F7FA),
+              prefixIcon: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SvgPicture.asset(
+                  'assets/images/serch_icon.svg',
+                  width: 20,
+                  height: 20,
+                  color: const Color(0xff98BFF3),
+                ),
+              ),
+              hintText: 'Поиск',
+              hintStyle: const TextStyle(
+                fontSize: 16,
+                color: Color(0xff26292B),
+                fontWeight: FontWeight.w400,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 0),
+            ),
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           SizedBox(

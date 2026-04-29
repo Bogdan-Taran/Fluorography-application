@@ -95,168 +95,58 @@ class _AdminScreen extends State<AdminScreen> {
         child: Scaffold(
           backgroundColor: Color(0xffffffff),
           resizeToAvoidBottomInset: true,
-          // AppBar
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
-            flexibleSpace: Container(
-              height: appBarHeight,
-              decoration: const BoxDecoration(color: Colors.white),
-              child: Padding(
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          splashRadius: 24,
-                          padding: EdgeInsets.zero,
-                          icon: SvgPicture.asset(
-                            'assets/images/notification_icon.svg',
-                            color: const Color(0xff98BFF3),
-                            width: 35,
-                            height: 35,
+            elevation: 0,
+            toolbarHeight: 80,
+            title: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextField(
+                onTap: () {
+                  context.read<AdminBloc>().add(OnTapTextFieldEvent());
+                },
+                onChanged: (query) {
+                  if (query.length >= 3) {
+                    context.read<AdminBloc>().add(
+                          SearchChangedAdminEvent(
+                            query: searchController.text.toLowerCase(),
+                            groups: adminGroups,
                           ),
-                        ),
-
-                        // Sign Out Button
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor:
-                            WidgetStateProperty.resolveWith<Color>((
-                                Set<WidgetState> states,) {
-                              if (states.contains(WidgetState.disabled)) {
-                                return const Color(0xffD5D6D7);
-                              }
-                              if (states.contains(WidgetState.pressed)) {
-                                return const Color(0xFF72A7EB);
-                              }
-                              if (states.contains(WidgetState.hovered)) {
-                                return const Color(0xFFBADEFF);
-                              }
-                              return const Color(0xff98BFF3);
-                            }),
-                            foregroundColor: WidgetStateProperty.all(
-                              const Color(0xffffffff),
-                            ),
-                            minimumSize: WidgetStateProperty.all(
-                              Size(MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.1, 35),
-                            ),
-                            shape: WidgetStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            context.read<AuthenticationBloc>().add(
-                              SignOutEvent(),
-                            );
-                            context.read<AdminBloc>().add(AdminLogoutEvent());
-                            print('Экран: Нажата кнопка выхода');
-                          },
-                          child: const Text(
-                            'Выход',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xffffffff),
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Geologica',
-                            ),
-                          ),
-                        ),
-                      ],
+                        );
+                  }
+                },
+                controller: searchController,
+                cursorColor: const Color(0xff72A7EB),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: const Color(0xFFF5F7FA),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SvgPicture.asset(
+                      'assets/images/serch_icon.svg',
+                      width: 20,
+                      height: 20,
+                      color: const Color(0xff98BFF3),
                     ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      onTap: () {
-                        context.read<AdminBloc>().add(OnTapTextFieldEvent());
-                      },
-                      onChanged: (query) {
-                        print('Экран, query: $query');
-                        if (query.length >= 3) {
-                          context.read<AdminBloc>().add(
-                            SearchChangedAdminEvent(
-                                query: searchController.text.toLowerCase(),
-                                groups: adminGroups
-                            ),
-                          );
-                        }
-                      },
-                      controller: searchController,
-                      cursorColor: Color(0xff72A7EB),
-                      cursorHeight: 25,
-                      cursorWidth: 1.5,
-                      decoration: InputDecoration(
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.only(left: 16, right: 8),
-                          child: SvgPicture.asset(
-                            'assets/images/serch_icon.svg',
-                            width: 20,
-                            height: 20,
-                            color: const Color(0xff98BFF3),
-                          ),
-                        ),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            searchController.clear();
-                            context.read<AdminBloc>().add(AdminFetchEvent());
-                            //context.read<AdminBloc>().add(OnTapTextFieldEvent());
-                          },
-                          icon: Icon(
-                            Icons.clear,
-                            color: searchController.text.isEmpty
-                                ? Colors.transparent
-                                : const Color(0xff98BFF3),
-                          ),
-                        ),
-                        enabled: true,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                          borderSide: BorderSide(
-                            color: Color(0xff98BFF3),
-                            width: 1.0,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                          borderSide: BorderSide(
-                            color: Color(0xff72A7EB),
-                            width: 2,
-                          ),
-                        ),
-                        hintText: 'Поиск',
-                        hintStyle: TextStyle(
-                          fontSize: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.016,
-                          color: Color(0xff98BFF3),
-                          fontWeight: FontWeight.w500,
-                        ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 30),
-                      ),
-                      keyboardType: TextInputType.text,
-                      onTapOutside: (event) {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        // context.read<AdminBloc>().add(
-                        //     OnTapOutsideTextFieldAdminEvent()
-                        // );
-                      },
-                      enableSuggestions: false,
-                      autocorrect: false,
-                    ),
-                  ],
+                  ),
+                  hintText: 'Поиск',
+                  hintStyle: const TextStyle(
+                    fontSize: 16,
+                    color: Color(0xff26292B),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 ),
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
               ),
             ),
-            toolbarHeight: appBarHeight,
-            elevation: 0,
           ),
           body: Stack(
             children: [

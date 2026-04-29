@@ -10,25 +10,26 @@ import 'package:http/http.dart';
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/bloc/search/search_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
-import '../bloc/authentication/authentication_bloc.dart';
-import '../bloc/internet_connect/interner_connect_cubit.dart';
-import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
-import '../main.dart';
-import '../models/staff_and_students_model.dart';
-import '../services/builders_screen.dart';
-import '../services/localDataBase.dart';
-import '../widgets/main_content_accordion_builder.dart';
+import '../../bloc/authentication/authentication_bloc.dart';
+import '../../bloc/internet_connect/interner_connect_cubit.dart';
+import '../../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
+import '../../main.dart';
+import '../../models/staff_and_students_model.dart';
+import '../../services/builders_screen.dart';
+import '../../services/localDataBase.dart';
+import '../../widgets/main_content_accordion_builder.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 
 
-class MedicScreen extends StatefulWidget {
-  const MedicScreen({super.key});
+class MedicScreenFluorography extends StatefulWidget {
+  final VoidCallback? onNotificationPressed;
+  const MedicScreenFluorography({super.key, this.onNotificationPressed});
 
   @override
-  State<MedicScreen> createState() => _MedicScreen();
+  State<MedicScreenFluorography> createState() => _MedicScreenFluorography();
 }
 
-class _MedicScreen extends State<MedicScreen> {
+class _MedicScreenFluorography extends State<MedicScreenFluorography> {
   late final Future<List<StaffAndStudentsModel>> futureCommunity;
   TextEditingController searchController = TextEditingController();
   CheckerCacheService _CheckerCacheService = CheckerCacheService();
@@ -114,7 +115,7 @@ class _MedicScreen extends State<MedicScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: widget.onNotificationPressed,
                           splashRadius: 24,
                           padding: EdgeInsets.zero,
                           icon: SvgPicture.asset(
@@ -464,6 +465,7 @@ class _MedicScreen extends State<MedicScreen> {
                                               ),
                                             ),
                                             onPressed: () {
+                                              Navigator.of(context).pop();
                                               context
                                                   .read<AuthenticationBloc>()
                                                   .add(SignOutAcceptEvent());

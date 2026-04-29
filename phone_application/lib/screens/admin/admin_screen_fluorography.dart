@@ -10,24 +10,25 @@ import 'package:project_fluorography/bloc/admin/admin_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/screens/sign_in.dart';
 import 'package:project_fluorography/widgets/main_content_accordion_builder.dart';
-import '../bloc/internet_connect/interner_connect_cubit.dart';
-import '../main.dart';
-import '../models/single_group_with_students_model.dart';
-import '../services/api_service_get_community_members.dart';
-import '../services/builders_screen.dart';
-import '../services/localDataBase.dart';
-import '../services/shared_pref_service.dart';
-import '../styles.dart';
-import '../widgets/screens_widgets.dart';
+import '../../bloc/internet_connect/interner_connect_cubit.dart';
+import '../../main.dart';
+import '../../models/single_group_with_students_model.dart';
+import '../../services/api_service_get_community_members.dart';
+import '../../services/builders_screen.dart';
+import '../../services/localDataBase.dart';
+import '../../services/shared_pref_service.dart';
+import '../../styles.dart';
+import '../../widgets/screens_widgets.dart';
 
-class AdminScreen extends StatefulWidget {
-  const AdminScreen({super.key});
+class AdminScreenFluorography extends StatefulWidget {
+  final VoidCallback? onNotificationPressed;
+  const AdminScreenFluorography({super.key, this.onNotificationPressed});
 
   @override
-  State<AdminScreen> createState() => _AdminScreen();
+  State<AdminScreenFluorography> createState() => _AdminScreenFluorography();
 }
 
-class _AdminScreen extends State<AdminScreen> {
+class _AdminScreenFluorography extends State<AdminScreenFluorography> {
   late final Future<List<SingleGroupWithStudentsModel>> futureGroupsMethod;
   final searchController = TextEditingController();
   ApiServiceGetCommunityMembers _ApiServiceGetCommunityMembers =
@@ -352,7 +353,7 @@ class _AdminScreen extends State<AdminScreen> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => AuthChecker(),
+                                    builder: (context) => const AuthChecker(),
                                   ),
                                 );
                                 context.read<AdminBloc>().add(AdminLogoutEvent());

@@ -17,7 +17,7 @@ import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../services/builders_screen.dart';
 import '../services/shared_pref_service.dart';
 import '../styles.dart';
-import 'admin_screen.dart';
+import 'admin/admin_screen_main.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                   BlocProvider(create: (context) => WorkingWithFluorographyBloc(),),
                   BlocProvider(create: (_) => InternetConnectCubit(connectivity: Connectivity()),)
                 ],
-                child: AdminScreen(),
+                child: const AdminMainScreen(),
               );
             } else if (role == 'medic') {
               print('Ваша роль медик');

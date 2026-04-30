@@ -76,7 +76,7 @@ class RequestRepository {
     try {
       final response = await _apiProviderMine.patchRequest(
         '/api/applications/$application_id',
-        {'status_id': 2},
+        {'status_id': status_id},
       );
       talker.log(
         'RepoProvider(updateReferenceStatus): Данные успешно обновлены: $response',

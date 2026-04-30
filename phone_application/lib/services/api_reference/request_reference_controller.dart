@@ -113,6 +113,20 @@ class UpdateReferenceStatusController
       ref.invalidate(fetchEntireListApplicationsProvider);
     });
   }
+
+  Future<void> updateMultipleStatuses({required Map<int, int> updates, required int userId}) async {
+    final repository = ref.read(requestRepositoryProvider);
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      for (var entry in updates.entries) {
+        await repository.updateReferenceStatus(status_id: entry.value, application_id: entry.key);
+      }
+      // Инвалидируем общий список и список конкретного студента
+      ref.invalidate(fetchEntireListApplicationsProvider);
+      ref.invalidate(fetchStudentApplications(userId));
+    });
+  }
+
 }
 
 

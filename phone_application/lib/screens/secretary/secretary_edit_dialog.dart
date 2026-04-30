@@ -26,15 +26,18 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
   final Map<int, int> _updatedStatuses = {};
 
   Future<void> _saveChanges() async {
-    for (var entry in _updatedStatuses.entries) {
-      await ref.read(updateReferenceStatusControllerProvider.notifier)
-          .updateStatus(applicationId: entry.key, statusId: entry.value);
-    }
+    await ref.read(updateReferenceStatusControllerProvider.notifier)
+        .updateMultipleStatuses(updates: _updatedStatuses, userId: widget.student.user_id);
+    
     if (mounted) {
-      setState(() {
-        editStatusMode = false;
-        _updatedStatuses.clear();
-      });
+      final state = ref.read(updateReferenceStatusControllerProvider);
+      if (!state.hasError) {
+        setState(() {
+          editStatusMode = false;
+          _updatedStatuses.clear();
+        });
+        Navigator.pop(context);
+      }
     }
   }
 

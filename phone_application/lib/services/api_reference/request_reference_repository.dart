@@ -50,9 +50,29 @@ class RequestRepository {
     }
   }
 
-  Future<List<GetReferenceModel>> getEntireListApplications() async {
+  Future<({List<GetReferenceModel> applications, String? message})> getEntireListApplications({
+    String? name,
+    String? group,
+    bool? onlyUnfinished,
+  }) async {
     try {
-      final response = await _apiProviderMine.getRequest('/api/applications');
+      final Map<String, dynamic> queryParameters = {};
+      if (name != null && name.isNotEmpty) queryParameters['name'] = name;
+      if (group != null && group.isNotEmpty) queryParameters['group'] = group;
+      if (onlyUnfinished != null) {
+        queryParameters['onlyUnfinished'] = onlyUnfinished.toString();
+      }
+
+      final response = await _apiProviderMine.getRequest(
+        '/api/applications',
+        queryParameters: queryParameters,
+      );
+
+      if (response is Map<String, dynamic> && response.containsKey('message')) {
+        talker.warning('RepoProvider: Получено сообщение от сервера вместо списка: ${response['message']}');
+        return (applications: <GetReferenceModel>[], message: response['message']?.toString());
+      }
+
       final List<dynamic> rawData = response;
       final List<GetReferenceModel> dataList = rawData
           .map(
@@ -62,7 +82,7 @@ class RequestRepository {
       talker.log(
         'RepoProvider(getEntireListApplications): Данные успешно переконвертированы в List: $dataList',
       );
-      return dataList;
+      return (applications: dataList, message: null);
     } on DioException catch (error) {
       talker.handle('Ошибка в репозитории: $error');
       throw ('Ошибка при получении полного списка справок');

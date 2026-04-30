@@ -47,15 +47,29 @@ class AuthController extends StateNotifier<AsyncValue<String?>>{
 }
 
 @riverpod
-Future<List<GetReferenceModel>> fetchEntireListApplications(Ref ref) {
+Future<({List<GetReferenceModel> applications, String? message})> fetchEntireListApplications(
+  Ref ref, {
+  String? name,
+  String? group,
+  bool? onlyUnfinished,
+}) {
   final repositoryProvider = ref.watch(requestRepositoryProvider);
-  return repositoryProvider.getEntireListApplications();
+  return repositoryProvider.getEntireListApplications(
+    name: name,
+    group: group,
+    onlyUnfinished: onlyUnfinished,
+  );
 }
 
 final groupedApplicationsByGroup =
-    Provider<AsyncValue<Map<String, List<GetReferenceModel>>>>((ref) {
-      final rawApplications = ref.watch(fetchEntireListApplicationsProvider);
-      return rawApplications.whenData((list) {
+    Provider.family<AsyncValue<({Map<String, List<GetReferenceModel>> groups, String? message})>, ({String? name, bool? onlyUnfinished})>((ref, arg) {
+      final rawApplications = ref.watch(fetchEntireListApplicationsProvider(
+        name: arg.name,
+        onlyUnfinished: arg.onlyUnfinished,
+      ));
+
+      return rawApplications.whenData((result) {
+        final list = result.applications;
         final Map<String, List<GetReferenceModel>> groupedApplications = {};
         // Временная мапа для объединения заявок по студентам внутри каждой группы.
         final Map<String, Map<int, GetReferenceModel>> tempGrouped = {};
@@ -95,7 +109,7 @@ final groupedApplicationsByGroup =
           }).toList();
         });
 
-        return groupedApplications;
+        return (groups: groupedApplications, message: result.message);
       });
     });
 

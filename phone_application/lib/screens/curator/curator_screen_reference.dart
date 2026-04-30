@@ -31,7 +31,11 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
 
   @override
   Widget build(BuildContext context) {
-    final groupedData = ref.watch(groupedApplicationsByGroup);
+    final query = _searchController.text;
+    final groupedData = ref.watch(groupedApplicationsByGroup((
+      name: query.length >= 3 ? query : null,
+      onlyUnfinished: _showOnlyActive ? true : null,
+    )));
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final talker = Talker();
@@ -69,43 +73,99 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             elevation: 0,
-            toolbarHeight: 80,
+            toolbarHeight: 140,
             title: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextField(
-                controller: _searchController,
-                focusNode: _searchFocusNode,
-                onChanged: (value) {
-                  setState(() {});
-                },
-                cursorColor: const Color(0xff72A7EB),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: const Color(0xFFF5F7FA),
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: SvgPicture.asset(
-                      'assets/images/serch_icon.svg',
-                      width: 20,
-                      height: 20,
-                      color: const Color(0xff98BFF3),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 48,
+                    child: TextField(
+                      controller: _searchController,
+                      focusNode: _searchFocusNode,
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                      cursorColor: const Color(0xff72A7EB),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color(0xFFF5F7FA),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: SvgPicture.asset(
+                            'assets/icon/search_icon.svg',
+                            width: 20,
+                            height: 20,
+                            color: const Color(0xff98BFF3),
+                          ),
+                        ),
+                        hintText: 'Поиск',
+                        hintStyle: const TextStyle(
+                          fontSize: 16,
+                          color: Color(0xff26292B),
+                          fontWeight: FontWeight.w400,
+                        ),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() {});
+                                },
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Color(0xff98BFF3),
+                                ),
+                              )
+                            : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                      ),
+                      onTapOutside: (event) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
                     ),
                   ),
-                  hintText: 'Поиск',
-                  hintStyle: const TextStyle(
-                    fontSize: 16,
-                    color: Color(0xff26292B),
-                    fontWeight: FontWeight.w400,
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _showOnlyActive = !_showOnlyActive;
+                      });
+                    },
+                    child: Container(
+                      height: 48,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: _showOnlyActive ? AppStyle.blueColorAdditional4AABDB : const Color(0xFFF5F7FA),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icon/mobile_checkbox.svg',
+                            // color: _showOnlyActive ? Colors.white : const Color(0xff98BFF3),
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Показывать только группы с активными заявками',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: _showOnlyActive ? Colors.white : const Color(0xff26292B),
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                ),
-                onTapOutside: (event) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
+                ],
               ),
             ),
           ),
@@ -151,62 +211,31 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                 child: Column(
                   children: [
                     const SizedBox(height: 10),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF9F9F9),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        children: [
-                          Checkbox(
-                            value: _showOnlyActive,
-                            activeColor: AppStyle.blueColorTextTitle,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _showOnlyActive = value ?? false;
-                              });
-                            },
-                          ),
-                          const Expanded(
-                            child: Text(
-                              'Показывать только группы с активными заявками',
-                              style: TextStyle(
-                                color: AppStyle.blackColorMain,
-                                fontSize: AppStyle.fontSizeSmall_12,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
                     Expanded(
                       child: groupedData.when(
-                        data: (data) {
-                          final query = _searchController.text.toLowerCase();
-                          final groups = data.keys.where((groupName) {
-                            if (query.length < 3) return true;
-                            if (groupName.toLowerCase().contains(query)) return true;
-                            final students = data[groupName]!;
-                            return students.any((s) =>
-                                s.firstname.toLowerCase().contains(query) ||
-                                s.lastname.toLowerCase().contains(query));
-                          }).toList();
+                        data: (result) {
+                          final groups = result.groups.keys.toList();
                           
-                          if (groups.isEmpty) return const Center(child: Text('Нет справок'));
+                          if (groups.isEmpty) {
+                            return Center(
+                              child: Text(
+                                result.message ?? 'Нет справок',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: AppStyle.blueColorTextTitle,
+                                  fontSize: AppStyle.fontSizeMedium_16,
+                                ),
+                              ),
+                            );
+                          }
                           
                           return ListView.builder(
                             padding: EdgeInsets.zero,
                             itemCount: groups.length,
                             itemBuilder: (context, index) {
                               final groupName = groups[index];
-                              final students = data[groupName]!;
+                              final students = result.groups[groupName]!;
                               final bool groupHasActiveReferences = students.any((s) => s.status_id == 1);
-
-                              if (_showOnlyActive && !groupHasActiveReferences) {
-                                return const SizedBox.shrink();
-                              }
 
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 10),

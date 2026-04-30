@@ -34,7 +34,11 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
 
   @override
   Widget build(BuildContext context) {
-    final groupedData = ref.watch(groupedApplicationsByGroup);
+    final query = _searchController.text;
+    final groupedData = ref.watch(groupedApplicationsByGroup((
+      name: query.length >= 3 ? query : null,
+      onlyUnfinished: _showOnlyActive ? true : null,
+    )));
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final talker = Talker();
@@ -77,40 +81,56 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
                 children: [
-                  TextField(
-                    controller: _searchController,
-                    focusNode: _searchFocusNode,
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                    cursorColor: const Color(0xff72A7EB),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color(0xFFF5F7FA),
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: SvgPicture.asset(
-                          'assets/icon/search_icon.svg',
-                          width: 20,
-                          height: 20,
-                          color: const Color(0xff98BFF3),
+                  SizedBox(
+                    height: 48,
+                    child: TextField(
+                      controller: _searchController,
+                      focusNode: _searchFocusNode,
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                      cursorColor: const Color(0xff72A7EB),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0xFFF5F7FA),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: SvgPicture.asset(
+                            'assets/icon/search_icon.svg',
+                            width: 20,
+                            height: 20,
+                            color: const Color(0xff98BFF3),
+                          ),
                         ),
+                        hintText: 'Поиск',
+                        hintStyle: const TextStyle(
+                          fontSize: 16,
+                          color: Color(0xff26292B),
+                          fontWeight: FontWeight.w400,
+                        ),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() {});
+                                },
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Color(0xff98BFF3),
+                                ),
+                              )
+                            : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
                       ),
-                      hintText: 'Поиск',
-                      hintStyle: const TextStyle(
-                        fontSize: 16,
-                        color: Color(0xff26292B),
-                        fontWeight: FontWeight.w400,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                      onTapOutside: (event) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
                     ),
-                    onTapOutside: (event) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    },
                   ),
                   const SizedBox(height: 10),
                   GestureDetector(
@@ -120,23 +140,21 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                       });
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      height: 48,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
-                        color: _showOnlyActive ? AppStyle.activeBlueColorMain : const Color(0xFFF5F7FA),
+                        color: _showOnlyActive ? AppStyle.blueColorAdditional4AABDB : Color(0xFFF5F7FA),
                         borderRadius: BorderRadius.circular(30),
-                        border: _showOnlyActive 
-                          ? null 
-                          : Border.all(color: AppStyle.activeBlueColorMain.withOpacity(0.3)),
                       ),
                       child: Row(
                         children: [
                           SvgPicture.asset(
                             'assets/icon/mobile_checkbox.svg',
-                            // color: _showOnlyActive ? Colors.white : AppStyle.activeBlueColorMain.withOpacity(0.3),
-                            width: 24,
-                            height: 24,
+                            // color: _showOnlyActive ? Colors.white : const Color(0xff98BFF3),
+                            width: 20,
+                            height: 20,
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               'Показывать только группы с активными заявками',
@@ -195,29 +213,28 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                 child: groupedData.when(
-                  data: (data) {
-                    final query = _searchController.text.toLowerCase();
-                    final groups = data.keys.where((groupName) {
-                      final students = data[groupName]!;
-                      final bool groupHasActive = students.any((s) => s.status_id == 1);
-                      
-                      if (_showOnlyActive && !groupHasActive) return false;
+                  data: (result) {
+                    final groups = result.groups.keys.toList();
 
-                      if (query.length < 3) return true;
-                      if (groupName.toLowerCase().contains(query)) return true;
-                      return students.any((s) =>
-                          s.firstname.toLowerCase().contains(query) ||
-                          s.lastname.toLowerCase().contains(query));
-                    }).toList();
-
-                    if (groups.isEmpty) return const Center(child: Text('Нет справок'));
+                    if (groups.isEmpty) {
+                      return Center(
+                        child: Text(
+                          result.message ?? 'Нет справок',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: AppStyle.blueColorTextTitle,
+                            fontSize: AppStyle.fontSizeMedium_16,
+                          ),
+                        ),
+                      );
+                    }
 
                     return ListView.builder(
                       padding: const EdgeInsets.only(top: 10),
                       itemCount: groups.length,
                       itemBuilder: (context, index) {
                         final groupName = groups[index];
-                        final students = data[groupName]!;
+                        final students = result.groups[groupName]!;
                         final bool groupHasActiveReferences = students.any((s) => s.status_id == 1);
 
                         return Padding(

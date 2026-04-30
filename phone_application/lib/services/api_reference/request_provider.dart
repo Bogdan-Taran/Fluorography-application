@@ -15,9 +15,9 @@ class ApiProviderMine{
   ApiProviderMine(this._dio);
   final talker = Talker();
 
-  Future<dynamic> getRequest(String path) async{
+  Future<dynamic> getRequest(String path, {Map<String, dynamic>? queryParameters}) async{
     try{
-      final response = await _dio.get(path);
+      final response = await _dio.get(path, queryParameters: queryParameters);
       talker.log('ApiProvider: response отправлен и получен: ${response.data}');
       final data = response.data;
       if(data is Map<String, dynamic>){

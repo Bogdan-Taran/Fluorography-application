@@ -11,46 +11,107 @@ part of 'request_reference_controller.dart';
 
 @ProviderFor(fetchEntireListApplications)
 final fetchEntireListApplicationsProvider =
-    FetchEntireListApplicationsProvider._();
+    FetchEntireListApplicationsFamily._();
 
 final class FetchEntireListApplicationsProvider
     extends
         $FunctionalProvider<
-          AsyncValue<List<GetReferenceModel>>,
-          List<GetReferenceModel>,
-          FutureOr<List<GetReferenceModel>>
+          AsyncValue<({List<GetReferenceModel> applications, String? message})>,
+          ({List<GetReferenceModel> applications, String? message}),
+          FutureOr<({List<GetReferenceModel> applications, String? message})>
         >
     with
-        $FutureModifier<List<GetReferenceModel>>,
-        $FutureProvider<List<GetReferenceModel>> {
-  FetchEntireListApplicationsProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'fetchEntireListApplicationsProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+        $FutureModifier<
+          ({List<GetReferenceModel> applications, String? message})
+        >,
+        $FutureProvider<
+          ({List<GetReferenceModel> applications, String? message})
+        > {
+  FetchEntireListApplicationsProvider._({
+    required FetchEntireListApplicationsFamily super.from,
+    required ({String? name, String? group, bool? onlyUnfinished})
+    super.argument,
+  }) : super(
+         retry: null,
+         name: r'fetchEntireListApplicationsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$fetchEntireListApplicationsHash();
 
+  @override
+  String toString() {
+    return r'fetchEntireListApplicationsProvider'
+        ''
+        '$argument';
+  }
+
   @$internal
   @override
-  $FutureProviderElement<List<GetReferenceModel>> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  $FutureProviderElement<
+    ({List<GetReferenceModel> applications, String? message})
+  >
+  $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
 
   @override
-  FutureOr<List<GetReferenceModel>> create(Ref ref) {
-    return fetchEntireListApplications(ref);
+  FutureOr<({List<GetReferenceModel> applications, String? message})> create(
+    Ref ref,
+  ) {
+    final argument =
+        this.argument as ({String? name, String? group, bool? onlyUnfinished});
+    return fetchEntireListApplications(
+      ref,
+      name: argument.name,
+      group: argument.group,
+      onlyUnfinished: argument.onlyUnfinished,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FetchEntireListApplicationsProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
 String _$fetchEntireListApplicationsHash() =>
-    r'3d5325f7b3dcd5df19e204e5e77fef7836e6271f';
+    r'3566c79dbf98f05e5f6b35da721e2751344dd3f2';
+
+final class FetchEntireListApplicationsFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          FutureOr<({List<GetReferenceModel> applications, String? message})>,
+          ({String? name, String? group, bool? onlyUnfinished})
+        > {
+  FetchEntireListApplicationsFamily._()
+    : super(
+        retry: null,
+        name: r'fetchEntireListApplicationsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  FetchEntireListApplicationsProvider call({
+    String? name,
+    String? group,
+    bool? onlyUnfinished,
+  }) => FetchEntireListApplicationsProvider._(
+    argument: (name: name, group: group, onlyUnfinished: onlyUnfinished),
+    from: this,
+  );
+
+  @override
+  String toString() => r'fetchEntireListApplicationsProvider';
+}
 
 @ProviderFor(UpdateReferenceStatusController)
 final updateReferenceStatusControllerProvider =
@@ -78,7 +139,7 @@ final class UpdateReferenceStatusControllerProvider
 }
 
 String _$updateReferenceStatusControllerHash() =>
-    r'483c6a75f47db7be4952c1fef69eaeb47e7672f4';
+    r'6e66724bf621c0de190fb5d4c76298a61c9e04f8';
 
 abstract class _$UpdateReferenceStatusController extends $AsyncNotifier<void> {
   FutureOr<void> build();

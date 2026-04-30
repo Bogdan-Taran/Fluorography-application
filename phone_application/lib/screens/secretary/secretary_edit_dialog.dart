@@ -1,4 +1,3 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -24,236 +23,261 @@ class SecretaryEditDialog extends ConsumerStatefulWidget {
 
 class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
   bool editStatusMode = false;
-  final ValueNotifier<String?> valueListenable = ValueNotifier<String?>(null);
+  final Map<int, int> _updatedStatuses = {};
 
-  final List<String> itemsStatusId = [
-    'В процессе',
-    'Готово',
-    'Дубликат',
-  ];
+  Future<void> _saveChanges() async {
+    for (var entry in _updatedStatuses.entries) {
+      await ref.read(updateReferenceStatusControllerProvider.notifier)
+          .updateStatus(applicationId: entry.key, statusId: entry.value);
+    }
+    if (mounted) {
+      setState(() {
+        editStatusMode = false;
+        _updatedStatuses.clear();
+      });
+    }
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return AlertDialog(
-      backgroundColor: Colors.transparent,
-      contentPadding: EdgeInsets.zero,
-      titlePadding: EdgeInsets.zero,
-      title: Stack(
-        children: [
-          Container(
-            width: double.maxFinite,
-            decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1),
-                ),
-                color: Color(0xffffffff),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(50),
-                  topRight: Radius.circular(50),
-                )),
-            padding: const EdgeInsets.only(bottom: 10, top: 32, left: 32),
-            child: const Text(
-              'История справок',
-              style: TextStyle(
-                fontSize: AppStyle.fontSizeExtraLarge,
-                fontWeight: FontWeight.w500,
-                color: AppStyle.blackColorMain,
-              ),
-            ),
-          ),
-          Positioned(
-            right: 20,
-            top: 20,
-            child: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.close,
-                color: AppStyle.blueColorAdditional4AABDB,
-              ),
-            ),
-          ),
-        ],
-      ),
-      content: Container(
-        decoration: const BoxDecoration(
-            color: Color(0xffFDFDFD),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(50),
-              bottomRight: Radius.circular(50),
-            )),
-        padding: const EdgeInsets.only(left: 32, right: 32, bottom: 32),
-        child: SizedBox(
-          width: double.maxFinite,
-          height: screenHeight * 0.45,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(
-                  '${widget.student.lastname} ${widget.student.firstname} ${widget.student.patronymic}',
-                  style: const TextStyle(color: AppStyle.blueColorTextTitle),
-                ),
-                subtitle: Text('группа ${widget.student.group}, ${widget.student.phone}'),
-              ),
-              Expanded(
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    final historyDataAsync = ref.watch(fetchStudentApplications(widget.student.user_id));
-                    return historyDataAsync.when(
-                      data: (data) {
-                        if (data.isEmpty) {
-                          return const Text(
-                            'У этого студента нет истории заявок',
-                            style: TextStyle(
-                                color: AppStyle.blackColorMain,
-                                fontSize: AppStyle.fontSizeSmall_12),
-                          );
-                        }
-                        return ListView.builder(
-                            padding: EdgeInsets.zero,
-                            itemCount: data.length,
-                            itemBuilder: (context, index) {
-                              final item = data[index];
-                              return Container(
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            color: AppStyle.collapsedBlueColorD4EAFF,
-                                            width: 1))),
-                                child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Text(item.type_id.applicationTypeName,
-                                        style: const TextStyle(
-                                            color: AppStyle.blackColorMain,
-                                            fontSize: AppStyle.fontSizeMediumMini_14,
-                                            fontWeight: FontWeight.w500)),
-                                    subtitle: Text(item.date,
-                                        style: const TextStyle(
-                                            color: AppStyle.blueColorTextTitle,
-                                            fontSize: AppStyle.fontSizeSmall_12,
-                                            fontWeight: FontWeight.w500)),
-                                    trailing: DropdownButtonHideUnderline(
-                                      child: DropdownButton2<String>(
-                                        isExpanded: true,
-                                        hint: Container(
-                                          padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
-                                          decoration: BoxDecoration(
-                                              color: item.status_id.statusColor,
-                                              borderRadius: BorderRadius.circular(10)
-                                          ),
-                                          child: Text(
-                                              item.status_id.statusName,
-                                              style: const TextStyle(
-                                                  color: AppStyle.whiteColorMain,
-                                                  fontSize: AppStyle.fontSizeSmall_12,
-                                                  fontWeight: FontWeight.w500
-                                              )
-                                          ),
-                                        ),
-                                        items: itemsStatusId.map((String itemStatus) => DropdownItem<String>(
-                                            value: itemStatus,
-                                            height: 40,
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
-                                              decoration: BoxDecoration(
-                                                  color: AppStyle.collapsedBlueColorD4EAFF,
-                                                  borderRadius: BorderRadius.circular(10)
-                                              ),
-                                              child: Text(
-                                                  itemStatus,
-                                                  style: const TextStyle(
-                                                      color: AppStyle.whiteColorMain,
-                                                      fontSize: AppStyle.fontSizeSmall_12,
-                                                      fontWeight: FontWeight.w500
-                                                  )
-                                              ),
-                                            )
-                                        )).toList(),
-                                        onChanged: editStatusMode ? (value) {
-                                          valueListenable.value = value;
-                                        } : null,
-                                        buttonStyleData: const ButtonStyleData(
-                                            height: 20,
-                                            width: 120
-                                        ),
-                                        iconStyleData: const IconStyleData(
-                                          icon: Icon(Icons.arrow_forward_ios_outlined),
-                                          iconSize: 16,
-                                          iconEnabledColor: AppStyle.blueColorAdditional4AABDB,
-                                          iconDisabledColor: Colors.grey,
-                                        ),
-                                      ),
-                                    )
-                                ),
-                              );
-                            });
-                      },
-                      error: (error, stack) => Center(child: Text('Ошибка загрузки: $error')),
-                      loading: () => Center(
-                        child: LoadingAnimationWidget.halfTriangleDot(
-                          color: AppStyle.blueColorAdditional4AABDB,
-                          size: 50,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 15),
-              editStatusMode
-                  ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          editStatusMode = false;
-                        });
-                      },
-                      child: const Text('Отменить')),
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          editStatusMode = false;
-                        });
-                      },
-                      child: const Text('Сохранить')),
-                ],
-              )
-                  : ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    editStatusMode = true;
-                  });
-                  widget.talker.log('SecretaryScreen: setstate сработал');
-                },
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
-                    if (states.contains(WidgetState.disabled)) return AppStyle.disableBlueColorMain;
-                    if (states.contains(WidgetState.pressed)) return AppStyle.activeBlueColorMain;
-                    if (states.contains(WidgetState.hovered)) return AppStyle.hoverBlueColorMain;
-                    return AppStyle.blueColorAdditional4AABDB;
-                  }),
-                  minimumSize: WidgetStateProperty.all(Size(screenWidth * 1, 40)),
-                  shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
-                ),
-                child: const Text(
-                  'Редактировать',
-                  style: TextStyle(
-                    color: AppStyle.whiteColorMain,
-                    fontSize: AppStyle.fontSizeMedium_16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              )
-            ],
+  Widget _buildStatusTag(int statusId, {bool isActive = true, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          color: isActive ? statusId.statusColor : statusId.statusColor.withOpacity(0.4),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          statusId.statusName,
+          style: const TextStyle(
+            color: AppStyle.whiteColorMain,
+            fontSize: AppStyle.fontSizeSmall_12,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Dialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${widget.student.lastname} ${widget.student.firstname} ${widget.student.patronymic}',
+                        style: const TextStyle(
+                          color: AppStyle.blueColorTextTitle,
+                          fontSize: AppStyle.fontSizeLarge,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        'группа ${widget.student.group}, ${widget.student.phone}',
+                        style: const TextStyle(
+                          color: AppStyle.blackColorMain,
+                          fontSize: AppStyle.fontSizeMediumMini_14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close, color: AppStyle.blueColorAdditional4AABDB),
+                ),
+              ],
+            ),
+            const Divider(color: AppStyle.collapsedBlueColorD4EAFF, thickness: 1, height: 32),
+            Flexible(
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final historyDataAsync = ref.watch(fetchStudentApplications(widget.student.user_id));
+                  return historyDataAsync.when(
+                    data: (data) {
+                      if (data.isEmpty) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Text(
+                            'У этого студента нет истории заявок',
+                            style: TextStyle(color: AppStyle.blackColorMain),
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                          final item = data[index];
+                          final currentStatusId = _updatedStatuses[item.id] ?? item.status_id;
+
+                          return Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: const BoxDecoration(
+                              border: Border(bottom: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.type_id.applicationTypeName,
+                                            style: const TextStyle(
+                                              color: AppStyle.blackColorMain,
+                                              fontSize: AppStyle.fontSizeMediumMini_14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          Text(
+                                            item.date,
+                                            style: const TextStyle(
+                                              color: AppStyle.activeBlueColorMain,
+                                              fontSize: AppStyle.fontSizeSmall_12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (!editStatusMode) _buildStatusTag(item.status_id),
+                                  ],
+                                ),
+                                if (editStatusMode) ...[
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    children: [
+                                      _buildStatusTag(2, // Готова
+                                          isActive: currentStatusId == 2,
+                                          onTap: () => setState(() => _updatedStatuses[item.id] = 2)),
+                                      const SizedBox(width: 8),
+                                      _buildStatusTag(1, // В процессе
+                                          isActive: currentStatusId == 1,
+                                          onTap: () => setState(() => _updatedStatuses[item.id] = 1)),
+                                      const SizedBox(width: 8),
+                                      _buildStatusTag(3, // Дубликат
+                                          isActive: currentStatusId == 3,
+                                          onTap: () => setState(() => _updatedStatuses[item.id] = 3)),
+                                    ],
+                                  ),
+                                ],
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    error: (error, stack) => Center(child: Text('Ошибка: $error')),
+                    loading: () => Center(
+                      child: LoadingAnimationWidget.halfTriangleDot(
+                        color: AppStyle.blueColorAdditional4AABDB,
+                        size: 50,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 24),
+            _buildBottomButtons(screenWidth),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomButtons(double screenWidth) {
+    if (editStatusMode) {
+      return Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              onPressed: () {
+                setState(() {
+                  editStatusMode = false;
+                  _updatedStatuses.clear();
+                });
+              },
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: AppStyle.activeBlueColorMain),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+              child: const Text(
+                'Отменить',
+                style: TextStyle(
+                  color: AppStyle.activeBlueColorMain,
+                  fontSize: AppStyle.fontSizeMedium_16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: _updatedStatuses.isEmpty ? null : _saveChanges,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppStyle.activeBlueColorMain,
+                disabledBackgroundColor: AppStyle.disableBlueColorMain,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                elevation: 0,
+              ),
+              child: const Text(
+                'Сохранить',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: AppStyle.fontSizeMedium_16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return ElevatedButton(
+        onPressed: () {
+          setState(() {
+            editStatusMode = true;
+          });
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppStyle.activeBlueColorMain,
+          minimumSize: const Size(double.infinity, 50),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          elevation: 0,
+        ),
+        child: const Text(
+          'Редактировать',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: AppStyle.fontSizeMedium_16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      );
+    }
   }
 }

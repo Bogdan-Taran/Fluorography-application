@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:project_fluorography/screens/secretary/secretary_edit_dialog.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_controller.dart';
 import 'package:project_fluorography/styles.dart';
 import 'package:talker/talker.dart';
@@ -36,14 +37,6 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final talker = Talker();
-
-    final List<String> itemsStatusId = [
-      'В процессе',
-      'Готово',
-      'Дубликат',
-    ];
-    final valueListenable = ValueNotifier<String?>(null);
-    bool editStatusMode = false;
 
     ref.listen<AsyncValue<void>>(updateReferenceStatusControllerProvider, (previous, next) {
       next.whenOrNull(
@@ -201,20 +194,30 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                           borderRadius: BorderRadius.circular(10),
                                         )
                                       : BoxDecoration(
-                                          color: AppStyle.blueColorAdditional4AABDB,
+                                          color: Colors.transparent,
                                           borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: AppStyle.blackColorMain,
+                                      width: 1,
+                                    )
                                         ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text('${students.length}',
-                                          style: const TextStyle(
-                                            color: AppStyle.whiteColorMain,
+                                          style: TextStyle(
+                                            color: groupHasActiveReferences
+                                            ? AppStyle.whiteColorMain
+                                            : AppStyle.blackColorMain,
                                             fontSize: AppStyle.fontSizeSmall_12,
+                                            fontWeight: FontWeight.w500,
                                           )),
+                                      SizedBox(width: 5,),
                                       SvgPicture.asset(
                                         'assets/images/people_icon.svg',
-                                        color: AppStyle.whiteColorMain,
+                                        color: groupHasActiveReferences
+                                            ? AppStyle.whiteColorMain
+                                            : AppStyle.blackColorMain,
                                       )
                                     ],
                                   ),
@@ -237,258 +240,56 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                 _isExpandedTile[index] = expanded;
                               });
                             },
-                            children: students.map((student) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                                 decoration: const BoxDecoration(
                                     border: Border(bottom: BorderSide(color: Color(0x330088cc), width: 1))),
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.symmetric(vertical: screenHeight * 0.0015),
-                                  title: Text(
-                                    '${student.firstname} ${student.lastname}',
-                                    style: const TextStyle(
-                                      color: AppStyle.blackColorMain,
-                                      fontSize: AppStyle.fontSizeMedium_16,
-                                    ),
+                                child: const Text(
+                                  'Чтобы посмотреть историю справок или изменить статус справки, выберите человека из списка.',
+                                  style: TextStyle(
+                                    color: AppStyle.activeBlueColorMain,
+                                    fontSize: AppStyle.fontSizeMediumMini_14,
+                                    fontWeight: FontWeight.w400,
                                   ),
-                                  trailing: (student.status_id == 1)
-                                      ? SvgPicture.asset(
-                                          'assets/icon/reference_warn.svg',
-                                          width: screenWidth * 0.05,
-                                        )
-                                      : const SizedBox(),
-                                  onTap: () async {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return StatefulBuilder(
-                                          builder: (context, setDialogState) {
-                                            return AlertDialog(
-                                              backgroundColor: Colors.transparent,
-                                              contentPadding: EdgeInsets.zero,
-                                              titlePadding: EdgeInsets.zero,
-                                              title: Stack(
-                                                children: [
-                                                  Container(
-                                                    width: double.maxFinite,
-                                                    decoration: const BoxDecoration(
-                                                        border: Border(
-                                                          bottom: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1),
-                                                        ),
-                                                        color: Color(0xffffffff),
-                                                        borderRadius: BorderRadius.only(
-                                                          topLeft: Radius.circular(50),
-                                                          topRight: Radius.circular(50),
-                                                        )),
-                                                    padding: const EdgeInsets.only(bottom: 10, top: 32, left: 32),
-                                                    child: const Text(
-                                                      'История справок',
-                                                      style: TextStyle(
-                                                        fontSize: AppStyle.fontSizeExtraLarge,
-                                                        fontWeight: FontWeight.w500,
-                                                        color: AppStyle.blackColorMain,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    right: 20,
-                                                    top: 20,
-                                                    child: IconButton(
-                                                      onPressed: () => Navigator.pop(context),
-                                                      icon: const Icon(
-                                                        Icons.close,
-                                                        color: AppStyle.blueColorAdditional4AABDB,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              content: Container(
-                                                decoration: const BoxDecoration(
-                                                    color: Color(0xffFDFDFD),
-                                                    borderRadius: BorderRadius.only(
-                                                      bottomLeft: Radius.circular(50),
-                                                      bottomRight: Radius.circular(50),
-                                                    )),
-                                                padding: const EdgeInsets.only(left: 32, right: 32, bottom: 32),
-                                                child: SizedBox(
-                                                  width: double.maxFinite,
-                                                  height: screenHeight * 0.45,
-                                                  child: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      ListTile(
-                                                        contentPadding: EdgeInsets.zero,
-                                                        title: Text(
-                                                          '${student.lastname} ${student.firstname} ${student.patronymic}',
-                                                          style: const TextStyle(color: AppStyle.blueColorTextTitle),
-                                                        ),
-                                                        subtitle: Text('группа ${student.group}, ${student.phone}'),
-                                                      ),
-                                                      Expanded(
-                                                        child: Consumer(
-                                                          builder: (context, ref, child) {
-                                                            final historyDataAsync = ref.watch(fetchStudentApplications(student.user_id));
-                                                            return historyDataAsync.when(
-                                                              data: (data) {
-                                                                if (data.isEmpty) {
-                                                                  return const Text(
-                                                                    'У этого студента нет истории заявок',
-                                                                    style: TextStyle(
-                                                                        color: AppStyle.blackColorMain,
-                                                                        fontSize: AppStyle.fontSizeSmall_12),
-                                                                  );
-                                                                }
-                                                                return ListView.builder(
-                                                                    padding: EdgeInsets.zero,
-                                                                    itemCount: data.length,
-                                                                    itemBuilder: (context, index) {
-                                                                      final item = data[index];
-                                                                      return Container(
-                                                                        decoration: const BoxDecoration(
-                                                                            border: Border(
-                                                                                bottom: BorderSide(
-                                                                                    color: AppStyle.collapsedBlueColorD4EAFF,
-                                                                                    width: 1))),
-                                                                        child: ListTile(
-                                                                            contentPadding: EdgeInsets.zero,
-                                                                            title: Text(item.type_id.applicationTypeName,
-                                                                                style: const TextStyle(
-                                                                                    color: AppStyle.blackColorMain,
-                                                                                    fontSize: AppStyle.fontSizeMediumMini_14,
-                                                                                    fontWeight: FontWeight.w500)),
-                                                                            subtitle: Text(item.date,
-                                                                                style: const TextStyle(
-                                                                                    color: AppStyle.blueColorTextTitle,
-                                                                                    fontSize: AppStyle.fontSizeSmall_12,
-                                                                                    fontWeight: FontWeight.w500)),
-                                                                            trailing: DropdownButtonHideUnderline(
-                                                                              child: DropdownButton2<String>(
-                                                                                isExpanded: true,
-                                                                                hint: Container(
-                                                                                  padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
-                                                                                  decoration: BoxDecoration(
-                                                                                      color: item.status_id.statusColor,
-                                                                                      borderRadius: BorderRadius.circular(10)
-                                                                                  ),
-                                                                                  child: Text(
-                                                                                      item.status_id.statusName,
-                                                                                      style: const TextStyle(
-                                                                                          color: AppStyle.whiteColorMain,
-                                                                                          fontSize: AppStyle.fontSizeSmall_12,
-                                                                                          fontWeight: FontWeight.w500
-                                                                                      )
-                                                                                  ),
-                                                                                ),
-                                                                                items: itemsStatusId.map((String itemStatus) => DropdownItem<String>(
-                                                                                    value: itemStatus,
-                                                                                    height: 40,
-                                                                                    child: Container(
-                                                                                      padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
-                                                                                      decoration: BoxDecoration(
-                                                                                          color: AppStyle.collapsedBlueColorD4EAFF,
-                                                                                          borderRadius: BorderRadius.circular(10)
-                                                                                      ),
-                                                                                      child: Text(
-                                                                                          itemStatus,
-                                                                                          style: const TextStyle(
-                                                                                              color: AppStyle.whiteColorMain,
-                                                                                              fontSize: AppStyle.fontSizeSmall_12,
-                                                                                              fontWeight: FontWeight.w500
-                                                                                          )
-                                                                                      ),
-                                                                                    )
-                                                                                )).toList(),
-                                                                                onChanged: editStatusMode ? (value) {
-                                                                                  valueListenable.value = value;
-                                                                                } : null,
-                                                                                buttonStyleData: const ButtonStyleData(
-                                                                                    height: 20,
-                                                                                    width: 120
-                                                                                ),
-                                                                                iconStyleData: const IconStyleData(
-                                                                                  icon: Icon(Icons.arrow_forward_ios_outlined),
-                                                                                  iconSize: 16,
-                                                                                  iconEnabledColor: AppStyle.blueColorAdditional4AABDB,
-                                                                                  iconDisabledColor: Colors.grey,
-                                                                                ),
-                                                                              ),
-                                                                            )
-                                                                        ),
-                                                                      );
-                                                                    });
-                                                              },
-                                                              error: (error, stack) => Center(child: Text('Ошибка загрузки: $error')),
-                                                              loading: () => Center(
-                                                                child: LoadingAnimationWidget.halfTriangleDot(
-                                                                  color: AppStyle.blueColorAdditional4AABDB,
-                                                                  size: 50,
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 15),
-                                                      editStatusMode
-                                                          ? Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              children: [
-                                                                ElevatedButton(
-                                                                    onPressed: () {
-                                                                      setDialogState(() {
-                                                                        editStatusMode = false;
-                                                                      });
-                                                                    },
-                                                                    child: const Text('Отменить')),
-                                                                ElevatedButton(
-                                                                    onPressed: () {
-                                                                      setDialogState(() {
-                                                                        editStatusMode = false;
-                                                                      });
-                                                                    },
-                                                                    child: const Text('Сохранить')),
-                                                              ],
-                                                            )
-                                                          : ElevatedButton(
-                                                              onPressed: () {
-                                                                setDialogState(() {
-                                                                  editStatusMode = true;
-                                                                });
-                                                                talker.log('SecretaryScreen: setstate сработал');
-                                                              },
-                                                              style: ButtonStyle(
-                                                                backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
-                                                                  if (states.contains(WidgetState.disabled)) return AppStyle.disableBlueColorMain;
-                                                                  if (states.contains(WidgetState.pressed)) return AppStyle.activeBlueColorMain;
-                                                                  if (states.contains(WidgetState.hovered)) return AppStyle.hoverBlueColorMain;
-                                                                  return AppStyle.blueColorAdditional4AABDB;
-                                                                }),
-                                                                minimumSize: WidgetStateProperty.all(Size(screenWidth * 1, 40)),
-                                                                shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
-                                                              ),
-                                                              child: const Text(
-                                                                'Редактировать',
-                                                                style: TextStyle(
-                                                                  color: AppStyle.whiteColorMain,
-                                                                  fontSize: AppStyle.fontSizeMedium_16,
-                                                                  fontWeight: FontWeight.w500,
-                                                                ),
-                                                              ),
-                                                            )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                    );
-                                  },
                                 ),
-                              );
-                            }).toList(),
+                              ),
+                              ...students.map((student) {
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  decoration: const BoxDecoration(
+                                      border: Border(bottom: BorderSide(color: Color(0x330088cc), width: 1))),
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.symmetric(vertical: screenHeight * 0.0015),
+                                    title: Text(
+                                      '${student.firstname} ${student.lastname}',
+                                      style: const TextStyle(
+                                        color: AppStyle.blackColorMain,
+                                        fontSize: AppStyle.fontSizeMedium_16,
+                                      ),
+                                    ),
+                                    trailing: (student.status_id == 1)
+                                        ? SvgPicture.asset(
+                                            'assets/icon/reference_warn.svg',
+                                            width: screenWidth * 0.05,
+                                          )
+                                        : const SizedBox(),
+                                    onTap: () async {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return SecretaryEditDialog(
+                                            student: student,
+                                            talker: talker,
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                );
+                              }).toList(),
+                            ],
                           ),
                         );
                       },

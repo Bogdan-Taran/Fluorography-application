@@ -67,7 +67,8 @@ class MyApp extends StatelessWidget {
               statusBarBrightness: Brightness.light,
             ),
           ),
-          inputDecorationTheme: AppInputDecorations.theme
+          inputDecorationTheme: AppInputDecorations.theme,
+
         ),
          home: AuthChecker(),
         //home: SecretaryScreen(),

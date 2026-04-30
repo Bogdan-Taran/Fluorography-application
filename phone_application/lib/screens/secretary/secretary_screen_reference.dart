@@ -23,6 +23,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
   final Map<int, bool> _isExpandedTile = {};
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
+  bool _showOnlyActive = false;
 
   @override
   void dispose() {
@@ -71,43 +72,86 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             elevation: 0,
-            toolbarHeight: 80,
+            toolbarHeight: 140,
             title: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextField(
-                controller: _searchController,
-                focusNode: _searchFocusNode,
-                onChanged: (value) {
-                  setState(() {});
-                },
-                cursorColor: const Color(0xff72A7EB),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: const Color(0xFFF5F7FA),
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: SvgPicture.asset(
-                      'assets/images/serch_icon.svg',
-                      width: 20,
-                      height: 20,
-                      color: const Color(0xff98BFF3),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _searchController,
+                    focusNode: _searchFocusNode,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                    cursorColor: const Color(0xff72A7EB),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: const Color(0xFFF5F7FA),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: SvgPicture.asset(
+                          'assets/icon/search_icon.svg',
+                          width: 20,
+                          height: 20,
+                          color: const Color(0xff98BFF3),
+                        ),
+                      ),
+                      hintText: 'Поиск',
+                      hintStyle: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xff26292B),
+                        fontWeight: FontWeight.w400,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                    ),
+                    onTapOutside: (event) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _showOnlyActive = !_showOnlyActive;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: _showOnlyActive ? AppStyle.activeBlueColorMain : const Color(0xFFF5F7FA),
+                        borderRadius: BorderRadius.circular(30),
+                        border: _showOnlyActive 
+                          ? null 
+                          : Border.all(color: AppStyle.activeBlueColorMain.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icon/mobile_checkbox.svg',
+                            // color: _showOnlyActive ? Colors.white : AppStyle.activeBlueColorMain.withOpacity(0.3),
+                            width: 24,
+                            height: 24,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Показывать только группы с активными заявками',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: _showOnlyActive ? Colors.white : const Color(0xff26292B),
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  hintText: 'Поиск',
-                  hintStyle: const TextStyle(
-                    fontSize: 16,
-                    color: Color(0xff26292B),
-                    fontWeight: FontWeight.w400,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                ),
-                onTapOutside: (event) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
+                ],
               ),
             ),
           ),
@@ -154,9 +198,13 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                   data: (data) {
                     final query = _searchController.text.toLowerCase();
                     final groups = data.keys.where((groupName) {
+                      final students = data[groupName]!;
+                      final bool groupHasActive = students.any((s) => s.status_id == 1);
+                      
+                      if (_showOnlyActive && !groupHasActive) return false;
+
                       if (query.length < 3) return true;
                       if (groupName.toLowerCase().contains(query)) return true;
-                      final students = data[groupName]!;
                       return students.any((s) =>
                           s.firstname.toLowerCase().contains(query) ||
                           s.lastname.toLowerCase().contains(query));

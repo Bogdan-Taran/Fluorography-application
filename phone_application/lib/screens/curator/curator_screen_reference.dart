@@ -236,6 +236,8 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                               final groupName = groups[index];
                               final students = result.groups[groupName]!;
                               final bool groupHasActiveReferences = students.any((s) => s.status_id == 1);
+                              final bool groupHasDuplicateReferences = students.any((s) => s.status_id == 3);
+                              //final bool isAlert = groupHasActiveReferences || groupHasDuplicateReferences;
 
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 10),
@@ -258,10 +260,15 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                                                 color: AppStyle.redColorTag,
                                                 borderRadius: BorderRadius.circular(10),
                                               )
-                                            : BoxDecoration(
-                                                color: AppStyle.blueColorAdditional4AABDB,
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
+                                            : groupHasDuplicateReferences
+                                                ? BoxDecoration(
+                                                    color: AppStyle.yellowColorTag,
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  )
+                                                : BoxDecoration(
+                                                    color: AppStyle.blueColorAdditional4AABDB,
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
@@ -270,6 +277,7 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                                                   color: AppStyle.whiteColorMain,
                                                   fontSize: AppStyle.fontSizeSmall_12,
                                                 )),
+                                            const SizedBox(width: 5),
                                             SvgPicture.asset(
                                               'assets/images/people_icon.svg',
                                               color: AppStyle.whiteColorMain,
@@ -309,10 +317,13 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                                             fontSize: AppStyle.fontSizeMedium_16,
                                           ),
                                         ),
-                                        trailing: (student.status_id == 1)
+                                        trailing: (student.status_id == 1 || student.status_id == 3)
                                             ? SvgPicture.asset(
                                                 'assets/icon/reference_warn.svg',
                                                 width: screenWidth * 0.05,
+                                                color: student.status_id == 1 
+                                                    ? AppStyle.redColorTag 
+                                                    : AppStyle.yellowColorTag,
                                               )
                                             : const SizedBox(),
                                         onTap: () async {

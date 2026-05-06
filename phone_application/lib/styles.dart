@@ -27,6 +27,7 @@ class AppStyle {
   static const Color disableBlueColorMain =                                     Color(0xffD5D6D7);
   static const Color errorRedColorMain =                                        Color(0xffD04848);
   static const Color redColorTag =                                              Color(0xffee2023);
+  static const Color yellowColorTag =                                           Color(0xffFDA827);
   static const Color successGreenColor =                                        Color(0xff78ef81);
   static const Color statusReadyGreenColor18CC00=                               Color(0xff18CC00);
   static const Color yellowProcessColor =                                       Color(0xffFDA827);

@@ -236,6 +236,8 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                         final groupName = groups[index];
                         final students = result.groups[groupName]!;
                         final bool groupHasActiveReferences = students.any((s) => s.status_id == 1);
+                        final bool groupHasDuplicateReferences = students.any((s) => s.status_id == 3);
+                        final bool isHighlighted = groupHasActiveReferences || groupHasDuplicateReferences;
 
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
@@ -258,29 +260,33 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                           color: AppStyle.redColorTag,
                                           borderRadius: BorderRadius.circular(10),
                                         )
-                                      : BoxDecoration(
-                                          color: Colors.transparent,
-                                          borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      color: AppStyle.blackColorMain,
-                                      width: 1,
-                                    )
-                                        ),
+                                      : groupHasDuplicateReferences
+                                          ? BoxDecoration(
+                                              color: AppStyle.yellowColorTag,
+                                              borderRadius: BorderRadius.circular(10),
+                                            )
+                                          : BoxDecoration(
+                                              color: Colors.transparent,
+                                              borderRadius: BorderRadius.circular(10),
+                                              border: Border.all(
+                                                color: AppStyle.blackColorMain,
+                                                width: 1,
+                                              )),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text('${students.length}',
                                           style: TextStyle(
-                                            color: groupHasActiveReferences
-                                            ? AppStyle.whiteColorMain
-                                            : AppStyle.blackColorMain,
+                                            color: isHighlighted
+                                                ? AppStyle.whiteColorMain
+                                                : AppStyle.blackColorMain,
                                             fontSize: AppStyle.fontSizeSmall_12,
                                             fontWeight: FontWeight.w500,
                                           )),
-                                      SizedBox(width: 5,),
+                                      const SizedBox(width: 5),
                                       SvgPicture.asset(
                                         'assets/images/people_icon.svg',
-                                        color: groupHasActiveReferences
+                                        color: isHighlighted
                                             ? AppStyle.whiteColorMain
                                             : AppStyle.blackColorMain,
                                       )
@@ -334,10 +340,13 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                         fontSize: AppStyle.fontSizeMedium_16,
                                       ),
                                     ),
-                                    trailing: (student.status_id == 1)
+                                    trailing: (student.status_id == 1 || student.status_id == 3)
                                         ? SvgPicture.asset(
                                             'assets/icon/reference_warn.svg',
                                             width: screenWidth * 0.05,
+                                            color: student.status_id == 1 
+                                                ? AppStyle.redColorTag 
+                                                : AppStyle.yellowColorTag,
                                           )
                                         : const SizedBox(),
                                     onTap: () async {

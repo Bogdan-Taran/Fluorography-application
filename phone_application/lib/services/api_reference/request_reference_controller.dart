@@ -80,7 +80,9 @@ final groupedApplicationsByGroup =
           final userId = item.user_id;
 
           // Если в текущей заявке есть номер телефона, запоминаем его
-          if (item.phone != 'Телефон не указан' && item.phone.isNotEmpty) {
+          if (item.phone != 'Телефон не указан' &&
+              item.phone.isNotEmpty &&
+              item.phone != 'Не указан') {
             studentPhones[userId] = item.phone;
           }
 
@@ -90,8 +92,12 @@ final groupedApplicationsByGroup =
 
           final existing = tempGrouped[item.group]![userId];
 
-          // Приоритет заявке со статусом "В процессе" (1) для корректного отображения в списке
-          if (existing == null || (existing.status_id != 1 && item.status_id == 1)) {
+          // Приоритет: 1 (В процессе) > 3 (Дубликат) > остальные (например, 2 - Готово)
+          if (existing == null ||
+              (item.status_id == 1 && existing.status_id != 1) ||
+              (item.status_id == 3 &&
+                  existing.status_id != 1 &&
+                  existing.status_id != 3)) {
             tempGrouped[item.group]![userId] = item;
           }
         }
@@ -101,7 +107,7 @@ final groupedApplicationsByGroup =
           groupedApplications[groupName] = studentMap.values.map((student) {
             final phone = studentPhones[student.user_id];
             // Проверяем на старый и новый вариант текста "не указан" для надежности
-            if (phone != null && 
+            if (phone != null &&
                 (student.phone == 'Не указан' || student.phone == 'Телефон не указан')) {
               return student.copyWith(phone: phone);
             }

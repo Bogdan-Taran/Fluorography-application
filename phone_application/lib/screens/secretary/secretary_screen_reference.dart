@@ -4,6 +4,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/screens/secretary/secretary_edit_dialog.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_controller.dart';
@@ -76,13 +77,13 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             elevation: 0,
-            toolbarHeight: 140,
+            toolbarHeight: 140.h,
             title: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: REdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
                 children: [
                   SizedBox(
-                    height: 48,
+                    height: 48.h,
                     child: TextField(
                       controller: _searchController,
                       focusNode: _searchFocusNode,
@@ -94,18 +95,18 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                         filled: true,
                         fillColor: Color(0xFFF5F7FA),
                         prefixIcon: Padding(
-                          padding: const EdgeInsets.all(14.0),
+                          padding: REdgeInsets.all(14.0),
                           child: SvgPicture.asset(
                             'assets/icon/search_icon.svg',
-                            width: 20,
-                            height: 20,
+                            width: 20.w,
+                            height: 20.h,
                             color: const Color(0xff98BFF3),
                           ),
                         ),
                         hintText: 'Поиск',
-                        hintStyle: const TextStyle(
-                          fontSize: 16,
-                          color: Color(0xff26292B),
+                        hintStyle: TextStyle(
+                          fontSize: AppStyle.fontSizeMedium_16,
+                          color: const Color(0xff26292B),
                           fontWeight: FontWeight.w400,
                         ),
                         suffixIcon: _searchController.text.isNotEmpty
@@ -115,24 +116,25 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                   _searchController.clear();
                                   setState(() {});
                                 },
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.close,
-                                  color: Color(0xff98BFF3),
+                                  color: const Color(0xff98BFF3),
+                                  size: 24.r,
                                 ),
                               )
                             : null,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(30.r),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                        contentPadding: EdgeInsets.zero,
                       ),
                       onTapOutside: (event) {
                         FocusManager.instance.primaryFocus?.unfocus();
                       },
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  10.verticalSpace,
                   GestureDetector(
                     onTap: () {
                       setState(() {
@@ -140,26 +142,26 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                       });
                     },
                     child: Container(
-                      height: 48,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      height: 48.h,
+                      padding: REdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         color: _showOnlyActive ? AppStyle.blueColorAdditional4AABDB : Color(0xFFF5F7FA),
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(30.r),
                       ),
                       child: Row(
                         children: [
                           SvgPicture.asset(
                             'assets/icon/mobile_checkbox.svg',
                             // color: _showOnlyActive ? Colors.white : const Color(0xff98BFF3),
-                            width: 20,
-                            height: 20,
+                            width: 20.w,
+                            height: 20.h,
                           ),
-                          const SizedBox(width: 12),
+                          12.horizontalSpace,
                           Expanded(
                             child: Text(
                               'Показывать только группы с активными заявками',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: AppStyle.fontSizeMediumMini_14,
                                 color: _showOnlyActive ? Colors.white : const Color(0xff26292B),
                                 fontWeight: FontWeight.w400,
                               ),
@@ -211,7 +213,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                padding: REdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                 child: groupedData.when(
                   data: (result) {
                     final groups = result.groups.keys.toList();
@@ -221,7 +223,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                         child: Text(
                           result.message ?? 'Нет справок',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppStyle.blueColorTextTitle,
                             fontSize: AppStyle.fontSizeMedium_16,
                           ),
@@ -230,7 +232,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                     }
 
                     return ListView.builder(
-                      padding: const EdgeInsets.only(top: 10),
+                      padding: REdgeInsets.only(top: 10),
                       itemCount: groups.length,
                       itemBuilder: (context, index) {
                         final groupName = groups[index];
@@ -240,37 +242,37 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                         final bool isHighlighted = groupHasActiveReferences || groupHasDuplicateReferences;
 
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
+                          padding: REdgeInsets.only(bottom: 10),
                           child: expansion_tile.ExpansionTile(
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   'Группа $groupName',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: AppStyle.blueColorTextTitle,
                                     fontSize: AppStyle.fontSizeMedium_16,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                  padding: REdgeInsets.symmetric(horizontal: 10, vertical: 2),
                                   decoration: groupHasActiveReferences
                                       ? BoxDecoration(
                                           color: AppStyle.redColorTag,
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(10.r),
                                         )
                                       : groupHasDuplicateReferences
                                           ? BoxDecoration(
                                               color: AppStyle.yellowColorTag,
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius: BorderRadius.circular(10.r),
                                             )
                                           : BoxDecoration(
                                               color: Colors.transparent,
-                                              borderRadius: BorderRadius.circular(10),
+                                              borderRadius: BorderRadius.circular(10.r),
                                               border: Border.all(
                                                 color: AppStyle.blackColorMain,
-                                                width: 1,
+                                                width: 1.w,
                                               )),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -283,7 +285,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                             fontSize: AppStyle.fontSizeSmall_12,
                                             fontWeight: FontWeight.w500,
                                           )),
-                                      const SizedBox(width: 5),
+                                      5.horizontalSpace,
                                       SvgPicture.asset(
                                         'assets/images/people_icon.svg',
                                         color: isHighlighted
@@ -296,11 +298,11 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                               ],
                             ),
                             collapsedShape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                side: const BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1)),
+                                borderRadius: BorderRadius.circular(20.r),
+                                side: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1.w)),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                side: const BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1)),
+                                borderRadius: BorderRadius.circular(20.r),
+                                side: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1.w)),
                             trailing: SvgPicture.asset(
                               _isExpandedTile[index] == true
                                   ? 'assets/images/icon_expand_down2.svg'
@@ -314,10 +316,10 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                             children: [
                               Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                decoration: const BoxDecoration(
-                                    border: Border(bottom: BorderSide(color: Color(0x330088cc), width: 1))),
-                                child: const Text(
+                                padding: REdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                decoration: BoxDecoration(
+                                    border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
+                                child: Text(
                                   'Чтобы посмотреть историю справок или изменить статус справки, выберите человека из списка.',
                                   style: TextStyle(
                                     color: AppStyle.activeBlueColorMain,
@@ -328,14 +330,14 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                               ),
                               ...students.map((student) {
                                 return Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                  decoration: const BoxDecoration(
-                                      border: Border(bottom: BorderSide(color: Color(0x330088cc), width: 1))),
+                                  padding: REdgeInsets.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                      border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
                                   child: ListTile(
                                     contentPadding: EdgeInsets.symmetric(vertical: screenHeight * 0.0015),
                                     title: Text(
                                       '${student.firstname} ${student.lastname}',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         color: AppStyle.blackColorMain,
                                         fontSize: AppStyle.fontSizeMedium_16,
                                       ),
@@ -343,7 +345,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                     trailing: (student.status_id == 1 || student.status_id == 3)
                                         ? SvgPicture.asset(
                                             'assets/icon/reference_warn.svg',
-                                            width: screenWidth * 0.05,
+                                            width: 20.w,
                                             color: student.status_id == 1 
                                                 ? AppStyle.redColorTag 
                                                 : AppStyle.yellowColorTag,
@@ -370,7 +372,12 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                     );
                   },
                   error: (error, stackTrace) => Center(child: Text('Ошибка: $error')),
-                  loading: () => const Center(child: CircularProgressIndicator()),
+                  loading: () => Center(
+                    child: LoadingAnimationWidget.halfTriangleDot(
+                      color: AppStyle.blueColorAdditional4AABDB,
+                      size: 50.r,
+                    ),
+                  ),
                 ),
               ),
             ],

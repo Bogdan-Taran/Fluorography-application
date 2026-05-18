@@ -1,24 +1,10 @@
 import 'dart:core';
-import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:project_fluorography/services/api_reference/request_reference_controller.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_fluorography/styles.dart';
-import 'package:talker/talker.dart';
-import '../../bloc/authentication/authentication_bloc.dart';
-import '../../main.dart';
-import '../../models/get_reference_model/get_reference_model.dart';
-import '../../services/builders_screen.dart';
-import '../../services/converters_service.dart';
-import '../../widgets/bottom_navy_bar.dart';
-import '../../widgets/expansion_tile.dart' as expansion_tile;
-import '../../widgets/show_exit_dialog.dart';
-import '../notification_screen.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
+
 
 // Флюорография секретерь
 class SecretaryScreenFluorography extends ConsumerStatefulWidget {
@@ -38,41 +24,41 @@ class _SecretaryScreenFluorography extends ConsumerState {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           elevation: 0,
-          toolbarHeight: 80,
+          toolbarHeight: 80.h,
           title: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: REdgeInsets.symmetric(horizontal: 8.0),
             child: TextField(
               enabled: false,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: const Color(0xFFF5F7FA),
                 prefixIcon: Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: REdgeInsets.all(12.0),
                   child: SvgPicture.asset(
                     'assets/images/serch_icon.svg',
-                    width: 20,
-                    height: 20,
+                    width: 20.w,
+                    height: 20.h,
                     color: const Color(0xff98BFF3),
                   ),
                 ),
                 hintText: 'Поиск',
-                hintStyle: const TextStyle(
-                  fontSize: 16,
-                  color: Color(0xff26292B),
+                hintStyle: TextStyle(
+                  fontSize: AppStyle.fontSizeMedium_16,
+                  color: const Color(0xff26292B),
                   fontWeight: FontWeight.w400,
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(30.r),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                contentPadding: EdgeInsets.zero,
               ),
             ),
           ),
         ),
         body: Center(
             child: Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: REdgeInsets.all(15.0),
               child: Text(
                   'У вас нет доступа к этой странице. Вам доступна страница "справки"',
                   style: TextStyle(

@@ -1,8 +1,10 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/notifications/notification_service.dart';
+import 'package:project_fluorography/styles.dart';
 
 class NotificationScreen extends ConsumerStatefulWidget{
   const NotificationScreen({super.key});
@@ -21,43 +23,47 @@ class _NotificationScreen extends ConsumerState<NotificationScreen> {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           elevation: 0,
-          toolbarHeight: 80,
+          toolbarHeight: 80.h,
           title: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: REdgeInsets.symmetric(horizontal: 8.0),
             child: TextField(
               enabled: false,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: const Color(0xFFF5F7FA),
                 prefixIcon: Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: EdgeInsets.all(12.0.r),
                   child: SvgPicture.asset(
                     'assets/images/serch_icon.svg',
-                    width: 20,
-                    height: 20,
+                    width: 20.w,
+                    height: 20.h,
                     color: const Color(0xff98BFF3),
                   ),
                 ),
                 hintText: 'Поиск',
-                hintStyle: const TextStyle(
-                  fontSize: 16,
+                hintStyle: TextStyle(
+                  fontSize: AppStyle.fontSizeMedium_16,
                   color: Color(0xff26292B),
                   fontWeight: FontWeight.w400,
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(30.r),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                contentPadding: REdgeInsets.symmetric(vertical: 0),
               ),
             ),
           ),
         ),
         body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            padding: REdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Column(
               children: [
-                Text('Здесь будут уведомления'),
+                Text(
+                  'Здесь будут уведомления',
+                  style: TextStyle(fontSize: AppStyle.fontSizeMedium_16),
+                ),
+                SizedBox(height: 20.h),
                 ElevatedButton(
                     onPressed: () {
                       NotificationService().showNotification(
@@ -65,7 +71,10 @@ class _NotificationScreen extends ConsumerState<NotificationScreen> {
                         body:  'Тело сообщения',
                       );
                     },
-                    child: const Text('Отправить уведомление')
+                    child: Text(
+                      'Отправить уведомление',
+                      style: TextStyle(fontSize: AppStyle.fontSizeMedium_16),
+                    )
                 )
               ]
             )

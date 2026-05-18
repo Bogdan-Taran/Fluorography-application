@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:sizer/sizer.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppStyle {
   //Размеры шрифтов
-  static const double fontSizeTitle =                                           24;
-  static const double fontSizeExtraLarge =                                      20;
-  static const double fontSizeLarge =                                           18;
-  static const double fontSizeMedium_16 =                                       16;
-  static const double fontSizeMediumMini_14 =                                   14;
-  static const double fontSizeSmall_12 =                                        12;
-  static const double fontSizeExtraSmall =                                      10;
+  static double get fontSizeTitle => 24.sp;
+  static double get fontSizeExtraLarge => 20.sp;
+  static double get fontSizeLarge => 18.sp;
+  static double get fontSizeMedium_16 => 16.sp;
+  static double get fontSizeMediumMini_14 => 14.sp;
+  static double get fontSizeSmall_12 => 12.sp;
+  static double get fontSizeExtraSmall => 10.sp;
 
   //Цвета
   static const Color blackColorMain =                                           Color(0xff26292B);
@@ -35,17 +34,17 @@ class AppStyle {
   //Paddings
   static const double contentPaddingTextFieldVertical =                         40;
   static const double contentPaddingTextFieldHorizontal =                       40;
-  static const EdgeInsetsGeometry contentPaddingDropdownItemLeft =              EdgeInsetsGeometry.symmetric(vertical: 4, horizontal: 16);
-  static const EdgeInsetsGeometry outsideInputPaddingHorizontal =               EdgeInsetsGeometry.symmetric(horizontal: 32);
-  static const EdgeInsetsGeometry contentPaddingTextFieldSymmetric =            EdgeInsetsGeometry.symmetric(vertical: 8, horizontal: 16);
-  static const EdgeInsets loginAndPasswordFieldPadding =                         EdgeInsets.only(top: 8, right: 20, bottom: 8, left: 16,);
+  static final EdgeInsetsGeometry contentPaddingDropdownItemLeft =              REdgeInsets.symmetric(vertical: 4, horizontal: 16);
+  static final EdgeInsetsGeometry outsideInputPaddingHorizontal =               REdgeInsets.symmetric(horizontal: 32);
+  static final EdgeInsetsGeometry contentPaddingTextFieldSymmetric =            REdgeInsets.symmetric(vertical: 8, horizontal: 16);
+  static final EdgeInsets loginAndPasswordFieldPadding =                         REdgeInsets.only(top: 8, right: 20, bottom: 8, left: 16);
 
   Color testStyle(){
     return grayColorMain;
   }
 
   //Borders
-  static final BorderRadius inputBorderRadius = BorderRadius.circular(30.0);
+  static final BorderRadius inputBorderRadius = BorderRadius.circular(30.0.r);
 
   //FontWeight
   static final FontWeight inputFontWeight = FontWeight.w400;

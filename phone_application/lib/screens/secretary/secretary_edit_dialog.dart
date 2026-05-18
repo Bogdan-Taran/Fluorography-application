@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:talker/talker.dart';
 
@@ -45,14 +46,14 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: REdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
           color: isActive ? statusId.statusColor : statusId.statusColor.withOpacity(0.4),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
         ),
         child: Text(
           statusId.statusName,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppStyle.whiteColorMain,
             fontSize: AppStyle.fontSizeSmall_12,
             fontWeight: FontWeight.w500,
@@ -64,14 +65,12 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Dialog(
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
+      insetPadding: REdgeInsets.symmetric(horizontal: 20, vertical: 40),
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: REdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +84,7 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
                     children: [
                       Text(
                         '${widget.student.lastname} ${widget.student.firstname} ${widget.student.patronymic}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppStyle.blueColorTextTitle,
                           fontSize: AppStyle.fontSizeLarge,
                           fontWeight: FontWeight.w500,
@@ -93,7 +92,7 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
                       ),
                       Text(
                         'группа ${widget.student.group}, ${widget.student.phone}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppStyle.blackColorMain,
                           fontSize: AppStyle.fontSizeMediumMini_14,
                         ),
@@ -103,11 +102,11 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
                 ),
                 IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close, color: AppStyle.blueColorAdditional4AABDB),
+                  icon: Icon(Icons.close, color: AppStyle.blueColorAdditional4AABDB, size: 24.r),
                 ),
               ],
             ),
-            const Divider(color: AppStyle.collapsedBlueColorD4EAFF, thickness: 1, height: 32),
+            Divider(color: AppStyle.collapsedBlueColorD4EAFF, thickness: 1.h, height: 32.h),
             Flexible(
               child: Consumer(
                 builder: (context, ref, child) {
@@ -115,11 +114,11 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
                   return historyDataAsync.when(
                     data: (data) {
                       if (data.isEmpty) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
+                        return Padding(
+                          padding: REdgeInsets.symmetric(vertical: 20),
                           child: Text(
                             'У этого студента нет истории заявок',
-                            style: TextStyle(color: AppStyle.blackColorMain),
+                            style: TextStyle(color: AppStyle.blackColorMain, fontSize: AppStyle.fontSizeMedium_16),
                           ),
                         );
                       }
@@ -131,9 +130,9 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
                           final currentStatusId = _updatedStatuses[item.id] ?? item.status_id;
 
                           return Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: const BoxDecoration(
-                              border: Border(bottom: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1)),
+                            padding: REdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              border: Border(bottom: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1.h)),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +146,7 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
                                         children: [
                                           Text(
                                             item.type_id.applicationTypeName,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               color: AppStyle.blackColorMain,
                                               fontSize: AppStyle.fontSizeMediumMini_14,
                                               fontWeight: FontWeight.w500,
@@ -155,7 +154,7 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
                                           ),
                                           Text(
                                             item.date,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               color: AppStyle.activeBlueColorMain,
                                               fontSize: AppStyle.fontSizeSmall_12,
                                             ),
@@ -167,17 +166,17 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
                                   ],
                                 ),
                                 if (editStatusMode) ...[
-                                  const SizedBox(height: 12),
+                                  12.verticalSpace,
                                   Row(
                                     children: [
                                       _buildStatusTag(2, // Готова
                                           isActive: currentStatusId == 2,
                                           onTap: () => setState(() => _updatedStatuses[item.id] = 2)),
-                                      const SizedBox(width: 8),
+                                      8.horizontalSpace,
                                       _buildStatusTag(1, // В процессе
                                           isActive: currentStatusId == 1,
                                           onTap: () => setState(() => _updatedStatuses[item.id] = 1)),
-                                      const SizedBox(width: 8),
+                                      8.horizontalSpace,
                                       _buildStatusTag(3, // Дубликат
                                           isActive: currentStatusId == 3,
                                           onTap: () => setState(() => _updatedStatuses[item.id] = 3)),
@@ -194,22 +193,22 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
                     loading: () => Center(
                       child: LoadingAnimationWidget.halfTriangleDot(
                         color: AppStyle.blueColorAdditional4AABDB,
-                        size: 50,
+                        size: 50.r,
                       ),
                     ),
                   );
                 },
               ),
             ),
-            const SizedBox(height: 24),
-            _buildBottomButtons(screenWidth),
+            24.verticalSpace,
+            _buildBottomButtons(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildBottomButtons(double screenWidth) {
+  Widget _buildBottomButtons() {
     final updateState = ref.watch(updateReferenceStatusControllerProvider);
     final isLoading = updateState.isLoading;
 
@@ -225,11 +224,11 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
                 });
               },
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: AppStyle.activeBlueColorMain),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                side: BorderSide(color: AppStyle.activeBlueColorMain, width: 1.w),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
+                padding: REdgeInsets.symmetric(vertical: 14),
               ),
-              child: const Text(
+              child: Text(
                 'Отменить',
                 style: TextStyle(
                   color: AppStyle.activeBlueColorMain,
@@ -239,27 +238,27 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          12.horizontalSpace,
           Expanded(
             child: ElevatedButton(
               onPressed: (isLoading || _updatedStatuses.isEmpty) ? null : _saveChanges,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppStyle.activeBlueColorMain,
                 disabledBackgroundColor: AppStyle.disableBlueColorMain,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
+                padding: REdgeInsets.symmetric(vertical: 14),
                 elevation: 0,
               ),
               child: isLoading
                   ? SizedBox(
-                      height: 20,
-                      width: 20,
+                      height: 20.w,
+                      width: 20.w,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2,
+                        strokeWidth: 2.w,
                         color: Colors.white,
                       ),
                     )
-                  : const Text(
+                  : Text(
                       'Сохранить',
                       style: TextStyle(
                         color: Colors.white,
@@ -280,11 +279,11 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppStyle.activeBlueColorMain,
-          minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          minimumSize: Size(double.infinity, 50.h),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
           elevation: 0,
         ),
-        child: const Text(
+        child: Text(
           'Редактировать',
           style: TextStyle(
             color: Colors.white,

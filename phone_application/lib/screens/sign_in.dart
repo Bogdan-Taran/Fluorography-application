@@ -8,7 +8,7 @@ import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubi
 import '../styles.dart';
 import 'redirect_screen.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SignInScreen extends StatefulWidget {
   static String id = 'login_screen';
 
@@ -39,9 +39,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(statusBarColor: Colors.white),
       child: Scaffold(
@@ -103,7 +100,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: SvgPicture.asset(
                       'assets/images/vectorBottom.svg',
                       fit: BoxFit.fitWidth,
-                      width: screenWidth * 1,
+                      width: 1.sw,
                     ),
                   ),
                 ],
@@ -114,7 +111,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 16.0, top: 8.0),
+                    padding: REdgeInsets.only(left: 16.0, top: 8.0),
                     child: IconButton(
                       icon: const Icon(Icons.arrow_back_ios_new),
                       color: Color(0xff98BFF3),
@@ -127,28 +124,28 @@ class _SignInScreenState extends State<SignInScreen> {
               Center(
                 child: SingleChildScrollView(
                   child: Container(
-                    width: screenWidth * 0.75,
-                    height: screenHeight * 0.43,
+                    width: 0.75.sw,
+                    height: 0.43.sh,
                     decoration: BoxDecoration(
                       color: Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderRadius: BorderRadius.all(Radius.circular(20.r)),
                       boxShadow: [
                         BoxShadow(
                           color: Color(0x26D4EAFF),
-                          offset: Offset(-4, -4),
-                          blurRadius: 3,
+                          offset: Offset(-4.w, -4.h),
+                          blurRadius: 3.r,
                           spreadRadius: 0,
                         ),
                         BoxShadow(
                           color: Color(0x26D4EAFF),
-                          offset: Offset(6, -7),
-                          blurRadius: 3,
+                          offset: Offset(6.w, -7.h),
+                          blurRadius: 3.r,
                           spreadRadius: 0,
                         ),
                         BoxShadow(
                           color: Color(0x26D4EAFF),
-                          offset: Offset(0, 7),
-                          blurRadius: 3,
+                          offset: Offset(0, 7.h),
+                          blurRadius: 3.r,
                           spreadRadius: 0,
                         ),
                       ],
@@ -156,7 +153,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: screenHeight * 0.04,
+                          height: 0.04.sh,
                           // height: screenHeight * 0.02,
                         ),
                         Center(
@@ -172,7 +169,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(
+                          padding: REdgeInsets.only(
                             top: 15,
                             left: 0,
                             right: 0,
@@ -190,42 +187,42 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: screenHeight * 0.02),
+                        SizedBox(height: 0.02.sh),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 35),
+                          padding: REdgeInsets.symmetric(horizontal: 35),
                           child: TextField(
                             controller: loginController,
                             cursorColor: Color(0xff72A7EB),
-                            cursorHeight: 17,
-                            cursorWidth: 1.2,
+                            cursorHeight: 17.h,
+                            cursorWidth: 1.2.w,
                             decoration: InputDecoration(
                               enabled: true,
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(10.0.r),
                                 borderSide: BorderSide(
                                   color: Color(0xff98BFF3),
-                                  width: 1.0,
+                                  width: 1.0.w,
                                 ),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(10.0.r),
                                 borderSide: BorderSide(
                                   color: Color(0xff72A7EB),
-                                  width: 2,
+                                  width: 2.w,
                                 ),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(10.0.r),
                                 borderSide: BorderSide(
                                   color: AppStyle.errorRedColorMain,
-                                  width: 2,
+                                  width: 2.w,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(10.0.r),
                                 borderSide: BorderSide(
                                   color: AppStyle.errorRedColorMain,
-                                  width: 2,
+                                  width: 2.w,
                                 ),
                               ),
                               errorText: _validateLogin ? 'Обязательное поле' : null,
@@ -253,16 +250,16 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                         SizedBox(
-                          height: screenHeight * 0.01,
+                          height: 0.01.sh,
                           // height: screenHeight * 0.1,
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 35),
+                          padding: REdgeInsets.symmetric(horizontal: 35),
                           child: TextField(
                             controller: passwordController,
                             cursorColor: Color(0xff72A7EB),
-                            cursorHeight: 17,
-                            cursorWidth: 1.2,
+                            cursorHeight: 17.h,
+                            cursorWidth: 1.2.w,
 
                             onChanged: (text) => setState(() {
                               _validatePassword = passwordController.text.isEmpty;
@@ -270,31 +267,31 @@ class _SignInScreenState extends State<SignInScreen> {
                             decoration: InputDecoration(
                               enabled: true,
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(10.0.r),
                                 borderSide: BorderSide(
                                   color: Color(0xff98BFF3),
-                                  width: 1.0,
+                                  width: 1.0.w,
                                 ),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(10.0.r),
                                 borderSide: BorderSide(
                                   color: Color(0xff72A7EB),
-                                  width: 2,
+                                  width: 2.w,
                                 ),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(10.0.r),
                                 borderSide: BorderSide(
                                   color: AppStyle.errorRedColorMain,
-                                  width: 2,
+                                  width: 2.w,
                                 ),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(10.0.r),
                                 borderSide: BorderSide(
                                   color: AppStyle.errorRedColorMain,
-                                  width: 2,
+                                  width: 2.w,
                                 ),
                               ),
                               errorText: _validatePassword ? 'Обязательное поле' : null,
@@ -320,7 +317,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             autocorrect: false,
                           ),
                         ),
-                        SizedBox(height: screenHeight * 0.02),
+                        SizedBox(height: 0.02.sh),
                         BlocConsumer<AuthenticationBloc, AuthenticationState>(
                           listener: (context, state) {
                             switch (state.runtimeType) {
@@ -349,7 +346,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           builder: (context, state) {
                             final _isLoading = state is AuthenticationLoadingState;
                             return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 35),
+                              padding: REdgeInsets.symmetric(horizontal: 35),
                               child: ElevatedButton(
                                 onPressed: _isLoading ? null : () {
                                   setState(() {
@@ -397,18 +394,18 @@ class _SignInScreenState extends State<SignInScreen> {
                                         return Color(0xffffffff);
                                       }),
                                   minimumSize: WidgetStateProperty.all(
-                                    Size(screenWidth * 1, 40),
+                                    Size(1.sw, 40.h),
                                   ),
                                   shape: WidgetStateProperty.all(
                                     RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(10.r),
                                     ),
                                   ),
                                 ),
                                 child: state is AuthenticationLoadingState
                                     ? LoadingAnimationWidget.halfTriangleDot(
                                         color: Colors.white,
-                                        size: 24,
+                                        size: 24.r,
                                       )
                                     : Text(
                                         'Войти',

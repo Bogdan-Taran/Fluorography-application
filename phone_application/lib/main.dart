@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
 import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
 import 'package:project_fluorography/screens/redirect_screen.dart';
@@ -56,22 +57,27 @@ class MyApp extends StatelessWidget {
           create: (context) => InternetConnectCubit(connectivity: Connectivity()),
         ),
       ],
-      child: MaterialApp(
-        navigatorKey: navigatorKey,
-        debugShowCheckedModeBanner: false,
-        title: 'Flura',
-        theme: ThemeData(
-          appBarTheme: AppBarTheme(
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarBrightness: Brightness.light,
+      child: ScreenUtilInit(
+        designSize: const Size(393, 852),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return MaterialApp(
+            navigatorKey: navigatorKey,
+            debugShowCheckedModeBanner: false,
+            title: 'Flura',
+            theme: ThemeData(
+              appBarTheme: AppBarTheme(
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarBrightness: Brightness.light,
+                ),
+              ),
+              inputDecorationTheme: AppInputDecorations.theme,
             ),
-          ),
-          inputDecorationTheme: AppInputDecorations.theme,
-
-        ),
-         home: AuthChecker(),
-        //home: SecretaryScreen(),
+            home: AuthChecker(),
+          );
+        },
       ),
     );
   }

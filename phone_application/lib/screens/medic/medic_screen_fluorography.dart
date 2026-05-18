@@ -18,6 +18,8 @@ import '../../models/staff_and_students_model.dart';
 import '../../services/builders_screen.dart';
 import '../../services/localDataBase.dart';
 import '../../widgets/main_content_accordion_builder.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_fluorography/styles.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 
 
@@ -89,7 +91,7 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
   @override
   Widget build(BuildContext context) {
     BuildersScreen _buildersScreen = BuildersScreen();
-    final appBarHeight = MediaQuery.of(context).size.height * 0.13;
+    final appBarHeight = 80.h;
 
     return WillPopScope(
       onWillPop: () async{
@@ -99,14 +101,14 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
         color: Colors.white,
         child: Scaffold(
           resizeToAvoidBottomInset: true,
-          backgroundColor: Color(0xffffffff),
+          backgroundColor: const Color(0xffffffff),
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             elevation: 0,
-            toolbarHeight: 80,
+            toolbarHeight: appBarHeight,
             title: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: REdgeInsets.symmetric(horizontal: 8.0),
               child: TextField(
                 onTap: () {
                   context.read<MedicBloc>().add(OnTapTextFieldEvent());
@@ -127,25 +129,25 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                   filled: true,
                   fillColor: const Color(0xFFF5F7FA),
                   prefixIcon: Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding: REdgeInsets.all(12.0),
                     child: SvgPicture.asset(
                       'assets/images/serch_icon.svg',
-                      width: 20,
-                      height: 20,
+                      width: 20.w,
+                      height: 20.h,
                       color: const Color(0xff98BFF3),
                     ),
                   ),
                   hintText: 'Поиск',
-                  hintStyle: const TextStyle(
-                    fontSize: 16,
-                    color: Color(0xff26292B),
+                  hintStyle: TextStyle(
+                    fontSize: AppStyle.fontSizeMedium_16,
+                    color: const Color(0xff26292B),
                     fontWeight: FontWeight.w400,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(30.r),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                  contentPadding: EdgeInsets.zero,
                 ),
                 onTapOutside: (event) {
                   FocusManager.instance.primaryFocus?.unfocus();
@@ -156,14 +158,14 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
           body: Stack(
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
+                width: 1.sw,
+                height: 1.sh,
                 child: IgnorePointer(
                   child: // Декорации
                   Stack(
                     children: [
                       Align(
-                        alignment: Alignment(1, -1),
+                        alignment: const Alignment(1, -1),
                         child: SvgPicture.asset(
                           'assets/images/vectorRight.svg',
                           semanticsLabel: 'Top SVG Image',
@@ -171,12 +173,12 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                         ),
                       ),
                       Align(
-                        alignment: Alignment(1, 0.5),
+                        alignment: const Alignment(1, 0.5),
                         child: SvgPicture.asset(
                           'assets/images/vectorLine.svg',
                           semanticsLabel: 'Top SVG Image',
                           fit: BoxFit.fill,
-                          width: MediaQuery.of(context).size.width * 1,
+                          width: 1.sw,
                         ),
                       ),
                       Align(
@@ -185,7 +187,7 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                         child: SvgPicture.asset(
                           'assets/images/vectorBottom.svg',
                           fit: BoxFit.fitWidth,
-                          width: MediaQuery.of(context).size.width * 1,
+                          width: 1.sw,
                         ),
                       ),
                     ],
@@ -194,7 +196,7 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
               ),
               SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                  padding: REdgeInsets.symmetric(horizontal: 18, vertical: 8),
                   child: Column(
                     children: [
                       MultiBlocListener(
@@ -225,12 +227,13 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(
-                                        title: const Text('Подтверждение выхода'),
+                                        title: Text('Подтверждение выхода', style: TextStyle(fontSize: AppStyle.fontSizeLarge)),
                                         content: SingleChildScrollView(
                                           child: ListBody(
-                                            children: const <Widget>[
+                                            children: <Widget>[
                                               Text(
                                                 'Вы уверены что хотите выйти?',
+                                                style: TextStyle(fontSize: AppStyle.fontSizeMedium_16),
                                               ),
                                             ],
                                           ),
@@ -275,17 +278,14 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                                               minimumSize:
                                                   WidgetStateProperty.all(
                                                     Size(
-                                                      MediaQuery.of(
-                                                            context,
-                                                          ).size.width *
-                                                          0.1,
-                                                      35,
+                                                      0.1.sw,
+                                                      35.h,
                                                     ),
                                                   ),
                                               shape: WidgetStateProperty.all(
                                                 RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(10),
+                                                      BorderRadius.circular(10.r),
                                                 ),
                                               ),
                                             ),
@@ -296,11 +296,11 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                                               context.read<AuthenticationBloc>().add(SignOutCancelEvent());
                                               Navigator.of(context).pop();
                                             },
-                                            child: const Text(
+                                            child: Text(
                                               'Отмена',
                                               style: TextStyle(
-                                                fontSize: 16,
-                                                color: Color(0xff98BFF3),
+                                                fontSize: AppStyle.fontSizeMedium_16,
+                                                color: const Color(0xff98BFF3),
                                                 fontWeight: FontWeight.w600,
                                                 fontFamily: 'Geologica',
                                               ),
@@ -345,17 +345,14 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                                               minimumSize:
                                                   WidgetStateProperty.all(
                                                     Size(
-                                                      MediaQuery.of(
-                                                            context,
-                                                          ).size.width *
-                                                          0.1,
-                                                      35,
+                                                      0.1.sw,
+                                                      35.h,
                                                     ),
                                                   ),
                                               shape: WidgetStateProperty.all(
                                                 RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(10),
+                                                      BorderRadius.circular(10.r),
                                                 ),
                                               ),
                                             ),
@@ -365,11 +362,11 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                                                   .read<AuthenticationBloc>()
                                                   .add(SignOutAcceptEvent());
                                             },
-                                            child: const Text(
+                                            child: Text(
                                               'Да',
                                               style: TextStyle(
-                                                fontSize: 16,
-                                                color: Color(0xffffffff),
+                                                fontSize: AppStyle.fontSizeMedium_16,
+                                                color: const Color(0xffffffff),
                                                 fontWeight: FontWeight.w600,
                                                 fontFamily: 'Geologica',
                                               ),
@@ -463,7 +460,7 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                                     Fluttertoast.showToast(
                                       msg: 'Есть интернет-соединение',
                                       backgroundColor: const Color(0xff78ef81),
-                                      fontSize: 16,
+                                      fontSize: AppStyle.fontSizeMedium_16,
                                       gravity: ToastGravity.CENTER,
                                       textColor: const Color(0xffffffff),
                                     );
@@ -471,7 +468,7 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                                     Fluttertoast.showToast(
                                       msg: 'Отсутствует интернет-соединение',
                                       backgroundColor: const Color(0xffed6969),
-                                      fontSize: 16,
+                                      fontSize: AppStyle.fontSizeMedium_16,
                                       gravity: ToastGravity.CENTER,
                                       textColor: const Color(0xffffffff),
                                     );
@@ -479,7 +476,7 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                                     Fluttertoast.showToast(
                                       msg: 'Об интернет-соединении неизвестно',
                                       backgroundColor: const Color(0xff98BFF3),
-                                      fontSize: 16,
+                                      fontSize: AppStyle.fontSizeMedium_16,
                                       gravity: ToastGravity.CENTER,
                                       textColor: const Color(0xffffffff),
                                     );
@@ -521,6 +518,7 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                                 return Center(
                                   child: Text(
                                     'Ничего не нашлось по вашему заросу',
+                                    style: TextStyle(fontSize: AppStyle.fontSizeLarge),
                                   ),
                                 );
                               case MedicFilteredState:
@@ -540,13 +538,12 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                               default:
                                 print('Экран: состояние default');
                                 return Container(
-                                  padding: EdgeInsetsGeometry.symmetric(
+                                  padding: REdgeInsets.symmetric(
                                     horizontal: 15,
                                   ),
-                                  width: MediaQuery.of(context).size.width * 1,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.8,
-                                  decoration: BoxDecoration(
+                                  width: 1.sw,
+                                  height: 0.8.sh,
+                                  decoration: const BoxDecoration(
                                     color: Colors.transparent,
                                   ),
                                   child: Column(
@@ -555,7 +552,7 @@ class _MedicScreenFluorography extends State<MedicScreenFluorography> {
                                     children: [
                                       Text(
                                         'Отсутствуют сотрудники или студенты',
-                                        style: TextStyle(fontSize: 18),
+                                        style: TextStyle(fontSize: AppStyle.fontSizeLarge),
                                       ),
                                     ],
                                   ),

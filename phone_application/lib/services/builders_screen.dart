@@ -3,8 +3,10 @@ import 'package:bottom_picker/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
+import 'package:project_fluorography/styles.dart';
 
 import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import 'converters_service.dart';
@@ -12,11 +14,11 @@ import 'converters_service.dart';
 class BuildersScreen {
   ConverterServices _ConverterServices = ConverterServices();
 
-  Widget buildLoading({double size = 50}) {
+  Widget buildLoading({double? size}) {
     return Center(
       child: LoadingAnimationWidget.halfTriangleDot(
         color: Color(0xff98BFF3),
-        size: size,
+        size: size ?? 50.r,
       ),
     );
   }
@@ -26,15 +28,15 @@ class BuildersScreen {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error, size: 64, color: Colors.red),
-          const SizedBox(height: 16),
+          Icon(Icons.error, size: 64.r, color: Colors.red),
+          SizedBox(height: 16.h),
           Text(
             'Ошибка: $errorMessage',
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.red, fontSize: 16),
+            style: TextStyle(color: Colors.red, fontSize: AppStyle.fontSizeMedium_16),
           ),
-          const SizedBox(height: 16),
-          ElevatedButton(onPressed: () {}, child: const Text('Повторить')),
+          SizedBox(height: 16.h),
+          ElevatedButton(onPressed: () {}, child: Text('Повторить', style: TextStyle(fontSize: AppStyle.fontSizeMedium_16))),
         ],
       ),
     );
@@ -49,7 +51,7 @@ class BuildersScreen {
         textAlign: TextAlign.center,
         'Выбрать',
         style: TextStyle(
-          fontSize: 16,
+          fontSize: AppStyle.fontSizeMedium_16,
           color: Color(0xFFFFFFFF),
           fontWeight: FontWeight.w400,
           fontFamily: 'Geologica',
@@ -57,7 +59,7 @@ class BuildersScreen {
       ),
       buttonStyle: BoxDecoration(
         color: Color(0xff98BFF3),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
       ),
       headerBuilder: (context) {
         return Row(
@@ -66,7 +68,7 @@ class BuildersScreen {
             Text(
               'Выберите дату',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: AppStyle.fontSizeMedium_16,
                 color: Color(0xFF72A7EB),
                 fontWeight: FontWeight.w400,
                 fontFamily: 'Geologica',
@@ -78,9 +80,9 @@ class BuildersScreen {
                 bloc.add(CloseDatePickerEvent(uniqueId: uniqueDateContainerId));
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.close),
+              icon: Icon(Icons.close, size: 24.r),
               style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.all(Color(0xFF72A7EB)),
+                foregroundColor: WidgetStateProperty.all(Color(0xFF72A7EB)),
               ),
             ),
           ],
@@ -133,27 +135,28 @@ class PopUpMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return
       Positioned(
-          top: 80,
-          left: 20,
-          right: 20,
+          top: 80.h,
+          left: 20.w,
+          right: 20.w,
           child: Material(
             child: Container(
-                padding: EdgeInsets.all(12),
+                padding: REdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                   color: isSuccess ? Color(0xff1DD300) : Color(0xffF80012),
                 ),
                 child: Row(
                   children: [
                     Icon(
                         isSuccess? Icons.check_circle_outline : Icons.error_outline,
-                        color: Colors.white
+                        color: Colors.white,
+                        size: 24.r,
                     ),
-                    SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Expanded(
                       child: Text(
                         message,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white, fontSize: AppStyle.fontSizeMediumMini_14),
                       ),
                     ),
                   ],

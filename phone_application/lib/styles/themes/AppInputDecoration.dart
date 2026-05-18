@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../styles.dart';
 
@@ -6,14 +7,14 @@ class AppInputDecorations {
   static InputDecorationTheme theme = InputDecorationTheme(
     border: OutlineInputBorder(
       borderRadius: AppStyle.inputBorderRadius,
-      borderSide: const BorderSide(color: AppStyle.blueColorAdditional4AABDB),
+      borderSide: BorderSide(color: AppStyle.blueColorAdditional4AABDB, width: 1.w),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius:
       AppStyle.inputBorderRadius,
       borderSide: BorderSide(
         color: AppStyle.blueColorAdditional4AABDB,
-        width: 1.0,
+        width: 1.0.w,
       ),
     ),
     focusedBorder: OutlineInputBorder(
@@ -21,7 +22,7 @@ class AppInputDecorations {
       AppStyle.inputBorderRadius,
       borderSide: BorderSide(
         color: AppStyle.activeBlueColorMain,
-        width: 1.0,
+        width: 1.0.w,
       ),
     ),
     errorBorder: OutlineInputBorder(
@@ -29,7 +30,7 @@ class AppInputDecorations {
       AppStyle.inputBorderRadius,
       borderSide: BorderSide(
         color: AppStyle.errorRedColorMain,
-        width: 1,
+        width: 1.w,
       ),
     ),
     focusedErrorBorder: OutlineInputBorder(
@@ -37,7 +38,7 @@ class AppInputDecorations {
       AppStyle.inputBorderRadius,
       borderSide: BorderSide(
         color: AppStyle.errorRedColorMain,
-        width: 1,
+        width: 1.w,
       ),
     ),
 

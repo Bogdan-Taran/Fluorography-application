@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,9 +62,9 @@ class _AdminScreenFluorography extends State<AdminScreenFluorography> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
-        toolbarHeight: 80,
+        toolbarHeight: 80.h,
         title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          padding: REdgeInsets.symmetric(horizontal: 8.0),
           child: TextField(
             onTap: () {
               context.read<AdminBloc>().add(OnTapTextFieldEvent());
@@ -84,25 +85,25 @@ class _AdminScreenFluorography extends State<AdminScreenFluorography> {
               filled: true,
               fillColor: const Color(0xFFF5F7FA),
               prefixIcon: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: REdgeInsets.all(12.0),
                 child: SvgPicture.asset(
                   'assets/images/serch_icon.svg',
-                  width: 20,
-                  height: 20,
+                  width: 20.w,
+                  height: 20.h,
                   color: const Color(0xff98BFF3),
                 ),
               ),
               hintText: 'Поиск',
-              hintStyle: const TextStyle(
-                fontSize: 16,
-                color: Color(0xff26292B),
+              hintStyle: TextStyle(
+                fontSize: AppStyle.fontSizeMedium_16,
+                color: const Color(0xff26292B),
                 fontWeight: FontWeight.w400,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(30.r),
                 borderSide: BorderSide.none,
               ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 0),
+              contentPadding: EdgeInsets.zero,
             ),
             onTapOutside: (event) {
               FocusManager.instance.primaryFocus?.unfocus();
@@ -113,8 +114,8 @@ class _AdminScreenFluorography extends State<AdminScreenFluorography> {
       body: Stack(
         children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
+            width: 1.sw,
+            height: 1.sh,
             child: IgnorePointer(
               child: Stack(
                 children: [
@@ -132,7 +133,7 @@ class _AdminScreenFluorography extends State<AdminScreenFluorography> {
                       'assets/images/vectorLine.svg',
                       semanticsLabel: 'Top SVG Image',
                       fit: BoxFit.fill,
-                      width: MediaQuery.of(context).size.width,
+                      width: 1.sw,
                     ),
                   ),
                   Align(
@@ -140,7 +141,7 @@ class _AdminScreenFluorography extends State<AdminScreenFluorography> {
                     child: SvgPicture.asset(
                       'assets/images/vectorBottom.svg',
                       fit: BoxFit.fitWidth,
-                      width: MediaQuery.of(context).size.width,
+                      width: 1.sw,
                     ),
                   ),
                 ],
@@ -149,7 +150,7 @@ class _AdminScreenFluorography extends State<AdminScreenFluorography> {
           ),
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+              padding: REdgeInsets.symmetric(vertical: 18, horizontal: 8),
               child: MultiBlocListener(
                 listeners: [
                   BlocListener<AdminBloc, AdminState>(
@@ -166,7 +167,7 @@ class _AdminScreenFluorography extends State<AdminScreenFluorography> {
                           Fluttertoast.showToast(
                             msg: 'Есть интернет-соединение',
                             backgroundColor: const Color(0xff78ef81),
-                            fontSize: 16,
+                            fontSize: AppStyle.fontSizeMedium_16,
                             gravity: ToastGravity.CENTER,
                             textColor: const Color(0xffffffff),
                           );
@@ -175,7 +176,7 @@ class _AdminScreenFluorography extends State<AdminScreenFluorography> {
                           Fluttertoast.showToast(
                             msg: 'Отсутствует интернет-соединение',
                             backgroundColor: const Color(0xffed6969),
-                            fontSize: 16,
+                            fontSize: AppStyle.fontSizeMedium_16,
                             gravity: ToastGravity.CENTER,
                             textColor: const Color(0xffffffff),
                           );
@@ -184,7 +185,7 @@ class _AdminScreenFluorography extends State<AdminScreenFluorography> {
                           Fluttertoast.showToast(
                             msg: 'Об интернет-соединении неизвестно',
                             backgroundColor: const Color(0xff98BFF3),
-                            fontSize: 16,
+                            fontSize: AppStyle.fontSizeMedium_16,
                             gravity: ToastGravity.CENTER,
                             textColor: const Color(0xffffffff),
                           );
@@ -198,14 +199,14 @@ class _AdminScreenFluorography extends State<AdminScreenFluorography> {
                     if (state is AdminFetchingLoadingState) {
                       return Center(child: _buildersScreen.buildLoading());
                     } else if (state is AdminFetchingErrorState) {
-                      return const Center(child: Text('Произошла ошибка'));
+                      return Center(child: Text('Произошла ошибка', style: TextStyle(fontSize: AppStyle.fontSizeMedium_16)));
                     } else if (state is AdminLoadedGroupsSuccessfulState) {
                       return AdminConstructorAccordionBuildWidget(
                         groups: state.adminGroups,
                       );
                     } else if (state is AdminNoDataState) {
-                      return const Center(
-                        child: Text('Ничего не нашлось по вашему запросу'),
+                      return Center(
+                        child: Text('Ничего не нашлось по вашему запросу', style: TextStyle(fontSize: AppStyle.fontSizeMedium_16)),
                       );
                     } else if (state is AdminFilteredState) {
                       return AdminConstructorAccordionBuildWidget(
@@ -217,15 +218,15 @@ class _AdminScreenFluorography extends State<AdminScreenFluorography> {
                       );
                     } else {
                       return Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.7,
-                        child: const Column(
+                        padding: REdgeInsets.symmetric(horizontal: 15),
+                        width: 1.sw,
+                        height: 0.7.sh,
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               'Отсутствуют группы с флюорографией',
-                              style: TextStyle(fontSize: 18),
+                              style: TextStyle(fontSize: AppStyle.fontSizeLarge),
                               textAlign: TextAlign.center,
                             ),
                           ],

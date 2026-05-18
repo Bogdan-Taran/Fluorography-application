@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
@@ -92,9 +93,9 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             elevation: 0,
-            toolbarHeight: 80,
+            toolbarHeight: 80.h,
             title: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: REdgeInsets.symmetric(horizontal: 8.0),
               child: TextField(
                 onTap: () {
                   context.read<CuratorBloc>().add(OnTapTextFieldEvent());
@@ -115,25 +116,25 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                   filled: true,
                   fillColor: const Color(0xFFF5F7FA),
                   prefixIcon: Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding: REdgeInsets.all(12.0),
                     child: SvgPicture.asset(
                       'assets/images/serch_icon.svg',
-                      width: 20,
-                      height: 20,
+                      width: 20.w,
+                      height: 20.h,
                       color: const Color(0xff98BFF3),
                     ),
                   ),
                   hintText: 'Поиск',
-                  hintStyle: const TextStyle(
-                    fontSize: 16,
-                    color: Color(0xff26292B),
+                  hintStyle: TextStyle(
+                    fontSize: AppStyle.fontSizeMedium_16,
+                    color: const Color(0xff26292B),
                     fontWeight: FontWeight.w400,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(30.r),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                  contentPadding: EdgeInsets.zero,
                 ),
                 onTapOutside: (event) {
                   FocusManager.instance.primaryFocus?.unfocus();
@@ -145,14 +146,14 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
           body: Stack(
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
+                width: 1.sw,
+                height: 1.sh,
                 child: IgnorePointer(
                   child: // Декорации
                   Stack(
                     children: [
                       Align(
-                        alignment: Alignment(1, -1),
+                        alignment: const Alignment(1, -1),
                         child: SvgPicture.asset(
                           'assets/images/vectorRight.svg',
                           semanticsLabel: 'Top SVG Image',
@@ -160,12 +161,12 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                         ),
                       ),
                       Align(
-                        alignment: Alignment(1, 0.5),
+                        alignment: const Alignment(1, 0.5),
                         child: SvgPicture.asset(
                           'assets/images/vectorLine.svg',
                           semanticsLabel: 'Top SVG Image',
                           fit: BoxFit.fill,
-                          width: MediaQuery.of(context).size.width * 1,
+                          width: 1.sw,
                         ),
                       ),
                       Align(
@@ -174,7 +175,7 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                         child: SvgPicture.asset(
                           'assets/images/vectorBottom.svg',
                           fit: BoxFit.fitWidth,
-                          width: MediaQuery.of(context).size.width * 1,
+                          width: 1.sw,
                         ),
                       ),
                     ],
@@ -183,7 +184,7 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
               ),
               SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+                  padding: REdgeInsets.symmetric(vertical: 18, horizontal: 8),
                   child: Column(
                     children: [
                       MultiBlocListener(
@@ -246,13 +247,13 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                                               ),
                                               minimumSize: WidgetStateProperty.all(
                                                 Size(
-                                                  MediaQuery.of(context).size.width * 0.1,
-                                                  35,
+                                                  0.1.sw,
+                                                  35.h,
                                                 ),
                                               ),
                                               shape: WidgetStateProperty.all(
                                                 RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10),
+                                                  borderRadius: BorderRadius.circular(10.r),
                                                 ),
                                               ),
                                             ),
@@ -260,11 +261,11 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                                               print('Экран: Нажата кнопка отмены');
                                               Navigator.of(context).pop();
                                             },
-                                            child: const Text(
+                                            child: Text(
                                               'Отмена',
                                               style: TextStyle(
-                                                fontSize: 16,
-                                                color: Color(0xff98BFF3),
+                                                fontSize: AppStyle.fontSizeMedium_16,
+                                                color: const Color(0xff98BFF3),
                                                 fontWeight: FontWeight.w600,
                                                 fontFamily: 'Geologica',
                                               ),
@@ -299,13 +300,13 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                                               ),
                                               minimumSize: WidgetStateProperty.all(
                                                 Size(
-                                                  MediaQuery.of(context).size.width * 0.1,
-                                                  35,
+                                                  0.1.sw,
+                                                  35.h,
                                                 ),
                                               ),
                                               shape: WidgetStateProperty.all(
                                                 RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10),
+                                                  borderRadius: BorderRadius.circular(10.r),
                                                 ),
                                               ),
                                             ),
@@ -314,11 +315,11 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                                                 SignOutAcceptEvent(),
                                               );
                                             },
-                                            child: const Text(
+                                            child: Text(
                                               'Да',
                                               style: TextStyle(
-                                                fontSize: 16,
-                                                color: Color(0xffffffff),
+                                                fontSize: AppStyle.fontSizeMedium_16,
+                                                color: const Color(0xffffffff),
                                                 fontWeight: FontWeight.w600,
                                                 fontFamily: 'Geologica',
                                               ),
@@ -470,17 +471,17 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
 
                               default:
                                 return Container(
-                                  padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-                                  width: MediaQuery.of(context).size.width * 1,
-                                  height: MediaQuery.of(context).size.height * 0.8,
-                                  decoration: BoxDecoration(color: Colors.transparent),
+                                  padding: REdgeInsets.symmetric(horizontal: 15),
+                                  width: 1.sw,
+                                  height: 0.8.sh,
+                                  decoration: const BoxDecoration(color: Colors.transparent),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         'У вас отстутствуют группы кураторства',
-                                        style: TextStyle(fontSize: 18),
+                                        style: TextStyle(fontSize: AppStyle.fontSizeExtraLarge),
                                       ),
                                     ],
                                   ),

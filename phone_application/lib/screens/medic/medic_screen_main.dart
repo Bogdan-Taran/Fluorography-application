@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,7 +57,7 @@ class _MedicScreen extends ConsumerState<MedicScreen> {
             Fluttertoast.showToast(
               msg: 'Ошибка: $error',
               backgroundColor: const Color(0xffed6969),
-              fontSize: 16,
+              fontSize: AppStyle.fontSizeMedium_16,
               gravity: ToastGravity.CENTER,
               textColor: const Color(0xffffffff),
             );

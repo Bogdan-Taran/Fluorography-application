@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
@@ -65,8 +66,6 @@ Fluttertoast.showToast(
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     BuildersScreen _buildersScreen = BuildersScreen();
 
 
@@ -94,6 +93,9 @@ Fluttertoast.showToast(
       );
     });
 
+
+    // final double screenHeight = MediaQuery.of(context).size.height;
+    // final double screenWidth = MediaQuery.of(context).size.width;
 
     return WillPopScope(
       onWillPop: () async {
@@ -162,7 +164,7 @@ Fluttertoast.showToast(
                       child: SvgPicture.asset(
                         'assets/images/vectorBottom.svg',
                         fit: BoxFit.fitWidth,
-                        width: screenWidth * 1,
+                        width: 1.sw,
                       ),
                     ),
                   ],
@@ -171,7 +173,7 @@ Fluttertoast.showToast(
                 SafeArea(
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
+                      padding: REdgeInsets.symmetric(
                         horizontal: 32,
                         vertical: 42,
                       ),
@@ -223,11 +225,11 @@ Fluttertoast.showToast(
                                     return Color(0xffffffff);
                                   }),
                               minimumSize: WidgetStateProperty.all(
-                                Size(screenWidth * 1, 40),
+                                Size(1.sw, 40.h),
                               ),
                               shape: WidgetStateProperty.all(
                                 RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(35),
+                                  borderRadius: BorderRadius.circular(35.r),
                                 ),
                               ),
                             ),
@@ -238,10 +240,10 @@ Fluttertoast.showToast(
                                 SvgPicture.asset(
                                   'assets/icon/door_icon.svg',
                                   color: AppStyle.whiteColorMain,
-                                  height: 13,
-                                  width: 13,
+                                  height: 13.w,
+                                  width: 13.w,
                                 ),
-                                SizedBox(width: 8),
+                                SizedBox(width: 8.w),
                                 Text(
                                   'Войти в аккаунт',
                                   style: TextStyle(
@@ -255,31 +257,31 @@ Fluttertoast.showToast(
                               ],
                             ),
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: 10.h),
                           Container(
                             padding: AppStyle.outsideInputPaddingHorizontal,
                             decoration: BoxDecoration(
                               color: Color(0xFFFFFFFF),
                               borderRadius: BorderRadius.all(
-                                Radius.circular(20),
+                                Radius.circular(20.r),
                               ),
                               boxShadow: [
                                 BoxShadow(
                                   color: Color(0x26D4EAFF),
-                                  offset: Offset(-4, -4),
-                                  blurRadius: 3,
+                                  offset: Offset(-4.w, -4.h),
+                                  blurRadius: 3.r,
                                   spreadRadius: 0,
                                 ),
                                 BoxShadow(
                                   color: Color(0x26D4EAFF),
-                                  offset: Offset(6, -7),
-                                  blurRadius: 3,
+                                  offset: Offset(6.w, -7.h),
+                                  blurRadius: 3.r,
                                   spreadRadius: 0,
                                 ),
                                 BoxShadow(
                                   color: Color(0x26D4EAFF),
-                                  offset: Offset(0, 7),
-                                  blurRadius: 3,
+                                  offset: Offset(0, 7.h),
+                                  blurRadius: 3.r,
                                   spreadRadius: 0,
                                 ),
                               ],
@@ -289,7 +291,7 @@ Fluttertoast.showToast(
                               // autovalidateMode: AutovalidateMode.onUserInteraction,
                               child: Column(
                                 children: [
-                                  SizedBox(height: screenHeight * 0.04),
+                                  SizedBox(height: 25.h),
                                   Center(
 
                                     child: Text(
@@ -302,7 +304,7 @@ Fluttertoast.showToast(
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: screenHeight * 0.015),
+                                  SizedBox(height: 10.h),
                                   Center(
                                     child: Text(
                                       'Пожалуйста учтите, что вам необходимо\nввести ФИО в точности как в паспорте',
@@ -315,7 +317,7 @@ Fluttertoast.showToast(
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
-                                  SizedBox(height: screenHeight * 0.03),
+                                  SizedBox(height: 20.h),
                                   FormBuilderTextField(
                                     name:
                                         'firstName', // Unique key for this field
@@ -337,7 +339,7 @@ Fluttertoast.showToast(
                                     },
                                   ),
 
-                                  SizedBox(height: screenHeight * 0.01),
+                                  SizedBox(height: 10.h),
                                   FormBuilderTextField(
                                     name:
                                     'lastName', // Unique key for this field
@@ -360,7 +362,7 @@ Fluttertoast.showToast(
                                   ),
 
 
-                                  SizedBox(height: screenHeight * 0.01),
+                                  SizedBox(height: 10.h),
                                   FormBuilderTextField(
                                     name:
                                     'patronymic', // Unique key for this field
@@ -380,7 +382,7 @@ Fluttertoast.showToast(
                                   ),
 
 
-                                  SizedBox(height: screenHeight * 0.01),
+                                  SizedBox(height: 10.h),
                                   FormBuilderTextField(
                                     name:
                                     'groupNumber', // Unique key for this field
@@ -401,7 +403,7 @@ Fluttertoast.showToast(
                                     },
                                   ),
 
-                                  SizedBox(height: screenHeight * 0.01),
+                                  SizedBox(height: 10.h),
                                   FormBuilderTextField(
                                     name:
                                     'phoneNumber', // Unique key for this field
@@ -423,7 +425,7 @@ Fluttertoast.showToast(
                                     },
                                   ),
 
-                                  SizedBox(height: screenHeight * 0.01),
+                                  SizedBox(height: 10.h),
                                   FormBuilderTextField(
                                     name:
                                     'numberOfReferences', // Unique key for this field
@@ -447,7 +449,7 @@ Fluttertoast.showToast(
                                     },
                                   ),
 
-                                  SizedBox(height: screenHeight * 0.01),
+                                  SizedBox(height: 10.h),
                                   FormBuilderDropdown<String>(
                                     name: 'referenceType',
                                     validator: FormBuilderValidators.compose([
@@ -467,8 +469,8 @@ Fluttertoast.showToast(
                                     icon: SvgPicture.asset(
                                       'assets/images/icon_expand_down.svg',
                                       color: AppStyle.blueColorAdditional4AABDB,
-                                      height: 10,
-                                      width: 10,
+                                      height: 10.w,
+                                      width: 10.w,
                                     ),
 
                                     dropdownColor: AppStyle.whiteColorMain,
@@ -479,7 +481,7 @@ Fluttertoast.showToast(
                                       return DropdownMenuItem<String>(
                                         value: entry.key.toString(),
                                         child: Container(
-                                          width: screenWidth * 1,
+                                          width: 1.sw,
                                           padding: AppStyle.contentPaddingDropdownItemLeft,
                                           decoration: BoxDecoration(
                                             color: AppStyle.blueColorAdditional4AABDB,
@@ -499,7 +501,7 @@ Fluttertoast.showToast(
                                     }).toList(),
                                   ),
 
-                                  SizedBox(height: screenHeight * 0.02),
+                                  SizedBox(height: 20.h),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -534,7 +536,7 @@ Fluttertoast.showToast(
                                         animationDuration: Duration(
                                           milliseconds: 50
                                         ),
-                                        size: 30,
+                                        size: 30.r,
                                         border: Border.all(
                                           width: 1,
                                           color: showErrorCheckbox ? AppStyle.errorRedColorMain : AppStyle.blueColorAdditional4AABDB
@@ -547,10 +549,10 @@ Fluttertoast.showToast(
                                   ),
 
                                   SizedBox(
-                                    height: screenHeight * 0.02,
+                                    height: 20.h,
                                   ),
                                   SizedBox(
-                                    height: 50,
+                                    height: 50.h,
                                     child: ElevatedButton(
                                       style: ButtonStyle(
                                         elevation:
@@ -590,11 +592,11 @@ Fluttertoast.showToast(
                                           return Color(0xffffffff);
                                         }),
                                         minimumSize: WidgetStateProperty.all(
-                                          Size(screenWidth * 1, 40),
+                                          Size(1.sw, 40.h),
                                         ),
                                         shape: WidgetStateProperty.all(
                                           RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius: BorderRadius.circular(20.r),
                                           ),
                                         ),
                                       ),
@@ -685,7 +687,7 @@ Fluttertoast.showToast(
                                   }),*/
 
                                   SizedBox(
-                                    height: screenHeight * 0.05,
+                                    height: 30.h,
                                   )
 
                                 ],

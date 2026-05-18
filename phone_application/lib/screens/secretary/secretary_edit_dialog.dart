@@ -210,12 +210,15 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
   }
 
   Widget _buildBottomButtons(double screenWidth) {
+    final updateState = ref.watch(updateReferenceStatusControllerProvider);
+    final isLoading = updateState.isLoading;
+
     if (editStatusMode) {
       return Row(
         children: [
           Expanded(
             child: OutlinedButton(
-              onPressed: () {
+              onPressed: isLoading ? null : () {
                 setState(() {
                   editStatusMode = false;
                   _updatedStatuses.clear();
@@ -239,7 +242,7 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
           const SizedBox(width: 12),
           Expanded(
             child: ElevatedButton(
-              onPressed: _updatedStatuses.isEmpty ? null : _saveChanges,
+              onPressed: (isLoading || _updatedStatuses.isEmpty) ? null : _saveChanges,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppStyle.activeBlueColorMain,
                 disabledBackgroundColor: AppStyle.disableBlueColorMain,
@@ -247,14 +250,23 @@ class _SecretaryEditDialogState extends ConsumerState<SecretaryEditDialog> {
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 elevation: 0,
               ),
-              child: const Text(
-                'Сохранить',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: AppStyle.fontSizeMedium_16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              child: isLoading
+                  ? SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Text(
+                      'Сохранить',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: AppStyle.fontSizeMedium_16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
             ),
           ),
         ],

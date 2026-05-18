@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_fluorography/models/get_reference_model/get_reference_model.dart';
 import 'package:project_fluorography/models/post_reference_model/post_reference_model.dart';
 import 'package:project_fluorography/services/api_reference/request_provider.dart';
+import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker/talker.dart';
 
@@ -35,11 +36,33 @@ class RequestRepository {
         'RepoProvider: Данные получены, но не приведены к List: $response',
       );
       final List<dynamic> rawData = response;
-      final List<GetReferenceModel> dataList = rawData
-          .map(
-            (json) => GetReferenceModel.fromJson(json as Map<String, dynamic>),
-          )
+      final List<GetReferenceModel> initialList = rawData
+          .map((json) => GetReferenceModel.fromJson(json as Map<String, dynamic>))
           .toList();
+
+      // Сортировка по дате (сначала новые) по ISO строке от сервера
+      initialList.sort((a, b) {
+        try {
+          return DateTime.parse(b.date).compareTo(DateTime.parse(a.date));
+        } catch (e) {
+          return 0;
+        }
+      });
+
+      final List<GetReferenceModel> dataList = initialList.map((model) {
+        try {
+          if (!model.date.contains('.')) {
+            DateTime parsedDate = DateTime.parse(model.date);
+            return model.copyWith(
+              date: DateFormat('dd.MM.yyyy HH:mm').format(parsedDate),
+            );
+          }
+        } catch (e) {
+          talker.error('Ошибка при форматировании даты ${model.date}: $e');
+        }
+        return model;
+      }).toList();
+
       talker.log(
         'RepoProvider: Данные успешно переконвертированы в List: $dataList',
       );
@@ -74,11 +97,33 @@ class RequestRepository {
       }
 
       final List<dynamic> rawData = response;
-      final List<GetReferenceModel> dataList = rawData
-          .map(
-            (json) => GetReferenceModel.fromJson(json as Map<String, dynamic>),
-          )
+      final List<GetReferenceModel> initialList = rawData
+          .map((json) => GetReferenceModel.fromJson(json as Map<String, dynamic>))
           .toList();
+
+      // Сортировка по дате (сначала новые) по ISO строке от сервера
+      initialList.sort((a, b) {
+        try {
+          return DateTime.parse(b.date).compareTo(DateTime.parse(a.date));
+        } catch (e) {
+          return 0;
+        }
+      });
+
+      final List<GetReferenceModel> dataList = initialList.map((model) {
+        try {
+          if (!model.date.contains('.')) {
+            DateTime parsedDate = DateTime.parse(model.date);
+            return model.copyWith(
+              date: DateFormat('dd.MM.yyyy HH:mm').format(parsedDate),
+            );
+          }
+        } catch (e) {
+          talker.error('Ошибка при форматировании даты ${model.date}: $e');
+        }
+        return model;
+      }).toList();
+
       talker.log(
         'RepoProvider(getEntireListApplications): Данные успешно переконвертированы в List: $dataList',
       );

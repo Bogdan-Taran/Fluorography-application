@@ -25,7 +25,7 @@ extension StatusId on int {
   String get statusName{
     return {
       1: 'В процессе',
-      2: 'Готово',
+      2: 'Готова',
       3: 'Дубликат',
     }[this] ?? 'Неизвестно';
   }

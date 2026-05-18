@@ -260,11 +260,20 @@ class ApiServiceGetCommunityMembers {
         '/api/students',
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
-      } catch(e){
-        return Left({
-          'statusCode': e is DioError ? e.response?.statusCode ?? 0 : 0,
-          'data': e.toString(),
-        });
+      } catch (e) {
+        if (e is DioException) {
+          if (e.response?.statusCode == 403) {
+            return Left({
+              'statusCode': 403,
+              'data': 'У вас нет доступа к этой странице'
+            });
+          }
+          return Left({
+            'statusCode': e.response?.statusCode ?? 0,
+            'data': 'Ошибка сервера: ${e.response?.statusCode}',
+          });
+        }
+        return Left({'statusCode': 0, 'data': e.toString()});
       }
       talker.debug("Тип response.data: ${response.data.runtimeType}");
       talker.debug("Содержимое response.data: ${response.data}");

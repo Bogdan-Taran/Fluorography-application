@@ -75,9 +75,9 @@ Fluttertoast.showToast(
           Fluttertoast.showToast(
             msg: error.toString(),
             backgroundColor: AppStyle.errorRedColorMain,
-            fontSize: 16,
+            fontSize: AppStyle.fontSizeMedium_16,
             gravity: ToastGravity.CENTER,
-            textColor: const Color(0xffffffff),
+            textColor: AppStyle.whiteColorMain,
           );
         },
         data: (data){
@@ -85,9 +85,9 @@ Fluttertoast.showToast(
             Fluttertoast.showToast(
               msg: data,
               backgroundColor: AppStyle.successGreenColor,
-              fontSize: 16,
+              fontSize: AppStyle.fontSizeMedium_16,
               gravity: ToastGravity.CENTER,
-              textColor: const Color(0xffffffff),
+              textColor: AppStyle.whiteColorMain,
             );
         }
       );
@@ -112,28 +112,28 @@ Fluttertoast.showToast(
                 case InternetTypes.connected:
                   Fluttertoast.showToast(
                     msg: 'Есть интернет-соединение',
-                    backgroundColor: const Color(0xff78ef81),
-                    fontSize: 16,
+                    backgroundColor: AppStyle.successGreenColor,
+                    fontSize: AppStyle.fontSizeMedium_16,
                     gravity: ToastGravity.CENTER,
-                    textColor: const Color(0xffffffff),
+                    textColor: AppStyle.whiteColorMain,
                   );
                   break;
                 case InternetTypes.offline:
                   Fluttertoast.showToast(
                     msg: 'Нет интернета',
-                    backgroundColor: const Color(0xffed6969),
-                    fontSize: 16,
+                    backgroundColor: AppStyle.errorRedColorMain,
+                    fontSize: AppStyle.fontSizeMedium_16,
                     gravity: ToastGravity.CENTER,
-                    textColor: const Color(0xffffffff),
+                    textColor: AppStyle.whiteColorMain,
                   );
                   break;
                 case InternetTypes.unknown:
                   Fluttertoast.showToast(
                     msg: 'Есть интернет',
-                    backgroundColor: const Color(0xff98BFF3),
-                    fontSize: 16,
+                    backgroundColor: AppStyle.defaultBlueColorMain,
+                    fontSize: AppStyle.fontSizeMedium_16,
                     gravity: ToastGravity.CENTER,
-                    textColor: const Color(0xffffffff),
+                    textColor: AppStyle.whiteColorMain,
                   );
                   break;
               }

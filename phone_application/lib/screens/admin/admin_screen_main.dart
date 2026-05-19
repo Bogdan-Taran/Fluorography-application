@@ -44,23 +44,24 @@ class _AdminMainScreen extends ConsumerState<AdminMainScreen> {
       next.whenOrNull(
           data: (message){
             if (message != null) {
-              Navigator.of(context, rootNavigator: true).pop();
+              if (Navigator.of(context, rootNavigator: true).canPop()) {
+                Navigator.of(context, rootNavigator: true).pop();
+              }
 
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AuthChecker(),
-                  )
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const AuthChecker()),
+                (route) => false,
               );
             }
           },
           error: (error, stack) {
             Fluttertoast.showToast(
               msg: 'Ошибка: $error',
-              backgroundColor: const Color(0xffed6969),
-              fontSize: 16,
+              backgroundColor: AppStyle.errorRedColorMain,
+              fontSize: AppStyle.fontSizeMedium_16,
               gravity: ToastGravity.CENTER,
-              textColor: const Color(0xffffffff),
+              textColor: AppStyle.whiteColorMain,
             );
           },
           loading: () => const Center(

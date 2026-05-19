@@ -59,23 +59,24 @@ class _CuratorScreen extends ConsumerState<CuratorScreen> {
           data: (message){
             if (message != null) {
               // Закрываем диалог перед переходом
-              Navigator.of(context, rootNavigator: true).pop(); 
-              
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AuthChecker(),
-                  )
+              if (Navigator.of(context, rootNavigator: true).canPop()) {
+                Navigator.of(context, rootNavigator: true).pop();
+              }
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const AuthChecker()),
+                (route) => false,
               );
             }
           },
           error: (error, stack) {
             Fluttertoast.showToast(
               msg: 'Ошибка: $error',
-              backgroundColor: const Color(0xffed6969),
-              fontSize: 16,
+              backgroundColor: AppStyle.errorRedColorMain,
+              fontSize: AppStyle.fontSizeMedium_16,
               gravity: ToastGravity.CENTER,
-              textColor: const Color(0xffffffff),
+              textColor: AppStyle.whiteColorMain,
             );
           },
           loading: () => const Center(

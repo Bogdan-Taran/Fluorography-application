@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_fluorography/styles.dart';
 import 'package:project_fluorography/bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../services/builders_screen.dart';
 import '../services/checker_service.dart';
@@ -20,13 +22,13 @@ class EditElevatedButtonBuildWidget extends StatelessWidget {
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Color(0xff98BFF3),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
         shadowColor: Colors.transparent,
       ),
       child: Text(
         'Редактировать',
         style: TextStyle(
-          fontSize: MediaQuery.of(context).size.height * 0.016,
+          fontSize: AppStyle.fontSizeMedium_16,
           color: Color(0xffffffff),
           fontFamily: 'Geologica',
         ),
@@ -61,25 +63,25 @@ class EditRowWithButtons extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xffffffff),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
                   shadowColor: Colors.transparent,
                   side: BorderSide(
-                    width: 1,
+                    width: 1.w,
                     color: isEditing ? Color(0xff98BFF3) : Colors.transparent,
                   ),
                 ),
                 child: Text(
                   'Отменить',
                   style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * 0.016,
+                    fontSize: AppStyle.fontSizeMedium_16,
                     color: Color(0xff98BFF3),
                     fontFamily: 'Geologica',
                   ),
                 ),
               ),
               SizedBox(
-                width: 18,
+                width: 18.w,
               ),
               ElevatedButton(
                 onPressed: () {
@@ -93,14 +95,14 @@ class EditRowWithButtons extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xff98BFF3),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
                   shadowColor: Colors.transparent,
                 ),
                 child: Text(
                   'Сохранить',
                   style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height * 0.016,
+                    fontSize: AppStyle.fontSizeMedium_16,
                     color: Color(0xffffffff),
                     fontFamily: 'Geologica',
                   ),
@@ -145,8 +147,8 @@ class DataFluraContainerBuildWidget extends StatelessWidget {
         // print('Отображаемая дата: $displayDate');
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(30, 15),
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            minimumSize: Size(30.w, 15.h),
+            padding: REdgeInsets.symmetric(horizontal: 8, vertical: 2),
             backgroundColor: isEditing
                 ? Colors.transparent
                 : switch (_CheckerService.isFluorographyOverdue(
@@ -159,10 +161,10 @@ class DataFluraContainerBuildWidget extends StatelessWidget {
                   },
             shadowColor: Colors.transparent,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(18.r),
             ),
             side: BorderSide(
-              width: 2,
+              width: 2.w,
               color: isEditing ? Color(0xff98BFF3) : Colors.transparent,
             ),
           ),

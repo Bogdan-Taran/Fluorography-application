@@ -47,29 +47,29 @@ class _SignInScreenState extends State<SignInScreen> {
         body: BlocListener<InternetConnectCubit, InternetConnectState>(
           listener: (context, state) {
             switch (state.type) {
-              case InternetTypes.connected:
+                case InternetTypes.connected:
                 Fluttertoast.showToast(
                   msg: 'Есть интернет-соединение',
-                  backgroundColor: const Color(0xff78ef81),
-                  fontSize: 16,
+                  backgroundColor: AppStyle.successGreenColor,
+                  fontSize: AppStyle.fontSizeMedium_16,
                   gravity: ToastGravity.CENTER,
-                  textColor: const Color(0xffffffff),
+                  textColor: AppStyle.whiteColorMain,
                 );
               case InternetTypes.offline:
                 Fluttertoast.showToast(
                   msg: 'Нет интернета',
-                  backgroundColor: const Color(0xffed6969),
-                  fontSize: 16,
+                  backgroundColor: AppStyle.errorRedColorMain,
+                  fontSize: AppStyle.fontSizeMedium_16,
                   gravity: ToastGravity.CENTER,
-                  textColor: const Color(0xffffffff),
+                  textColor: AppStyle.whiteColorMain,
                 );
               case InternetTypes.unknown:
                 Fluttertoast.showToast(
                   msg: 'Есть интернет',
-                  backgroundColor: const Color(0xff98BFF3),
-                  fontSize: 16,
+                  backgroundColor: AppStyle.defaultBlueColorMain,
+                  fontSize: AppStyle.fontSizeMedium_16,
                   gravity: ToastGravity.CENTER,
-                  textColor: const Color(0xffffffff),
+                  textColor: AppStyle.whiteColorMain,
                 );
             }
           },
@@ -337,9 +337,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                   toastLength: Toast.LENGTH_LONG,
                                   gravity: ToastGravity.CENTER,
                                   timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
+                                  backgroundColor: AppStyle.errorRedColorMain,
+                                  textColor: AppStyle.whiteColorMain,
+                                  fontSize: AppStyle.fontSizeMedium_16,
                                 );
                             }
                           },

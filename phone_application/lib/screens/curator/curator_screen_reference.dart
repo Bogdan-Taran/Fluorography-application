@@ -37,8 +37,6 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
       name: query.length >= 3 ? query : null,
       onlyUnfinished: _showOnlyActive ? true : null,
     )));
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     final talker = Talker();
 
     ref.listen<AsyncValue<void>>(updateReferenceStatusControllerProvider, (previous, next) {
@@ -209,7 +207,7 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                 ),
               ),
               Padding(
-                padding: REdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                padding: REdgeInsets.symmetric(horizontal: 20.w),
                 child: Column(
                   children: [
                     10.verticalSpace,
@@ -311,7 +309,7 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                                       decoration: BoxDecoration(
                                           border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
                                       child: ListTile(
-                                        contentPadding: EdgeInsets.symmetric(vertical: screenHeight * 0.0015),
+                                        contentPadding: REdgeInsets.symmetric(vertical: 2.h),
                                         title: Text(
                                           '${student.firstname} ${student.lastname}',
                                           style: TextStyle(
@@ -383,7 +381,7 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                                                   padding: REdgeInsets.only(left: 32, right: 32, bottom: 32),
                                                   child: SizedBox(
                                                     width: double.maxFinite,
-                                                    height: screenHeight * 0.3,
+                                                    height: 250.h,
                                                     child: Column(
                                                       mainAxisSize: MainAxisSize.min,
                                                       children: [

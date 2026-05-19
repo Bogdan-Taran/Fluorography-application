@@ -40,8 +40,6 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
       name: query.length >= 3 ? query : null,
       onlyUnfinished: _showOnlyActive ? true : null,
     )));
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     final talker = Talker();
 
     ref.listen<AsyncValue<void>>(updateReferenceStatusControllerProvider, (previous, next) {
@@ -178,8 +176,8 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
           body: Stack(
             children: [
               SizedBox(
-                width: screenWidth,
-                height: screenHeight,
+                width: 1.sw,
+                height: 1.sh,
                 child: IgnorePointer(
                   child: Stack(
                     children: [
@@ -197,7 +195,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                           'assets/images/vectorLine.svg',
                           semanticsLabel: 'Top SVG Image',
                           fit: BoxFit.fill,
-                          width: screenWidth,
+                          width: 1.sw,
                         ),
                       ),
                       Align(
@@ -205,7 +203,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                         child: SvgPicture.asset(
                           'assets/images/vectorBottom.svg',
                           fit: BoxFit.fitWidth,
-                          width: screenWidth,
+                          width: 1.sw,
                         ),
                       ),
                     ],
@@ -213,7 +211,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                 ),
               ),
               Padding(
-                padding: REdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                padding: REdgeInsets.symmetric(horizontal: 20.w),
                 child: groupedData.when(
                   data: (result) {
                     final groups = result.groups.keys.toList();
@@ -334,7 +332,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                   decoration: BoxDecoration(
                                       border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
                                   child: ListTile(
-                                    contentPadding: EdgeInsets.symmetric(vertical: screenHeight * 0.0015),
+                                    contentPadding: REdgeInsets.symmetric(vertical: 2.h),
                                     title: Text(
                                       '${student.firstname} ${student.lastname}',
                                       style: TextStyle(

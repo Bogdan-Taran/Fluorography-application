@@ -1,15 +1,15 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:project_fluorography/models/get_reference_model/get_reference_model.dart';
 import 'package:project_fluorography/models/post_reference_model/post_reference_model.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_repository.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_fluorography/services/api_reference/token_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker/talker.dart';
-
+import '../../bloc/authentication/authentication_bloc.dart';
+import '../../main.dart';
 import '../api_service.dart';
-import 'dio_and_interceptors/dio_provider.dart';
 
 part 'request_reference_controller.g.dart';
 
@@ -40,7 +40,13 @@ class AuthController extends StateNotifier<AsyncValue<String?>>{
       await ref.read(apiServiceProvider).removeToken();
       ref.invalidate(tokenProvider);
 
-      // 3. Устанавливаем состояние успеха, чтобы сработал навигатор в UI
+      // 3. Синхронизируем состояние с AuthenticationBloc для AuthChecker
+      if (navigatorKey.currentContext != null) {
+        BlocProvider.of<AuthenticationBloc>(navigatorKey.currentContext!)
+            .add(IsAuthenticatedCheckEvent());
+      }
+
+      // 4. Устанавливаем состояние успеха, чтобы сработал навигатор в UI
       state = const AsyncValue.data('Выход выполнен успешно');
     }
   }

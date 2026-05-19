@@ -43,13 +43,14 @@ class _MedicScreen extends ConsumerState<MedicScreen> {
       next.whenOrNull(
           data: (message){
             if (message != null) {
-              Navigator.of(context, rootNavigator: true).pop(); 
-              
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AuthChecker(),
-                  )
+              if (Navigator.of(context, rootNavigator: true).canPop()) {
+                Navigator.of(context, rootNavigator: true).pop();
+              }
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const AuthChecker()),
+                (route) => false,
               );
             }
           },

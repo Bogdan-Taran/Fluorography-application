@@ -76,9 +76,6 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
   @override
   Widget build(BuildContext context) {
     BuildersScreen _buildersScreen = BuildersScreen();
-    final screenHeight = MediaQuery.of(context).size.height;
-    // Устанавливаем адаптивную высоту с минимальным порогом
-    final appBarHeight = screenHeight * 0.16 > 140.0 ? screenHeight * 0.16 : 140.0;
 
     return WillPopScope(
       onWillPop: () async{
@@ -406,7 +403,7 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                                     Fluttertoast.showToast(
                                       msg: 'Есть интернет-соединение',
                                       backgroundColor: AppStyle.successGreenColor,
-                                      fontSize: 16,
+                                      fontSize: AppStyle.fontSizeMedium_16,
                                       gravity: ToastGravity.CENTER,
                                       textColor: AppStyle.whiteColorMain,
                                     );
@@ -414,7 +411,7 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                                     Fluttertoast.showToast(
                                       msg: 'Отсутствует интернет-соединение',
                                       backgroundColor: AppStyle.errorRedColorMain,
-                                      fontSize: 16,
+                                      fontSize: AppStyle.fontSizeMedium_16,
                                       gravity: ToastGravity.CENTER,
                                       textColor: AppStyle.whiteColorMain,
                                     );
@@ -422,7 +419,7 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                                     Fluttertoast.showToast(
                                       msg: 'Об интернет-соединении неизвестно',
                                       backgroundColor: AppStyle.hoverBlueColorMain,
-                                      fontSize: 16,
+                                      fontSize: AppStyle.fontSizeMedium_16,
                                       gravity: ToastGravity.CENTER,
                                       textColor: AppStyle.whiteColorMain,
                                     );

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../styles.dart';
 
 class ShowExitDialog extends StatelessWidget{
   final VoidCallback onYesPressed;
@@ -12,12 +14,13 @@ class ShowExitDialog extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Подтверждение выхода'),
+      title: Text('Подтверждение выхода', style: TextStyle(fontSize: AppStyle.fontSizeLarge)),
       content: SingleChildScrollView(
         child: ListBody(
-          children: const <Widget>[
+          children: <Widget>[
             Text(
               'Вы уверены что хотите выйти?',
+              style: TextStyle(fontSize: AppStyle.fontSizeMediumMini_14),
             ),
           ],
         ),
@@ -33,9 +36,7 @@ class ShowExitDialog extends StatelessWidget{
               if (states.contains(
                 WidgetState.disabled,
               )) {
-                return const Color(
-                  0xffD5D6D7,
-                );
+                return AppStyle.disableBlueColorMain;
               }
               if (states.contains(
                 WidgetState.pressed,
@@ -47,50 +48,34 @@ class ShowExitDialog extends StatelessWidget{
               if (states.contains(
                 WidgetState.hovered,
               )) {
-                return const Color(
-                  0xFFBADEFF,
-                );
+                return AppStyle.hoverBlueColorMain;
               }
-              return const Color(
-                0xffffffff,
-              );
+              return AppStyle.whiteColorMain;
             }),
             foregroundColor:
             WidgetStateProperty.all(
-              const Color(0xffffffff),
+              AppStyle.whiteColorMain,
             ),
             minimumSize:
             WidgetStateProperty.all(
               Size(
-                MediaQuery
-                    .of(
-                  context,
-                )
-                    .size
-                    .width *
-                    0.1,
-                35,
+                0.2.sw,
+                35.h,
               ),
             ),
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
                 borderRadius:
-                BorderRadius.circular(10),
+                BorderRadius.circular(10.r),
               ),
             ),
           ),
-          onPressed: onNoPressed, /*() {
-                print(
-                  'Экран: Нажата кнопка отмены',
-                );
-                context.read<AuthenticationBloc>().add(SignOutCancelEvent());
-                Navigator.of(context).pop();
-              },*/
-          child: const Text(
+          onPressed: onNoPressed,
+          child: Text(
             'Отмена',
             style: TextStyle(
-              fontSize: 16,
-              color: Color(0xff98BFF3),
+              fontSize: AppStyle.fontSizeMedium_16,
+              color: AppStyle.defaultBlueColorMain,
               fontWeight: FontWeight.w600,
               fontFamily: 'Geologica',
             ),
@@ -106,62 +91,44 @@ class ShowExitDialog extends StatelessWidget{
               if (states.contains(
                 WidgetState.disabled,
               )) {
-                return const Color(
-                  0xffD5D6D7,
-                );
+                return AppStyle.disableBlueColorMain;
               }
               if (states.contains(
                 WidgetState.pressed,
               )) {
-                return const Color(
-                  0xFF72A7EB,
-                );
+                return AppStyle.activeBlueColorMain;
               }
               if (states.contains(
                 WidgetState.hovered,
               )) {
-                return const Color(
-                  0xFFBADEFF,
-                );
+                return AppStyle.hoverBlueColorMain;
               }
-              return const Color(
-                0xff98BFF3,
-              );
+              return AppStyle.defaultBlueColorMain;
             }),
             foregroundColor:
             WidgetStateProperty.all(
-              const Color(0xffffffff),
+              AppStyle.whiteColorMain,
             ),
             minimumSize:
             WidgetStateProperty.all(
               Size(
-                MediaQuery
-                    .of(
-                  context,
-                )
-                    .size
-                    .width *
-                    0.1,
-                35,
+                0.2.sw,
+                35.h,
               ),
             ),
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
                 borderRadius:
-                BorderRadius.circular(10),
+                BorderRadius.circular(10.r),
               ),
             ),
           ),
-          onPressed: onYesPressed, /*() {
-                context
-                    .read<AuthenticationBloc>()
-                    .add(SignOutAcceptEvent());
-              },*/
-          child: const Text(
+          onPressed: onYesPressed,
+          child: Text(
             'Да',
             style: TextStyle(
-              fontSize: 16,
-              color: Color(0xffffffff),
+              fontSize: AppStyle.fontSizeMedium_16,
+              color: AppStyle.whiteColorMain,
               fontWeight: FontWeight.w600,
               fontFamily: 'Geologica',
             ),

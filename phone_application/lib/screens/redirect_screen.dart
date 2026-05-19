@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/bloc/app_startup/app_startup_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
@@ -95,7 +96,8 @@ class HomeScreen extends StatelessWidget {
               print('У вас неизвестная роль');
               return Center(
                 child: Text(
-                  'Лягушка Неизвестная роль: $role'
+                  'Лягушка Неизвестная роль: $role',
+                  style: TextStyle(fontSize: AppStyle.fontSizeMedium_16),
                 ),
               );
             }
@@ -104,7 +106,8 @@ class HomeScreen extends StatelessWidget {
             return Scaffold(
               body: Center(
                 child: Text(
-                  state.errorMessage
+                  state.errorMessage,
+                  style: TextStyle(fontSize: AppStyle.fontSizeMedium_16),
                 ),
               ),
             );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/styles.dart';
 
@@ -226,8 +227,13 @@ class _ItemWidget extends StatelessWidget {
                   padding: itemPadding,
                   child: DefaultTextStyle.merge(
                     style: TextStyle(
-                      color: isSelected ? item.activeColor : (item.activeTextColor ?? item.activeColor),
+                      color: isSelected
+                          ? (item.activeTextColor ?? item.activeColor)
+                          : (item.inactiveTextColor ??
+                              item.inactiveColor ??
+                              item.activeColor),
                       fontWeight: FontWeight.bold,
+                      fontSize: AppStyle.fontSizeSmall_12,
                     ),
                     maxLines: 1,
                     textAlign: item.textAlign,
@@ -318,14 +324,12 @@ class BottomNavBarFLura extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final buttonHeight = screenWidth * 0.045;
-    final iconSize = screenWidth * 0.04;
+    final buttonHeight = 16.r;
+    final iconSize = 14.r;
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: REdgeInsets.symmetric(horizontal: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -348,15 +352,15 @@ class BottomNavBarFLura extends StatelessWidget{
             const SizedBox(width: 4),
             Expanded(
               child: BottomNavyBar(
-                containerHeight: screenHeight * 0.055,
-                itemCornerRadius: 20,
-                margin: EdgeInsets.symmetric(
-                  vertical: screenHeight * 0.01,
+                containerHeight: 40.h,
+                itemCornerRadius: 20.r,
+                margin: REdgeInsets.symmetric(
+                  vertical: 8.h,
                   horizontal: 0,
                 ),
                 mainAxisAlignment: MainAxisAlignment.center,
-                borderRadius: BorderRadius.circular(20),
-                showInactiveTitle: screenWidth > 360,
+                borderRadius: BorderRadius.circular(20.r),
+                showInactiveTitle: true,
                 itemBorderColor: AppStyle.whiteColorMain,
                 onItemSelected: onItemSelected,
                 selectedIndex: currentIndex,
@@ -366,7 +370,8 @@ class BottomNavBarFLura extends StatelessWidget{
                     activeBackgroundColor: AppStyle.blueColorAdditional4AABDB,
                     activeColor: AppStyle.whiteColorMain,
                     inactiveColor: AppStyle.blueColorAdditional4AABDB,
-                    activeTextColor: AppStyle.blueColorAdditional4AABDB,
+                    activeTextColor: AppStyle.whiteColorMain,
+                    inactiveTextColor: AppStyle.blueColorAdditional4AABDB,
                     textAlign: TextAlign.center,
                   ),
                   BottomNavyBarItem(
@@ -374,7 +379,8 @@ class BottomNavBarFLura extends StatelessWidget{
                     activeBackgroundColor: AppStyle.blueColorAdditional4AABDB,
                     activeColor: AppStyle.whiteColorMain,
                     inactiveColor: AppStyle.blueColorAdditional4AABDB,
-                    activeTextColor: AppStyle.blueColorAdditional4AABDB,
+                    activeTextColor: AppStyle.whiteColorMain,
+                    inactiveTextColor: AppStyle.blueColorAdditional4AABDB,
                     textAlign: TextAlign.center,
                   ),
                 ],

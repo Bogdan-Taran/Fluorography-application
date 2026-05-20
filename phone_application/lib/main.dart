@@ -13,6 +13,7 @@ import 'package:project_fluorography/services/builders_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_fluorography/styles/themes/AppInputDecoration.dart';
 
+import 'package:project_fluorography/screens/web_redirect_screen.dart';
 import 'notifications/notification_service.dart';
 
 
@@ -62,6 +63,17 @@ class MyApp extends StatelessWidget {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) {
+          final windowSize = MediaQuery.of(context).size;
+          // if (windowSize.width > 1344 || windowSize.height > 2992) {
+          if (windowSize.width > 448 || windowSize.height > 998) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(
+                fontFamily: 'Geologica',
+              ),
+              home: const WebRedirectScreen(),
+            );
+          }
           return MaterialApp(
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,

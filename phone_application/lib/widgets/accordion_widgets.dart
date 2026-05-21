@@ -219,7 +219,7 @@ void _showEditFluorographyDialog(BuildContext context, WidgetRef ref, int id, St
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Дата флюорографии:'),
+                Text('Новая дата флюорографии:'),
                 SizedBox(height: 8.h),
                 InkWell(
                   onTap: () {

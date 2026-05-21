@@ -18,13 +18,17 @@ class MedicScreenFluorography extends ConsumerStatefulWidget {
   ConsumerState<MedicScreenFluorography> createState() => _MedicScreenFluorographyState();
 }
 
-class _MedicScreenFluorographyState extends ConsumerState<MedicScreenFluorography> {
+class _MedicScreenFluorographyState extends ConsumerState<MedicScreenFluorography> with AutomaticKeepAliveClientMixin {
   final TextEditingController searchController = TextEditingController();
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
     // синхронизация контроллера поиска с провайдером Riverpod
+    searchController.text = ref.read(medicSearchQueryProvider);
     searchController.addListener(() {
       ref.read(medicSearchQueryProvider.notifier).state = searchController.text;
     });
@@ -38,6 +42,7 @@ class _MedicScreenFluorographyState extends ConsumerState<MedicScreenFluorograph
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final filteredCommunityAsync = ref.watch(filteredMedicCommunityProvider);
     final buildersScreen = BuildersScreen();
     final appBarHeight = 80.h;

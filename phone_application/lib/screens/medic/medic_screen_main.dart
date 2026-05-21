@@ -80,11 +80,7 @@ class _MedicScreen extends ConsumerState<MedicScreen> {
           resizeToAvoidBottomInset: true,
           body: PageView(
             controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               MedicScreenFluorography(
                 onNotificationPressed: () => _pageController.jumpToPage(2),

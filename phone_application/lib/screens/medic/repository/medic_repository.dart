@@ -74,8 +74,7 @@ class MedicRepository {
 
   Future<void> updateFluorographyDate(int userId, String date) async {
     try {
-      await _dio.post('/api/update-fluorography', data: {
-        'user_id': userId,
+      await _dio.patch('/api/fluorography/$userId', data: {
         'date': date,
       });
     } catch (e) {

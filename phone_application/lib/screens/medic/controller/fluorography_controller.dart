@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../repository/medic_repository.dart';
+import '../../curator/controller/curator_controller.dart';
+import '../../admin/controller/admin_controller.dart';
 import 'medic_controller.dart';
 
 part 'fluorography_controller.g.dart';
@@ -55,6 +57,8 @@ class FluorographyController extends _$FluorographyController {
     final repository = ref.read(medicRepositoryProvider);
     await repository.updateFluorographyDate(userId, date);
     ref.invalidate(medicControllerProvider);
+    ref.invalidate(curatorControllerProvider);
+    ref.invalidate(adminControllerProvider);
   }
 
   Future<void> saveChanges(String sectionId) async {
@@ -75,6 +79,8 @@ class FluorographyController extends _$FluorographyController {
       );
       
       ref.invalidate(medicControllerProvider);
+      ref.invalidate(curatorControllerProvider);
+      ref.invalidate(adminControllerProvider);
     } else {
       state = state.copyWith(
         editingStates: {...state.editingStates, sectionId: false},

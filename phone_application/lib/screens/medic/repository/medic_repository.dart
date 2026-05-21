@@ -22,25 +22,13 @@ class MedicRepository {
 
   MedicRepository(this._dio);
 
-  Future<List<StaffAndStudentsModel>> getEntireCommunity() async {
+  Future<List<SingleGroupWithStudentsModel>> getStudents() async {
     try {
-      talker.info('MedicRepo: загрузка людей (сотрудники, студенты)');
+      talker.info('MedicRepo: загрузка студентов');
+      final response = await _dio.get('/api/students');
       
-      final results = await Future.wait([
-        _dio.get('/api/employees'),
-        _dio.get('/api/students'),
-      ]);
-
-      final staffResponse = results[0];
-      final studentsResponse = results[1];
-
-      final List<StaffModel> staff = (staffResponse.data as List)
-          .map((json) => StaffModel.fromJson(json))
-          .toList();
-
-      // Обработка студентов и группировка
       final List<StudentData> rawStudents = [];
-      final studentsData = studentsResponse.data;
+      final studentsData = response.data;
       
       if (studentsData is List) {
         rawStudents.addAll(studentsData.map((json) => StudentData.fromJson(json)));
@@ -54,11 +42,32 @@ class MedicRepository {
         groupedMap.putIfAbsent(student.group, () => []).add(student);
       }
 
-      final List<SingleGroupWithStudentsModel> studentGroups = groupedMap.entries
+      return groupedMap.entries
           .map((entry) => SingleGroupWithStudentsModel(
                 groupNumber: entry.key,
                 students: entry.value,
               ))
+          .toList();
+    } catch (e) {
+      talker.handle('MedicRepo (getStudents) error: $e');
+      rethrow;
+    }
+  }
+
+  Future<List<StaffAndStudentsModel>> getEntireCommunity() async {
+    try {
+      talker.info('MedicRepo: загрузка людей (сотрудники, студенты)');
+      
+      final results = await Future.wait([
+        _dio.get('/api/employees'),
+        getStudents(),
+      ]);
+
+      final staffResponse = results[0] as Response;
+      final List<SingleGroupWithStudentsModel> studentGroups = results[1] as List<SingleGroupWithStudentsModel>;
+
+      final List<StaffModel> staff = (staffResponse.data as List)
+          .map((json) => StaffModel.fromJson(json))
           .toList();
 
       talker.log('MedicRepo: Успешно загружено ${staff.length} сотрудников и ${studentGroups.length} групп студентов');

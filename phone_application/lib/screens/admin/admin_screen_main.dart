@@ -88,9 +88,7 @@ class _AdminMainScreen extends ConsumerState<AdminMainScreen> {
               });
             },
             children: [
-              AdminScreenFluorography(
-                onNotificationPressed: () => _pageController.jumpToPage(2),
-              ),
+              AdminScreenFluorography(),
               const AdminScreenReference(),
               const NotificationScreen(),
             ],

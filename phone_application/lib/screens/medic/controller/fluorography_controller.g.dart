@@ -42,7 +42,7 @@ final class FluorographyControllerProvider
 }
 
 String _$fluorographyControllerHash() =>
-    r'a4014915b60352c2900ccdac67c52041099f26f9';
+    r'18d53999c51f4f0b2e7ac11027b04e65d66d7001';
 
 abstract class _$FluorographyController extends $Notifier<FluorographyState> {
   FluorographyState build();

@@ -5,16 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/bloc/app_startup/app_startup_bloc.dart';
 import 'package:project_fluorography/bloc/authentication/authentication_bloc.dart';
-import 'package:project_fluorography/bloc/curator/curator_bloc.dart';
 import 'package:project_fluorography/bloc/internet_connect/interner_connect_cubit.dart';
-import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/screens/curator/curator_screen_main.dart';
 import 'package:project_fluorography/screens/medic/medic_screen_main.dart';
 import 'package:project_fluorography/screens/secretary/secretary_screen_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../bloc/admin/admin_bloc.dart';
-import '../bloc/search/search_bloc.dart';
-import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import '../services/builders_screen.dart';
 import '../services/shared_pref_service.dart';
 import '../styles.dart';
@@ -44,10 +39,6 @@ class HomeScreen extends StatelessWidget {
               print('Ваша роль куратор');
               return MultiBlocProvider(
                 providers: [
-                  BlocProvider(create: (context) => CuratorBloc(),),
-                  // BlocProvider(create: (context) => AuthenticationBloc(),),
-                  BlocProvider(create: (context) => SearchBloc(),),
-                  BlocProvider(create: (context) => WorkingWithFluorographyBloc(),),
                   BlocProvider(create: (_) => InternetConnectCubit(connectivity: Connectivity()),)
                 ],
                 child: const CuratorScreen(),
@@ -57,9 +48,7 @@ class HomeScreen extends StatelessWidget {
               print('Ваша роль администратор');
               return MultiBlocProvider(
                 providers: [
-                  BlocProvider(create: (context) => AdminBloc(),),
                   BlocProvider(create: (context) => AuthenticationBloc(),),
-                  BlocProvider(create: (context) => WorkingWithFluorographyBloc(),),
                   BlocProvider(create: (_) => InternetConnectCubit(connectivity: Connectivity()),)
                 ],
                 child: const AdminMainScreen(),
@@ -68,14 +57,6 @@ class HomeScreen extends StatelessWidget {
               print('Ваша роль медик');
               return MultiBlocProvider(
                 providers: [
-                  BlocProvider(create: (context) => MedicBloc(),),
-                  /*
-                BlocProvider(
-                  create: (context) => AuthenticationBloc(),
-                ),
-                */
-                  BlocProvider(create: (context) => SearchBloc(),),
-                  BlocProvider(create: (context) => WorkingWithFluorographyBloc(),),
                   BlocProvider(create: (_) => InternetConnectCubit(connectivity: Connectivity()),)
                 ],
                 child: MedicScreen(),
@@ -85,8 +66,6 @@ class HomeScreen extends StatelessWidget {
               print('Ваша роль секретарь');
               return MultiBlocProvider(
                 providers: [
-                  BlocProvider(create: (context) => SearchBloc(),),
-                  BlocProvider(create: (context) => WorkingWithFluorographyBloc(),),
                   BlocProvider(create: (_) => InternetConnectCubit(connectivity: Connectivity()),)
                 ],
                 child: SecretaryScreen(),
@@ -120,86 +99,5 @@ class HomeScreen extends StatelessWidget {
         },
       ),
     );
-
-
-/*    return FutureBuilder<String>(
-      future: _userSharedPreferences.getUserRole(),
-      builder: (context, AsyncSnapshot<String> snapshot) {
-        if (snapshot.hasData) {
-          String role = snapshot.data!;
-
-          if (role == 'curator') {
-            print('Ваша роль куратор');
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => CuratorBloc(),
-                ),
-                // BlocProvider(
-                //   create: (context) => AuthenticationBloc(),
-                // ),
-                BlocProvider(
-                  create: (context) => SearchBloc(),
-                ),
-              ],
-              child: CuratorScreen(),
-            );
-          } else if (role == 'admin') {
-            print('Ваша роль администратор');
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => AdminBloc(),
-                ),
-                // BlocProvider(
-                //   create: (context) => AuthenticationBloc(),
-                // ),
-              ],
-              child: AdminScreen(),
-            );
-          } else if (role == 'medic') {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => MedicBloc(),
-                ),
-
-                // BlocProvider(
-                //   create: (context) => AuthenticationBloc(),
-                // ),
-
-                BlocProvider(
-                  create: (context) => SearchBloc(),
-                ),
-                BlocProvider(
-                  create: (context) => WorkingWithFluorographyBloc(),
-                ),
-              ],
-              child: MedicScreen(),
-            );
-          } else {
-            try {
-              print('Ваша роль $role');
-            } on Exception catch (_) {
-              print('Произошла непон ошибка');
-            }
-          }
-          return Scaffold(
-            body: Center(
-              child: Text(
-                'Ваша роль $role дада',
-                style: _textStyles.textStyleTitle(context),
-              ),
-            ),
-          );
-        } else {
-          print('Данные не загружаются');
-          return LoadingAnimationWidget.halfTriangleDot(
-            color: Colors.white,
-            size: 24,
-          );
-        }
-      },
-    );*/
   }
 }

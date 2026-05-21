@@ -30,23 +30,18 @@ class AuthController extends StateNotifier<AsyncValue<String?>>{
 
   Future<void> logout() async{
     try {
-      // 1. Пытаемся уведомить сервер (пока токен еще есть)
       await ref.read(requestRepositoryProvider).logoutProfile();
     } catch (e) {
-      // Логируем ошибку, но не прерываем процесс выхода
       talker.error('Ошибка при уведомлении сервера о выходе: $e');
     } finally {
-      // 2. В любом случае очищаем локальные данные
       await ref.read(apiServiceProvider).removeToken();
       ref.invalidate(tokenProvider);
 
-      // 3. Синхронизируем состояние с AuthenticationBloc для AuthChecker
       if (navigatorKey.currentContext != null) {
         BlocProvider.of<AuthenticationBloc>(navigatorKey.currentContext!)
             .add(IsAuthenticatedCheckEvent());
       }
 
-      // 4. Устанавливаем состояние успеха, чтобы сработал навигатор в UI
       state = const AsyncValue.data('Выход выполнен успешно');
     }
   }
@@ -77,15 +72,12 @@ final groupedApplicationsByGroup =
       return rawApplications.whenData((result) {
         final list = result.applications;
         final Map<String, List<GetReferenceModel>> groupedApplications = {};
-        // Временная мапа для объединения заявок по студентам внутри каждой группы.
         final Map<String, Map<int, GetReferenceModel>> tempGrouped = {};
-        // Мапа для хранения найденных номеров телефонов по user_id
         final Map<int, String> studentPhones = {};
 
         for (var item in list) {
           final userId = item.user_id;
 
-          // Если в текущей заявке есть номер телефона, запоминаем его
           if (item.phone != 'Телефон не указан' &&
               item.phone.isNotEmpty &&
               item.phone != 'Не указан') {
@@ -98,7 +90,6 @@ final groupedApplicationsByGroup =
 
           final existing = tempGrouped[item.group]![userId];
 
-          // Приоритет: 1 (В процессе) > 3 (Дубликат) > остальные (например, 2 - Готово)
           if (existing == null ||
               (item.status_id == 1 && existing.status_id != 1) ||
               (item.status_id == 3 &&
@@ -108,11 +99,9 @@ final groupedApplicationsByGroup =
           }
         }
 
-        // Собираем итоговый список, подставляя найденные телефоны
         tempGrouped.forEach((groupName, studentMap) {
           groupedApplications[groupName] = studentMap.values.map((student) {
             final phone = studentPhones[student.user_id];
-            // Проверяем на старый и новый вариант текста "не указан" для надежности
             if (phone != null &&
                 (student.phone == 'Не указан' || student.phone == 'Телефон не указан')) {
               return student.copyWith(phone: phone);
@@ -147,7 +136,6 @@ class UpdateReferenceStatusController
       for (var entry in updates.entries) {
         await repository.updateReferenceStatus(status_id: entry.value, application_id: entry.key);
       }
-      // Инвалидируем общий список и список конкретного студента
       ref.invalidate(fetchEntireListApplicationsProvider);
       ref.invalidate(fetchStudentApplications(userId));
     });

@@ -1,16 +1,15 @@
 import 'dart:core';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:project_fluorography/screens/secretary/secretary_edit_dialog.dart';
 import 'package:project_fluorography/services/api_reference/request_reference_controller.dart';
 import 'package:project_fluorography/styles.dart';
 import 'package:talker/talker.dart';
-import '../../models/get_reference_model/get_reference_model.dart';
 import '../../widgets/expansion_tile.dart' as expansion_tile;
 
 class SecretaryScreenReference extends ConsumerStatefulWidget {
@@ -88,24 +87,30 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                       onChanged: (value) {
                         setState(() {});
                       },
-                      cursorColor: const Color(0xff72A7EB),
+                      cursorColor: AppStyle.activeBlueColorMain,
+                      style: TextStyle(
+                        fontSize: AppStyle.fontSizeMedium_16,
+                        color: AppStyle.blackColorMain,
+                        fontFamily: 'Geologica',
+                      ),
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Color(0xFFF5F7FA),
+                        fillColor: AppStyle.whiteColorAdditionalF5F7FA,
                         prefixIcon: Padding(
                           padding: REdgeInsets.all(14.0),
                           child: SvgPicture.asset(
                             'assets/icon/search_icon.svg',
                             width: 20.w,
                             height: 20.h,
-                            color: const Color(0xff98BFF3),
+                            colorFilter: const ColorFilter.mode(AppStyle.blueColorAdditional98BFF3, BlendMode.srcIn),
                           ),
                         ),
                         hintText: 'Поиск',
                         hintStyle: TextStyle(
                           fontSize: AppStyle.fontSizeMedium_16,
-                          color: const Color(0xff26292B),
+                          color: AppStyle.blackColorAdditional26292B,
                           fontWeight: FontWeight.w400,
+                          fontFamily: 'Geologica',
                         ),
                         suffixIcon: _searchController.text.isNotEmpty
                             ? IconButton(
@@ -116,7 +121,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                 },
                                 icon: Icon(
                                   Icons.close,
-                                  color: const Color(0xff98BFF3),
+                                  color: AppStyle.blueColorAdditional98BFF3,
                                   size: 24.r,
                                 ),
                               )
@@ -143,14 +148,13 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                       height: 48.h,
                       padding: REdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
-                        color: _showOnlyActive ? AppStyle.blueColorAdditional4AABDB : Color(0xFFF5F7FA),
+                        color: _showOnlyActive ? AppStyle.blueColorAdditional4AABDB : AppStyle.whiteColorAdditionalF5F7FA,
                         borderRadius: BorderRadius.circular(30.r),
                       ),
                       child: Row(
                         children: [
                           SvgPicture.asset(
                             'assets/icon/mobile_checkbox.svg',
-                            // color: _showOnlyActive ? Colors.white : const Color(0xff98BFF3),
                             width: 20.w,
                             height: 20.h,
                           ),
@@ -160,8 +164,9 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                               'Показывать только группы с активными заявками',
                               style: TextStyle(
                                 fontSize: AppStyle.fontSizeMediumMini_14,
-                                color: _showOnlyActive ? Colors.white : const Color(0xff26292B),
+                                color: _showOnlyActive ? Colors.white : AppStyle.blackColorAdditional26292B,
                                 fontWeight: FontWeight.w400,
+                                fontFamily: 'Geologica',
                               ),
                             ),
                           ),
@@ -245,14 +250,15 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  'Группа $groupName',
-                                  style: TextStyle(
-                                    color: AppStyle.blueColorTextTitle,
-                                    fontSize: AppStyle.fontSizeMedium_16,
-                                    fontWeight: FontWeight.w500,
+                                  Text(
+                                    'Группа $groupName',
+                                    style: TextStyle(
+                                      color: AppStyle.blueColorTextTitle,
+                                      fontSize: AppStyle.fontSizeMedium_16,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Geologica',
+                                    ),
                                   ),
-                                ),
                                 Container(
                                   padding: REdgeInsets.symmetric(horizontal: 10, vertical: 2),
                                   decoration: groupHasActiveReferences
@@ -282,13 +288,16 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                                 : AppStyle.blackColorMain,
                                             fontSize: AppStyle.fontSizeSmall_12,
                                             fontWeight: FontWeight.w500,
+                                            fontFamily: 'Geologica',
                                           )),
                                       5.horizontalSpace,
                                       SvgPicture.asset(
                                         'assets/images/people_icon.svg',
-                                        color: isHighlighted
-                                            ? AppStyle.whiteColorMain
-                                            : AppStyle.blackColorMain,
+                                        colorFilter: ColorFilter.mode(
+                                            isHighlighted
+                                                ? AppStyle.whiteColorMain
+                                                : AppStyle.blackColorMain,
+                                            BlendMode.srcIn),
                                       )
                                     ],
                                   ),
@@ -323,6 +332,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                     color: AppStyle.activeBlueColorMain,
                                     fontSize: AppStyle.fontSizeMediumMini_14,
                                     fontWeight: FontWeight.w400,
+                                    fontFamily: 'Geologica',
                                   ),
                                 ),
                               ),
@@ -338,15 +348,16 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                       style: TextStyle(
                                         color: AppStyle.blackColorMain,
                                         fontSize: AppStyle.fontSizeMedium_16,
+                                        fontFamily: 'Geologica',
                                       ),
                                     ),
                                     trailing: (student.status_id == 1 || student.status_id == 3)
                                         ? SvgPicture.asset(
                                             'assets/icon/reference_warn.svg',
                                             width: 20.w,
-                                            color: student.status_id == 1 
-                                                ? AppStyle.redColorTag 
-                                                : AppStyle.yellowColorTag,
+                                            colorFilter: ColorFilter.mode(
+                                                student.status_id == 1 ? AppStyle.redColorTag : AppStyle.yellowColorTag,
+                                                BlendMode.srcIn),
                                           )
                                         : const SizedBox(),
                                     onTap: () async {
@@ -362,7 +373,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                                     },
                                   ),
                                 );
-                              }).toList(),
+                              }),
                             ],
                           ),
                         );

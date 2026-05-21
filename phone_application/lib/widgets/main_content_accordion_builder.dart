@@ -1,14 +1,15 @@
-import 'package:accordion/accordion.dart';
-import 'package:accordion/controllers.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:project_fluorography/models/single_group_with_students_model.dart';
 import 'package:project_fluorography/models/staff_and_students_model.dart';
 import 'package:project_fluorography/widgets/screens_widgets.dart';
-import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
+import 'package:project_fluorography/screens/medic/controller/fluorography_controller.dart';
+import '../services/checker_service.dart';
+import '../styles.dart';
 import 'accordion_widgets.dart';
+import 'expansion_tile.dart' as expansion_tile;
 
 // главный построитель контента в аккордионах медика, куратора и админа
 class MainContentAccordionBuilder extends StatelessWidget {
@@ -40,7 +41,7 @@ class MainContentAccordionBuilder extends StatelessWidget {
 }
 
 // строит аккордион со всеми вложенностями для медика
-class MedicConstructorAccordionBuildWidget extends StatelessWidget {
+class MedicConstructorAccordionBuildWidget extends ConsumerStatefulWidget {
   final List<StaffAndStudentsModel>? medicEntireCommunity;
 
   const MedicConstructorAccordionBuildWidget({
@@ -49,133 +50,166 @@ class MedicConstructorAccordionBuildWidget extends StatelessWidget {
   });
 
   @override
+  ConsumerState<MedicConstructorAccordionBuildWidget> createState() => _MedicConstructorAccordionBuildWidgetState();
+}
+
+class _MedicConstructorAccordionBuildWidgetState extends ConsumerState<MedicConstructorAccordionBuildWidget> {
+  final Map<String, bool> _isExpandedTile = {};
+
+  @override
   Widget build(BuildContext context) {
-    const lightBlueColor = Color(0xffD4EAFF);
-    const whiteColor = Colors.white;
-    return Accordion(
-      headerBorderColor: lightBlueColor,
-      headerBorderColorOpened: lightBlueColor,
-      headerBorderWidth: 1,
-      headerBackgroundColorOpened: Colors.transparent,
-      headerBackgroundColor: whiteColor,
-      rightIcon: SvgPicture.asset(
-        'assets/images/icon_expand_down.svg',
-        height: 14,
-        width: 6,
-      ),
-      contentBackgroundColor: whiteColor,
-      contentBorderColor: lightBlueColor,
-      contentBorderWidth: 1,
-      scaleWhenAnimating: true,
-      openAndCloseAnimation: true,
-      disableScrolling: true,
-      headerPadding: const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
-      sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
-      sectionClosingHapticFeedback: SectionHapticFeedback.light,
-      headerBorderRadius: 16,
+    final fluorographyState = ref.watch(fluorographyControllerProvider);
+    final checkerService = CheckerService();
+
+    return Column(
       children: [
-        // добавляем в список секцию с сотрудниками
-        ...medicEntireCommunity!.where((item) => item.staffList.isNotEmpty).map((
-          e,
-        ) {
+        // секция с сотрудниками
+        ...widget.medicEntireCommunity!.where((item) => item.staffList.isNotEmpty).map((e) {
           final String uniqueStaffSectionId = 'id_staff_section';
-          bool isEditing = false;
-          return AccordionSection(
-            isOpen: false,
-            paddingBetweenClosedSections: 10,
-            paddingBetweenOpenSections: 10,
-            header: HeaderAccordionSectionWidgetBuild(
-              title: 'Сотрудники',
-              count: e.staffList.length,
-            ),
-            contentHorizontalPadding: 16,
-            // contentVerticalPadding: 2,
-            content: Column(
+          final isEditing = fluorographyState.editingStates[uniqueStaffSectionId] ?? false;
+          
+          // Определяем статус для всей секции сотрудников
+          DataStatus sectionStatus = DataStatus.noOverdue;
+          for (var staff in e.staffList) {
+            final s = checkerService.isFluorographyOverdue(staff.fluorography);
+            if (s == DataStatus.overdue) {
+              sectionStatus = DataStatus.overdue;
+              break;
+            } else if (s == DataStatus.quitOverdue && sectionStatus != DataStatus.overdue) {
+              sectionStatus = DataStatus.quitOverdue;
+            }
+          }
+
+          return Padding(
+            padding: EdgeInsets.only(bottom: 10.h),
+            child: expansion_tile.ExpansionTile(
+              title: HeaderAccordionSectionWidgetBuild(
+                title: 'Сотрудники',
+                count: e.staffList.length,
+                status: sectionStatus,
+              ),
+              collapsedShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.r),
+                  side: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1.w)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.r),
+                  side: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1.w)),
+              trailing: SvgPicture.asset(
+                _isExpandedTile[uniqueStaffSectionId] == true
+                    ? 'assets/images/icon_expand_down2.svg'
+                    : 'assets/images/icon_expand_right.svg',
+              ),
+              onExpansionChanged: (bool expanded) {
+                setState(() {
+                  _isExpandedTile[uniqueStaffSectionId] = expanded;
+                });
+              },
               children: [
+                Container(
+                  width: double.infinity,
+                  padding: REdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
+                  child: Text(
+                    'Чтобы изменить дату флюорографии, выберите человека из списка.',
+                    style: TextStyle(
+                      color: AppStyle.activeBlueColorMain,
+                      fontSize: AppStyle.fontSizeMediumMini_14,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Geologica',
+                    ),
+                  ),
+                ),
                 ...e.staffList.map((staff) {
-                  // final uniqueStaffId = 'staff_${staff.id}_${staff.lastname}';
                   final uniqueStaffId = '${staff.id}';
-                  return BlocListener<
-                    WorkingWithFluorographyBloc,
-                    WorkingWithFluorographyState
-                  >(
-                    listener: (context, state) {
-                      // isDatePickerOpened ? _BuildersScreen.openDatePicker(context, uniqueStaffId, context.read<WorkingWithFluorographyBloc>()) : (){};
-                    },
+                  return Container(
+                    padding: REdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
                     child: OneRowBuildAccordionSectionContentStaff(
                       staff: staff,
-                      // uniqueStaffId: uniqueStaffId,
                       uniqueStaffId: uniqueStaffId,
                       uniqueEditingSectionId: uniqueStaffSectionId,
                     ),
                   );
                 }),
-
-                BlocBuilder<
-                  WorkingWithFluorographyBloc,
-                  WorkingWithFluorographyState
-                >(
-                  builder: (context, state) {
-                    isEditing =
-                        state.editingStates[uniqueStaffSectionId] ?? false;
-                    //print('Перестраиваю виджет с id $uniqueStaffSectionId, изменяемость: $isEditing');
-                    return EditRowWithButtons(
-                      uniqueId: uniqueStaffSectionId,
-                      isEditing: isEditing,
-                      key: key,
-                    );
-                    // return _ScreensWidgets.EditRowWithButtons(context: context, uniqueId: uniqueStaffSectionId, isEditing: isEditing);
-                  },
-                ),
               ],
             ),
           );
         }),
 
-        // добавляем в список секции групп со студентами
-        ...medicEntireCommunity!.where((item) => item.studentsList.isNotEmpty).expand((
-          groups,
-        ) {
+        // секции групп со студентами
+        ...widget.medicEntireCommunity!.where((item) => item.studentsList.isNotEmpty).expand((groups) {
           return groups.studentsList.map((group) {
             final String uniqueGroupSectionId = 'id_group_${group.groupNumber}';
-            bool isEditing = false;
-            return AccordionSection(
-              isOpen: false,
-              paddingBetweenClosedSections: 10,
-              paddingBetweenOpenSections: 10,
-              header: HeaderAccordionSectionWidgetBuild(
-                groupNumber: group.groupNumber,
-                count: group.students.length,
-                title: 'Группа',
-              ),
-              contentHorizontalPadding: 12,
-              // contentVerticalPadding: 12,
-              content: Column(
+            final isEditing = fluorographyState.editingStates[uniqueGroupSectionId] ?? false;
+
+            // Определяем статус для всей группы
+            DataStatus groupStatus = DataStatus.noOverdue;
+            for (var student in group.students) {
+              final s = checkerService.isFluorographyOverdue(student.fluorography);
+              if (s == DataStatus.overdue) {
+                groupStatus = DataStatus.overdue;
+                break;
+              } else if (s == DataStatus.quitOverdue && groupStatus != DataStatus.overdue) {
+                groupStatus = DataStatus.quitOverdue;
+              }
+            }
+
+            return Padding(
+              padding: EdgeInsets.only(bottom: 10.h),
+              child: expansion_tile.ExpansionTile(
+                title: HeaderAccordionSectionWidgetBuild(
+                  groupNumber: group.groupNumber,
+                  count: group.students.length,
+                  title: 'Группа',
+                  status: groupStatus,
+                ),
+                collapsedShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.r),
+                    side: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1.w)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.r),
+                    side: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1.w)),
+                trailing: SvgPicture.asset(
+                  _isExpandedTile[uniqueGroupSectionId] == true
+                      ? 'assets/images/icon_expand_down2.svg'
+                      : 'assets/images/icon_expand_right.svg',
+                ),
+                onExpansionChanged: (bool expanded) {
+                  setState(() {
+                    _isExpandedTile[uniqueGroupSectionId] = expanded;
+                  });
+                },
                 children: [
+                  Container(
+                    width: double.infinity,
+                    padding: REdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
+                    child: Text(
+                      'Чтобы изменить дату флюорографии, выберите человека из списка.',
+                      style: TextStyle(
+                        color: AppStyle.activeBlueColorMain,
+                        fontSize: AppStyle.fontSizeMediumMini_14,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Geologica',
+                      ),
+                    ),
+                  ),
                   ...group.students.map((student) {
                     final uniqueStudentId = '${student.id}';
-                    return OneRowBuildAccordionSectionContent(
-                      student: student,
-                      uniqueId: uniqueStudentId,
-                      uniqueEditingSectionId: uniqueGroupSectionId,
+                    return Container(
+                      padding: REdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
+                      child: OneRowBuildAccordionSectionContent(
+                        student: student,
+                        uniqueId: uniqueStudentId,
+                        uniqueEditingSectionId: uniqueGroupSectionId,
+                      ),
                     );
                   }),
-                  BlocBuilder<
-                    WorkingWithFluorographyBloc,
-                    WorkingWithFluorographyState
-                  >(
-                    builder: (context, state) {
-                      isEditing =
-                          state.editingStates[uniqueGroupSectionId] ?? false;
-                      //print('Перестраиваю виджет с id $uniqueGroupSectionId, изменяемость: $isEditing');
-                      return EditRowWithButtons(
-                        uniqueId: uniqueGroupSectionId,
-                        isEditing: isEditing,
-                        key: key,
-                      );
-                      // return _ScreensWidgets.EditRowWithButtons(context: context, uniqueId: uniqueGroupSectionId, isEditing: isEditing);
-                    },
-                  ),
                 ],
               ),
             );
@@ -186,7 +220,7 @@ class MedicConstructorAccordionBuildWidget extends StatelessWidget {
   }
 }
 
-class CuratorConstructorAccordionBuildWidget extends StatelessWidget {
+class CuratorConstructorAccordionBuildWidget extends ConsumerStatefulWidget {
   final List<SingleGroupWithStudentsModel>? groups;
 
   const CuratorConstructorAccordionBuildWidget({
@@ -195,45 +229,58 @@ class CuratorConstructorAccordionBuildWidget extends StatelessWidget {
   });
 
   @override
+  ConsumerState<CuratorConstructorAccordionBuildWidget> createState() => _CuratorConstructorAccordionBuildWidgetState();
+}
+
+class _CuratorConstructorAccordionBuildWidgetState extends ConsumerState<CuratorConstructorAccordionBuildWidget> {
+  final Map<String, bool> _isExpandedTile = {};
+
+  @override
   Widget build(BuildContext context) {
-    const lightBlueColor = Color(0xffD4EAFF);
-    const whiteColor = Colors.white;
-    return Accordion(
-      headerBorderColor: lightBlueColor,
-      headerBorderColorOpened: lightBlueColor,
-      headerBorderWidth: 1,
-      headerBackgroundColorOpened: Colors.transparent,
-      headerBackgroundColor: whiteColor,
-      rightIcon: SvgPicture.asset(
-        'assets/images/icon_expand_down.svg',
-        height: 14,
-        width: 6,
-      ),
-      contentBackgroundColor: whiteColor,
-      contentBorderColor: lightBlueColor,
-      contentBorderWidth: 1,
-      scaleWhenAnimating: true,
-      openAndCloseAnimation: true,
-      disableScrolling: true,
-      headerPadding: const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
-      sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
-      sectionClosingHapticFeedback: SectionHapticFeedback.light,
-      headerBorderRadius: 16,
-      children: groups!.map((groupData) {
-        bool isEditing = false;
+    final fluorographyState = ref.watch(fluorographyControllerProvider);
+    final checkerService = CheckerService();
+
+    return Column(
+      children: widget.groups!.map((groupData) {
         final String uniqueGroupSectionId = 'id_group_${groupData.groupNumber}';
-        return AccordionSection(
-          isOpen: false,
-          paddingBetweenClosedSections: 10,
-          paddingBetweenOpenSections: 10,
-          header: HeaderAccordionSectionWidgetBuild(
-            title: 'Группа',
-            count: groupData.students.length,
-            groupNumber: groupData.groupNumber,
-          ),
-          contentHorizontalPadding: 12,
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        final isEditing = fluorographyState.editingStates[uniqueGroupSectionId] ?? false;
+
+        DataStatus groupStatus = DataStatus.noOverdue;
+        for (var student in groupData.students) {
+          final s = checkerService.isFluorographyOverdue(student.fluorography);
+          if (s == DataStatus.overdue) {
+            groupStatus = DataStatus.overdue;
+            break;
+          } else if (s == DataStatus.quitOverdue && groupStatus != DataStatus.overdue) {
+            groupStatus = DataStatus.quitOverdue;
+          }
+        }
+
+        return Padding(
+          padding: EdgeInsets.only(bottom: 10.h),
+          child: expansion_tile.ExpansionTile(
+            title: HeaderAccordionSectionWidgetBuild(
+              title: 'Группа',
+              count: groupData.students.length,
+              groupNumber: groupData.groupNumber,
+              status: groupStatus,
+            ),
+            collapsedShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.r),
+                side: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1.w)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.r),
+                side: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1.w)),
+            trailing: SvgPicture.asset(
+              _isExpandedTile[uniqueGroupSectionId] == true
+                  ? 'assets/images/icon_expand_down2.svg'
+                  : 'assets/images/icon_expand_right.svg',
+            ),
+            onExpansionChanged: (bool expanded) {
+              setState(() {
+                _isExpandedTile[uniqueGroupSectionId] = expanded;
+              });
+            },
             children: [
               if (groupData.students.isEmpty)
                 const Padding(
@@ -243,29 +290,34 @@ class CuratorConstructorAccordionBuildWidget extends StatelessWidget {
               else
                 Column(
                   children: [
+                    Container(
+                      width: double.infinity,
+                      padding: REdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                          border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
+                      child: Text(
+                        'Чтобы изменить дату флюорографии, выберите человека из списка.',
+                        style: TextStyle(
+                          color: AppStyle.activeBlueColorMain,
+                          fontSize: AppStyle.fontSizeMediumMini_14,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Geologica',
+                        ),
+                      ),
+                    ),
                     ...groupData.students.map((student) {
-                      // final uniqueStudentId = 'student_${student.id}_${student.lastname}';
                       final uniqueStudentId = '${student.id}';
-                      return OneRowBuildAccordionSectionContent(
-                        student: student,
-                        uniqueId: uniqueStudentId,
-                        uniqueEditingSectionId: uniqueGroupSectionId,
+                      return Container(
+                        padding: REdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                            border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
+                        child: OneRowBuildAccordionSectionContent(
+                          student: student,
+                          uniqueId: uniqueStudentId,
+                          uniqueEditingSectionId: uniqueGroupSectionId,
+                        ),
                       );
                     }),
-                    BlocBuilder<
-                      WorkingWithFluorographyBloc,
-                      WorkingWithFluorographyState
-                    >(
-                      builder: (context, state) {
-                        isEditing =
-                            state.editingStates[uniqueGroupSectionId] ?? false;
-                        return EditRowWithButtons(
-                          uniqueId: uniqueGroupSectionId,
-                          isEditing: isEditing,
-                          key: key,
-                        );
-                      },
-                    ),
                   ],
                 ),
             ],
@@ -276,51 +328,62 @@ class CuratorConstructorAccordionBuildWidget extends StatelessWidget {
   }
 }
 
-class AdminConstructorAccordionBuildWidget extends StatelessWidget {
+class AdminConstructorAccordionBuildWidget extends StatefulWidget {
   final List<SingleGroupWithStudentsModel>? groups;
 
   const AdminConstructorAccordionBuildWidget({super.key, required this.groups});
 
   @override
+  State<AdminConstructorAccordionBuildWidget> createState() => _AdminConstructorAccordionBuildWidgetState();
+}
+
+class _AdminConstructorAccordionBuildWidgetState extends State<AdminConstructorAccordionBuildWidget> {
+  final Map<String, bool> _isExpandedTile = {};
+
+  @override
   Widget build(BuildContext context) {
-    const lightBlueColor = Color(0xffD4EAFF);
-    const whiteColor = Colors.white;
-    return Accordion(
-      headerBorderColor: lightBlueColor,
-      headerBorderColorOpened: lightBlueColor,
-      headerBorderWidth: 1,
-      headerBackgroundColorOpened: Colors.transparent,
-      headerBackgroundColor: whiteColor,
-      rightIcon: SvgPicture.asset(
-        'assets/images/icon_expand_down.svg',
-        height: 14,
-        width: 6,
-      ),
-      contentBackgroundColor: whiteColor,
-      contentBorderColor: lightBlueColor,
-      contentBorderWidth: 1,
-      scaleWhenAnimating: true,
-      openAndCloseAnimation: true,
-      disableScrolling: true,
-      headerPadding: const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
-      sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
-      sectionClosingHapticFeedback: SectionHapticFeedback.light,
-      headerBorderRadius: 16,
-      children: groups!.map((groupData) {
-        bool isEditing = false;
+    final checkerService = CheckerService();
+
+    return Column(
+      children: widget.groups!.map((groupData) {
         final String uniqueGroupSectionId = 'id_group_${groupData.groupNumber}';
-        return AccordionSection(
-          isOpen: false,
-          paddingBetweenClosedSections: 10,
-          paddingBetweenOpenSections: 10,
-          header: HeaderAccordionSectionWidgetBuild(
-            title: 'Группа',
-            count: groupData.students.length,
-            groupNumber: groupData.groupNumber,
-          ),
-          contentHorizontalPadding: 12,
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+
+        DataStatus groupStatus = DataStatus.noOverdue;
+        for (var student in groupData.students) {
+          final s = checkerService.isFluorographyOverdue(student.fluorography);
+          if (s == DataStatus.overdue) {
+            groupStatus = DataStatus.overdue;
+            break;
+          } else if (s == DataStatus.quitOverdue && groupStatus != DataStatus.overdue) {
+            groupStatus = DataStatus.quitOverdue;
+          }
+        }
+
+        return Padding(
+          padding: EdgeInsets.only(bottom: 10.h),
+          child: expansion_tile.ExpansionTile(
+            title: HeaderAccordionSectionWidgetBuild(
+              title: 'Группа',
+              count: groupData.students.length,
+              groupNumber: groupData.groupNumber,
+              status: groupStatus,
+            ),
+            collapsedShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.r),
+                side: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1.w)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.r),
+                side: BorderSide(color: AppStyle.collapsedBlueColorD4EAFF, width: 1.w)),
+            trailing: SvgPicture.asset(
+              _isExpandedTile[uniqueGroupSectionId] == true
+                  ? 'assets/images/icon_expand_down2.svg'
+                  : 'assets/images/icon_expand_right.svg',
+            ),
+            onExpansionChanged: (bool expanded) {
+              setState(() {
+                _isExpandedTile[uniqueGroupSectionId] = expanded;
+              });
+            },
             children: [
               if (groupData.students.isEmpty)
                 const Padding(
@@ -330,13 +393,32 @@ class AdminConstructorAccordionBuildWidget extends StatelessWidget {
               else
                 Column(
                   children: [
+                    Container(
+                      width: double.infinity,
+                      padding: REdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                          border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
+                      child: Text(
+                        'Список студентов группы с датами прохождения флюорографии.',
+                        style: TextStyle(
+                          color: AppStyle.activeBlueColorMain,
+                          fontSize: AppStyle.fontSizeMediumMini_14,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Geologica',
+                        ),
+                      ),
+                    ),
                     ...groupData.students.map((student) {
-                      // final uniqueStudentId = 'student_${student.id}_${student.lastname}';
                       final uniqueStudentId = '${student.id}';
-                      return OneRowBuildAccordionSectionContent(
-                        student: student,
-                        uniqueId: uniqueStudentId,
-                        uniqueEditingSectionId: uniqueGroupSectionId,
+                      return Container(
+                        padding: REdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                            border: Border(bottom: BorderSide(color: const Color(0x330088cc), width: 1.h))),
+                        child: OneRowBuildAccordionSectionContent(
+                          student: student,
+                          uniqueId: uniqueStudentId,
+                          uniqueEditingSectionId: uniqueGroupSectionId,
+                        ),
                       );
                     }),
                   ],

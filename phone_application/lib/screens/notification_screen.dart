@@ -30,21 +30,22 @@ class _NotificationScreen extends ConsumerState<NotificationScreen> {
               enabled: false,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: const Color(0xFFF5F7FA),
+                fillColor: AppStyle.whiteColorAdditionalF5F7FA,
                 prefixIcon: Padding(
                   padding: EdgeInsets.all(12.0.r),
                   child: SvgPicture.asset(
                     'assets/images/serch_icon.svg',
                     width: 20.w,
                     height: 20.h,
-                    color: const Color(0xff98BFF3),
+                    color: AppStyle.blueColorAdditional98BFF3,
                   ),
                 ),
                 hintText: 'Поиск',
                 hintStyle: TextStyle(
                   fontSize: AppStyle.fontSizeMedium_16,
-                  color: Color(0xff26292B),
+                  color: AppStyle.blackColorAdditional26292B,
                   fontWeight: FontWeight.w400,
+                  fontFamily: 'Geologica',
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.r),

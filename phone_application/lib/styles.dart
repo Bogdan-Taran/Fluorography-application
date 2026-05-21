@@ -17,6 +17,9 @@ class AppStyle {
   static const Color grayColorMain =                                            Color(0xff999A9B);
   static const Color whiteColorMain =                                           Color(0xffffffff);
   static const Color blueColorAdditional4AABDB =                                Color(0xff4AABDB);
+  static const Color blueColorAdditional98BFF3 =                                Color(0xff98BFF3);
+  static const Color whiteColorAdditionalF5F7FA =                               Color(0xffF5F7FA);
+  static const Color blackColorAdditional26292B =                               Color(0xff26292B);
   static const Color blueColorBorder =                                          Color(0xff0188FD);
   static const Color defaultBlueColorMain =                                     Color(0xff98BFF3);
   static const Color activeBlueColorMain =                                      Color(0xff72A7EB);
@@ -37,7 +40,7 @@ class AppStyle {
   static final EdgeInsetsGeometry contentPaddingDropdownItemLeft =              REdgeInsets.symmetric(vertical: 4, horizontal: 16);
   static final EdgeInsetsGeometry outsideInputPaddingHorizontal =               REdgeInsets.symmetric(horizontal: 32);
   static final EdgeInsetsGeometry contentPaddingTextFieldSymmetric =            REdgeInsets.symmetric(vertical: 8, horizontal: 16);
-  static final EdgeInsets loginAndPasswordFieldPadding =                         REdgeInsets.only(top: 8, right: 20, bottom: 8, left: 16);
+  static final EdgeInsets loginAndPasswordFieldPadding =                        REdgeInsets.only(top: 8, right: 20, bottom: 8, left: 16);
 
   Color testStyle(){
     return grayColorMain;

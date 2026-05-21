@@ -2,13 +2,12 @@ import 'package:bottom_picker/bottom_picker.dart';
 import 'package:bottom_picker/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:project_fluorography/bloc/medic/medic_bloc.dart';
 import 'package:project_fluorography/styles.dart';
+import 'package:project_fluorography/screens/medic/controller/fluorography_controller.dart';
 
-import '../bloc/working_with_fluorography/working_with_fluorography_bloc.dart';
 import 'converters_service.dart';
 
 class BuildersScreen {
@@ -42,9 +41,11 @@ class BuildersScreen {
     );
   }
 
-  void openDatePicker(BuildContext context,
-      String uniqueDateContainerId,
-      WorkingWithFluorographyBloc bloc,) {
+  void openDatePickerRiverpod(
+    BuildContext context,
+    String uniqueDateContainerId,
+    WidgetRef ref,
+  ) {
     final dateNow = DateTime.now();
     BottomPicker.date(
       buttonContent: Text(
@@ -76,8 +77,6 @@ class BuildersScreen {
             ),
             IconButton(
               onPressed: () {
-                // context.read<MedicBloc>().add(MedicCloseDatePickerEvent());
-                bloc.add(CloseDatePickerEvent(uniqueId: uniqueDateContainerId));
                 Navigator.of(context).pop();
               },
               icon: Icon(Icons.close, size: 24.r),
@@ -89,37 +88,21 @@ class BuildersScreen {
         );
       },
       dateOrder: DatePickerDateOrder.dmy,
-      // initialDateTime: DateTime(2025, 10, 01),
       initialDateTime: DateTime.now(),
       maxDateTime: DateTime.now(),
       minDateTime: dateNow.subtract(Duration(days: 365 * 2)),
-      onChange: (index) {
-        print(index);
-        String date = _ConverterServices.convertDatePicker(index);
-        print(date);
-        // context.read<MedicBloc>().add(MedicSelectDateEvent(selectedDate: date));
-      },
       onSubmit: (index) {
-        print(index);
         String date = _ConverterServices.convertDatePicker(index);
-        print('Печатаю дату: $date');
-        bloc.add(
-          SelectDateEvent(
-            selectedDate: date,
-            uniqueContainerId: uniqueDateContainerId,
-          ),
-        );
-        print(
-          'Вызвал ивент выбора даты, selected date: $date, uniqueContainerId: $uniqueDateContainerId',
-        );
-      },
-      onDismiss: (p0) {
-        print(p0);
+        ref.read(fluorographyControllerProvider.notifier).selectDate(
+              uniqueDateContainerId,
+              date,
+            );
       },
       bottomPickerTheme: BottomPickerTheme.fluraPlate,
     ).show(context);
   }
 }
+
 
 class PopUpMessage extends StatelessWidget {
   final String message;

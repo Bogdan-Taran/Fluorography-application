@@ -97,9 +97,10 @@ Fluttertoast.showToast(
     // final double screenHeight = MediaQuery.of(context).size.height;
     // final double screenWidth = MediaQuery.of(context).size.width;
 
-    return WillPopScope(
-      onWillPop: () async {
-        return true;
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (didPop) return;
       },
       child: AnnotatedRegion(
         value: SystemUiOverlayStyle(statusBarColor: Colors.white),

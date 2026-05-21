@@ -47,8 +47,11 @@ class _MedicScreenFluorographyState extends ConsumerState<MedicScreenFluorograph
     final buildersScreen = BuildersScreen();
     final appBarHeight = 80.h;
 
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (didPop) return;
+      },
       child: ColorfulSafeArea(
         color: AppStyle.whiteColorMain,
         child: Scaffold(

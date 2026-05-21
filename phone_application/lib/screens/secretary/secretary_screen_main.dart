@@ -79,9 +79,10 @@ class _SecretaryScreen extends ConsumerState<SecretaryScreen> {
       );
     });
 
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (didPop) return;
       },
       child: ColorfulSafeArea(
         color: Colors.white,

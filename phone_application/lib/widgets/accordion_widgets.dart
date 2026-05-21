@@ -80,7 +80,10 @@ class HeaderAccordionSectionWidgetBuild extends StatelessWidget {
                 'assets/images/people_icon.svg',
                 height: 12.h,
                 width: 12.w,
-                color: isHighlighted ? Colors.white : AppStyle.blackColorMain,
+                colorFilter: ColorFilter.mode(
+                  isHighlighted ? Colors.white : AppStyle.blackColorMain,
+                  BlendMode.srcIn,
+                ),
               ),
             ],
           ),
@@ -119,7 +122,7 @@ class OneRowBuildAccordionSectionContent extends ConsumerWidget {
         style: TextStyle(
           fontSize: AppStyle.fontSizeMedium_16,
           color: AppStyle.blackColorMain,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w500,
           fontFamily: 'Geologica',
         ),
       ),
@@ -137,10 +140,11 @@ class OneRowBuildAccordionSectionContent extends ConsumerWidget {
       trailing: (status == DataStatus.overdue || status == DataStatus.quitOverdue)
           ? SvgPicture.asset(
               'assets/icon/reference_warn.svg',
-              width: 20.w,
-              color: status == DataStatus.overdue 
-                  ? AppStyle.redColorTag 
-                  : AppStyle.yellowColorTag,
+              width: 24.w,
+              colorFilter: ColorFilter.mode(
+                status == DataStatus.overdue ? AppStyle.redColorTag : AppStyle.yellowColorTag,
+                BlendMode.srcIn,
+              ),
             )
           : null,
     );
@@ -176,7 +180,7 @@ class OneRowBuildAccordionSectionContentStaff extends ConsumerWidget {
         style: TextStyle(
           fontSize: AppStyle.fontSizeMedium_16,
           color: AppStyle.blackColorMain,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w500,
           fontFamily: 'Geologica',
         ),
       ),
@@ -194,10 +198,11 @@ class OneRowBuildAccordionSectionContentStaff extends ConsumerWidget {
       trailing: (status == DataStatus.overdue || status == DataStatus.quitOverdue)
           ? SvgPicture.asset(
               'assets/icon/reference_warn.svg',
-              width: 20.w,
-              color: status == DataStatus.overdue 
-                  ? AppStyle.redColorTag 
-                  : AppStyle.yellowColorTag,
+              width: 24.w,
+              colorFilter: ColorFilter.mode(
+                status == DataStatus.overdue ? AppStyle.redColorTag : AppStyle.yellowColorTag,
+                BlendMode.srcIn,
+              ),
             )
           : null,
     );
@@ -283,8 +288,12 @@ void _showEditFluorographyDialog(BuildContext context, WidgetRef ref, int id, St
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
-                      selectedDate,
-                      style: TextStyle(fontSize: AppStyle.fontSizeMedium_16),
+                      ConverterServices().formatFluraDate(selectedDate),
+                      style: TextStyle(
+                        fontSize: AppStyle.fontSizeMedium_16,
+                        fontFamily: 'Geologica',
+                        color: AppStyle.blackColorMain,
+                      ),
                     ),
                   ),
                 ),
@@ -299,7 +308,7 @@ void _showEditFluorographyDialog(BuildContext context, WidgetRef ref, int id, St
                 onPressed: () async {
                   await ref.read(fluorographyControllerProvider.notifier).updateSingleFluorography(id, selectedDate);
                   Navigator.pop(context);
-                  showPopMessage(context, 'Данные успешно обновлены', true);
+                  showPopMessage(context, 'Изменения сохранены', true);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppStyle.blueColorAdditional98BFF3,

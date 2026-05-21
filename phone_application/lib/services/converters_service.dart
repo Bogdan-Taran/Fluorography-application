@@ -35,16 +35,18 @@ class ConverterServices {
   }
 
   String formatFluraDate(String? date) {
-    if (date == null) {
-      print('Нет даты');
+    if (date == null || date.isEmpty) {
       return 'Нет даты';
     }
     try {
-      final dt = date;
-      print('Есть дата: $dt');
-      return dt;
+      // Ожидаем формат yyyy-MM-dd
+      final parts = date.split('-');
+      if (parts.length == 3) {
+        return '${parts[2]}.${parts[1]}.${parts[0]}';
+      }
+      return date;
     } catch (e) {
-      return 'Catch - нет даты';
+      return 'Ошибка даты';
     }
   }
 

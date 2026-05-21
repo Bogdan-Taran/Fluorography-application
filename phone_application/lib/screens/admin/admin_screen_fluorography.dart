@@ -15,8 +15,23 @@ class AdminScreenFluorography extends ConsumerStatefulWidget {
   ConsumerState<AdminScreenFluorography> createState() => _AdminScreenFluorography();
 }
 
-class _AdminScreenFluorography extends ConsumerState<AdminScreenFluorography> {
+class _AdminScreenFluorography extends ConsumerState<AdminScreenFluorography> with AutomaticKeepAliveClientMixin {
   final searchController = TextEditingController();
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Синхронизация контроллера поиска с состоянием провайдера
+    searchController.text = ref.read(adminSearchQueryProvider);
+    searchController.addListener(() {
+      if (searchController.text != ref.read(adminSearchQueryProvider)) {
+        ref.read(adminSearchQueryProvider.notifier).state = searchController.text;
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -26,6 +41,7 @@ class _AdminScreenFluorography extends ConsumerState<AdminScreenFluorography> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     BuildersScreen _buildersScreen = BuildersScreen();
     final filteredGroupsAsync = ref.watch(filteredAdminGroupsProvider);
 
@@ -47,9 +63,6 @@ class _AdminScreenFluorography extends ConsumerState<AdminScreenFluorography> {
             title: Padding(
               padding: REdgeInsets.symmetric(horizontal: 8.0),
               child: TextField(
-                onChanged: (query) {
-                  ref.read(adminSearchQueryProvider.notifier).state = query;
-                },
                 controller: searchController,
                 cursorColor: const Color(0xff72A7EB),
                 decoration: InputDecoration(
@@ -64,6 +77,19 @@ class _AdminScreenFluorography extends ConsumerState<AdminScreenFluorography> {
                       color: const Color(0xff98BFF3),
                     ),
                   ),
+                  suffixIcon: ref.watch(adminSearchQueryProvider).isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            searchController.clear();
+                            ref.read(adminSearchQueryProvider.notifier).state = '';
+                          },
+                          icon: Icon(
+                            Icons.close,
+                            color: const Color(0xff98BFF3),
+                            size: 20.r,
+                          ),
+                        )
+                      : null,
                   hintText: 'Поиск',
                   hintStyle: TextStyle(
                     fontSize: AppStyle.fontSizeMedium_16,

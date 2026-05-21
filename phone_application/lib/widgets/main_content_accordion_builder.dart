@@ -315,6 +315,7 @@ class _CuratorConstructorAccordionBuildWidgetState extends ConsumerState<Curator
                           student: student,
                           uniqueId: uniqueStudentId,
                           uniqueEditingSectionId: uniqueGroupSectionId,
+                          isReadOnly: false,
                         ),
                       );
                     }),
@@ -418,6 +419,7 @@ class _AdminConstructorAccordionBuildWidgetState extends State<AdminConstructorA
                           student: student,
                           uniqueId: uniqueStudentId,
                           uniqueEditingSectionId: uniqueGroupSectionId,
+                          isReadOnly: true,
                         ),
                       );
                     }),

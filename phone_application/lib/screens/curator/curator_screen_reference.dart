@@ -10,6 +10,7 @@ import 'package:talker/talker.dart';
 import '../../models/get_reference_model/get_reference_model.dart';
 import '../../services/api_reference/request_reference_controller.dart';
 import '../../widgets/expansion_tile.dart' as expansion_tile;
+import 'controller/curator_reference_controller.dart';
 
 class CuratorScreenReference extends ConsumerStatefulWidget {
   const CuratorScreenReference({super.key});
@@ -17,11 +18,24 @@ class CuratorScreenReference extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _CuratorScreenReference();
 }
 
-class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
+class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> with AutomaticKeepAliveClientMixin {
   final Map<int, bool> _isExpandedTile = {};
-  bool _showOnlyActive = false;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.text = ref.read(curatorReferenceSearchQueryProvider);
+    _searchController.addListener(() {
+      if (_searchController.text != ref.read(curatorReferenceSearchQueryProvider)) {
+        ref.read(curatorReferenceSearchQueryProvider.notifier).state = _searchController.text;
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -32,10 +46,13 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
 
   @override
   Widget build(BuildContext context) {
-    final query = _searchController.text;
+    super.build(context);
+    final query = ref.watch(curatorReferenceSearchQueryProvider);
+    final showOnlyActive = ref.watch(curatorReferenceShowOnlyActiveProvider);
+    
     final groupedData = ref.watch(groupedApplicationsByGroup((
       name: query.length >= 3 ? query : null,
-      onlyUnfinished: _showOnlyActive ? true : null,
+      onlyUnfinished: showOnlyActive ? true : null,
     )));
     final talker = Talker();
 
@@ -85,9 +102,6 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                     child: TextField(
                       controller: _searchController,
                       focusNode: _searchFocusNode,
-                      onChanged: (value) {
-                        setState(() {});
-                      },
                       cursorColor: const Color(0xff72A7EB),
                       decoration: InputDecoration(
                         filled: true,
@@ -107,11 +121,10 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                           color: const Color(0xff26292B),
                           fontWeight: FontWeight.w400,
                         ),
-                        suffixIcon: _searchController.text.isNotEmpty
+                        suffixIcon: query.isNotEmpty
                             ? IconButton(
                                 onPressed: () {
                                   _searchController.clear();
-                                  setState(() {});
                                 },
                                 icon: Icon(
                                   Icons.close,
@@ -134,15 +147,13 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                   10.verticalSpace,
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        _showOnlyActive = !_showOnlyActive;
-                      });
+                      ref.read(curatorReferenceShowOnlyActiveProvider.notifier).state = !showOnlyActive;
                     },
                     child: Container(
                       height: 48.h,
                       padding: REdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
-                        color: _showOnlyActive ? AppStyle.blueColorAdditional4AABDB : const Color(0xFFF5F7FA),
+                        color: showOnlyActive ? AppStyle.blueColorAdditional4AABDB : const Color(0xFFF5F7FA),
                         borderRadius: BorderRadius.circular(30.r),
                       ),
                       child: Row(
@@ -159,7 +170,7 @@ class _CuratorScreenReference extends ConsumerState<CuratorScreenReference> {
                               'Показывать только группы с активными заявками',
                               style: TextStyle(
                                 fontSize: AppStyle.fontSizeMediumMini_14,
-                                color: _showOnlyActive ? Colors.white : const Color(0xff26292B),
+                                color: showOnlyActive ? Colors.white : const Color(0xff26292B),
                                 fontWeight: FontWeight.w400,
                               ),
                             ),

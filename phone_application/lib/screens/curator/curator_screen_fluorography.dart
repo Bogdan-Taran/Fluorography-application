@@ -15,8 +15,23 @@ class CuratorScreenFluorography extends ConsumerStatefulWidget {
   ConsumerState<CuratorScreenFluorography> createState() => _CuratorScreenFluorography();
 }
 
-class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography> {
+class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography> with AutomaticKeepAliveClientMixin {
   final searchController = TextEditingController();
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Синхронизация контроллера поиска с состоянием провайдера
+    searchController.text = ref.read(curatorSearchQueryProvider);
+    searchController.addListener(() {
+      if (searchController.text != ref.read(curatorSearchQueryProvider)) {
+        ref.read(curatorSearchQueryProvider.notifier).state = searchController.text;
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -26,6 +41,7 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     BuildersScreen _buildersScreen = BuildersScreen();
     final filteredGroupsAsync = ref.watch(filteredCuratorGroupsProvider);
 
@@ -47,9 +63,6 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
             title: Padding(
               padding: REdgeInsets.symmetric(horizontal: 8.0),
               child: TextField(
-                onChanged: (query) {
-                  ref.read(curatorSearchQueryProvider.notifier).state = query;
-                },
                 controller: searchController,
                 cursorColor: const Color(0xff72A7EB),
                 decoration: InputDecoration(
@@ -64,6 +77,19 @@ class _CuratorScreenFluorography extends ConsumerState<CuratorScreenFluorography
                       color: const Color(0xff98BFF3),
                     ),
                   ),
+                  suffixIcon: ref.watch(curatorSearchQueryProvider).isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            searchController.clear();
+                            ref.read(curatorSearchQueryProvider.notifier).state = '';
+                          },
+                          icon: Icon(
+                            Icons.close,
+                            color: const Color(0xff98BFF3),
+                            size: 20.r,
+                          ),
+                        )
+                      : null,
                   hintText: 'Поиск',
                   hintStyle: TextStyle(
                     fontSize: AppStyle.fontSizeMedium_16,

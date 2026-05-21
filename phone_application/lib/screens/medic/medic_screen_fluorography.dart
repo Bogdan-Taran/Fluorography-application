@@ -30,7 +30,9 @@ class _MedicScreenFluorographyState extends ConsumerState<MedicScreenFluorograph
     // синхронизация контроллера поиска с провайдером Riverpod
     searchController.text = ref.read(medicSearchQueryProvider);
     searchController.addListener(() {
-      ref.read(medicSearchQueryProvider.notifier).state = searchController.text;
+      if (searchController.text != ref.read(medicSearchQueryProvider)) {
+        ref.read(medicSearchQueryProvider.notifier).state = searchController.text;
+      }
     });
   }
 
@@ -74,9 +76,7 @@ class _MedicScreenFluorographyState extends ConsumerState<MedicScreenFluorograph
                     color: AppStyle.blackColorMain,
                     fontFamily: 'Geologica',
                   ),
-                  onChanged: (value) {
-                    setState(() {});
-                  },
+                  onChanged: (value) {},
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: AppStyle.whiteColorAdditionalF5F7FA,
@@ -96,12 +96,11 @@ class _MedicScreenFluorographyState extends ConsumerState<MedicScreenFluorograph
                       fontWeight: FontWeight.w400,
                       fontFamily: 'Geologica',
                     ),
-                    suffixIcon: searchController.text.isNotEmpty
+                    suffixIcon: ref.watch(medicSearchQueryProvider).isNotEmpty
                         ? IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () {
                               searchController.clear();
-                              setState(() {});
                             },
                             icon: Icon(
                               Icons.close,

@@ -98,12 +98,14 @@ class OneRowBuildAccordionSectionContent extends ConsumerWidget {
   final StudentData student;
   final String uniqueId;
   final String uniqueEditingSectionId;
+  final bool isReadOnly;
 
   const OneRowBuildAccordionSectionContent({
     Key? key,
     required this.student,
     required this.uniqueId,
     required this.uniqueEditingSectionId,
+    this.isReadOnly = false,
   }) : super(key: key);
 
   @override
@@ -113,7 +115,7 @@ class OneRowBuildAccordionSectionContent extends ConsumerWidget {
     final status = checkerService.isFluorographyOverdue(dateFluraString);
 
     return ListTile(
-      onTap: () {
+      onTap: isReadOnly ? null : () {
         _showEditFluorographyDialog(context, ref, student.id, student.lastname, student.firstname, student.fluorography ?? "");
       },
       contentPadding: EdgeInsets.zero,
@@ -156,12 +158,14 @@ class OneRowBuildAccordionSectionContentStaff extends ConsumerWidget {
   final StaffModel staff;
   final String uniqueStaffId;
   final String uniqueEditingSectionId;
+  final bool isReadOnly;
 
   const OneRowBuildAccordionSectionContentStaff({
     Key? key,
     required this.staff,
     required this.uniqueStaffId,
     required this.uniqueEditingSectionId,
+    this.isReadOnly = false,
   }) : super(key: key);
 
   @override
@@ -171,7 +175,7 @@ class OneRowBuildAccordionSectionContentStaff extends ConsumerWidget {
     final status = checkerService.isFluorographyOverdue(dateFluraString);
 
     return ListTile(
-      onTap: () {
+      onTap: isReadOnly ? null : () {
         _showEditFluorographyDialog(context, ref, staff.id, staff.lastname, staff.firstname, staff.fluorography ?? "");
       },
       contentPadding: EdgeInsets.zero,

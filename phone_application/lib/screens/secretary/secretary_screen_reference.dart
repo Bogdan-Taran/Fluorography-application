@@ -11,6 +11,7 @@ import 'package:project_fluorography/services/api_reference/request_reference_co
 import 'package:project_fluorography/styles.dart';
 import 'package:talker/talker.dart';
 import '../../widgets/expansion_tile.dart' as expansion_tile;
+import 'controller/secretary_reference_controller.dart';
 
 class SecretaryScreenReference extends ConsumerStatefulWidget {
   const SecretaryScreenReference({super.key});
@@ -19,11 +20,24 @@ class SecretaryScreenReference extends ConsumerStatefulWidget {
   ConsumerState<SecretaryScreenReference> createState() => _SecretaryScreenReference();
 }
 
-class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> {
+class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> with AutomaticKeepAliveClientMixin {
   final Map<int, bool> _isExpandedTile = {};
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
-  bool _showOnlyActive = false;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.text = ref.read(secretaryReferenceSearchQueryProvider);
+    _searchController.addListener(() {
+      if (_searchController.text != ref.read(secretaryReferenceSearchQueryProvider)) {
+        ref.read(secretaryReferenceSearchQueryProvider.notifier).state = _searchController.text;
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -34,10 +48,13 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
 
   @override
   Widget build(BuildContext context) {
-    final query = _searchController.text;
+    super.build(context);
+    final query = ref.watch(secretaryReferenceSearchQueryProvider);
+    final showOnlyActive = ref.watch(secretaryReferenceShowOnlyActiveProvider);
+
     final groupedData = ref.watch(groupedApplicationsByGroup((
       name: query.length >= 3 ? query : null,
-      onlyUnfinished: _showOnlyActive ? true : null,
+      onlyUnfinished: showOnlyActive ? true : null,
     )));
     final talker = Talker();
 
@@ -87,9 +104,6 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                     child: TextField(
                       controller: _searchController,
                       focusNode: _searchFocusNode,
-                      onChanged: (value) {
-                        setState(() {});
-                      },
                       cursorColor: AppStyle.activeBlueColorMain,
                       style: TextStyle(
                         fontSize: AppStyle.fontSizeMedium_16,
@@ -115,12 +129,11 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                           fontWeight: FontWeight.w400,
                           fontFamily: 'Geologica',
                         ),
-                        suffixIcon: _searchController.text.isNotEmpty
+                        suffixIcon: query.isNotEmpty
                             ? IconButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () {
                                   _searchController.clear();
-                                  setState(() {});
                                 },
                                 icon: Icon(
                                   Icons.close,
@@ -143,15 +156,13 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                   10.verticalSpace,
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        _showOnlyActive = !_showOnlyActive;
-                      });
+                      ref.read(secretaryReferenceShowOnlyActiveProvider.notifier).state = !showOnlyActive;
                     },
                     child: Container(
                       height: 48.h,
                       padding: REdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
-                        color: _showOnlyActive ? AppStyle.blueColorAdditional4AABDB : AppStyle.whiteColorAdditionalF5F7FA,
+                        color: showOnlyActive ? AppStyle.blueColorAdditional4AABDB : AppStyle.whiteColorAdditionalF5F7FA,
                         borderRadius: BorderRadius.circular(30.r),
                       ),
                       child: Row(
@@ -167,7 +178,7 @@ class _SecretaryScreenReference extends ConsumerState<SecretaryScreenReference> 
                               'Показывать только группы с активными заявками',
                               style: TextStyle(
                                 fontSize: AppStyle.fontSizeMediumMini_14,
-                                color: _showOnlyActive ? Colors.white : AppStyle.blackColorAdditional26292B,
+                                color: showOnlyActive ? Colors.white : AppStyle.blackColorAdditional26292B,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: 'Geologica',
                               ),

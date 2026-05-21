@@ -115,7 +115,7 @@ class _MedicConstructorAccordionBuildWidgetState extends ConsumerState<MedicCons
                     style: TextStyle(
                       color: AppStyle.activeBlueColorMain,
                       fontSize: AppStyle.fontSizeMediumMini_14,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w300,
                       fontFamily: 'Geologica',
                     ),
                   ),

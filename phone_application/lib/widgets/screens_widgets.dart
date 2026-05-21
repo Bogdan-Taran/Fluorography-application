@@ -30,7 +30,7 @@ class DataFluraContainerBuildWidget extends ConsumerWidget {
       DataStatus.unknown => AppStyle.redColorTag,
       DataStatus.overdue => AppStyle.redColorTag,
       DataStatus.quitOverdue => AppStyle.yellowColorTag,
-      DataStatus.noOverdue => AppStyle.activeBlueColorMain,
+      DataStatus.noOverdue => AppStyle.blueColorAdditional4AABDB,
     };
 
     return Text(
